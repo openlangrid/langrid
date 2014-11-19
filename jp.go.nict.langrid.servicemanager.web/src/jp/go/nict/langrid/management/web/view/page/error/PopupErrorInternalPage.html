@@ -1,0 +1,17 @@
+<wicket:extend>
+<div style="text-align:left;">
+	<h3 wicket:id="errorTitle" class="error-title">Error title</h3>
+	<span wicket:id="errorMessage" class="error-contents">Error Message</span>
+	<hr/>
+	<div class="error-contents">
+		<a wicket:id="stackTraceTitle"><span wicket:id="linkLabel"></span></a>
+		<div wicket:id="stacktrace">
+			<div wicket:id="repeat"></div>
+		</div>
+	</div>
+</div>
+<div class="btn-s"><input type="button" wicket:message="value:Common.label.Close" onclick="window.close();"></div>
+<div id="Footer">
+	<span wicket:id="ServiceManagerCopyright"></span>
+</div>
+</wicket:extend>

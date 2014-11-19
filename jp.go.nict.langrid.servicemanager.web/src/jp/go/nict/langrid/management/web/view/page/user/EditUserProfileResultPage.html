@@ -1,0 +1,45 @@
+<wicket:extend>
+	<h1><wicket:message key="UserSettings.headline.EditUserProfile" /></h1>
+	<div wicket:id="feedback"></div>
+	<p class="accent"><wicket:message key="UserSettings.headline.update.Complete" /></p>
+	<div class="table">
+	<table  summary="formtable" >
+		<tr>
+			<th><wicket:message key="Common.label.ModificationDate"></wicket:message></th>
+			<td><span wicket:id="updatedDate"></span></td>
+		</tr>
+		<tr>
+			<th><wicket:message key="Common.label.user.Id"></wicket:message></th>
+			<td><span wicket:id="userId"></span></td>
+		</tr>
+		<tr>
+			<th><wicket:message key="Common.label.Organization"></wicket:message></th>
+			<td><span wicket:id="organization"></span></td>
+		</tr>
+		<tr>
+			<th><wicket:message key="Common.label.ResponsiblePerson"></wicket:message></th>
+			<td><span wicket:id="representative"></span></td>
+		</tr>
+		<tr>
+			<th><wicket:message key="Common.label.MailAddress"></wicket:message></th>
+			<td><span wicket:id="emailAddress"></span></td>
+		</tr>
+		<tr>
+			<th><wicket:message key="Common.label.Homepage"></wicket:message></th>
+			<td><div wicket:id="homepageUrl"></div></td>
+		</tr>
+		<tr>
+			<th><wicket:message key="Common.label.Address"></wicket:message></th>
+			<td><span wicket:id="address"></span></td>
+		</tr>
+      <tr>
+         <th><wicket:message key="Common.label.Default.UseType"></wicket:message></th>
+         <td><span wicket:id="defaultUseType"></span></td>
+      </tr>
+      <tr>
+         <th><wicket:message key="Common.label.Default.AppType"></wicket:message></th>
+         <td><span wicket:id="defaultAppProvisionType"></span></td>
+      </tr>
+	</table>
+	</div>
+</wicket:extend>

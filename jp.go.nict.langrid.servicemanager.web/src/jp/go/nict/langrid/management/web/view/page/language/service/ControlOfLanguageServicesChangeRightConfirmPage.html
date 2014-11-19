@@ -1,0 +1,34 @@
+<wicket:extend>
+	<h1><wicket:message key="ProvidingServices.language.service.headline.ControlOfLanguageServiceWith" />
+		<span wicket:id="headName"></span>
+	</h1>
+	<div wicket:id="feedback"></div>
+	<p class="accent">
+		<wicket:message key="ProvidingServices.language.service.message.ChangeRightConfirm1" />
+		<span wicket:id="isPermit"></span>
+		<wicket:message key="ProvidingServices.language.service.message.ChangeRightConfirm2" />
+		<span wicket:id="name"></span>
+		<wicket:message key="ProvidingServices.language.service.message.ChangeRightConfirm3" />
+	</p>
+	<div class="list-table">
+	<table  summary="formtable" >
+		<tr>
+			<th><wicket:message key="Common.label.Organization" /></th>
+			<th><wicket:message key="Common.label.Homepage" /></th>
+			<th><wicket:message key="Common.label.AccessRight" /></th>
+		</tr>
+		<tr>
+			<td><a wicket:id="provider"><span wicket:id="organization"></span></a></td>
+			<td><div wicket:id="homepage"></div></td>
+			<td>
+				<div wicket:id="permitted"></div>
+			</td>
+		</tr>
+	</table>
+	</div>
+	<!--/table-->
+	<div class="btn-s">
+		<input type="submit" wicket:id="cancel" wicket:message="value:Common.label.Cancel" />
+		<input type="submit" wicket:id="confirm" wicket:message="value:Common.label.Confirm" />
+	</div>
+</wicket:extend>

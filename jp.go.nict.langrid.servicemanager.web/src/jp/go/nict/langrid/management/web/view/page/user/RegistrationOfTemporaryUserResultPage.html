@@ -1,0 +1,25 @@
+<wicket:extend>
+	<h1><wicket:message key="UserSettings.headline.RegistrationOfTemporaryUser" /></h1>
+	<div wicket:id="feedback"></div>
+	<p class="accent"><wicket:message key="Common.message.register.Complete" /></p>
+	<div class="table">
+	<table  summary="formtable" >
+		<tr>
+			<th><wicket:message key="Common.label.user.Id"></wicket:message></th>
+			<td><span wicket:id="userId"></span></td>
+		</tr>
+		<tr>
+			<th>
+				<wicket:message key="Common.label.period.user.temporary"></wicket:message>
+				(<span wicket:id="timezone"></span>)
+			</th>
+			<td>
+				<wicket:message key="UserSettings.label.From" />:
+				&nbsp;<span wicket:id="startDate"></span>
+				&nbsp;&nbsp;<wicket:message key="UserSettings.label.To" />:
+				&nbsp;<span wicket:id="endDate"></span>
+			</td>
+		</tr>
+	</table>
+	</div>
+</wicket:extend>

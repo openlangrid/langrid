@@ -1,0 +1,1377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://localhost:8080/langrid-1.2/services/NodeManagement" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://localhost:8080/langrid-1.2/services/NodeManagement" xmlns:intf="http://localhost:8080/langrid-1.2/services/NodeManagement" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="http://langrid.nict.go.jp/ws_1_2/" xmlns:tns2="http://langrid.nict.go.jp/ws_1_2/foundation/nodemanagement/" xmlns:tns3="http://langrid.nict.go.jp/ws_1_2/foundation/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDLはApache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)によって生成されました / [en]-(WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT))-->
+ <wsdl:types>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/nodemanagement/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/"/>
+   <import namespace="http://localhost:8080/langrid-1.2/services/NodeManagement"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="LangridException">
+    <sequence>
+     <element name="description" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="AccessLimitExceededException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="NoAccessPermissionException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServiceConfigurationException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="UnknownException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="InvalidParameterException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence>
+       <element name="parameterName" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="UnsupportedMatchingMethodException">
+    <complexContent>
+     <extension base="tns1:InvalidParameterException">
+      <sequence>
+       <element name="matchingMethod" nillable="true" type="xsd:string"/>
+       <element name="validMethods" nillable="true" type="impl:ArrayOf_xsd_string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/foundation/nodemanagement/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/"/>
+   <import namespace="http://localhost:8080/langrid-1.2/services/NodeManagement"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="NodeProfile">
+    <sequence>
+     <element name="cpu" nillable="true" type="xsd:string"/>
+     <element name="memory" nillable="true" type="xsd:string"/>
+     <element name="nodeName" nillable="true" type="xsd:string"/>
+     <element name="nodeType" nillable="true" type="xsd:string"/>
+     <element name="os" nillable="true" type="xsd:string"/>
+     <element name="specialNotes" nillable="true" type="xsd:string"/>
+     <element name="url" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="NodeAlreadyExistsException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence>
+       <element name="nodeId" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="NodeEntry">
+    <sequence>
+     <element name="active" type="xsd:boolean"/>
+     <element name="nodeId" nillable="true" type="xsd:string"/>
+     <element name="nodeName" nillable="true" type="xsd:string"/>
+     <element name="nodeType" nillable="true" type="xsd:string"/>
+     <element name="ownerUserId" nillable="true" type="xsd:string"/>
+     <element name="ownerUserOrganization" nillable="true" type="xsd:string"/>
+     <element name="registeredDate" nillable="true" type="xsd:dateTime"/>
+     <element name="updatedDate" nillable="true" type="xsd:dateTime"/>
+     <element name="url" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="NodeEntrySearchResult">
+    <complexContent>
+     <extension base="tns3:SearchResult">
+      <sequence>
+       <element name="elements" nillable="true" type="impl:ArrayOf_tns2_NodeEntry"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="NodeNotFoundException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence>
+       <element name="nodeId" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="NodeNotInactiveException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence>
+       <element name="nodeId" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/foundation/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/nodemanagement/"/>
+   <import namespace="http://localhost:8080/langrid-1.2/services/NodeManagement"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="Attribute">
+    <sequence>
+     <element name="name" nillable="true" type="xsd:string"/>
+     <element name="value" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="MatchingCondition">
+    <sequence>
+     <element name="fieldName" nillable="true" type="xsd:string"/>
+     <element name="matchingMethod" nillable="true" type="xsd:string"/>
+     <element name="matchingValue" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="Order">
+    <sequence>
+     <element name="direction" nillable="true" type="xsd:string"/>
+     <element name="fieldName" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="SearchResult">
+    <sequence>
+     <element name="totalCount" type="xsd:int"/>
+     <element name="totalCountFixed" type="xsd:boolean"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://localhost:8080/langrid-1.2/services/NodeManagement" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/nodemanagement/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_tns3_Attribute">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns3:Attribute[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns3_MatchingCondition">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns3:MatchingCondition[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns3_Order">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns3:Order[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns2_NodeEntry">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns2:NodeEntry[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="addNodeRequest">
+
+      <wsdl:part name="nodeId" type="xsd:string"/>
+
+      <wsdl:part name="profile" type="tns2:NodeProfile"/>
+
+      <wsdl:part name="attributes" type="impl:ArrayOf_tns3_Attribute"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="activateNodeResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="clearRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="addNodeAsRequest">
+
+      <wsdl:part name="ownerUserId" type="xsd:string"/>
+
+      <wsdl:part name="nodeId" type="xsd:string"/>
+
+      <wsdl:part name="profile" type="tns2:NodeProfile"/>
+
+      <wsdl:part name="attributes" type="impl:ArrayOf_tns3_Attribute"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="ServiceConfigurationException">
+
+      <wsdl:part name="fault" type="tns1:ServiceConfigurationException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getSelfNodeIdResponse">
+
+      <wsdl:part name="getSelfNodeIdReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getNodeProfileResponse">
+
+      <wsdl:part name="getNodeProfileReturn" type="tns2:NodeProfile"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteNodeResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="setNodeProfileRequest">
+
+      <wsdl:part name="nodeId" type="xsd:string"/>
+
+      <wsdl:part name="profile" type="tns2:NodeProfile"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="NoAccessPermissionException">
+
+      <wsdl:part name="fault" type="tns1:NoAccessPermissionException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="searchNodesRequest">
+
+      <wsdl:part name="startIndex" type="xsd:int"/>
+
+      <wsdl:part name="maxCount" type="xsd:int"/>
+
+      <wsdl:part name="conditions" type="impl:ArrayOf_tns3_MatchingCondition"/>
+
+      <wsdl:part name="orders" type="impl:ArrayOf_tns3_Order"/>
+
+      <wsdl:part name="scope" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addNodeResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="isNodeActiveResponse">
+
+      <wsdl:part name="isNodeActiveReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getNodeAttributesRequest">
+
+      <wsdl:part name="nodeId" type="xsd:string"/>
+
+      <wsdl:part name="attributeNames" type="impl:ArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="NodeAlreadyExistsException">
+
+      <wsdl:part name="fault" type="tns2:NodeAlreadyExistsException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="clearResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="activateNodeRequest">
+
+      <wsdl:part name="nodeId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setNodeAttributesRequest">
+
+      <wsdl:part name="nodeId" type="xsd:string"/>
+
+      <wsdl:part name="attributes" type="impl:ArrayOf_tns3_Attribute"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="InvalidParameterException">
+
+      <wsdl:part name="fault" type="tns1:InvalidParameterException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setNodeAttributesResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getSelfNodeIdRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="deactivateNodeResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteNodeRequest">
+
+      <wsdl:part name="nodeId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getNodeProfileRequest">
+
+      <wsdl:part name="nodeId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getNodeAttributesResponse">
+
+      <wsdl:part name="getNodeAttributesReturn" type="impl:ArrayOf_tns3_Attribute"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="UnsupportedMatchingMethodException">
+
+      <wsdl:part name="fault" type="tns1:UnsupportedMatchingMethodException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="searchNodesResponse">
+
+      <wsdl:part name="searchNodesReturn" type="tns2:NodeEntrySearchResult"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="UnknownException">
+
+      <wsdl:part name="fault" type="tns1:UnknownException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setNodeProfileResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="isNodeActiveRequest">
+
+      <wsdl:part name="nodeId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="NodeNotInactiveException">
+
+      <wsdl:part name="fault" type="tns2:NodeNotInactiveException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="AccessLimitExceededException">
+
+      <wsdl:part name="fault" type="tns1:AccessLimitExceededException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deactivateNodeRequest">
+
+      <wsdl:part name="nodeId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="NodeNotFoundException">
+
+      <wsdl:part name="fault" type="tns2:NodeNotFoundException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addNodeAsResponse">
+
+   </wsdl:message>
+
+   <wsdl:portType name="NodeManagement">
+
+      <wsdl:operation name="clear">
+
+         <wsdl:input message="impl:clearRequest" name="clearRequest"/>
+
+         <wsdl:output message="impl:clearResponse" name="clearResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addNode" parameterOrder="nodeId profile attributes">
+
+         <wsdl:input message="impl:addNodeRequest" name="addNodeRequest"/>
+
+         <wsdl:output message="impl:addNodeResponse" name="addNodeResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:NodeAlreadyExistsException" name="NodeAlreadyExistsException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSelfNodeId">
+
+         <wsdl:input message="impl:getSelfNodeIdRequest" name="getSelfNodeIdRequest"/>
+
+         <wsdl:output message="impl:getSelfNodeIdResponse" name="getSelfNodeIdResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="searchNodes" parameterOrder="startIndex maxCount conditions orders scope">
+
+         <wsdl:input message="impl:searchNodesRequest" name="searchNodesRequest"/>
+
+         <wsdl:output message="impl:searchNodesResponse" name="searchNodesResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:UnsupportedMatchingMethodException" name="UnsupportedMatchingMethodException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteNode" parameterOrder="nodeId">
+
+         <wsdl:input message="impl:deleteNodeRequest" name="deleteNodeRequest"/>
+
+         <wsdl:output message="impl:deleteNodeResponse" name="deleteNodeResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:NodeNotInactiveException" name="NodeNotInactiveException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NodeNotFoundException" name="NodeNotFoundException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addNodeAs" parameterOrder="ownerUserId nodeId profile attributes">
+
+         <wsdl:input message="impl:addNodeAsRequest" name="addNodeAsRequest"/>
+
+         <wsdl:output message="impl:addNodeAsResponse" name="addNodeAsResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:NodeAlreadyExistsException" name="NodeAlreadyExistsException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getNodeProfile" parameterOrder="nodeId">
+
+         <wsdl:input message="impl:getNodeProfileRequest" name="getNodeProfileRequest"/>
+
+         <wsdl:output message="impl:getNodeProfileResponse" name="getNodeProfileResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NodeNotFoundException" name="NodeNotFoundException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setNodeProfile" parameterOrder="nodeId profile">
+
+         <wsdl:input message="impl:setNodeProfileRequest" name="setNodeProfileRequest"/>
+
+         <wsdl:output message="impl:setNodeProfileResponse" name="setNodeProfileResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NodeNotFoundException" name="NodeNotFoundException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getNodeAttributes" parameterOrder="nodeId attributeNames">
+
+         <wsdl:input message="impl:getNodeAttributesRequest" name="getNodeAttributesRequest"/>
+
+         <wsdl:output message="impl:getNodeAttributesResponse" name="getNodeAttributesResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NodeNotFoundException" name="NodeNotFoundException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setNodeAttributes" parameterOrder="nodeId attributes">
+
+         <wsdl:input message="impl:setNodeAttributesRequest" name="setNodeAttributesRequest"/>
+
+         <wsdl:output message="impl:setNodeAttributesResponse" name="setNodeAttributesResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NodeNotFoundException" name="NodeNotFoundException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="activateNode" parameterOrder="nodeId">
+
+         <wsdl:input message="impl:activateNodeRequest" name="activateNodeRequest"/>
+
+         <wsdl:output message="impl:activateNodeResponse" name="activateNodeResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NodeNotFoundException" name="NodeNotFoundException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deactivateNode" parameterOrder="nodeId">
+
+         <wsdl:input message="impl:deactivateNodeRequest" name="deactivateNodeRequest"/>
+
+         <wsdl:output message="impl:deactivateNodeResponse" name="deactivateNodeResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NodeNotFoundException" name="NodeNotFoundException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="isNodeActive" parameterOrder="nodeId">
+
+         <wsdl:input message="impl:isNodeActiveRequest" name="isNodeActiveRequest"/>
+
+         <wsdl:output message="impl:isNodeActiveResponse" name="isNodeActiveResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NodeNotFoundException" name="NodeNotFoundException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="NodeManagementSoapBinding" type="impl:NodeManagement">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="clear">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="clearRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://nodemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="clearResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addNode">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addNodeRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://nodemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addNodeResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NodeAlreadyExistsException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NodeAlreadyExistsException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getSelfNodeId">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getSelfNodeIdRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://nodemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getSelfNodeIdResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="searchNodes">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="searchNodesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://nodemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="searchNodesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="UnsupportedMatchingMethodException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnsupportedMatchingMethodException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteNode">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteNodeRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://nodemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteNodeResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NodeNotInactiveException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NodeNotInactiveException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NodeNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NodeNotFoundException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addNodeAs">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addNodeAsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://nodemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addNodeAsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NodeAlreadyExistsException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NodeAlreadyExistsException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getNodeProfile">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getNodeProfileRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://nodemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getNodeProfileResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NodeNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NodeNotFoundException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setNodeProfile">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setNodeProfileRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://nodemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setNodeProfileResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NodeNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NodeNotFoundException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getNodeAttributes">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getNodeAttributesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://nodemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getNodeAttributesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NodeNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NodeNotFoundException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setNodeAttributes">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setNodeAttributesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://nodemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setNodeAttributesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NodeNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NodeNotFoundException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="activateNode">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="activateNodeRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://nodemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="activateNodeResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NodeNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NodeNotFoundException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deactivateNode">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deactivateNodeRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://nodemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deactivateNodeResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NodeNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NodeNotFoundException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="isNodeActive">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="isNodeActiveRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://nodemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="isNodeActiveResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NodeNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NodeNotFoundException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/NodeManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="NodeManagementService">
+
+      <wsdl:port binding="impl:NodeManagementSoapBinding" name="NodeManagement">
+
+         <wsdlsoap:address location="http://localhost:8080/langrid-1.2/services/NodeManagement"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

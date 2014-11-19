@@ -1,0 +1,28 @@
+{
+  "active": true,
+  "attributes":   [
+        {
+      "name": "supportedLanguagePairs_AnyCombination",
+      "value": "(ja en)"
+    }
+  ],
+  "copyrightInfo": "National Institute of Information and Communications Technology",
+  "createdDateTime": "2010/08/20 16:36:23.656 JST",
+  "instanceType": "WEBAPP",
+  "licenseInfo": "Users can copy or modify all or part of this resource solely for non-profit use. Users shall not distribute, transfer or lend all or part of the resource to anyone without our permission.",
+  "ownerUserId": "user1",
+  "serviceDescription": "This service consists of five bilingual dictionary with longest match services. Five bilingual dictionary with longest match services are invoked concurrently, and you can set the language codes of a head word and target words.",
+  "serviceEndpoints": [  {
+    "createdDateTime": "2010/08/20 16:36:23.734 JST",
+    "enabled": true,
+    "protocolId": "PROTOCOLBUFFERS_RPC",
+    "updatedDateTime": "2010/08/20 16:36:23.734 JST",
+    "url": "http:///pbServices/BilingualDictionaryWithLongestMatchCrossSearch"
+  }],
+  "serviceId": "BilingualDictionaryWithLongestMatchSrossSearch",
+  "serviceName": "Bilingual Dictionary With Longest Matching Cross Search Service",
+  "serviceTypeDomainId": "nict.nlp",
+  "serviceTypeId": "BilingualDictionaryWithLongestMatchSearch",
+  "updatedDateTime": "2010/08/20 16:36:23.656 JST",
+  "visible": true,
+}

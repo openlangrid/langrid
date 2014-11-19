@@ -1,0 +1,699 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" xmlns:intf="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="http://langrid.nict.go.jp/ws_1_2/foundation/servicemanagement/" xmlns:tns2="http://langrid.nict.go.jp/ws_1_2/" xmlns:tns3="http://langrid.nict.go.jp/ws_1_2/foundation/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDLはApache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)によって生成されました / [en]-(WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT))-->
+ <wsdl:types>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/foundation/servicemanagement/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/"/>
+   <import namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ServiceDeployment">
+    <sequence>
+     <element name="enabled" type="xsd:boolean"/>
+     <element name="nodeId" nillable="true" type="xsd:string"/>
+     <element name="serviceId" nillable="true" type="xsd:string"/>
+     <element name="servicePath" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ServiceDeploymentAlreadyExistsException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence>
+       <element name="nodeId" nillable="true" type="xsd:string"/>
+       <element name="serviceId" nillable="true" type="xsd:string"/>
+       <element name="servicePath" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServiceDeploymentNotFoundException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence>
+       <element name="nodeId" nillable="true" type="xsd:string"/>
+       <element name="serviceId" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/servicemanagement/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_tns1_ServiceDeployment">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:ServiceDeployment[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/"/>
+   <import namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/servicemanagement/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="LangridException">
+    <sequence>
+     <element name="description" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="AccessLimitExceededException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="InvalidParameterException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence>
+       <element name="parameterName" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="NoAccessPermissionException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServiceConfigurationException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServiceNotFoundException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence>
+       <element name="serviceId" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="UnknownException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/foundation/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/servicemanagement/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="NodeNotFoundException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence>
+       <element name="nodeId" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="listServiceDeploymentsResponse">
+
+      <wsdl:part name="listServiceDeploymentsReturn" type="impl:ArrayOf_tns1_ServiceDeployment"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="disableServiceDeploymentRequest">
+
+      <wsdl:part name="serviceId" type="xsd:string"/>
+
+      <wsdl:part name="nodeId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="disableServiceDeploymentResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="addServiceDeploymentRequest">
+
+      <wsdl:part name="serviceId" type="xsd:string"/>
+
+      <wsdl:part name="nodeId" type="xsd:string"/>
+
+      <wsdl:part name="servicePath" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="ServiceConfigurationException">
+
+      <wsdl:part name="fault" type="tns2:ServiceConfigurationException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteServiceDeploymentRequest">
+
+      <wsdl:part name="serviceId" type="xsd:string"/>
+
+      <wsdl:part name="nodeId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="ServiceNotFoundException">
+
+      <wsdl:part name="fault" type="tns2:ServiceNotFoundException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteServiceDeploymentResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="enableServiceDeploymentResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="ServiceDeploymentAlreadyExistsException">
+
+      <wsdl:part name="fault" type="tns1:ServiceDeploymentAlreadyExistsException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="NoAccessPermissionException">
+
+      <wsdl:part name="fault" type="tns2:NoAccessPermissionException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="enableServiceDeploymentRequest">
+
+      <wsdl:part name="serviceId" type="xsd:string"/>
+
+      <wsdl:part name="nodeId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addServiceDeploymentResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="InvalidParameterException">
+
+      <wsdl:part name="fault" type="tns2:InvalidParameterException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="UnknownException">
+
+      <wsdl:part name="fault" type="tns2:UnknownException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="AccessLimitExceededException">
+
+      <wsdl:part name="fault" type="tns2:AccessLimitExceededException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="ServiceDeploymentNotFoundException">
+
+      <wsdl:part name="fault" type="tns1:ServiceDeploymentNotFoundException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="listServiceDeploymentsRequest">
+
+      <wsdl:part name="serviceId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="NodeNotFoundException">
+
+      <wsdl:part name="fault" type="tns3:NodeNotFoundException"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="ServiceDeploymentManagement">
+
+      <wsdl:operation name="listServiceDeployments" parameterOrder="serviceId">
+
+         <wsdl:input message="impl:listServiceDeploymentsRequest" name="listServiceDeploymentsRequest"/>
+
+         <wsdl:output message="impl:listServiceDeploymentsResponse" name="listServiceDeploymentsResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:ServiceNotFoundException" name="ServiceNotFoundException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addServiceDeployment" parameterOrder="serviceId nodeId servicePath">
+
+         <wsdl:input message="impl:addServiceDeploymentRequest" name="addServiceDeploymentRequest"/>
+
+         <wsdl:output message="impl:addServiceDeploymentResponse" name="addServiceDeploymentResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:ServiceNotFoundException" name="ServiceNotFoundException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:ServiceDeploymentAlreadyExistsException" name="ServiceDeploymentAlreadyExistsException"/>
+
+         <wsdl:fault message="impl:NodeNotFoundException" name="NodeNotFoundException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteServiceDeployment" parameterOrder="serviceId nodeId">
+
+         <wsdl:input message="impl:deleteServiceDeploymentRequest" name="deleteServiceDeploymentRequest"/>
+
+         <wsdl:output message="impl:deleteServiceDeploymentResponse" name="deleteServiceDeploymentResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:ServiceNotFoundException" name="ServiceNotFoundException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:ServiceDeploymentNotFoundException" name="ServiceDeploymentNotFoundException"/>
+
+         <wsdl:fault message="impl:NodeNotFoundException" name="NodeNotFoundException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="enableServiceDeployment" parameterOrder="serviceId nodeId">
+
+         <wsdl:input message="impl:enableServiceDeploymentRequest" name="enableServiceDeploymentRequest"/>
+
+         <wsdl:output message="impl:enableServiceDeploymentResponse" name="enableServiceDeploymentResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:ServiceNotFoundException" name="ServiceNotFoundException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:ServiceDeploymentNotFoundException" name="ServiceDeploymentNotFoundException"/>
+
+         <wsdl:fault message="impl:NodeNotFoundException" name="NodeNotFoundException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="disableServiceDeployment" parameterOrder="serviceId nodeId">
+
+         <wsdl:input message="impl:disableServiceDeploymentRequest" name="disableServiceDeploymentRequest"/>
+
+         <wsdl:output message="impl:disableServiceDeploymentResponse" name="disableServiceDeploymentResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:ServiceNotFoundException" name="ServiceNotFoundException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:ServiceDeploymentNotFoundException" name="ServiceDeploymentNotFoundException"/>
+
+         <wsdl:fault message="impl:NodeNotFoundException" name="NodeNotFoundException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="ServiceDeploymentManagementSoapBinding" type="impl:ServiceDeploymentManagement">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="listServiceDeployments">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="listServiceDeploymentsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://servicemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="listServiceDeploymentsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceNotFoundException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addServiceDeployment">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addServiceDeploymentRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://servicemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addServiceDeploymentResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceNotFoundException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceDeploymentAlreadyExistsException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceDeploymentAlreadyExistsException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NodeNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NodeNotFoundException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteServiceDeployment">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteServiceDeploymentRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://servicemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteServiceDeploymentResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceNotFoundException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceDeploymentNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceDeploymentNotFoundException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NodeNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NodeNotFoundException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="enableServiceDeployment">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="enableServiceDeploymentRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://servicemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="enableServiceDeploymentResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceNotFoundException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceDeploymentNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceDeploymentNotFoundException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NodeNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NodeNotFoundException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="disableServiceDeployment">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="disableServiceDeploymentRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://servicemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="disableServiceDeploymentResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceNotFoundException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceDeploymentNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceDeploymentNotFoundException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NodeNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NodeNotFoundException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="ServiceDeploymentManagementService">
+
+      <wsdl:port binding="impl:ServiceDeploymentManagementSoapBinding" name="ServiceDeploymentManagement">
+
+         <wsdlsoap:address location="http://localhost:8080/langrid-1.2.N/services/ServiceDeploymentManagement"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

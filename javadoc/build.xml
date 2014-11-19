@@ -1,0 +1,75 @@
+<project name="javadoc" default="javadoc">
+	<import file="../build/common.xml" />
+
+	<target name="javadoc">
+		<taskdef name="fmpp" classname="fmpp.tools.AntTask">
+			<classpath>
+				<fileset dir="lib" includes="*.jar" />
+			</classpath>
+		</taskdef>
+		<taskdef name="groovy" classname="org.codehaus.groovy.ant.Groovy">
+			<classpath>
+				<fileset file="lib/groovy-all-1.5.6.jar" />
+			</classpath>
+		</taskdef>
+
+		<macrodef name="javadoc-i18n">
+			<attribute name="locale"/>
+			<attribute name="link"/>
+			<sequential>
+				<delete dir="javadocsrc-@{locale}" />
+				<delete dir="javadoc-@{locale}" />
+				<mkdir dir="javadocsrc-@{locale}"/>
+				<groovy>
+					new File("projects.javadoc").eachLine{
+						ant.fmpp(
+							sourceroot: ("../" + it + "/src").toString()
+							, outputroot: "javadocsrc-@{locale}"
+							, data: "locale:@{locale}"
+							, logfile: "log-@{locale}.fmpp"
+							, includes: "**/*.java,**/*.aj,**/*.html,**/*.css,**/*.gif,**/*.png"
+							)
+					}
+					othersrcs = [
+						"jp.go.nict.langrid.client.ws_1_2/src.stubs",
+						"jp.go.nict.langrid.client.ws_1_2.protobuf/src.proto"
+						]
+					othersrcs.each{
+						ant.fmpp(
+							sourceroot: ("../" + it).toString()
+							, outputroot: "javadocsrc-@{locale}"
+							, data: "locale:@{locale}"
+							, logfile: "log-@{locale}.fmpp"
+							, includes: "**/*.java,**/*.aj,**/*.html,**/*.css,**/*.gif,**/*.png"
+							)
+					}
+				</groovy>
+				<javadoc
+					sourcepath="javadocsrc-@{locale}" destdir="javadoc-@{locale}"
+					windowtitle="Language Grid API" locale="@{locale}"
+					encoding="UTF-8" docencoding="UTF-8"
+					packagenames="jp.go.nict.langrid.*" charset="UTF-8"
+					source="1.6"
+					protected="true"
+					useexternalfile="yes"
+					maxmemory="256m"
+					>
+					<arg value="-J-Duser.language=@{locale}" />
+					<link
+						href="@{link}" offline="true"
+						packagelistloc="package-list-@{locale}"
+						/>
+					<classpath>
+						<fileset dir="../lib" includes="**/*.jar" />
+						<fileset dir="../lib_ext" includes="**/*.jar" />
+						<fileset dir="../jp.go.nict.langrid.cosee.ae.5.0.2" includes="lib/*.jar,srcjar/*.jar" />
+						<fileset dir="lib" includes="**/*.jar" />
+					</classpath>
+				</javadoc>
+			</sequential>
+		</macrodef>
+
+		<javadoc-i18n locale="ja" link="http://java.sun.com/javase/ja/6/docs/ja/api" />
+		<javadoc-i18n locale="en" link="http://java.sun.com/javase/6/docs/api" />
+	</target>
+</project>

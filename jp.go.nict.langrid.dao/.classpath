@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" output="bin.test" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry exported="true" kind="lib" path="/lib/commons/commons-beanutils.jar" sourcepath="C:/sources/commons-beanutils-1.7.0-src/src/java"/>
+	<classpathentry exported="true" kind="lib" path="/lib/commons/commons-lang-2.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="/lib/hibernate/ejb3-persistence.jar"/>
+	<classpathentry exported="true" kind="lib" path="/lib/hibernate/hibernate-annotations.jar" sourcepath="/sources/hibernate/hibernate-annotations-3.4.0.GA-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="/lib/spring/org.springframework.asm-3.0.6.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="/lib/spring/org.springframework.beans-3.0.6.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="/lib/spring/org.springframework.context-3.0.6.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="/lib/spring/org.springframework.context.support-3.0.6.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="/lib/spring/org.springframework.core-3.0.6.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="/lib/spring/org.springframework.expression-3.0.6.RELEASE.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.commons"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.testresource"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

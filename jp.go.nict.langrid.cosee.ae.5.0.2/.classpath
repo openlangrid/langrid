@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/ae_rt.jar"/>
+	<classpathentry kind="lib" path="lib/ae_rtaxis.jar"/>
+	<classpathentry kind="lib" path="lib/ae_rtaxisadmin.jar"/>
+	<classpathentry kind="lib" path="lib/ae_wsio.jar"/>
+	<classpathentry kind="lib" path="lib/castor-1.0-xml.jar"/>
+	<classpathentry kind="lib" path="lib/commons-dbutils-1.0.jar"/>
+	<classpathentry kind="lib" path="/lib/commons/commons-jxpath-1.2.jar"/>
+	<classpathentry kind="lib" path="/lib/commons/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="lib/commonj-twm.jar"/>
+	<classpathentry kind="lib" path="lib/jaxen-1.1-beta-8.jar"/>
+	<classpathentry kind="lib" path="/lib/ws/jaxrpc.jar"/>
+	<classpathentry kind="lib" path="/lib/opensymphony/oscache-2.4.1.jar" sourcepath="/sources/opensymphony/oscache-2.4.1-src.zip"/>
+	<classpathentry kind="lib" path="/lib/ws/saaj.jar"/>
+	<classpathentry kind="lib" path="/lib/ws/servlet-api.jar"/>
+	<classpathentry kind="lib" path="/lib/ws/wsdl4j-1.5.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
+	<classpathentry kind="lib" path="srcjar/ae_rtaxisbpel.jar">
+		<attributes>
+			<attribute name="org.eclipse.ajdt.inpath" value="org.eclipse.ajdt.inpath"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="srcjar/ae_rtbpel.jar">
+		<attributes>
+			<attribute name="org.eclipse.ajdt.inpath" value="org.eclipse.ajdt.inpath"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="srcjar/ae_rtbpelsvr.jar">
+		<attributes>
+			<attribute name="org.eclipse.ajdt.inpath" value="org.eclipse.ajdt.inpath"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/lib/axis/axis.jar" sourcepath="C:/sources/axis-1_3/src"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.commons"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,0 +1,40 @@
+<wicket:extend>
+	<h1><wicket:message key="LanguageGridOperator.resourcetype.headline.Edit" /></h1>
+	<div wicket:id="feedback"></div>
+	<form wicket:id="form">
+
+		<p class="accent"><wicket:message key="LanguageGridOperator.resourcetype.headline.Setting" /></p>
+		<div class="table">
+			<table>
+            <tr>
+               <th><wicket:message key="Common.label.Domain"/></th>
+               <td><select wicket:id="domain"></select></td>
+            </tr>
+            <tr>
+               <th><wicket:message key="Common.label.type.resource.Id"/></th>
+               <td><span wicket:id="id" ></span></td>
+            </tr>
+            <tr>
+               <th><wicket:message key="Common.label.type.resource.Name"/></th>
+               <td><input class="form-text" wicket:id="name" /></td>
+            </tr>
+            <tr>
+               <th><wicket:message key="Common.label.type.resource.Description" /></th>
+               <td><textarea rows="5" class="form-text" wicket:id="description" ></textarea></td>
+            </tr>
+				<tr>
+               <th><wicket:message key="LanguageGridOperator.type.table.header.MetaAttribute" /></th>
+               <td>
+                  <select wicket:id="attribute"></select>
+                  <p wicket:id="attension"></p>
+               </td>
+            </tr>
+			</table>
+		</div>
+
+		<div class="btn-s">
+         <input type="submit" wicket:id="cancel" wicket:message="value:Common.label.Cancel" />
+			<input type="submit" wicket:id="edit" wicket:message="value:Common.label.Edit" />
+		</div>
+	</form>
+</wicket:extend>

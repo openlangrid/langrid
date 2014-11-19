@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://localhost:8081/active-bpel/services/DeployBPRService" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://localhost:8081/active-bpel/services/DeployBPRService" xmlns:intf="http://localhost:8081/active-bpel/services/DeployBPRService" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="http://bpel.rt.activebpel.org" xmlns:tns2="http://rt.activebpel.org" xmlns:tns3="http://lang.java" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDLはApache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)によって生成されました / [en]-(WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT))-->
+ <wsdl:types>
+  <schema targetNamespace="http://rt.activebpel.org" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://bpel.rt.activebpel.org"/>
+   <import namespace="http://lang.java"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="AeException">
+    <sequence>
+     <element name="info" nillable="true" type="soapenc:string"/>
+     <element name="rootCause" nillable="true" type="xsd:anyType"/>
+     <element name="rootRootCause" nillable="true" type="xsd:anyType"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://bpel.rt.activebpel.org" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://rt.activebpel.org"/>
+   <import namespace="http://lang.java"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="AeBusinessProcessException">
+    <complexContent>
+     <extension base="tns2:AeException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="deployBprResponse">
+
+      <wsdl:part name="deployBprReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deployBprRequest">
+
+      <wsdl:part name="aBprFilename" type="xsd:string"/>
+
+      <wsdl:part name="aBase64File" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="AeBusinessProcessException">
+
+      <wsdl:part name="fault" type="tns1:AeBusinessProcessException"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="AeDeployBPRSkeleton">
+
+      <wsdl:operation name="deployBpr" parameterOrder="aBprFilename aBase64File">
+
+         <wsdl:input message="impl:deployBprRequest" name="deployBprRequest"/>
+
+         <wsdl:output message="impl:deployBprResponse" name="deployBprResponse"/>
+
+         <wsdl:fault message="impl:AeBusinessProcessException" name="AeBusinessProcessException"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="DeployBPRServiceSoapBinding" type="impl:AeDeployBPRSkeleton">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="deployBpr">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deployBprRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:AeEngineServices" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deployBprResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8081/active-bpel/services/DeployBPRService" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="AeBusinessProcessException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AeBusinessProcessException" namespace="http://localhost:8081/active-bpel/services/DeployBPRService" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="AeDeployBPRSkeletonService">
+
+      <wsdl:port binding="impl:DeployBPRServiceSoapBinding" name="DeployBPRService">
+
+         <wsdlsoap:address location="http://localhost:8081/active-bpel/services/DeployBPRService"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

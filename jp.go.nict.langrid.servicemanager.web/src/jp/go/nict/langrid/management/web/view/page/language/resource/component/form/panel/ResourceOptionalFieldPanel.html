@@ -1,0 +1,19 @@
+<wicket:panel>
+				<tr>
+					<th><wicket:message key="Common.label.OS" /></th>
+					<td><select wicket:id="osInfo"></select></td>
+				</tr>
+				<tr>
+					<th><wicket:message key="Common.label.CPU" /></th>
+					<td><input wicket:id="cpuInfo" type="text" class="form-text" maxlength="254" /><wicket:message key="Common.label.hertz.Giga" /></td>
+				</tr>
+				<tr>
+					<th><wicket:message key="Common.label.Memory" /></th>
+					<td><input wicket:id="memoryInfo" type="text" class="form-text" maxlength="254" /><wicket:message key="Common.label.byte.Mega" /></td>
+				</tr>
+				<tr>
+					<th><wicket:message key="Common.label.SpecialNote" /></th>
+					<td><textarea wicket:id="specialNoteInfo" class="form-text" rows="5"></textarea><br />
+					<wicket:message key="Common.label.attention.InEnglish" /></td>
+				</tr>
+</wicket:panel>

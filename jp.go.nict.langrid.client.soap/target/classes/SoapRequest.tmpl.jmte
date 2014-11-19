@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:ser="${namespace}">
+  <soapenv:Header>
+${foreach headers header}
+    <ns:${header.name}
+       soapenv:actor="http://schemas.xmlsoap.org/soap/actor/next"
+       soapenv:mustUnderstand="0"
+       xsi:type="soapenc:string"
+       xmlns:ns="${header.namespace}"
+       xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">${header.value}</ns:${header.name}>
+${end}
+  </soapenv:Header>
+  <soapenv:Body>
+    <ser:${methodName} soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+${foreach parameters parameter}
+${parameter.tag}
+${end}
+    </ser:${methodName}>
+  </soapenv:Body>
+</soapenv:Envelope>

@@ -1,0 +1,16 @@
+
+ANTを起動し、build.xmlを実行してください。
+パスが適切に通っていれば、antコマンドの実行でbuild.xmlが実行されます。
+Eclipse IDEからは、build.xmlをAnt Buildして下さい。
+build.xmlが実行されると、必要なライブラリが言語グリッドjarリポジトリ又はMavenリポジトリから
+取得され、ドキュメントの生成が行われます。
+
+＊外部接続にプロキシが必要な場合
+Eclipse IDEで実行する場合、右クリック->[Run as]->[Ant build...]でダイアログを開き、
+VMオプションとしてプロキシを設定してください。コマンドラインからは、ANT_OPTSにプロキシを設定してください。
+
+プロキシ設定(Eclipse IDEではVm argumentsに、コマンドラインからはANT_OPTS環境変数に
+以下の設定を1行で)：
+-Dhttp.proxyHost=proxy.nict.go.jp
+-Dhttp.proxyPort=3128
+-Dhttp.nonProxyHosts="localhost|127.0.0.1"

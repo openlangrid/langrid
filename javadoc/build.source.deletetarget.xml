@@ -1,0 +1,41 @@
+<project name="sources.deletetarget" default="deletetarget">
+	<import file="../build/common.xml" />
+
+	<target name="deletetarget">
+		<taskdef name="groovy" classname="org.codehaus.groovy.ant.Groovy">
+			<classpath>
+				<fileset file="../lib/groovy/groovy-all-1.5.6.jar" />
+			</classpath>
+		</taskdef>
+		<groovy>
+			import java.io.File
+
+			target = "../../workspace_langrid_oss/"
+			ignores = new java.util.HashSet()
+			ignores.add("bin")
+			ignores.add("build")
+			println("target is " + target)
+			new File("projects.sources").eachLine{
+				proj ->
+				proj = proj.trim();
+				if(proj.length() == 0) return
+				System.out.println("deleting " + proj + " ...")
+
+				;
+				{ path ->
+					name = path.name
+					if(name.startsWith(".")) return
+					if(path.isDirectory()){
+						if(!ignores.contains(name)){
+							path.listFiles().each{
+								owner.call(it)
+							}
+						}
+					} else if(path.isFile()){
+						path.delete()
+					}
+				}.call(new File(target + proj))
+			}
+		</groovy>
+	</target>
+</project>

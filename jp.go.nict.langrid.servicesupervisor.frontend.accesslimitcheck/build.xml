@@ -1,0 +1,19 @@
+<project name="langrid-servicesupervisor-frontend-accesslimitcheck-2.0.0" default="dist">
+	<import file="../build/lib_common.xml" />
+
+	<fileset id="filesetid.compilelib" dir="${lib}">
+		<include name="hibernate/ejb3-persistence.jar" />
+		<include name="hibernate/hibernate-annotations.jar" />
+		<include name="ws/servlet-api.jar" />
+	</fileset>
+
+	<fileset id="filesetid.lib" dir="${lib}">
+		<include name="langrid/langrid-commons-1.2.1.jar" />
+		<include name="langrid/langrid-dao-2.0.0.jar" />
+		<include name="langrid/langrid-servicesupervisor-frontend-2.0.0.jar" />
+	</fileset>
+
+	<fileset id="filesetid.testlib" dir="${lib}">
+		<include name="langrid/langrid-commons-1.2.1-test.jar" />
+	</fileset>
+</project>

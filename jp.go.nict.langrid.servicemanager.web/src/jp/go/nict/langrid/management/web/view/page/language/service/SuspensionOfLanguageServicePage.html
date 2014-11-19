@@ -1,0 +1,23 @@
+
+<wicket:extend>
+	<h1><wicket:message key="ProvidingServices.language.service.headline.SuspensionOfLanguageServices" /></h1>
+	<div wicket:id="feedback"></div>
+	<p class="accent"><wicket:message key="ProvidingServices.language.service.table.headline.SuspensionConstraint" /></p>
+	<div class="list-table">
+		<table  summary="formtable" >
+			<wicket:container wicket:id="header"></wicket:container>
+			<wicket:container wicket:id="row"></wicket:container>
+		</table>
+	</div>
+	
+	<h1><wicket:message key="ProvidingServices.language.service.headline.SuspensionDate" /></h1>
+	<p class="accent"><wicket:message key="Common.message.set.date.Unregistration" />
+	<span wicket:id="locale"></span>
+	<wicket:message key="Common.message.set.date.suspension.OfService" /></p>
+	<form wicket:id="form">
+		<input type="text" wicket:id="dateTextField" maxlength="14" />
+		<input class="btn-on" type="submit" wicket:id="cancel" wicket:message="value:Common.label.Cancel" />
+		<input class="btn-on" type="submit" wicket:id="submit" wicket:message="value:Common.label.status.Suspend" />
+	</form>	
+</wicket:extend>
+

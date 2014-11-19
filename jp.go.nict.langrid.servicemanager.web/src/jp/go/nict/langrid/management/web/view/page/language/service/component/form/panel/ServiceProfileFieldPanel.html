@@ -1,0 +1,94 @@
+<wicket:panel>
+	            <tr>
+	                <th><wicket:message key="Common.label.service.Name"/></th>
+	                <td>
+	                    <input wicket:id="serviceName" type="text" class="form-text"/>
+	                    <br/>
+	                    <wicket:message key="Common.label.attention.InEnglish"/>
+	                    <wicket:message key="ProvidingServices.language.service.message.attention.Name"/>
+	                </td>
+	            </tr>
+	            <tr>
+						<th><wicket:message key="Common.label.service.Type" /></th>
+						<td>
+							<div wicket:id="switchable">
+								<select wicket:id="serviceType"></select>
+								<span wicket:id="serviceTypeLabel"></span>
+							</div>
+						</td>
+					</tr>
+	            <tr>
+	                <th><wicket:message key="Common.label.service.Description"/></th>
+	                <td>
+	                    <textarea wicket:id="serviceDescription" class="form-text" rows="15"></textarea>
+	                    <br/>
+	                    <wicket:message key="Common.label.attention.InEnglish"/>
+	                </td>
+	            </tr>
+	            <tr>
+	            	<th><wicket:message key="Common.label.Languages"/></th>
+						<td class="table-in-column table-in-column-wide">
+<!-- 
+						   <table wicket:id="rewritablePathContainer">
+     						   <wicket:container wicket:id="languagePathRepeater">
+						      <tr>
+						         <th>
+						            <a wicket:id="metaAttributeNameLink"><span wicket:id="metaAttributeNameLabel"></span></a>
+						            <div class="container-right">
+				                     <a wicket:id="input">add language path</a>
+				                     <div wicket:id="pathForm"></div>
+				                  </div>
+						         </th>
+						      </tr>
+						      <tr wicket:id="addedPathRepeater">
+						         <td><span wicket:id="addedLanguagePath"></span></td>
+						      </tr>
+		    				   </wicket:container>
+						   </table>
+				        <div wicket:id="languagesContainer">
+	                     Languages
+	                     <ul class="marked-list"><li wicket:id="languages"><span wicket:id="addedLanguages"></span></li></ul>
+	<hr/>
+	                  </div>
+	                  <div wicket:id="combinationsContainer">
+	                     Combinations
+	                     <ul class="marked-list"><li wicket:id="combinations"><span wicket:id="addedCombinations"></span></li></ul>
+	<hr/>
+	                  </div>
+	                  <div wicket:id="pathsContainer">
+	                     Language Paths
+	                     <ul class="marked-list"><li wicket:id="paths"><span wicket:id="addedPaths"></span></li></ul>
+	<hr/>
+	                  </div>
+						<div class="container-right">
+                     <a wicket:id="input">language path input</a>
+                     <div wicket:id="pathForm"></div>
+                  </div>   
+ -->						
+						<div wicket:id="languagePath"></div>
+						</td>
+	            </tr>
+	            <tr>
+               <th><wicket:message key="Common.label.PermittedUsers"/></th>
+               <td>
+                  <div wicket:id="isMembers">
+                     <label>
+                        <input wicket:id="all" type="radio"></input>
+                        <wicket:message key="ProvidingServices.language.service.label.accesible.AllUsers" />
+                     </label>
+                     <label>
+                        <input wicket:id="members" type="radio"/>
+                        <wicket:message key="ProvidingServices.language.service.label.accesible.MembersOnly" />
+                     </label>
+                  </div>
+               </td>
+            </tr>
+            <tr wicket:id="membershipContainer">
+               <th><wicket:message key="Common.label.HowToGetMembership"/></th>
+               <td>
+                  <textarea wicket:id="howToGetMembershipInfo" class="form-text" rows="5"></textarea>
+                  <br/>
+                  <wicket:message key="Common.label.attention.InEnglish"/>
+               </td>
+            </tr>
+</wicket:panel>

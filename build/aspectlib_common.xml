@@ -1,0 +1,5 @@
+<project name="aspectlib_common">
+	<import file="lib_common.xml" />
+	<target name="init" depends="lib_common.init" />
+	<target name="compile" depends="common.compileWithAjc" />
+</project>

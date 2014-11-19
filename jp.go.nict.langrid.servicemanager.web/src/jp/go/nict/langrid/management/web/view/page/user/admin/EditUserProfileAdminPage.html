@@ -1,0 +1,47 @@
+<wicket:extend>
+	<h1><wicket:message key="UserSettings.headline.EditUserProfile" /></h1>
+	<div wicket:id="feedback"></div>
+	<form wicket:id="form">
+		<div class="table">
+		<table summary="formtable" >
+			<tr>
+				<th scope="row"><wicket:message key="Common.label.Organization" /></th>
+				<td><textarea class="form-text" wicket:id="organization" rows="5"></textarea><br />
+				<wicket:message key="Common.label.attention.InEnglish"></wicket:message></td>
+			</tr>
+			<tr>
+				<th scope="row"><wicket:message key="Common.label.ResponsiblePerson" /></th>
+				<td><input class="form-text" wicket:id="representative" type="text" maxlength="254" /><br />
+				<wicket:message key="Common.label.attention.InEnglish"></wicket:message></td>
+			</tr>
+			<tr>
+				<th scope="row"><wicket:message key="Common.label.MailAddress" /></th>
+				<td><input class="form-text" wicket:id="emailAddress" type="text" maxlength="254" /><br />
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><wicket:message key="Common.label.Homepage" /></th>
+				<td><input class="form-text" wicket:id="homepageUrl" type="text" maxlength="254" /><br />
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><wicket:message key="Common.label.Address" /></th>
+				<td><textarea class="form-text" wicket:id="address" rows="5"></textarea><br />
+				<wicket:message key="Common.label.attention.InEnglish"></wicket:message></td>
+			</tr>
+			<tr>
+            <th scope="row"><wicket:message key="Common.label.Default.UseType" /></th>
+            <td><select wicket:id="useService"></select></td>
+         </tr>
+         <tr>
+            <th scope="row"><wicket:message key="Common.label.Default.AppType" /></th>
+            <td><select wicket:id="provision"></select></td>
+         </tr>
+		</table>
+		</div>
+		<div class="btn-s">
+			<input wicket:id="cancel" type="submit" wicket:message="value:Common.label.Cancel">
+			<input wicket:id="submit" type="submit" wicket:message="value:Common.label.Update">
+		</div>
+	</form>
+</wicket:extend>

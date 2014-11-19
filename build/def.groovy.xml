@@ -1,0 +1,7 @@
+<project name="def.groovy">
+	<taskdef name="groovy" classname="org.codehaus.groovy.ant.Groovy">
+		<classpath>
+			<fileset file="../lib/groovy/groovy-all-1.5.6.jar" />
+		</classpath>
+	</taskdef>
+</project>

@@ -1,0 +1,17 @@
+<project name="langrid-servicecontainer-executor-umbrella-1.0.0" default="dist">
+	<import file="../build/lib_common.xml" />
+	
+	<fileset id="filesetid.lib" dir="${lib}">
+		<include name="commons/commons-lang-2.4.jar" />
+		<include name="hibernate/ejb3-persistence.jar" />
+		<include name="langrid/langrid-commons-1.2.1.jar" />
+		<include name="langrid/langrid-commons-ws-1.2.1.jar" />
+		<include name="langrid/langrid-cosee-2.0.0.jar" />
+		<include name="langrid/langrid-service-common_1_2-1.2.1.jar" />
+		<include name="langrid/langrid-servicecontainer-1.0.0.jar" />
+		<include name="langrid/langrid-servicecontainer-executor-protobufrpc-1.0.0.jar" />
+		<include name="langrid/langrid-servicecontainer-executor-java-1.0.0.jar" />
+		<include name="langrid/langrid-servicecontainer-executor-axis-1.0.0.jar" />
+	</fileset>
+</project>
+

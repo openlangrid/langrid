@@ -1,0 +1,112 @@
+<project name="sources" default="sources">
+	<import file="../build/common.xml" />
+
+	<target name="sources">
+		<taskdef name="fmpp" classname="fmpp.tools.AntTask">
+			<classpath>
+				<fileset dir="lib" includes="*.jar" />
+			</classpath>
+		</taskdef>
+		<taskdef name="groovy" classname="org.codehaus.groovy.ant.Groovy">
+			<classpath>
+				<fileset file="../lib/groovy/groovy-all-1.5.6.jar" />
+			</classpath>
+		</taskdef>
+		<delete dir="sources"/>
+		<groovy>
+			import java.io.File
+
+			ant.mkdir(dir: "sources")
+			new File("projects.sources").eachLine{
+				proj ->
+				proj = proj.trim();
+				if(proj.length() == 0) return
+
+				def projDir = new File("../" + proj)
+				def outDir = new File("sources/" + proj)
+				def srcDir = new File(projDir, "/src")
+				System.out.println(srcDir)
+				if(srcDir.exists()){
+					ant.fmpp(
+						sourceroot: srcDir.toString()
+						, outputroot: new File(outDir, "src").toString()
+						, data: "locale:en"
+						, logfile: "log-sources.fmpp"
+						, includes: "**/*.java,**/*.aj,**/*.html,**/*.js,**/*.txt"
+						)
+				}
+				ant.copy(todir: outDir.toString()){
+					ant.fileset(dir: projDir.toString()){
+						ant.include(name: ".*/")
+						ant.include(name: ".*/*")
+						ant.include(name: "*.xml")
+						ant.include(name: "*.properties")
+						ant.include(name: "build.xml")
+						ant.include(name: "conf/**/*.xml")
+						ant.include(name: "conf/**/*.properties")
+						ant.include(name: "proto/**/*.proto")
+						ant.include(name: "src/**/*.xml")
+						ant.include(name: "src/**/*.properties")
+						ant.include(name: "src/**/*.template")
+						ant.include(name: "src.*/**/*.java")
+						ant.include(name: "api/src/**")
+						ant.include(name: "impl/src/**")
+						ant.include(name: "build/src/**")
+						ant.include(name: "build_generated/**/*.java")
+						ant.include(name: "**/lib/**")
+						ant.include(name: "**/lib/**/*.jar")
+						ant.include(name: "srcjar/**/*")
+						ant.include(name: "wsdls/**/*")
+						ant.include(name: "**/META-INF/**")
+						
+						ant.exclude(name: "dist/**")
+
+						// For Service Manager
+						ant.include(name: "WebContent/**")
+						ant.exclude(name: "**/*-dev.*")
+						ant.exclude(name: "**/*_ja.properties")
+
+						if(proj == "lib"){
+							ant.include(name: "*/**")
+							ant.exclude(name: "drools/**")
+							ant.exclude(name: "langrid/*.jar")
+						}
+						if(proj == "lib_ext"){
+							ant.include(name: "axis2/**")
+						}
+						if(proj == "jp.go.nict.langrid.language"){
+							ant.include(name: "scripts/**")
+						}
+						if(proj == "jp.go.nict.langrid.testresource"){
+							ant.include(name: "src")
+						}
+						if(proj == "jp.go.nict.langrid.wrapper.common.db"
+							|| proj == "jp.go.nict.langrid.wrapper.edr"){
+							ant.include(name: "lib-test/**/*")
+						}
+						if(proj == "jp.go.nict.langrid.wrapper.common"){
+							ant.include(name: "lib.compile**/*")
+							ant.include(name: "lib.test**/*")
+						}
+						if(proj == "jp.go.nict.langrid.client.jsonrpc.test"
+							|| proj == "jp.go.nict.langrid.client.soap.test"
+							|| proj == "jp.go.nict.langrid.custominvoke.workflowsupport.ae_3_0_3"
+							|| proj == "jp.go.nict.langrid.custominvoke.workflowsupport.ae_5_0_2"
+							|| proj == "jp.go.nict.langrid.testresource"
+							){
+							ant.include(name: "test/**")
+						}
+					}
+				}
+				if(new File(srcDir, proj + "/test").exists())
+					ant.mkdir(dir: outDir.toString() + "/test")
+			}
+			ant.copy(todir: "sources/lib"){
+				ant.fileset(dir: "../lib"){
+					ant.include(name: "langrid/langrid-stub-DeployBPRService-ae-3.0.3.jar")
+					ant.include(name: "langrid/langrid-stub-UndeployBPRService-ae-3.0.3.jar")
+				}
+			}
+		</groovy>
+	</target>
+</project>

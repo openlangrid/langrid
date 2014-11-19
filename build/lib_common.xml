@@ -1,0 +1,51 @@
+<project name="lib_common">
+	<import file="common.xml" />
+
+	<fileset id="filesetid.compilelib.lib_commonAdditional" dir="${lib}">
+		<exclude name="**/*" />
+	</fileset>
+
+	<!-- target definitions -->
+	<target name="init" depends="common.init" />
+
+	<target name="compile" depends="common.compile" />
+	<target name="compileWithAjc" depends="common.compileWithAjc" />
+
+	<target name="dist" depends="common.dist">
+		<copy file="${dist}/${jarnamebase}.jar" todir="${lib}/langrid" />
+		<copy file="${dist}/${jarnamebase}-test.jar" todir="${lib}/langrid" />
+	</target>
+
+	<property
+		name="wrappercommon.lib"
+		value="${workspace}/jp.go.nict.langrid.wrapper.common/lib"
+	/>
+	<available
+		property="has.wrappercommon"
+		file="${wrappercommon.lib}"
+	/>
+	<target name="dist.to.wrappercommon" if="has.wrappercommon" depends="common.srcjar">
+		<copy
+			todir="${wrappercommon.lib}"
+			file="${dist}/${jarnamebase}.jar"
+		/>
+	</target>
+	<target name="dist.testlib.to.wrappercommon" if="has.wrappercommon" depends="common.testsrcjar">
+		<copy
+			todir="${wrappercommon.lib}"
+			file="${dist}/${jarnamebase}-test.jar"
+		/>
+		<copy
+			todir="${wrappercommon.lib}"
+			file="${dist}/${jarnamebase}-test-src.jar"
+		/>
+	</target>
+	<target name="dist.src.to.wrappercommon" if="has.wrappercommon">
+		<copy
+			todir="${wrappercommon.lib}"
+			file="${dist}/${jarnamebase}-src.jar"
+		/>
+	</target>
+	
+	<target name="clean" depends="common.clean" />
+</project>

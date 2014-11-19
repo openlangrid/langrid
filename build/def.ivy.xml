@@ -1,0 +1,19 @@
+<project name="def.ivy.xml" xmlns:ivy="antlib:org.apache.ivy.ant">
+ 	<typedef resource="org/apache/ivy/ant/antlib.xml"
+			uri="antlib:org.apache.ivy.ant"
+			>
+		<classpath>
+			<fileset dir="../build/ivy/lib" includes="*.jar" />
+		</classpath>
+	</typedef>
+
+	<property name="ivy.local.default.root" value="${common.xml.dir}/ivy/local"/>
+
+	<macrodef name="retrieve">
+		<sequential>
+			<ivy:configure file="../build/ivysettings.xml" />
+			<ivy:resolve file="ivy.xml" />
+			<ivy:retrieve />
+		</sequential>
+	</macrodef>
+</project>

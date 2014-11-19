@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://localhost:8080/langrid-1.2/services/ServiceMonitor" xmlns:intf="http://localhost:8080/langrid-1.2/services/ServiceMonitor" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="http://langrid.nict.go.jp/ws_1_2/" xmlns:tns2="http://langrid.nict.go.jp/ws_1_2/foundation/" xmlns:tns3="http://langrid.nict.go.jp/ws_1_2/foundation/servicemonitor/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDLはApache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)によって生成されました / [en]-(WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT))-->
+ <wsdl:types>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/servicemonitor/"/>
+   <import namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="LangridException">
+    <sequence>
+     <element name="description" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="AccessLimitExceededException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="NoAccessPermissionException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServiceConfigurationException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="UnknownException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="InvalidParameterException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence>
+       <element name="parameterName" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/foundation/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/servicemonitor/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="Order">
+    <sequence>
+     <element name="direction" nillable="true" type="xsd:string"/>
+     <element name="fieldName" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="SearchResult">
+    <sequence>
+     <element name="totalCount" type="xsd:int"/>
+     <element name="totalCountFixed" type="xsd:boolean"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/servicemonitor/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_tns2_Order">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns2:Order[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns3_AccessLog">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns3:AccessLog[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_xsd_int">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:int[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns3_UserAccessEntry">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns3:UserAccessEntry[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/foundation/servicemonitor/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="AccessLog">
+    <sequence>
+     <element name="address" nillable="true" type="xsd:string"/>
+     <element name="agent" nillable="true" type="xsd:string"/>
+     <element name="dateTime" nillable="true" type="xsd:dateTime"/>
+     <element name="faultCode" nillable="true" type="xsd:string"/>
+     <element name="faultString" nillable="true" type="xsd:string"/>
+     <element name="host" nillable="true" type="xsd:string"/>
+     <element name="nodeId" nillable="true" type="xsd:string"/>
+     <element name="referer" nillable="true" type="xsd:string"/>
+     <element name="requestUri" nillable="true" type="xsd:string"/>
+     <element name="responseBytes" type="xsd:int"/>
+     <element name="responseCode" type="xsd:int"/>
+     <element name="serviceId" nillable="true" type="xsd:string"/>
+     <element name="userId" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="AccessLogSearchResult">
+    <complexContent>
+     <extension base="tns2:SearchResult">
+      <sequence>
+       <element name="elements" nillable="true" type="impl:ArrayOf_tns3_AccessLog"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="UserAccessEntry">
+    <sequence>
+     <element name="accessCount" type="xsd:int"/>
+     <element name="serviceId" nillable="true" type="xsd:string"/>
+     <element name="serviceName" nillable="true" type="xsd:string"/>
+     <element name="transferredSize" type="xsd:long"/>
+     <element name="userId" nillable="true" type="xsd:string"/>
+     <element name="userOrganization" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="UserAccessEntrySearchResult">
+    <complexContent>
+     <extension base="tns2:SearchResult">
+      <sequence>
+       <element name="elements" nillable="true" type="impl:ArrayOf_tns3_UserAccessEntry"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="sumUpUserAccessResponse">
+
+      <wsdl:part name="sumUpUserAccessReturn" type="tns3:UserAccessEntrySearchResult"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="NoAccessPermissionException">
+
+      <wsdl:part name="fault" type="tns1:NoAccessPermissionException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAccessCountsResponse">
+
+      <wsdl:part name="getAccessCountsReturn" type="impl:ArrayOf_xsd_int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="clearRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="ServiceConfigurationException">
+
+      <wsdl:part name="fault" type="tns1:ServiceConfigurationException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="searchAccessLogsRequest">
+
+      <wsdl:part name="startIndex" type="xsd:int"/>
+
+      <wsdl:part name="maxCount" type="xsd:int"/>
+
+      <wsdl:part name="userId" type="xsd:string"/>
+
+      <wsdl:part name="serviceId" type="xsd:string"/>
+
+      <wsdl:part name="startDateTime" type="xsd:dateTime"/>
+
+      <wsdl:part name="endDateTime" type="xsd:dateTime"/>
+
+      <wsdl:part name="orders" type="impl:ArrayOf_tns2_Order"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="UnknownException">
+
+      <wsdl:part name="fault" type="tns1:UnknownException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="sumUpUserAccessRequest">
+
+      <wsdl:part name="startIndex" type="xsd:int"/>
+
+      <wsdl:part name="maxCount" type="xsd:int"/>
+
+      <wsdl:part name="serviceId" type="xsd:string"/>
+
+      <wsdl:part name="startDateTime" type="xsd:dateTime"/>
+
+      <wsdl:part name="endDateTime" type="xsd:dateTime"/>
+
+      <wsdl:part name="period" type="xsd:string"/>
+
+      <wsdl:part name="orders" type="impl:ArrayOf_tns2_Order"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="searchAccessLogsResponse">
+
+      <wsdl:part name="searchAccessLogsReturn" type="tns3:AccessLogSearchResult"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="InvalidParameterException">
+
+      <wsdl:part name="fault" type="tns1:InvalidParameterException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getAccessCountsRequest">
+
+      <wsdl:part name="userId" type="xsd:string"/>
+
+      <wsdl:part name="serviceId" type="xsd:string"/>
+
+      <wsdl:part name="baseDateTime" type="xsd:dateTime"/>
+
+      <wsdl:part name="period" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="AccessLimitExceededException">
+
+      <wsdl:part name="fault" type="tns1:AccessLimitExceededException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="clearResponse">
+
+   </wsdl:message>
+
+   <wsdl:portType name="ServiceMonitor">
+
+      <wsdl:operation name="clear">
+
+         <wsdl:input message="impl:clearRequest" name="clearRequest"/>
+
+         <wsdl:output message="impl:clearResponse" name="clearResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="searchAccessLogs" parameterOrder="startIndex maxCount userId serviceId startDateTime endDateTime orders">
+
+         <wsdl:input message="impl:searchAccessLogsRequest" name="searchAccessLogsRequest"/>
+
+         <wsdl:output message="impl:searchAccessLogsResponse" name="searchAccessLogsResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAccessCounts" parameterOrder="userId serviceId baseDateTime period">
+
+         <wsdl:input message="impl:getAccessCountsRequest" name="getAccessCountsRequest"/>
+
+         <wsdl:output message="impl:getAccessCountsResponse" name="getAccessCountsResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="sumUpUserAccess" parameterOrder="startIndex maxCount serviceId startDateTime endDateTime period orders">
+
+         <wsdl:input message="impl:sumUpUserAccessRequest" name="sumUpUserAccessRequest"/>
+
+         <wsdl:output message="impl:sumUpUserAccessResponse" name="sumUpUserAccessResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="ServiceMonitorSoapBinding" type="impl:ServiceMonitor">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="clear">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="clearRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://servicemonitor.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="clearResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="searchAccessLogs">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="searchAccessLogsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://servicemonitor.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="searchAccessLogsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getAccessCounts">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getAccessCountsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://servicemonitor.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getAccessCountsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="sumUpUserAccess">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="sumUpUserAccessRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://servicemonitor.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="sumUpUserAccessResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/ServiceMonitor" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="ServiceMonitorService">
+
+      <wsdl:port binding="impl:ServiceMonitorSoapBinding" name="ServiceMonitor">
+
+         <wsdlsoap:address location="http://localhost:8080/langrid-1.2/services/ServiceMonitor"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+    "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+   <bean id="ServiceManagerApplication" class="jp.go.nict.langrid.management.web.view.ServiceManagerApplication"/>
+
+   <bean
+      id="serviceInterceptor"
+      class="jp.go.nict.langrid.management.web.spring.ExtendTransactionInterceptor"
+   />
+
+   <bean
+      id="autoProxyCreator"
+      class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator"
+   >
+      <property name="interceptorNames">
+         <list>
+            <value>serviceInterceptor</value>
+         </list>
+      </property>
+      <property name="beanNames">
+         <list>
+            <value>*Service</value>
+         </list>
+      </property>
+   </bean>
+</beans>

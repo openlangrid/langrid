@@ -1,0 +1,60 @@
+<project name="def.axis">
+	<import file="def.catalina.xml" />
+
+	<path id="classpath.axis2">
+		<fileset dir="../lib">
+			<include name="axis2/activation-1.1.jar" />
+			<include name="axis2/axiom-api-1.2.5.jar" />
+			<include name="axis2/axiom-impl-1.2.5.jar" />
+			<include name="axis2/axis2-java2wsdl-1.3.jar" />
+			<include name="axis2/commons-logging-1.1.jar" />
+			<include name="axis2/neethi-2.0.2.jar" />
+			<include name="axis2/stax-api-1.0.1.jar" />
+			<include name="axis2/wsdl4j-1.6.2.jar" />
+			<include name="axis2/wstx-asl-3.2.1.jar" />
+			<include name="axis2/XmlSchema-1.3.2.jar" />
+<!--
+			<include name="axis2/jaxb-*.jar" />
+-->
+<!--
+			<include name="axis2/jibx-*.jar" />
+-->
+<!--
+			<include name="axis2/xbean-*.jar" />
+-->
+		</fileset>
+	</path>
+<!--
+	<taskdef
+		name="codegen"
+		classname="org.apache.axis2.tool.ant.AntCodegenTask"
+		classpathref="classpath.axis2"
+	/>
+-->
+	<macrodef name="axis2-wsdl2java">
+		<attribute name="wsdl" />
+		<attribute name="out" />
+		<sequential>
+			<java
+				classname="org.apache.axis2.wsdl.WSDL2Java" fork="true"
+				classpathref="classpath.axis2"
+			>
+				<arg value="-uri"/>
+				<arg file="@{wsdl}"/>
+				<arg value="-d" />
+				<arg value="adb" />
+				<arg value="-s" />
+				<arg value="-o"/>
+				<arg file="@{out}"/>
+			</java>
+		</sequential>
+	</macrodef>
+	
+	<presetdef name="stopAxis">
+		<stopWebapp path="/${axis.path}" />
+	</presetdef>
+
+	<presetdef name="startAxis">
+		<startWebapp path="/${axis.path}" />
+	</presetdef>
+</project>

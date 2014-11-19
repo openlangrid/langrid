@@ -1,0 +1,57 @@
+<project name="def.xjc">
+	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+	  <classpath>
+	    <fileset dir="../lib/jwsdp" includes="jaxb-*.jar" />
+	  </classpath>
+	</taskdef>	
+
+	<macrodef name="xjcjar">
+		<attribute name="schema" />
+		<attribute name="package" />
+		<attribute name="basejarname" />
+		<attribute name="resourcedir" />
+		<attribute name="todir" />
+		<sequential>
+			<property name="xjcjar_src" value="${common.xml.dir}/jaxb_tmp/@{basejarname}/src" />
+			<property name="xjcjar_build" value="${common.xml.dir}/jaxb_tmp/@{basejarname}/build" />
+			<property name="xjcjar_apijar" value="@{todir}/@{basejarname}-api.jar" />
+			<property name="xjcjar_impljar" value="@{todir}/@{basejarname}-impl.jar" />
+			<delete dir="${xjcjar_src}" failonerror="false" />
+			<delete dir="${xjcjar_build}" failonerror="false" />
+			<mkdir dir="${xjcjar_src}" />
+			<mkdir dir="${xjcjar_build}" />
+			<xjc
+				package="@{package}"
+				schema="@{schema}"
+				target="${xjcjar_src}"
+			>
+				<arg value="-relaxng" />
+				<produces dir="${xjcjar_src}" includes="**/*.java" />
+			</xjc>
+			<javac4
+				encoding="Windows-31J"
+				srcdir="${xjcjar_src}"
+				destdir="${xjcjar_build}"
+			>
+				<classpath>
+					<fileset dir="${lib}/jwsdp" includes="*.jar" />
+				</classpath>
+			</javac4>
+			<jar
+				basedir="${xjcjar_build}"
+				destfile="${xjcjar_apijar}"
+				includes="**/*.class"
+				excludes="**/impl/**/*.class"
+			/>				
+			<jar
+				basedir="${xjcjar_build}"
+				destfile="${xjcjar_impljar}"
+				includes="**/impl/**/*.class"
+			/>
+			<copy todir="@{resourcedir}">
+				<fileset dir="${xjcjar_src}" includes="**/*.properties" />
+				<fileset dir="${xjcjar_src}" includes="**/*.ser" />
+			</copy>
+		</sequential>
+	</macrodef>
+</project>

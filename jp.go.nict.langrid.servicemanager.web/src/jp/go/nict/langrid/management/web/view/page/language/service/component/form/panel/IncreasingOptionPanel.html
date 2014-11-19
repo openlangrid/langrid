@@ -1,0 +1,53 @@
+<wicket:panel>
+				<tr>
+					<th scope="row"><wicket:message key="Common.label.UseType"></wicket:message></th>
+					<td class="table-in-column">
+						<span wicket:id="useChecks">
+							<label>
+								<input type="checkbox" wicket:id="nonProfit" />
+								<wicket:message key="Common.label.useType.NonProfit"></wicket:message>
+							</label>
+							&nbsp;
+							<label>
+								<input type="checkbox" wicket:id="research" />
+								<wicket:message key="Common.label.useType.Research"></wicket:message>
+							</label>
+							&nbsp;
+							<label>
+							   <wicket:container wicket:id="commercial-container">
+									<input type="checkbox" wicket:id="commercial" />
+									<wicket:message key="Common.label.useType.Commercial"></wicket:message>
+								</wicket:container>
+							</label>
+						</span>
+				 	</td>
+				</tr>
+				<tr>
+					<th scope="row"><wicket:message key="Common.label.ApplicationType"></wicket:message></th>
+					<td class="table-in-column">
+						<span wicket:id="appChecks">
+							<label>
+							<!--
+							<input type="checkbox" wicket:id="clientControl" />
+							 -->
+							<input type="checkbox" checked disabled/>
+							<wicket:message key="Common.label.applicationType.Client"></wicket:message>
+							</label>
+							&nbsp;
+							<label>
+								<input type="checkbox" wicket:id="serverControl" />
+								<wicket:message key="Common.label.applicationType.Server"></wicket:message>
+							</label>
+						</span>
+				 	</td>
+				</tr>
+				<tr>
+					<th scope="row"><wicket:message key="Common.label.application.federal"></wicket:message></th>
+					<td class="table-in-column">
+							<label>
+								<input type="checkbox" wicket:id="allowFederation" />
+								<wicket:message key="Common.label.application.federal.Allow"></wicket:message>
+							</label>
+				 	</td>
+				</tr>
+</wicket:panel>

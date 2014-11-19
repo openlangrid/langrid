@@ -1,0 +1,63 @@
+<project name="def.java">
+	<presetdef name="javac4">
+		<javac
+			debug="on" source="1.4" target="1.4" encoding="UTF-8"
+			srcdir="${src}" destdir="${build}"
+			includeAntRuntime="true"
+		>
+			<classpath>
+				<fileset refid="filesetid.compilelib" />
+				<fileset refid="filesetid.lib" />
+			</classpath>
+		</javac>
+	</presetdef>
+
+	<presetdef name="javac5">
+		<javac
+			debug="on" source="1.5" target="1.5" encoding="UTF-8"
+			srcdir="${src}" destdir="${build}"
+			includeAntRuntime="true"
+		>
+			<classpath>
+				<fileset refid="filesetid.compilelib" />
+				<fileset refid="filesetid.lib" />
+			</classpath>
+		</javac>
+	</presetdef>
+
+	<presetdef name="jarWithManifest">
+		<jar
+			basedir="${build}"
+			destfile="${dist}/${jarnamebase}${jarnamesuffix}.jar"
+			manifest="MANIFEST.MF"
+		/>
+	</presetdef>
+
+	<presetdef name="jarWithoutManifest">
+		<jar
+			basedir="${build}"
+			destfile="${dist}/${jarnamebase}${jarnamesuffix}.jar"
+		/>
+	</presetdef>
+
+	<presetdef name="testJar">
+		<jar
+			basedir="${build.test}"
+			destfile="${dist}/${jarnamebase}${jarnamesuffix}-test.jar"
+		/>
+	</presetdef>
+
+	<presetdef name="javadoc5">
+		<javadoc
+			locale="en_US" sourcepath="${src}" destdir="${apidocs}"
+			source="1.5" encoding="UTF-8"
+			docencoding="UTF-8"
+			packagenames="*"
+		>
+			<classpath>
+				<fileset refid="filesetid.compilelib" />
+				<fileset refid="filesetid.lib" />
+			</classpath>
+		</javadoc>
+	</presetdef>
+</project>

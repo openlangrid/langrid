@@ -1,0 +1,42 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>jp.go.nict.langrid.commons.protobufrpc</artifactId>
+  <packaging>jar</packaging>
+  <name>Common Library for ProtocolBuffers RPC</name>
+  <description>Common and utility library about ProtocolBuffers RPC for the Service Grid Server Software and java web services.</description>
+  <url>http://langrid.org/</url>
+  <licenses>
+    <license>
+      <name>GNU LESSER GENERAL PUBLIC LICENSE</name>
+      <url>http://www.gnu.org/licenses/lgpl-2.1.txt</url>
+    </license>
+  </licenses>
+  <parent>
+    <groupId>net.servicegrid</groupId>
+    <artifactId>servicegrid</artifactId>
+    <version>1.0.1</version>
+  </parent>
+  <dependencies>
+  	<dependency>
+  		<groupId>junit</groupId>
+  		<artifactId>junit</artifactId>
+  		<version>4.11</version>
+  		<scope>test</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>net.servicegrid</groupId>
+  		<artifactId>jp.go.nict.langrid.commons</artifactId>
+  		<version>1.0.1</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.google.protobuf</groupId>
+  		<artifactId>protobuf-java</artifactId>
+  		<version>2.2.0</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>commons-codec</groupId>
+  		<artifactId>commons-codec</artifactId>
+  		<version>1.9</version>
+  	</dependency>
+  </dependencies>
+</project>

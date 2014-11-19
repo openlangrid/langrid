@@ -1,0 +1,54 @@
+<project name="def.catalina">
+	<fail unless="tomcat.host">specify $${tomcat.host} for tomcat hostname.</fail>
+	<fail unless="tomcat.port">specify $${tomcat.port} for tomcat port.</fail>
+	<fail unless="tomcat.manager.username">
+		specify $${tomcat.admin.username} for tomcat administrator username.
+	</fail>
+	<fail unless="tomcat.manager.password">
+		specify $${tomcat.admin.password} for tomcat administrator password."
+	</fail>
+	<fail unless="webapp.path">
+		specify $${webapp.path} for web application path in URL.
+	</fail>
+
+	<taskdef resource="org/apache/catalina/ant/catalina.tasks">
+		<classpath>
+			<fileset dir="../lib">
+				<include name="commons/commons-logging-1.0.4.jar" />
+				<include name="tomcat/catalina-ant.jar" />
+				<include name="tomcat/jasper*.jar" />
+				<include name="ws/servlet-api.jar" />
+			</fileset>
+		</classpath>
+	</taskdef>
+
+	<presetdef name="stopWebapp">
+		<stop
+			url="http://${tomcat.host}:${tomcat.port}/manager"
+			username="${tomcat.manager.username}"
+			password="${tomcat.manager.password}"
+			path="/${webapp.path}"
+			failonerror="false"
+		/>
+	</presetdef>
+
+	<presetdef name="startWebapp">
+		<start
+			url="http://${tomcat.host}:${tomcat.port}/manager"
+			username="${tomcat.manager.username}"
+			password="${tomcat.manager.password}"
+			path="/${webapp.path}"
+			failonerror="false"
+		/>
+	</presetdef>
+
+	<presetdef name="reloadWebapp">
+		<reload
+			url="http://${tomcat.host}:${tomcat.port}/manager"
+			username="${tomcat.manager.username}"
+			password="${tomcat.manager.password}"
+			path="/${webapp.path}"
+			failonerror="false"
+		/>
+	</presetdef>
+</project>

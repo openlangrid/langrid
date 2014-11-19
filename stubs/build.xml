@@ -1,0 +1,51 @@
+<project name="stubs" default="distStubs">
+	<property name="stub.src" value="stub/src" />
+	<property name="stub.build" value="stub/build" />
+	
+	<import file="../build/def.axis.noAxisAdmin.xml" />
+	<import file="../build/def.groovy.xml" />
+
+
+	<target name="distStubs">
+		<fileset id="wsdls" dir="wsdls" includes="*.xml" />
+		<groovy>
+			import java.io.File
+
+			project.references.wsdls.each{
+				file ->
+				ant.echo "generate: " + file
+				jarname = file.getName()
+				jarname = jarname.substring(0, jarname.lastIndexOf(".")) + ".jar"
+				properties["wsdl"] = file
+				properties["jarname"] = jarname
+				ant.antcall(target: "distStub")
+			}
+		</groovy>
+	</target>
+	<target name="distStub">
+		<delete dir="${stub.src}" />
+		<mkdir dir="${stub.src}" />
+		<axis-wsdl2java url="${wsdl}" output="${stub.src}" />
+
+		<delete dir="${stub.build}" />
+		<mkdir dir="${stub.build}" />
+		<javac
+			encoding="UTF-8" source="1.4"
+			srcdir="${stub.src}" destdir="${stub.build}"
+			>
+			<classpath>
+				<fileset file="../lib/axis/axis.jar" />
+				<fileset file="../lib/ws/jaxrpc.jar" />
+			</classpath>
+		</javac>
+
+		<mkdir dir="dist" />
+		<jar
+			jarfile="dist/langrid-stub-${jarname}"
+			basedir="${stub.build}"
+			includes="**/*"
+		/>
+
+		<copy todir="../lib/langrid" file="dist/langrid-stub-${jarname}" />
+	</target>
+</project>

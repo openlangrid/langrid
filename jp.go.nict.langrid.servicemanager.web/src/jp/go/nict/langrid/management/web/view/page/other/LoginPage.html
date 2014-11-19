@@ -1,0 +1,19 @@
+<wicket:extend>
+	<div wicket:id="feedback"></div>
+	<form wicket:id="form" class="login">
+		<div id="container">
+			<table summary="formtable">
+				<tr>
+					<th scope="row"><wicket:message key="Common.label.user.Id">User ID</wicket:message>:</th>
+					<td><input name="textfield" type="text" maxlength="254" wicket:id="userId" /></td>
+				</tr>
+				<tr>
+					<th scope="row" class="under"><wicket:message key="Common.label.Password">Password</wicket:message>:</th>
+					<td class="under"><input name="textfield2" type="password" maxlength="254" wicket:id="password" /></td>
+				</tr>
+			</table>
+		</div>
+		<div id="attention">This site is compatible with Internet Explorer 7.0 or Firefox.</div>
+		<div class="btn-s"><input type="submit" wicket:message="value:Login.label.Login" /></div>
+	</form>
+</wicket:extend>

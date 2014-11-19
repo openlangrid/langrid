@@ -1,0 +1,20 @@
+<wicket:extend>
+	<h1><wicket:message key="ProvidingServices.language.resource.headline.EditingResourceProfile" /></h1>
+	<div wicket:id="feedback"></div>
+	<p class="accent"><wicket:message key="ProvidingServices.language.resource.table.headline.Specifications" /></p>
+	<form wicket:id="form">
+		<div class="table">
+			<table summary="formtable" >
+				<tr>
+	               <th><wicket:message key="Common.label.resource.Id" /></th>
+	               <td><div wicket:id="resourceId"></div></td>
+	            </tr>
+				<tr wicket:id="profileFieldPanel"></tr>
+			</table>
+		</div>
+		<div class="btn-s">
+			<input wicket:id="cancel" type="submit" wicket:message="value:Common.label.Cancel">
+			<input wicket:id="update" type="submit" wicket:message="value:Common.label.Update">
+		</div>
+	</form>
+</wicket:extend>

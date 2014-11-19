@@ -1,0 +1,77 @@
+<!--mock-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN">
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><meta name="Keywords" content=" " /><meta name="Description" content="" /><title><span wicket:id="pageTitleLabel">Service Grid</span>&nbsp;<wicket:message key="Common.label.system.ID"/></title><link rel="stylesheet" type="text/css" href="css/import.css" media="all" /><link rel="stylesheet" type="text/css" href="css/print.css" media="print" /></head>
+<body>
+   <div id="Container">
+      <a class="top-link" href="./"><div id="Header"><div class="operatingOrganization" wicket:id="operatingOrganization">Organization Name</div><div class="maintitle"><span wicket:id="pageHeaderLabel">Service Grid</span><br/>&nbsp;<wicket:message key="Common.label.system.ID"/></div></div></a>
+      <div><div id="Tab"><div wicket:id="container"><a href="#"><span>Logout</span></a><span>User :</span><span>TestUser</span></div></div></div>
+      <div id="Contents">
+	      <div id="Leftside"><div class="menuHeader"><span><wicket:message key="Menu.headline">Menu</wicket:message></span></div><div id="menu"><div wicket:id="nestedMenu">Nested Menus</div></div><div class="menuHeader"></div></div>
+	      <div id="Rightside"><div class="indent"><!--/indent--></div>
+<!--/mock-->
+
+<wicket:extend>
+
+<h1><wicket:message key="ProvidingServices.language.service.headline.RegistrationOfCompositeService">BPEL Implementation</wicket:message></h1>
+<div wicket:id="feedback"></div>
+<form wicket:id="form">
+	<p class="accent">1. <wicket:message key="ProvidingServices.language.service.table.headline.BPEL">1. Upload BPEL file of the service.</wicket:message>
+	</p>
+	<div class="table">
+		<table summary="formatable">
+			<tr>
+				<th><wicket:message key="Common.label.BPEL">BPEL</wicket:message></th>
+				<td><div wicket:id="bpelFile">
+
+<!--mock-->
+<div><div class="table-in-column"><table>
+	<tr><th><label><input type="radio"/>File</label></th><td><input type="file" size="50"/></td></tr>
+	<tr><th><label><input type="radio"/>URL</label></th><td><input type="text" class="form-text"/></td></tr>
+</table></div></div>
+<!--/mock-->
+
+				</div></td>
+			</tr>
+		</table>
+	</div>
+
+	<p class="accent">2. <wicket:message key="ProvidingServices.language.service.table.headline.WSDL">2. Upload constituent WSDL files.</wicket:message>
+	</p>
+	<div class="table">
+		<table summary="formatable">
+			<tr>
+				<th><wicket:message key="Common.label.WSDL">WSDL</wicket:message>
+				</th>
+				<td><div wicket:id="wsdlFiles">
+
+<!--mock-->
+<div><div class="table-in-column table-repeater"><div><div><div class="table-in-column"><table>
+	   <tr><th><label><input type="radio"/>File</label></th><td><input type="file" size="50"/></td></tr>
+		<tr><th><label><input type="radio"/>URL</label></th><td><input type="text" class="form-text"/></td></tr>
+   </table></div></div></div>
+	<a href="#">Remove</a>
+</div></div>
+<div align="right"><a href="#">Add</a></div>
+<!--/mock-->
+
+            </div></td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="btn-s">
+		<input type="button" wicket:id="cancel" wicket:message="value:Common.label.Cancel" />
+		<input type="submit" class="btn-on" wicket:id="regist" wicket:message="value:Common.label.Register" />
+	</div>
+</form>
+
+</wicket:extend>
+
+<!--mock-->
+   </div>
+   <div id="Footer"><div wicket:id="ServiceManagerCopyright">Copyright</div></div>
+</div></div>
+</body>
+</html>
+<!--/mock-->

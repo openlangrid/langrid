@@ -1,0 +1,46 @@
+
+<wicket:extend>
+	<h1><wicket:message key="LanguageGridOperator.federation.headline.RequestOfConnection"></wicket:message></h1>
+	<div wicket:id="feedback"></div>
+		<p class="accent"><wicket:message key="LanguageGridOperator.federation.message.request.Url" /></p>
+		<div class="table">
+			<table  summary="formtable" >
+				<tr>
+					<th><wicket:message key="Common.label.URL" />:</th>
+					<td><span wicket:id="url"></span></td>
+				</tr>
+			</table>
+		</div>
+	<form wicket:id="form">
+				<!-- 
+	 <p class="accent"><wicket:message key="LanguageGridOperator.federation.message.request.User" /></p>
+		<div class="table">
+			<table  summary="formtable" >
+				<tr>
+					<th scope="row"><wicket:message key="Common.label.user.Id"></wicket:message>:</th>
+					<td><input class="form-text" wicket:id="userId" type="text" maxlength="254" /><br />
+					<wicket:message key="Common.message.input.id.attention"></wicket:message></td>
+				</tr>
+				<tr>
+					<th scope="row"><wicket:message key="Common.label.Password" />:</th>
+					<td><input class="form-text" wicket:id="password" type="password" maxlength="254" /><br />
+					<wicket:message key="Common.message.attention.input.Password"></wicket:message></td>
+				</tr>
+				<tr>
+					<th scope="row"><wicket:message key="Common.label.password.Confirm" />:</th>
+					<td><input class="form-text" wicket:id="confirm" type="password" maxlength="254" /><br />
+					<wicket:message key="Common.message.attention.input.Password"></wicket:message></td>
+				</tr>
+			</table>
+		</div>
+		<div class="btn-s">
+			<input wicket:id="cancel" type="button" wicket:message="value:Common.label.Cancel">
+			<input wicket:id="submit" type="submit" wicket:message="value:LanguageGridOperator.federation.button.request.Send">
+		</div>
+				 -->
+		<div class="btn-s">
+			<input wicket:id="cancel" type="button" wicket:message="value:Common.label.Cancel">
+			<input wicket:id="submit" type="submit" wicket:message="value:LanguageGridOperator.federation.button.request.Send">
+		</div>
+	</form>
+</wicket:extend>

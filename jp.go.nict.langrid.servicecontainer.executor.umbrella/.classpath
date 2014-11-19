@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" output="bin.test" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.commons"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.servicecontainer"/>
+	<classpathentry kind="lib" path="/lib/hibernate/ejb3-persistence.jar"/>
+	<classpathentry kind="lib" path="/lib/commons/commons-lang-2.4.jar" sourcepath="/sources/commons/commons-lang-2.4-sources.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.servicecontainer.executor.jsonrpc"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.servicecontainer.executor.protobufrpc"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.servicecontainer.executor.axis"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://localhost:8081/active-bpel/services/UndeployBPRService" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://localhost:8081/active-bpel/services/UndeployBPRService" xmlns:intf="http://localhost:8081/active-bpel/services/UndeployBPRService" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDLはApache Axis version: 1.4
+Built on Dec 20, 2006 (01:34:32 EST)によって生成されました / [en]-(WSDL created by Apache Axis version: 1.4
+Built on Dec 20, 2006 (01:34:32 EST))-->
+
+   <wsdl:message name="undeployBprRequest">
+
+      <wsdl:part name="processName" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="undeployBprResponse">
+
+      <wsdl:part name="undeployBprReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="ProcessUndeployer">
+
+      <wsdl:operation name="undeployBpr" parameterOrder="processName">
+
+         <wsdl:input message="impl:undeployBprRequest" name="undeployBprRequest"/>
+
+         <wsdl:output message="impl:undeployBprResponse" name="undeployBprResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="UndeployBPRServiceSoapBinding" type="impl:ProcessUndeployer">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="undeployBpr">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="undeployBprRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://ae.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="undeployBprResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8081/active-bpel/services/UndeployBPRService" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="ProcessUndeployerService">
+
+      <wsdl:port binding="impl:UndeployBPRServiceSoapBinding" name="UndeployBPRService">
+
+         <wsdlsoap:address location="http://localhost:8081/active-bpel/services/UndeployBPRService"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

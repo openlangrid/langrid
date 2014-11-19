@@ -1,0 +1,90 @@
+
+<wicket:extend>
+	<h1><wicket:message key="ProvidingServices.language.service.headline.EditingServerProfile"/></h1>
+	<div wicket:id="feedback"></div>
+	<p class="accent"><wicket:message key="ProvidingServices.language.service.message.update.Complete" /></p>
+	<div class="table">
+		<table  summary="formtable" >
+	 		<tr>
+				<th><wicket:message key="Common.label.ModificationDate"/></th>
+				<td><span wicket:id="modifiDate"></span></td>
+			</tr>
+	 		<tr>
+				<th><wicket:message key="Common.label.service.Id"/></th>
+				<td class="break-all"><span wicket:id="serviceId"></span></td>
+			</tr>
+	 		<tr>
+				<th><wicket:message key="Common.label.service.Name"/></th>
+				<td><span wicket:id="serviceName"></span></td>
+			</tr>
+			<tr>
+	         <th><wicket:message key="Common.label.service.Type" /></th>
+	         <td><span wicket:id="serviceType"></span></td>
+	      </tr>
+	 		<tr>
+				<th><wicket:message key="Common.label.service.Description"/></th>
+				<td><div wicket:id="description"></div></td>
+			</tr>
+	 		<tr>
+				<th><wicket:message key="Common.label.Languages"/></th>
+				<td><span wicket:id="languages"></span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="Common.label.UseType" /></th>
+				<td><span wicket:id="useTypes"></span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="Common.label.ApplicationType" /></th>
+				<td><span wicket:id="appTypes"></span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="Common.label.application.federal" /></th>
+				<td><span wicket:id="allowFederation"></span></td>
+			</tr>
+			<tr>
+            <th scope="row"><wicket:message key="Common.label.PermittedUsers" /></th>
+            <td><span wicket:id="membersOnlyLabel"></span></td>
+         </tr>
+         <tr wicket:id="membershipContainer">
+            <th scope="row"><wicket:message key="Common.label.HowToGetMembership" /></th>
+            <td><span wicket:id="howToGetMembershipLabel"></span></td>
+         </tr>
+	 		<tr>
+				<th><wicket:message key="Common.label.Endpoint" /></th>
+				<td class="table-in-column">
+					<ul>
+					<li class="table-repeater" wicket:id="repeater">
+					<table>
+						<tr>
+							<th><wicket:message key="Common.label.URL" /></th>
+							<td class="break-all"><span wicket:id="url"></span></td>
+						</tr>
+						<tr>
+							<th><wicket:message key="Common.label.user.Name" /></th>
+							<td><span wicket:id="userName"></span></td>
+						</tr>
+						<tr>
+							<th><wicket:message key="Common.label.Password" /></th>
+							<td><span wicket:id="password"></span></td>
+						</tr>
+					</table>
+					</li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<wicket:message key="Common.label.Homepage.SourceCode"/>
+			        <wicket:message key="Common.label.attention.Optional"/>
+				</th>
+	            <td class="break-all">
+	            	<div wicket:id="sourceUrl"></div>
+				</td>
+			</tr>
+		    <tr>
+            <th><wicket:message key="Common.label.Status"/></th>
+            <td><span wicket:id="status"></span></td>
+         </tr>
+		</table>
+	</div>
+</wicket:extend>

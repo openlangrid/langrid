@@ -1,0 +1,58 @@
+<project name="webapp_common">
+	<import file="common.xml" />
+	<import file="def.catalina.xml" />
+
+	<fail unless="webapp.realPath">
+		specify $${webapp.realPath} for real path of web application."
+	</fail>
+
+	<!-- target definitions -->
+	<target name="init" depends="common.init" />
+	<target name="compile" depends="common.compile" />
+	<target name="compileWithAjc" depends="common.compileWithAjc" />
+	<target name="dist" depends="common.dist" />
+	<target name="clean" depends="common.clean,check.webapp.lib">
+		<stopWebapp path="/${webapp.path}" />
+		<delete>
+			<fileset dir="${webapp.lib}" includes="*" />
+		</delete>
+	</target>
+
+	<target name="test.webapp.lib">
+		<condition property="has.webapp.lib">
+			<isset property="webapp.lib" />
+		</condition>
+	</target>
+	<target name="check.webapp.lib" depends="test.webapp.lib" unless="has.webapp.lib">
+		<echo message="set default value to $${webapp.lib}" />
+		<property name="webapp.lib" value="${webapp.realPath}/WEB-INF/lib" />
+	</target>
+
+	<target name="pre.deploy" />
+
+	<target name="deploy.makeWebappWar">
+		<war
+			basedir="${webapp.realPath}"
+			destfile="${dist}/${jarnamebase}${warnamesuffix}.war"
+			webxml="${webapp.realPath}/WEB-INF/web.xml"
+		/>
+	</target>
+
+	<target name="deploy" depends="dist,check.webapp.lib,pre.deploy">
+		<stopWebapp />
+		<copy todir="${webapp.lib}" flatten="true" preservelastmodified="true">
+			<fileset refid="filesetid.lib" />
+			<fileset refid="filesetid.distlib" />
+			<fileset file="${dist}/${jarnamebase}.jar" />
+		</copy>
+		<antcall target="deploy.makeWebappWar" />
+		<startWebapp />
+		<antcall target="post.deploy" />
+	</target>
+
+	<target name="post.deploy" />
+	
+	<target name="redeploy" depends="clean,deploy" />
+
+	<target name="undeploy" />
+</project>

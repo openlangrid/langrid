@@ -1,0 +1,139 @@
+<!--mock-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN">
+<html>
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><meta name="Keywords" content=" " /><meta name="Description" content="" /><title><span wicket:id="pageTitleLabel">Service Grid</span>&nbsp;<wicket:message key="Common.label.system.ID"/></title><link rel="stylesheet" type="text/css" href="css/import.css" media="all" /><link rel="stylesheet" type="text/css" href="css/print.css" media="print" /></head>
+<body>
+   <div id="Container">
+      <a class="top-link" href="./"><div id="Header"><div class="operatingOrganization" wicket:id="operatingOrganization">Organization Name</div><div class="maintitle"><span wicket:id="pageHeaderLabel">Service Grid</span><br/>&nbsp;<wicket:message key="Common.label.system.ID"/></div></div></a>
+      <div><div id="Tab"><div wicket:id="container"><a href="#"><span>Logout</span></a><span>User :</span><span>TestUser</span></div></div></div>
+      <div id="Contents">
+         <div id="Leftside"><div class="menuHeader"><span><wicket:message key="Menu.headline">Menu</wicket:message></span></div><div id="menu"><div wicket:id="nestedMenu">Nested Menus</div></div><div class="menuHeader"></div></div>
+         <div id="Rightside"><div class="indent"><!--/indent--></div>
+<!--/mock-->
+
+<wicket:extend>
+
+	<h1><wicket:message key="ProvidingServices.language.service.headline.RegistrationOfCompositeService">Registration of Composite Service</wicket:message></h1>
+	<div wicket:id="feedback"></div>
+	<p class="accent"><wicket:message key="Common.message.register.Complete">Registration has been completed.</wicket:message></p>
+	<div class="table">
+		<table  summary="formtable">
+			<tr>
+				<th><wicket:message key="Common.label.registration.Date">Registration Date</wicket:message></th>
+				<td><span wicket:id="registration">2011/04/14</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="Common.label.service.Id">Service ID</wicket:message></th>
+				<td class="break-all"><span wicket:id="serviceId">Test Service ID</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="Common.label.service.Name">Service Name</wicket:message></th>
+				<td><span wicket:id="serviceName">Test Service Name</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="Common.label.service.Type">Service Type</wicket:message></th>
+				<td><span wicket:id="serviceType">Translation</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="Common.label.service.Description">Service Description</wicket:message></th>
+				<td><span wicket:id="discription">Test Description</span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="Common.label.Languages">Languages</wicket:message></th>
+				<td><div wicket:id="language">
+<!--mock--
+<div class="table-in-column"><table>
+	<tr><th colspan="2" class="lang-header">Single/Bidirectional pairs</th></tr>
+	<tr><td class="lang-position">-</td><td class="lang-content">Chinese (Traditional): [zh-TW]&lt;-&gt;Japanese: [ja]</td></tr>
+	<tr><td class="lang-position">-</td><td class="lang-content">Korean: [ko]&lt;-&gt;Japanese: [ja]</td></tr>
+	<tr><td class="lang-position">-</td><td class="lang-content">English: [en]&lt;-&gt;Japanese: [ja]</td></tr>
+	<tr><td class="lang-position">-</td><td class="lang-content">Chinese (Simplified): [zh-CN]&lt;-&gt;Japanese: [ja]</td></tr>
+	<tr><td colspan="2"><span></span></td></tr>
+</table></div>
+--/mock-->
+      		</div></td>
+			</tr>
+			<tr>
+	         <th><wicket:message key="Common.label.UseType">Purpose of Use</wicket:message></th>
+	         <td><span wicket:id="useTypes">Non-profit</span></td>
+	      </tr>
+	      <tr>
+	         <th><wicket:message key="Common.label.ApplicationType">Type of Application Control</wicket:message></th>
+            <td><span wicket:id="appTypes">Under Client Control</span></td>
+	      </tr>
+	      <tr>
+	        <th><wicket:message key="Common.label.application.federal">Federation Use</wicket:message></th>
+	        <td><span wicket:id="allowFederation">Allowed</span></td>
+	      </tr>
+	      <tr>
+	         <th scope="row"><wicket:message key="Common.label.PermittedUsers">Permitted Users</wicket:message></th>
+	         <td><span wicket:id="membersOnlyLabel">For All Users</span></td>
+	      </tr>
+	      <tr wicket:id="membershipContainer">
+	         <th scope="row"><wicket:message key="Common.label.HowToGetMembership">How To Get Membership</wicket:message></th>
+	         <td><div wicket:id="howToGetMembershipLabel">Test How To Get Membership</div></td>
+	      </tr>
+	      <tr wicket:id="InUseList">
+	      
+<!--mock--
+<th><wicket:message key="ServiceProfile.label.inUse.Service" /></th>
+<td><div class="table-in-column table-in-column-wide">Binding Services<table>
+   <tr><th colspan=2><span>1. </span></th></tr>
+   <tr><th>Service ID</th><td><a href="#"><span>TestServiceID</span></a></td></tr>
+   <tr><th>Service Name</th><td><span>Test Service Name</span></td></tr>
+   <tr><th>Service Type</th><td><span>Translation</span></td></tr>
+   <tr><th>Invocation Name</th><td><span>TestInvocationPL</span></td></tr>
+</table></div></td>
+--/mock-->
+         
+         </tr>
+         
+         <tr>
+				<th><wicket:message key="Common.label.Endpoint" /></th>
+				<td class="table-in-column">
+					<ul>
+					<li class="table-repeater" wicket:id="repeater">
+					<table>
+						<tr>
+							<th><wicket:message key="Common.label.URL" /></th>
+							<td class="break-all"><span wicket:id="url"></span></td>
+						</tr>
+						<tr>
+							<th><wicket:message key="Common.label.user.Name" /></th>
+							<td><span wicket:id="userName"></span></td>
+						</tr>
+						<tr>
+							<th><wicket:message key="Common.label.Password" /></th>
+							<td><span wicket:id="password"></span></td>
+						</tr>
+					</table>
+					</li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<wicket:message key="Common.label.Homepage.SourceCode"/>
+			        <wicket:message key="Common.label.attention.Optional"/>
+				</th>
+	            <td class="break-all">
+	            	<div wicket:id="sourceUrl"></div>
+				</td>
+			</tr>
+         
+			<tr>
+	        <th><wicket:message key="Common.label.Status">Status</wicket:message></th>
+	        <td><span wicket:id="status">Run</span></td>
+         </tr>
+		</table>
+	</div>
+
+</wicket:extend>
+
+<!--mock-->
+   </div>
+   <div id="Footer"><div wicket:id="ServiceManagerCopyright">Copyright</div></div>
+</div></div>
+</body>
+</html>
+<!--/mock-->

@@ -1,0 +1,38 @@
+<wicket:panel>
+				<tr>
+					<th><wicket:message key="Common.label.node.Name" /></th>
+					<td>
+						<input wicket:id="nodeName" type="text" class="form-text" maxlength="254" /><br />
+		                <wicket:message key="Common.message.input.id.attention"/>
+					</td>
+				</tr>
+				<tr>
+					<th><wicket:message key="Common.label.URL" /></th>
+					<td>
+						<input wicket:id="url" type="text" class="form-text" maxlength="254" />
+					</td>
+				</tr>
+				<tr>
+					<th><wicket:message key="Common.label.OS" /></th>
+					<td><input wicket:id="os" type="text" class="form-text" maxlength="254"></input></td>
+				</tr>
+				<tr>
+					<th><wicket:message key="Common.label.CPU" /></th>
+					<td>
+						<input wicket:id="cpu" type="text" class="form-text" maxlength="254" />
+					</td>
+				</tr>
+				<tr>
+					<th><wicket:message key="Common.label.Memory" /></th>
+					<td>
+						<input wicket:id="memory" type="text" class="form-text" maxlength="254" />
+					</td>
+				</tr>
+				<tr>
+					<th><wicket:message key="Common.label.SpecialNote" /></th>
+					<td>
+						<textarea wicket:id="specialNotes" class="form-text" rows="5"></textarea><br />
+						<wicket:message key="Common.label.attention.InEnglish" />
+					</td>
+				</tr>
+</wicket:panel>

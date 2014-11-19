@@ -1,0 +1,90 @@
+<project name="lib-client-common" default="dist">
+	<import file="lib_common.xml" />
+	<import file="def.groovy.xml" />
+
+	<property name="stubs.jar" value="${stubjarnamebase}.jar" />
+	<property name="stubs.out.dir" value="src.stubs" />
+	<property name="stubs.build.dir" value="build.stubs" />
+
+	<path id="generateStub.classpath">
+		<fileset file="${lib}/axis/*.jar" />
+		<fileset file="${lib}/commons/*.jar" />
+		<fileset file="${lib}/ws/*.jar" />
+	</path>
+
+	<path id="distStubs.classpath">
+		<fileset file="${lib}/axis/*.jar" />
+		<fileset file="${lib}/ws/*.jar" />
+	</path>
+
+	<target name="generateStub">
+		<java classname="org.apache.axis.wsdl.WSDL2Java"
+			fork="true"
+			>
+<!--
+			<arg value="-f" />
+			<arg value="NStoPkg.properties" />
+-->
+			<arg value="-v" />
+			<arg value="-o" />
+			<arg value="${out}" />
+			<arg value="${wsdl}" />
+			<classpath refid="generateStub.classpath" />
+		</java>
+	</target>
+
+	<target name="generateAllStubsInit" depends="init">
+		<mkdir dir="${stubs.build.dir}" />
+		<delete dir="${stubs.build.dir}" />
+		<mkdir dir="${stubs.build.dir}" />
+		<mkdir dir="${stubs.out.dir}" />
+		<delete>
+			<fileset dir="${stubs.out.dir}" includes="**/*.java" />
+		</delete>
+	</target>
+
+
+	<target name="generateAllStubs" depends="generateAllStubsInit">
+		<fileset id="wsdls" dir="wsdls" includes="*.wsdl" />
+		<fileset id="xmls" dir="wsdls" includes="*.xml" />
+		<groovy>
+			import java.io.File
+
+			project.references.wsdls.each{
+				file ->
+				ant.echo "generate: " + file
+				properties["out"] = properties["stubs.out.dir"]
+				properties["wsdl"] = file
+				ant.antcall(target: "generateStub")
+			}
+			project.references.xmls.each{
+				file ->
+				ant.echo "generate: " + file
+				properties["out"] = properties["stubs.out.dir"]
+				properties["wsdl"] = file
+				ant.antcall(target: "generateStub")
+			}
+		</groovy>
+	</target>
+
+	<target name="compileStubs">
+		<javac
+			debug="on"
+			destdir="${stubs.build.dir}"
+			source="1.4"
+ 			target="1.4"
+			encoding="UTF-8"
+			srcdir="${stubs.out.dir}"
+		>
+			<classpath refid="distStubs.classpath" />
+		</javac>
+	</target>
+
+	<target name="jarStubs">
+		<jar basedir="${stubs.build.dir}" destfile="${dist}/${stubs.jar}" />
+	</target>
+
+	<target name="distStubs" depends="generateAllStubs,compileStubs,jarStubs">
+		<copy file="${dist}/${stubs.jar}" todir="${lib}/langrid" />
+	</target>
+</project>

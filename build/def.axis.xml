@@ -1,0 +1,38 @@
+<project name="def.axis">
+	<import file="def.catalina.xml" />
+
+	<fail unless="axis.admin.username">
+		specify $${axis.admin.username} for axis administrator username.
+	</fail>
+	<fail unless="axis.admin.password">
+		specify $${axis.admin.password} for axis administrator password.
+	</fail>
+
+	<taskdef resource="axis-tasks.properties">
+		<classpath>
+			<fileset dir="../lib">
+				<include name="axis/activation.jar" />
+				<include name="axis/axis.jar" />
+				<include name="axis/axis-ant.jar" />
+				<include name="axis/mail.jar" />
+				<include name="commons/commons-discovery*.jar" />
+				<include name="commons/commons-logging*.jar" />
+				<include name="ws/jaxrpc.jar" />
+				<include name="ws/saaj.jar" />
+				<include name="ws/wsdl4j-1.5.1.jar" />
+			</fileset>
+		</classpath>
+	</taskdef>
+
+	<presetdef name="axisAdmin">
+		<axis-admin
+			hostname="${tomcat.host}"
+			port="${tomcat.port}"
+			servletpath="${webapp.path}/services/AdminService"
+			username="${axis.admin.username}"
+			password="${axis.admin.password}"
+			debug="true"
+			failonerror="false"
+		/>
+	</presetdef>
+</project>

@@ -1,0 +1,13 @@
+
+1. Eclipseプラグインのインストール
+http://www.apache.org/dist/ant/ivyde/updatesite から、Ivy、Ivyde Eclipseプラグインを
+インストールして下さい。
+
+2. Ivy設定ファイルの指定
+[Window]->[Preferences]で設定ダイアログを開いて[Ivy]をクリックし、
+[Global settings]に以下のURLを入力して下さい。
+http://langrid2.nict.go.jp/maven/repository/clientsettings.xml
+
+3. ライブラリのダウンロード
+ivy.xmlを右クリックし、 [Resolve]を実行して下さい。
+必要なライブラリがローカルリポジトリ(${user.home}/.ivy2)にダウンロードされます。

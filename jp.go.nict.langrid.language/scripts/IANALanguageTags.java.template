@@ -1,0 +1,164 @@
+/*
+ * \$Id\$
+ *
+ * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
+ * Copyright (C) 2005-2009 NICT Language Grid Project.
+ *
+ * This program is free software: you can redistribute it and/or modify it 
+ * under the terms of the GNU Lesser General Public License as published by 
+ * the Free Software Foundation, either version 2.1 of the License, or (at 
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser 
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License 
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+package jp.go.nict.langrid.language;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * <#if locale="ja">
+ * IANAで定義されている言語表現。
+ * <br>このファイルはスクリプトにより生成されます。
+ * <br>date generated: ${date}
+ * <#elseif locale="en">
+ * </#if>
+ * @author \$Author\$
+ * @version \$Revision\$
+ * @see <a href="http://www.iana.org/assignments/language-tags">IANA LANGUAGE TAGS</a>
+ */
+public final class IANALanguageTags {
+<%
+  def adjustTag(tag){
+    def first = tag.firstParam
+    if(first.length() == 2){
+      first = "ISO639_1." + first.toUpperCase()
+    } else if(first.length() == 3){
+      first = "ISO639_2." + first.toUpperCase()
+    } else if(first[0] == 'i'){
+      first = "itag"
+    } else{
+      println "\t// unknown tag format: " + tag
+      return
+    }
+    tag.firstParam = first
+
+    def second = tag.secondParam
+    if(second.length() == 2){
+      second = "ISO3166." + second.toUpperCase()
+    } else if(second.length() != 0){
+      second = "\"" + second + "\""
+    }
+    tag.secondParam = second
+
+    def additional = tag.additionalParams
+    if(additional.size() > 0){
+      additional = ", \"" + additional.join("\", \"") + "\""
+    } else{
+      additional = ""
+    }
+    tag.additionalParams = additional
+
+    tag
+  }
+%>
+	/**
+	 * <#if locale="ja">
+	 * iで始まるタグ用の言語タグ。
+	 * <#elseif locale="en">
+	 * </#if>
+	 */
+	private static LanguageTag itag = new LanguageTag(){
+		public String getCode(){
+			return "i";
+		}
+	};
+<%
+  for(tag in tags) {
+    tag = adjustTag(tag)
+    def deprecatedDoc = tag.deprecated
+    if(deprecatedDoc != ""){
+      deprecatedDoc = """
+	 * @deprecated ${tag.deprecated}"""
+    }
+    def deprecatedAnnot = tag.deprecated
+    if(deprecatedAnnot != ""){
+      deprecatedAnnot = """@Deprecated
+	"""
+    }
+%>
+	/**
+	 * ${tag.description}${deprecatedDoc}
+	 */
+	${deprecatedAnnot}public static final Language ${tag.name}
+		= Language.get(${tag.firstParam}, ${tag.secondParam}${tag.additionalParams});
+<%
+  }
+%>
+	/**
+	 * <#if locale="ja">
+	 * 文字列からこのオブジェクトで定義されている言語を返す。
+	 * 大文字小文字は区別しない。
+	 * @param languageExpression IANAに登録されている言語の文字列表現
+	 * @return 言語。存在しない場合null
+	 * <#elseif locale="en">
+	 * </#if>
+	 */
+	public static Language get(String languageExpression){
+		return capitalToLanguage.get(languageExpression.toUpperCase());
+	}
+
+	/**
+	 * <#if locale="ja">
+	 * 文字列からこのクラスで定義されている言語の説明を返す。
+	 * 大文字小文字は区別しない。
+	 * @param language IANAに登録されている言語
+	 * @return 言語の説明。存在しない場合null
+	 * <#elseif locale="en">
+	 * </#if>
+	 */
+	public static String[] getDescriptions(Language language){
+		return (String[])capitalToDescription.get(language.getCode().toUpperCase());
+	}
+
+	/**
+	 * <#if locale="ja">
+	 * 定義されている全タグを含むセットを返す。
+	 * @return 全タグを含むセット
+	 * <#elseif locale="en">
+	 * </#if>
+	 */
+	public static Set<Language> values(){
+		return values;
+	}
+
+	private static Map<String, Language> capitalToLanguage
+		= new LinkedHashMap<String, Language>();
+	private static Map<String, Object> capitalToDescription
+		= new HashMap<String, Object>();
+	private static Set<Language> values
+		= new LinkedHashSet<Language>();
+
+	static{
+<%
+  for(tag in tags){
+%>		capitalToLanguage.put(${tag.name}.getCode().toUpperCase(), ${tag.name});
+		capitalToDescription.put(
+			${tag.name}.getCode().toUpperCase()
+			, new String[]{"${tag.description.replace('"', '\\"').split(', ').join('","')}"});
+<%
+  }
+%>		capitalToLanguage = Collections.unmodifiableMap(capitalToLanguage);
+		values.addAll(capitalToLanguage.values());
+	}
+}

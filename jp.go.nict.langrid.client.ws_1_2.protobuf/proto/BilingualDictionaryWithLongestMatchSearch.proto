@@ -1,0 +1,48 @@
+package bilingualdictionarywithlongestmatchsearch;
+
+option java_package = "jp.go.nict.langrid.client.protobuf.proto";
+option java_outer_classname = "BilingualDictionaryWithLongestMatchSearchProtos";
+
+import "common.proto";
+import "BilingualDictionary.proto";
+import "MorphologicalAnalysis.proto";
+
+
+message TranslationWithPosition {
+  required int32 numberOfMorphemes = 1;
+  required int32 startIndex = 2;
+  required bilingualdictionary.Translation translation = 3;
+}
+
+
+message SearchRequest {
+  repeated Header headers = 1;
+  required string headLang = 2;
+  required string targetLang = 3;
+  required string headWord = 4;
+  required string matchingMethod = 5;
+}
+
+message SearchResponse {
+  repeated Header headers = 1;
+  optional Fault fault = 2;
+  repeated bilingualdictionary.Translation result = 3;
+}
+
+message SearchLongestMatchingTermsRequest {
+  repeated Header headers = 1;
+  required string headLang = 2;
+  required string targetLang = 3;
+  repeated morphologicalanalysis.Morpheme morphemes = 4;
+}
+
+message SearchLongestMatchingTermsResponse {
+  repeated Header headers = 1;
+  optional Fault fault = 2;
+  repeated TranslationWithPosition result = 3;
+}
+
+service Service{
+  rpc search(SearchRequest) returns (SearchResponse);
+  rpc searchLongestMatchingTerms(SearchLongestMatchingTermsRequest) returns (SearchLongestMatchingTermsResponse);
+}

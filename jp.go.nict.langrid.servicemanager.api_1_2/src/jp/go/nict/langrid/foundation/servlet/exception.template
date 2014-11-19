@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope
+  xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
+  <soapenv:Body>
+    <soapenv:Fault>
+      <faultcode>soapenv:Server.userException</faultcode>
+      <faultstring>${exception.class.name}: ${escapeUtils.escapeXml(exception.description)}</faultstring>
+      <detail>
+        <${exception.class.name}
+          xsi:type="ns1:${exception.class.simpleName}"
+          xmlns:ns1="http://langrid.nict.go.jp/ws_1_2/${nsSuffix}"
+        >
+          <description xsi:type="xsd:string">${escapeUtils.escapeXml(exception.description)}</description>
+<% properties.each{ %>
+          <${it.name} xsi:type="xsd:string">${escapeUtils.escapeXml(it.value)}</${it.name}>
+<% } %>
+        </${exception.class.name}>
+        <ns2:hostname xmlns:ns2="http://xml.apache.org/axis/">${hostName}</ns2:hostname>
+      </detail>
+    </soapenv:Fault>
+  </soapenv:Body>
+</soapenv:Envelope>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope  xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"  xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <soapenv:Body>
+    <soapenv:Fault>
+      <faultcode>soapenv:Server.userException</faultcode>
+      <faultstring>jp.go.nict.langrid.service_1_2.ServiceNotActiveException: This service is not active.</faultstring>
+      <detail>
+        <jp.go.nict.langrid.service_1_2.ServiceNotActiveException xsi:type="ns1:ServiceNotActiveException" xmlns:ns1="http://langrid.nict.go.jp/ws_1_2/">
+          <description xsi:type="xsd:string">This service is not active.</description>
+          <serviceId xsi:type="xsd:string">AbstractService</serviceId>
+        </jp.go.nict.langrid.service_1_2.ServiceNotActiveException>
+        <ns2:hostname xmlns:ns2="http://xml.apache.org/axis/">langrid.nict.go.jp</ns2:hostname>
+      </detail>
+    </soapenv:Fault>
+  </soapenv:Body>
+</soapenv:Envelope>

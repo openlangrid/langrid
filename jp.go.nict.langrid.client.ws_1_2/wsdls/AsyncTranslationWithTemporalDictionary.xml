@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://localhost:8080/jp.go.nict.langrid.webapps.mock/services/AsyncTranslationWithTemporalDictionary" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://localhost:8080/jp.go.nict.langrid.webapps.mock/services/AsyncTranslationWithTemporalDictionary" xmlns:intf="http://localhost:8080/jp.go.nict.langrid.webapps.mock/services/AsyncTranslationWithTemporalDictionary" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="http://langrid.nict.go.jp/ws_1_2/" xmlns:tns2="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/" xmlns:tns3="http://langrid.nict.go.jp/ws_1_2/translation/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDLはApache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)によって生成されました / [en]-(WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT))-->
+ <wsdl:types>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://localhost:8080/jp.go.nict.langrid.webapps.mock/services/AsyncTranslationWithTemporalDictionary"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/translation/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="LangridException">
+    <sequence>
+     <element name="description" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="InvalidParameterException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence>
+       <element name="parameterName" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ProcessFailedException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://localhost:8080/jp.go.nict.langrid.webapps.mock/services/AsyncTranslationWithTemporalDictionary" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/translation/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns2_Translation">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns2:Translation[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://localhost:8080/jp.go.nict.langrid.webapps.mock/services/AsyncTranslationWithTemporalDictionary"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/translation/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="Translation">
+    <sequence>
+     <element name="headWord" nillable="true" type="xsd:string"/>
+     <element name="targetWords" nillable="true" type="impl:ArrayOf_xsd_string"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/translation/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://localhost:8080/jp.go.nict.langrid.webapps.mock/services/AsyncTranslationWithTemporalDictionary"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="AsyncTranslationResult">
+    <sequence>
+     <element name="finished" type="xsd:boolean"/>
+     <element name="results" nillable="true" type="impl:ArrayOf_xsd_string"/>
+    </sequence>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="getCurrentResultResponse">
+
+      <wsdl:part name="getCurrentResultReturn" type="tns3:AsyncTranslationResult"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="startTranslationResponse">
+
+      <wsdl:part name="startTranslationReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="terminateRequest">
+
+      <wsdl:part name="token" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getCurrentResultRequest">
+
+      <wsdl:part name="token" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="startTranslationRequest">
+
+      <wsdl:part name="sourceLang" type="soapenc:string"/>
+
+      <wsdl:part name="targetLang" type="soapenc:string"/>
+
+      <wsdl:part name="sources" type="impl:ArrayOf_xsd_string"/>
+
+      <wsdl:part name="temporalDict" type="impl:ArrayOf_tns2_Translation"/>
+
+      <wsdl:part name="dictTargetLang" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="ProcessFailedException">
+
+      <wsdl:part name="fault" type="tns1:ProcessFailedException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="InvalidParameterException">
+
+      <wsdl:part name="fault" type="tns1:InvalidParameterException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="terminateResponse">
+
+   </wsdl:message>
+
+   <wsdl:portType name="AsyncTranslationWithTemporalDictionaryService">
+
+      <wsdl:operation name="terminate" parameterOrder="token">
+
+         <wsdl:input message="impl:terminateRequest" name="terminateRequest"/>
+
+         <wsdl:output message="impl:terminateResponse" name="terminateResponse"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:ProcessFailedException" name="ProcessFailedException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="startTranslation" parameterOrder="sourceLang targetLang sources temporalDict dictTargetLang">
+
+         <wsdl:input message="impl:startTranslationRequest" name="startTranslationRequest"/>
+
+         <wsdl:output message="impl:startTranslationResponse" name="startTranslationResponse"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:ProcessFailedException" name="ProcessFailedException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getCurrentResult" parameterOrder="token">
+
+         <wsdl:input message="impl:getCurrentResultRequest" name="getCurrentResultRequest"/>
+
+         <wsdl:output message="impl:getCurrentResultResponse" name="getCurrentResultResponse"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:ProcessFailedException" name="ProcessFailedException"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="AsyncTranslationWithTemporalDictionarySoapBinding" type="impl:AsyncTranslationWithTemporalDictionaryService">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="terminate">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="terminateRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mock.webapps.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="terminateResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/jp.go.nict.langrid.webapps.mock/services/AsyncTranslationWithTemporalDictionary" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/jp.go.nict.langrid.webapps.mock/services/AsyncTranslationWithTemporalDictionary" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ProcessFailedException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ProcessFailedException" namespace="http://localhost:8080/jp.go.nict.langrid.webapps.mock/services/AsyncTranslationWithTemporalDictionary" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="startTranslation">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="startTranslationRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mock.webapps.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="startTranslationResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/jp.go.nict.langrid.webapps.mock/services/AsyncTranslationWithTemporalDictionary" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/jp.go.nict.langrid.webapps.mock/services/AsyncTranslationWithTemporalDictionary" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ProcessFailedException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ProcessFailedException" namespace="http://localhost:8080/jp.go.nict.langrid.webapps.mock/services/AsyncTranslationWithTemporalDictionary" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getCurrentResult">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getCurrentResultRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mock.webapps.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getCurrentResultResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/jp.go.nict.langrid.webapps.mock/services/AsyncTranslationWithTemporalDictionary" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/jp.go.nict.langrid.webapps.mock/services/AsyncTranslationWithTemporalDictionary" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ProcessFailedException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ProcessFailedException" namespace="http://localhost:8080/jp.go.nict.langrid.webapps.mock/services/AsyncTranslationWithTemporalDictionary" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="AsyncTranslationWithTemporalDictionaryServiceService">
+
+      <wsdl:port binding="impl:AsyncTranslationWithTemporalDictionarySoapBinding" name="AsyncTranslationWithTemporalDictionary">
+
+         <wsdlsoap:address location="http://localhost:8080/jp.go.nict.langrid.webapps.mock/services/AsyncTranslationWithTemporalDictionary"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

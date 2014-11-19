@@ -1,0 +1,16 @@
+<project name="app_common" default="dist">
+	<import file="common.xml" />
+
+	<target name="init" depends="common.init">
+		<tstamp />
+	</target>
+
+	<target name="dist" depends="common.dist">
+		<copy file="README" todir="${dist}" failonerror="false" />
+		<zip basedir="${dist}" file="${dist}/${jarnamebase}.N-${DSTAMP}.zip">
+			<include name="${jarnamebase}.jar" />
+			<include name="lib/**" />
+			<fileset dir="contents" includes="**/*" />
+		</zip>
+	</target>
+</project>

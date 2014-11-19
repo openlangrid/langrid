@@ -1,0 +1,31 @@
+
+<wicket:extend>
+	<h1><wicket:message key="ProvidingServices.language.resource.headline.RegistrationOfLanguageResource"></wicket:message></h1>
+	<div wicket:id="feedback"></div>
+	<form wicket:id="form">
+		
+		<p class="accent"><span wicket:id="listLabel1" ></span></p>
+		<div class="table">
+			<table  summary="formtable" >
+				<tr>
+					<th><wicket:message key="Common.label.resource.Id" /></th>
+					<td>
+						<input wicket:id="resourceId" type="text" class="form-text" maxlength="254" /><br>
+						<wicket:message key="Common.message.input.id.attention" />
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<p class="accent"><span wicket:id="listLabel2" ></span></p>
+		<div class="table">
+			<table  summary="formatable">
+				<tr wicket:id="profileFieldPanel"></tr>
+			</table>
+		</div>
+		<div class="btn-s">
+			<input wicket:id="cancel" type="button" wicket:message="value:Common.label.Cancel">
+			<input wicket:id="submit" type="submit" wicket:message="value:Common.label.Register">
+		</div>
+	</form>
+</wicket:extend>

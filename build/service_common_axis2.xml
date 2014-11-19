@@ -1,0 +1,105 @@
+<project name="service_common">
+	<import file="common.xml" />
+	<import file="def.groovy.xml" />
+	<import file="def.axis2.xml" />
+
+	<!-- subtarget definitions -->
+	<target name="deployService">
+		<failifnotset property="serviceClassName" />
+		<failifnotset property="serviceType" />
+		<failifnotset property="deployType" />
+
+		<dirname property="script.dir" file="${ant.file}" />
+		<pathconvert property="script.dir.slashsep" dirsep="/" >
+			<path path="${script.dir}" />
+		</pathconvert>
+		<dirname property="service_common.dir" file="${ant.file.service_common}" />
+		<pathconvert property="service_common.dir.slashsep" dirsep="/" >
+			<path path="${service_common.dir}" />
+		</pathconvert>
+
+		<property name="scriptFile" value="${service_common.dir.slashsep}/generate.groovy" />
+		<property name="templateFile" value="${service_common.dir.slashsep}/templates/${serviceType}.${deployType}.wsdd.template" />
+		<property name="wsddFile" value="${script.dir.slashsep}/wsdd/${serviceClassName}.${deployType}.wsdd" />
+		<uptodate property="has.wsdd.latest" srcfile="${templateFile}" targetfile="${wsddFile}" />
+		<antcall target="generateWsdd" />
+
+		<axisAdmin xmlfile="${wsddFile}" />
+	</target>
+
+	<!-- target definitions -->
+	<target name="init" depends="common.init" />
+	<target name="compile" depends="common.compile" />
+	<target name="compileWithAjc" depends="common.compileWithAjc" />
+	<target name="dist" depends="common.dist" />
+	<target name="clean" depends="common.clean,check.axis.lib">
+		<stopAxis />
+		<delete>
+			<fileset dir="${axis.lib}" includes="*" />
+		</delete>
+	</target>
+
+	<target name="test.axis.lib">
+		<condition property="has.axis.lib">
+			<isset property="axis.lib" />
+		</condition>
+	</target>
+	<target name="check.axis.lib" depends="test.axis.lib" unless="has.axis.lib">
+		<echo message="set default value to $${axis.lib}" />
+		<property name="axis.lib" value="${axis.webinf}/lib" />
+	</target>
+
+	<target name="pre.deploy" />
+
+	<target name="deploy" depends="dist,check.axis.lib,pre.deploy">
+		<stopAxis />
+		<copy todir="${axis.lib}" flatten="true">
+			<fileset refid="filesetid.lib" />
+			<fileset refid="filesetid.distlib" />
+			<fileset file="${dist}/${jarnamebase}.jar" />
+		</copy>
+		<startAxis />
+		<groovy>
+			import java.io.File
+			// deploy *_deply files.
+			for(f in new File("wsdd").list()){
+				if(f.matches(".*\\_deploy.wsdd\$")){
+					ant.axisAdmin(xmlFile: "wsdd/${f}")
+				}
+			}
+			// deploy serviceClassName? properties*.
+			for(i in 1..100){
+				serviceClassName = properties["serviceClassName" + i]
+				if(!serviceClassName) break
+				serviceType = properties["serviceType" + i]
+				if(!serviceType){
+					serviceType = properties["serviceType"]
+					if(!serviceType){
+						break
+					}
+				}
+				ant.antcall(target: "deployService"){
+					param(name: "serviceType", value: serviceType)
+					param(name: "serviceClassName", value: serviceClassName)
+					param(name: "deployType", value: "deploy")
+				}
+			}
+		</groovy>
+		<war
+			basedir="${workspace}/${axis.proj}/webapps/${axis.path}"
+			destfile="${dist}/${jarnamebase}${warnamesuffix}.war"
+			webxml="${workspace}/${axis.proj}/webapps/${axis.path}/WEB-INF/web.xml"
+		/>
+	</target>
+
+	<target name="redeploy" depends="clean,deploy" />
+
+	<target name="undeploy">
+		<groovy>
+			for(f in new java.io.File("wsdd").list()){
+				if(f.matches(".*\\_undeploy.wsdd\$"))
+					ant.axisAdmin(xmlFile: "wsdd/${f}")
+			}
+		</groovy>
+	</target>
+</project>

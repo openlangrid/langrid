@@ -1,0 +1,223 @@
+<project name="common">
+	<dirname property="common.xml.dir" file="${ant.file.common}" />
+	<property name="workspace" value="${common.xml.dir}/.." />
+	<property file="${common.xml.dir}/ant.properties" />
+
+	<import file="def.java.xml" />
+	<import file="def.aspectj.xml" />
+	<import file="def.ivy.xml" />
+
+	<fileset id="filesetid.compilelib" dir="${lib}">
+		<exclude name="**/*" />
+	</fileset>
+	<fileset id="filesetid.lib" dir="${lib}">
+		<exclude name="**/*" />
+	</fileset>
+	<fileset id="filesetid.distlib" dir="${lib}">
+		<exclude name="**/*" />
+	</fileset>
+	<fileset id="filesetid.testlib" dir="${lib}">
+		<exclude name="**/*" />
+	</fileset>
+	<fileset id="filesetid.runlib" dir="${lib}">
+		<exclude name="**/*" />
+	</fileset>
+
+
+	<macrodef name="failifnotset">
+		<attribute name="property" />
+		<sequential>
+			<fail message="property '@{property}' must be set." unless="@{property}" />
+		</sequential>
+	</macrodef>
+
+
+	<target name="check.default.jarnamesuffix" unless="jarnamesuffix">
+		<property name="jarnamesuffix" value="" />
+	</target>
+
+	<target name="check.default.warnamesuffix" unless="warnamesuffix">
+		<property name="warnamesuffix" value="" />
+	</target>
+
+	<target name="check.default" depends="check.default.jarnamesuffix,check.default.warnamesuffix" />
+
+	<target name="init" depends="check.default">
+		<mkdir dir="${build}" />
+		<mkdir dir="${build.test}" />
+		<mkdir dir="${dist}" />
+		<mkdir dir="${dist}/lib" />
+		<mkdir dir="${common.xml.dir}/ivy/local"/>
+	</target>
+
+	<target name="retrieve" depends="init">
+		<retrieve />
+	</target>
+
+	<condition property="has.resourceFolder">
+		<and>
+			<isset property="resource" />
+			<available file="${resource}" />
+		</and>
+	</condition>
+
+	<target name="copyResourceInResourceFolder" if="has.resourceFolder">
+		<native2ascii
+			encoding="UTF-8" src="${resource}"
+			dest="${build}" includes="**/*.properties"
+		/>
+		<copy todir="${build}" includeemptydirs="false">
+			<fileset dir="${resource}" includes="**" excludes="**/*.properties" />
+		</copy>
+	</target>
+
+	<condition property="has.testFolder">
+		<and>
+			<isset property="test" />
+			<available file="${test}" />
+		</and>
+	</condition>
+
+	<target name="copyResourceInTestFolder" if="has.testFolder">
+		<native2ascii
+			encoding="UTF-8" src="${test}"
+			dest="${build.test}" includes="**/*.properties"
+		/>
+		<copy todir="${build.test}" includeemptydirs="false">
+			<fileset dir="${test}" includes="**" excludes="**/*.properties,**/*.java,**/*.aj" />
+		</copy>
+	</target>
+
+	<target name="copyResource" depends="copyResourceInResourceFolder,copyResourceInTestFolder">
+		<native2ascii
+			encoding="UTF-8" src="${src}"
+			dest="${build}" includes="**/*.properties"
+		/>
+		<copy todir="${build}" includeemptydirs="false">
+			<fileset dir="${src}" includes="**" excludes="**/*.properties,**/*.java,**/*.aj" />
+		</copy>
+	</target>
+
+
+	<!-- compile -->
+
+	<target name="compileDepends" depends="init,copyResource" />
+
+	<target name="compileTestWithJavac" if="has.testFolder">
+		<javac5 srcdir="${test}" destdir="${build.test}" failonerror="false">
+			<classpath>
+				<fileset refid="filesetid.testlib" />
+				<pathelement path="${lib}/junit/junit-4.8.2.jar" />
+				<pathelement path="${build}" />
+			</classpath>
+		</javac5>
+	</target>
+
+	<target name="compileWithJavac" depends="compileDepends" >
+		<javac5 />
+		<antcall target="compileTestWithJavac" inheritrefs="true" />
+	</target>
+
+	<target name="compileWithAjc" depends="compileDepends">
+		<iajc5 />
+		<antcall target="compileTestWithJavac" inheritrefs="true" />
+	</target>
+
+	<target name="compileWithMaven" depends="compileDepends" >
+		<mavenCompileWithJavac5 />
+	</target>
+
+	<target name="compile" depends="compileWithJavac" />
+
+
+	<target name="checkManifest">
+		<available property="manifestAvailable" file="MANIFEST.MF" />
+	</target>
+	<target name="jarWithManifest" if="manifestAvailable">
+		<jarWithManifest />
+		<testJar />
+	</target>
+	<target name="jarWithoutManifest" unless="manifestAvailable">
+		<jarWithoutManifest />
+		<testJar />
+	</target>
+	<target name="jar" depends="checkManifest,jarWithManifest,jarWithoutManifest" />
+
+	<target name="srcjar">
+		<jar
+			basedir="${src}"
+			destfile="${dist}/${jarnamebase}${jarnamesuffix}-src.jar"
+		/>
+	</target>
+
+	<target name="testsrcjar" if="has.testFolder">
+		<jar
+			basedir="${test}"
+			destfile="${dist}/${jarnamebase}${jarnamesuffix}-test-src.jar"
+		/>
+	</target>
+
+	<target name="dist" depends="compile,jar">
+		<copy todir="${dist}/lib" flatten="true" preservelastmodified="true">
+			<fileset refid="filesetid.lib" />
+			<fileset refid="filesetid.distlib" />
+		</copy>
+	</target>
+
+	<target name="run" depends="dist">
+		<failifnotset property="runclass" />
+		<echo message="${dist}/${jarnamebase}${jarnamesuffix}.jar" />
+		<echo message="${dist}/${jarnamebase}${jarnamesuffix}-test.jar" />
+		<java classname="${runclass}">
+			<classpath>
+				<fileset refid="filesetid.compilelib" />
+				<fileset refid="filesetid.lib" />
+				<fileset refid="filesetid.distlib" />
+				<fileset refid="filesetid.runlib" />
+				<fileset refid="filesetid.testlib" />
+				<pathelement path="${dist}/${jarnamebase}${jarnamesuffix}.jar" />
+				<pathelement path="${dist}/${jarnamebase}${jarnamesuffix}-test.jar" />
+			</classpath>
+		</java>
+	</target>
+
+	<target name="test" depends="dist">
+		<failifnotset property="testclass" />
+		<junit printsummary="yes" haltonfailure="yes">
+			<classpath>
+				<fileset refid="filesetid.compilelib" />
+				<fileset refid="filesetid.lib" />
+				<fileset refid="filesetid.distlib" />
+				<fileset refid="filesetid.runlib" />
+				<fileset refid="filesetid.testlib" />
+				<pathelement path="${dist}/${jarnamebase}${jarnamesuffix}.jar" />
+				<pathelement path="${dist}/${jarnamebase}${jarnamesuffix}-test.jar" />
+				<pathelement path="${lib}/junit/junit_3.8.1.jar" />
+			</classpath>
+			<formatter type="plain"/>
+			<test name="${testclass}" haltonfailure="no">
+				<formatter type="xml"/>
+			</test>
+		</junit>
+	</target>
+
+	<target name="javadoc" depends="init">
+		<javadoc5 />
+	</target>
+
+	<target name="clean">
+		<delete dir="${build}" />
+		<delete dir="${build.test}" />
+		<delete dir="${dist}/lib" />
+	</target>
+
+	<target name="recompile">
+		<antcall target="clean" />
+		<antcall target="compile" />
+	</target>
+
+	<target name="redist">
+		<antcall target="clean" />
+		<antcall target="dist" />
+	</target>
+</project>

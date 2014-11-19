@@ -1,0 +1,26 @@
+<wicket:panel>
+<div wicket:id="radioGroup">
+<div class="table-in-column">
+	<table>
+		<tr>
+			<th>
+				<label>
+					<input wicket:id="local" type="radio"/>
+					<wicket:message key="Common.label.File">File</wicket:message>
+				</label>
+			</th>
+			<td><input wicket:id="file" type="file" size="50"/></td>
+		</tr>
+		<tr>
+			<th>
+				<label>
+					<input wicket:id="remote" type="radio"/>
+					<wicket:message key="Common.label.URL">URL</wicket:message>
+				</label>
+			</th>
+			<td><input wicket:id="url" type="text" class="form-text"/></td>
+		</tr>
+	</table>
+</div>
+</div>
+</wicket:panel>

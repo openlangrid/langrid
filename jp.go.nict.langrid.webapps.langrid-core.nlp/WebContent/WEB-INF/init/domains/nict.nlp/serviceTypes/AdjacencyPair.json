@@ -1,0 +1,14 @@
+{
+  "createdDateTime": "2010/07/26 17:38:15.265 JST",
+  "description": "This service searches for pair responses.",
+  "interfaceDefinitions": [{
+    "protocolId": "SOAP_RPC_ENCODED",
+    "definition": "AdjacencyPair.wsdl"
+  }],
+  "metaAttributes": [{
+    "attributeId": "supportedLanguages"
+  }],
+  "serviceTypeId": "AdjacencyPair",
+  "serviceTypeName": "AdjacencyPair",
+  "updatedDateTime": "2010/07/26 17:38:15.265 JST"
+}

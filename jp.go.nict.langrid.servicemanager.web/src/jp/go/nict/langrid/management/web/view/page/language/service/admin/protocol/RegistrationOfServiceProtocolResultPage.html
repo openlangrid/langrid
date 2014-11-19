@@ -1,0 +1,24 @@
+<wicket:extend>
+	<h1><wicket:message key="LanguageGridOperator.protocol.headline.registrationOfProtocol.Complete" /></h1>
+	<div wicket:id="feedback"></div>
+
+	<div class="table">
+		<table>
+			<tr>
+				<th><wicket:message key="Common.label.protocol.Id" /></th>
+				<td><span wicket:id="id"></span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="Common.label.protocol.Name" /></th>
+				<td><span wicket:id="name"></span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="Common.label.protocol.Description" /></th>
+				<td><span wicket:id="description"></span></td>
+			</tr>
+		</table>
+	</div>
+	<div class="btn-s">
+   	<input type="button" wicket:id="back" wicket:message="value:Common.label.Back" />
+	</div>
+</wicket:extend>

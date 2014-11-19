@@ -1,0 +1,99 @@
+<project name="service_common">
+	<import file="webapp_common.xml" />
+	<import file="def.groovy.xml" />
+	<import file="def.axis.xml" />
+
+	<!-- subtarget definitions -->
+	<target name="deployService">
+		<failifnotset property="serviceClassName" />
+		<failifnotset property="serviceType" />
+		<failifnotset property="deployType" />
+
+		<dirname property="script.dir" file="${ant.file}" />
+		<pathconvert property="script.dir.slashsep" dirsep="/" >
+			<path path="${script.dir}" />
+		</pathconvert>
+		<dirname property="service_common.dir" file="${ant.file.service_common}" />
+		<pathconvert property="service_common.dir.slashsep" dirsep="/" >
+			<path path="${service_common.dir}" />
+		</pathconvert>
+
+		<property name="scriptFile" value="${service_common.dir.slashsep}/generate.groovy" />
+		<property name="templateFile" value="${service_common.dir.slashsep}/templates/${serviceType}.${deployType}.wsdd.template" />
+		<property name="wsddFile" value="${script.dir.slashsep}/wsdd/${serviceClassName}.${deployType}.wsdd" />
+		<uptodate property="has.wsdd.latest" srcfile="${templateFile}" targetfile="${wsddFile}" />
+		<antcall target="generateWsdd" />
+
+		<axisAdmin xmlfile="${wsddFile}" />
+	</target>
+
+	<!-- target definitions -->
+	<target name="init" depends="webapp_common.init" />
+	<target name="compile" depends="webapp_common.compile" />
+	<target name="compileWithAjc" depends="webapp_common.compileWithAjc" />
+	<target name="dist" depends="webapp_common.dist" />
+	<target name="clean" depends="webapp_common.clean" />
+
+	<target name="deployServices">
+		<groovy>
+			import java.io.File
+			// deploy *_deply files.
+			for(f in new File("wsdd").list()){
+				if(f.matches(".*\\_deploy.wsdd\$")){
+					try{
+						ant.axisAdmin(xmlFile: "wsdd/${f}")
+					} catch(Exception e){
+						e.printStackTrace()
+						throw e;
+					}
+				}
+			}
+			// deploy serviceClassName? properties*.
+			for(i in 1..100){
+				serviceClassName = properties["serviceClassName" + i]
+				if(!serviceClassName) break
+				serviceType = properties["serviceType" + i]
+				if(!serviceType){
+					serviceType = properties["serviceType"]
+					if(!serviceType){
+						break
+					}
+				}
+				ant.antcall(target: "deployService"){
+					param(name: "serviceType", value: serviceType)
+					param(name: "serviceClassName", value: serviceClassName)
+					param(name: "deployType", value: "deploy")
+				}
+			}
+		</groovy>
+	</target>
+
+	<target name="deploy.makeWebappWar" />
+
+	<target name="deploy" depends="webapp_common.deploy">
+		<antcall target="deployServices" />
+		<antcall target="makeAxisWar" />
+	</target>
+
+	<target name="makeAxisWar">
+		<stopWebapp />
+		<war
+			basedir="${webapp.realPath}"
+			destfile="${dist}/${jarnamebase}${warnamesuffix}.war"
+			webxml="${webapp.realPath}/WEB-INF/web.xml"
+		/>
+		<startWebapp />
+	</target>
+
+
+	<target name="redeploy" depends="webapp_common.redeploy" />
+
+	<target name="undeploy" depends="webapp_common.undeploy">
+		<groovy>
+			for(f in new java.io.File("wsdd").list()){
+				if(f.matches(".*\\_undeploy.wsdd\$"))
+					ant.axisAdmin(xmlFile: "wsdd/${f}")
+			}
+		</groovy>
+	</target>
+</project>

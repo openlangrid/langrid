@@ -1,0 +1,28 @@
+<wicket:panel>
+		<th><wicket:message key="ServiceProfile.label.inUse.Resource" /></th>
+		<td>
+			<div class="table-in-column th-table-in-column-wide">
+				<table>
+					<wicket:container wicket:id="repeating">
+						<tr>
+							<th colspan=2><span wicket:id="labelCount"></span></th>
+						</tr>
+						<wicket:container wicket:id="infomation">
+							<tr>
+								<th><wicket:message key="Common.label.resource.Id" /></th>
+								<td><a wicket:id="profileLink"><span wicket:id="labelId"></span></a></td>
+							</tr>
+							<tr>
+								<th><wicket:message key="Common.label.resource.Name" /></th>
+								<td><span wicket:id="labelName"></span></td>
+							</tr>
+							<tr>
+								<th><wicket:message key="Common.label.resource.Type" /></th>
+								<td><span wicket:id="labelType"></span></td>
+							</tr>
+						</wicket:container>
+					</wicket:container>
+				</table>
+			</div>
+		</td>
+</wicket:panel>

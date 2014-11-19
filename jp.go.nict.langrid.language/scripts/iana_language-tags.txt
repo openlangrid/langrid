@@ -1,0 +1,223 @@
+# http://www.iana.org/assignments/language-tags
+# convert tab -> 4 spaces
+# add carrige return to several definition
+
+art-lojban   Lojban                                  [Cowan]     Deprecated use ISO 
+                                                                 639-2 jbo, registered
+                                                                 Sept. 2, 2003.
+
+az-Arab      Azerbaijani in Arabic script            [Davis]
+
+az-Cyrl      Azerbaijani in Cyrillic                 [Davis]
+             script 
+
+az-Latn      Azerbaijani in Latin script             [Davis]
+
+be-Latn      Belarusian in Latin script              [Zedlik]
+
+bs-Cyrl      Bosnian in Cyrillic script              [Constable]
+
+bs-Latn      Bosnian in Latin script                 [Constable]
+
+cel-gaulish  Gaulish                                 [Lilley]
+
+de-1901      German, traditional                     [Bronger] 
+             orthography     
+
+de-1996      German, orthography of 1996             [Bronger]
+
+de-AT-1901   German, Austrian variant,               [Bronger] 
+             traditional orthography
+
+de-AT-1996   German, Austrian variant,               [Bronger] 
+             orthography of 1996
+
+de-CH-1901   German, Swiss variant,                  [Bronger] 
+             traditional orthography
+
+de-CH-1996   German, Swiss variant,                  [Bronger] 
+             orthography of 1996
+
+de-DE-1901   German, German variant,                 [Bronger] 
+             traditional orthography
+
+de-DE-1996   German, German variant,                 [Bronger] 
+             orthography of 1996
+
+el-Latn      Greek in Latin script                   [Pardon]
+
+en-boont     Boontling                               [Cowan]
+
+en-GB-oed    English, Oxford English Dictionary spelling  [Everson]
+
+en-scouse    English Liverpudlian dialect            [Szlamp]
+             known as 'Scouse'
+
+es-419       Latin American Spanish                  [Broome]
+
+i-ami        Amis                                    [Tai]
+
+i-bnn        Bunun                                   [Tai]
+
+i-default    Default Language Context                [RFC2277]
+
+i-enochian   Enochian                                [Zawinski]
+
+i-hak        Hakka                                   [Tai]       Deprecated use IETF
+                                                                 zh-hakka, registered
+                                                                 Jan. 10, 2000
+																 
+i-klingon    Klingon                                 [Everson]   Deprecated use ISO
+                                                                 639-2 tlh, registered
+                                                                 Feb. 24, 2004.
+
+i-lux        Luxembourgish                           [Wimmer]    Deprecated use ISO
+                                                                 639 lb, registered
+                                                                 Sept. 9, 1998
+                                                                 [iso639]
+
+i-mingo      Mingo                                   [Burke]
+
+i-navajo     Navajo                                  [Burke]     Deprecated use ISO
+                                                                 639 nv, registered
+                                                                 Feb. 18, 2000 
+                                                                 [iso639]
+
+i-pwn        Paiwan                                  [Tai]
+
+i-tao        Tao                                     [Tai]
+
+i-tay        Tayal                                   [Tai]
+
+i-tsu        Tsou                                    [Tai] 
+
+iu-Cans      Inuktitut in Canadian Aboriginal        [Constable]
+
+iu-Latn      Inuktitut in Latin script               [Constable]
+
+mn-Cyrl      Mongolian in Cyrillic script            [Constable]
+
+mn-Mong      Mongolian in Mongolian script           [Constable]
+
+no-bok       Norwegian "Book language"                            Deprecated use ISO
+                                                                  639 nb, registered
+                                                                  Feb. 18, 2000
+                                                                  [iso639]
+
+no-nyn       Norwegian "New Norwegian"                            Deprecated use ISO
+                                                                  639 nn, registered
+                                                                  Feb. 18, 2000
+                                                                  [iso639]
+
+sgn-BE-fr    Belgian-French Sign Language            [Everson]
+
+sgn-BE-nl    Belgian-Flemish Sign Language           [Everson]
+
+sgn-BR       Brazilian Sign Language                 [Everson]
+
+sgn-CH-de    Swiss German Sign Language              [Everson]
+
+sgn-CO       Colombian Sign Language                 [Everson]
+
+sgn-DE       German Sign Language                    [Everson]
+
+sgn-DK       Danish Sign Language                    [Everson]
+
+sgn-ES       Spanish Sign Language                   [Everson]
+
+sgn-FR       French Sign Language                    [Everson]
+
+sgn-GB       British Sign Language                   [Everson]
+
+sgn-GR       Greek Sign Language                     [Everson]
+
+sgn-IE       Irish Sign Language                     [Everson]
+
+sgn-IT       Italian Sign Language                   [Everson]
+
+sgn-JP       Japanese Sign Language                  [Everson]
+
+sgn-MX       Mexican Sign Language                   [Everson]
+
+sgn-NI       Nicaraguan Sign Language                [Everson]
+
+sgn-NL       Dutch Sign Language                     [Everson]
+
+sgn-NO       Norwegian Sign Language                 [Everson]
+
+sgn-PT       Portuguese Sign Language                [Everson]
+
+sgn-SE       Swedish Sign Language                   [Everson]
+
+sgn-US       American Sign Language                  [Everson]
+
+sgn-ZA       South African Sign Language             [Everson]
+
+sl-nedis     Natisone dialect, Nadiza dialect        [Steenwijk]
+
+sl-rozaj     Resian, Resianic, Rezijan               [Steenwijk]
+
+sr-Cyrl      Serbian in Cyrillic script              [Davis]
+
+sr-Latn      Serbian in Latin script                 [Davis]
+
+tg-Arab      Tajik in Arabic script                  [Constable]
+
+tg-Cyrl      Tajik in Cyrillic script                [Constable]
+
+uz-Cyrl      Uzbek in Cyrillic script                [Davis]
+
+uz-Latn      Uzbek in Latin script                   [Davis]
+
+yi-latn      Yiddish, in Latin script                [Burke]
+ 
+zh-cmn       Mandarin Chinese                        [Broome]
+ 
+zh-cmn-Hans  Mandarin Chinese (Simplified)           [Broome]
+
+zh-cmn-Hant  Mandarin Chinese (Traditional)          [Broome]
+
+zh-Hans      Chinese, in simplified script           [Davis]
+
+zh-Hans-CN   PRC Mainland Chinese in simplified script  [Davis]
+
+zh-Hans-HK   Hong Kong Chinese in simplified script  [Davis]
+
+zh-Hans-MO   Macao Chinese in simplified script      [Davis]
+
+zh-Hans-SG   Singapore Chinese in simplified script  [Davis]
+
+zh-Hans-TW   Taiwan Chinese in simplified script     [Davis]
+
+zh-Hant      Chinese, in traditional script          [Davis]
+             
+zh-Hant-CN   PRC Mainland Chinese in traditional script [Davis]
+
+zh-Hant-HK   Hong Kong Chinese in traditional script [Davis]
+
+zh-Hant-MO   Macao Chinese in traditional script     [Davis]
+
+zh-Hant-SG   Singapore Chinese in traditional script [Davis]
+
+zh-Hant-TW   Taiwan Chinese in traditional script    [Davis]
+
+zh-gan       Kan or Gan                              [Compton]
+
+zh-guoyu     Mandarin or Standard Chinese            [Compton, Cowan]   Deprecated, use zh-cmn
+                                                                        registered in July 2005
+
+zh-hakka     Hakka                                   [Compton, Cowan]
+
+zh-min       Min, Fuzhou, Hokkien, Amoy              [Compton]
+             or Taiwanese
+
+zh-min-nan   Minnan, Hokkien, Amoy,                  [Tai]
+             Taiwanese, Southern Min,
+             Southern Fujian, Hoklo,
+             Southern Fukien, Ho-lo
+
+zh-wuu       Shanghaiese or Wu                       [Compton]
+
+zh-xiang     Xiang or Hunanese                       [Compton]
+
+zh-yue       Cantonese                               [Compton]

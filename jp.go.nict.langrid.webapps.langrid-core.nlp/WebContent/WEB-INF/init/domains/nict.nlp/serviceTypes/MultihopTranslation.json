@@ -1,0 +1,16 @@
+{
+  "createdDateTime": "2010/07/26 17:38:15.265 JST",
+  "description": "This service consists of multiple translation services, and is used for translation between languages unsupported by any single machine translator Web service. These multiple translation services are connected sequentially, and you can set the intermediate language.",
+  "interfaceDefinitions": [{
+    "protocolId": "SOAP_RPC_ENCODED",
+    "definition": "MultihopTranslation.wsdl"
+  }],
+  "metaAttributes": [{
+    "attributeId": "supportedLanguagePaths_PathList"
+  },{
+    "attributeId": "supportedLanguagePaths_AnyCombination"
+  }],
+  "serviceTypeId": "MultihopTranslation",
+  "serviceTypeName": "MultihopTranslation",
+  "updatedDateTime": "2010/07/26 17:38:15.265 JST"
+}

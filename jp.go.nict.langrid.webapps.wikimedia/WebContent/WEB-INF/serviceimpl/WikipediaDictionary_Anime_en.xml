@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="target" class="jp.go.nict.langrid.servicecontainer.handler.TargetServiceFactory" >
+		<property name="decorators">
+			<list />
+		</property>
+
+		<property name="service">
+			<bean class="jp.go.nict.langrid.serviceexecutor.db.bilingualdictionary.BilingualDictionaryWithLongestMatchSearch">
+				<property name="connectionParameters">
+					<bean class="jp.go.nict.langrid.serviceexecutor.db.ConnectionParameters">
+						<property name="jndiDataSourceName" value="jdbc/langrid-service" />
+						<property name="dbDictionary" value="POSTGRESQL" />
+					</bean>
+				</property>
+				<property name="tableName" value="wikipediadictionary_anime_en" />
+				<property name="languageColumnNames" value="af ar be bg ca cs cy da de el en es et fa fi fr ga hi hr hu id is it ja ko lt lv mk ms mt nl no pl pt-PT ro ru sk sl sq sr sv sw th tl tr uk vi yi zh-CN" />
+				<property name="dateColumnName" value="date" />
+			</bean>
+		</property>
+	</bean>
+</beans>

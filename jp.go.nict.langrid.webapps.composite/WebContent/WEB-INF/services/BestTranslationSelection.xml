@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="target" class="jp.go.nict.langrid.servicecontainer.handler.TargetServiceFactory" >
+		<property name="decorators">
+			<list>
+				<bean class="jp.go.nict.langrid.servicecontainer.decorator.ThreadDecorator">
+					<property name="maxThreads" value="2" />
+					<property name="maxWaitMillisForThread" value="20000" />
+				</bean>
+			</list>
+		</property>
+		<property name="service">
+			<bean class="jp.go.nict.langrid.composite.variety.besttranslationselection.BestTranslationSelection">
+				<property name="ComponentServiceFactory">
+					<bean class="jp.go.nict.langrid.composite.failover.FailoverComponentServiceFactory">
+						<property name="OriginalFactory">
+							<bean class="jp.go.nict.langrid.servicecontainer.executor.umbrella.UmbrellaComponentServiceFactory"/>
+						</property>
+					</bean>
+				</property>
+			</bean>
+		</property>
+	</bean>
+</beans>

@@ -1,0 +1,27 @@
+
+<wicket:extend>
+	<h1><wicket:message key="LanguageGridOperator.federation.headline.RequestOfConnection"></wicket:message></h1>
+	<div wicket:id="feedback"></div>
+	
+  	<p class="accent"><span wicket:id="isApproved"></span></p>
+  
+   <div class="table">
+      <table  summary="formtable" >
+         <tr>
+            <th scope="row"><wicket:message key="Common.label.GridId"></wicket:message>:</th>
+            <td><span wicket:id="sourceGridId"></span></td>
+         </tr>
+         <tr>
+            <th scope="row"><wicket:message key="Common.label.URL"></wicket:message>:</th>
+            <td><a wicket:id="homePage"><span wicket:id="homePageLabel"></span></a></td>
+         </tr>
+         <tr>
+            <th scope="row"><wicket:message key="Common.label.Operator"></wicket:message>:</th>
+            <td><a wicket:id="organization"><span wicket:id="organizationLabel"></span></a></td>
+         </tr>
+      </table>
+   </div>
+	<div class="btn-s">
+		<input wicket:id="back" type="button" wicket:message="value:Common.label.Back">
+	</div>
+</wicket:extend>
