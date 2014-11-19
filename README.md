@@ -1,3 +1,3 @@
 Source code of Open Langrid
-- Modify langrid to support some functionality of Open Language
-=======
+	- Modify Langrid Source code to support some functionalities of Open Language Grid
+
