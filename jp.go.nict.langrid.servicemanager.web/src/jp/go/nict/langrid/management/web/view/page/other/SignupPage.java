@@ -12,7 +12,6 @@ import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException
 import jp.go.nict.langrid.management.web.model.service.ResourceService;
 import jp.go.nict.langrid.management.web.model.service.ServiceFactory;
 import jp.go.nict.langrid.management.web.view.page.ServiceManagerPage;
-import jp.go.nict.langrid.management.web.view.page.other.component.form.SignupForm;
 import jp.go.nict.langrid.management.web.view.page.user.component.text.RequiredEMailAddressField;
 import jp.go.nict.langrid.management.web.view.session.ServiceManagerSession;
 
