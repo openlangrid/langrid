@@ -19,10 +19,16 @@ package jp.go.nict.langrid.management.web.view.page.other;
 
 import java.util.HashMap;
 
+import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.link.Link;
+
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 import jp.go.nict.langrid.management.web.view.page.ServiceManagerPage;
+import jp.go.nict.langrid.management.web.view.page.language.service.atomic.RegistrationOfAtomicServiceListPage;
 import jp.go.nict.langrid.management.web.view.page.other.component.form.LoginForm;
 import jp.go.nict.langrid.management.web.view.session.ServiceManagerSession;
+
+import org.apache.wicket.markup.html.link.Link;
 
 /**
  * 

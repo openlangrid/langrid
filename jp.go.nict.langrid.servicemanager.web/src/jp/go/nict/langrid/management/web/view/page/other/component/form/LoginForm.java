@@ -19,12 +19,16 @@ package jp.go.nict.langrid.management.web.view.page.other.component.form;
 
 import java.util.HashMap;
 
+import org.apache.wicket.markup.html.link.Link;
+
 import jp.go.nict.langrid.dao.UserNotFoundException;
 import jp.go.nict.langrid.management.web.log.LogWriter;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 import jp.go.nict.langrid.management.web.utility.resource.MessageManager;
 import jp.go.nict.langrid.management.web.view.component.form.AbstractStatelessForm;
 import jp.go.nict.langrid.management.web.view.component.text.RequiredPasswordTextField;
+import jp.go.nict.langrid.management.web.view.page.other.LoginPage;
+import jp.go.nict.langrid.management.web.view.page.other.SignupPage;
 import jp.go.nict.langrid.management.web.view.page.user.component.text.RequiredUserIdField;
 import jp.go.nict.langrid.management.web.view.session.ServiceManagerSession;
 
@@ -49,6 +53,14 @@ public abstract class LoginForm extends AbstractStatelessForm<HashMap<String, St
 	protected void addComponents(HashMap<String, String> initialParameter){
 		add(userId = new RequiredUserIdField("userId"));
 		add(password = new RequiredPasswordTextField("password"));
+		add(new Link("createAccount"){
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			public void onClick(){
+				setResponsePage(new SignupPage());
+			}
+		});
 	}
 
 	@Override
@@ -82,7 +94,7 @@ public abstract class LoginForm extends AbstractStatelessForm<HashMap<String, St
 			raisedException = e;
 		}
 	}
-
+	
 	private RequiredPasswordTextField password;
 	private RequiredUserIdField userId;
 	private String gridId;

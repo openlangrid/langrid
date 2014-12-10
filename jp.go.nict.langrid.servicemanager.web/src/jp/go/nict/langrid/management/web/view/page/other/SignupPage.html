@@ -1,0 +1,17 @@
+<wicket:extend>
+	<form wicket:id="form" class="login">
+		<div id="container">
+			<table summary="formtable">
+				<tr>
+					<th scope="row"><wicket:message key="Common.label.user.Email">Email</wicket:message>:</th>
+					<td><input name="textfield" type="text" maxlength="254" wicket:id="email" /></td>
+				</tr>
+			</table>
+		</div>
+		<div class="btn-l">
+			<input wicket:id="submit" type="submit" wicket:message="value:Login.label.Register"/>
+		</div>
+		<br>
+	</form>
+	<div wicket:id="feedback"></div>
+</wicket:extend>
