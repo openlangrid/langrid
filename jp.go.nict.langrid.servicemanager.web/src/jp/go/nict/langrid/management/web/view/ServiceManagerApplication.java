@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import jp.go.nict.langrid.commons.parameter.ParameterRequiredException;
 import jp.go.nict.langrid.commons.ws.param.ServletContextParameterContext;
+import jp.go.nict.langrid.management.web.annotation.RequireLogin;
 import jp.go.nict.langrid.management.web.log.LogWriter;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 import jp.go.nict.langrid.management.web.model.service.ServiceFactory;
@@ -48,6 +49,7 @@ import jp.go.nict.langrid.management.web.view.page.other.ManualLogOutPage;
 import jp.go.nict.langrid.management.web.view.page.other.NewsLogOutPage;
 import jp.go.nict.langrid.management.web.view.page.other.NewsPage;
 import jp.go.nict.langrid.management.web.view.page.other.OverviewLogOutPage;
+import jp.go.nict.langrid.management.web.view.page.other.SignupPage;
 import jp.go.nict.langrid.management.web.view.page.user.LanguageGridUsersLogOutPage;
 import jp.go.nict.langrid.management.web.view.page.user.UserProfilePage;
 import jp.go.nict.langrid.management.web.view.session.ServiceManagerSession;
@@ -133,7 +135,9 @@ public class ServiceManagerApplication extends WebApplication {
 				if(!ServiceManagerPage.class.isAssignableFrom(componentClass)) {
 					return true;
 				}
-				if(NewsLogOutPage.class.isAssignableFrom(componentClass)
+				RequireLogin ra = ((Class<?>)componentClass).getAnnotation(RequireLogin.class);
+				if((ra != null && !ra.value()) ||
+						NewsLogOutPage.class.isAssignableFrom(componentClass)
 						|| NodeListLogOutPage.class
 								.isAssignableFrom(componentClass)
 						|| LanguageResourcesLogOutPage.class
@@ -169,7 +173,8 @@ public class ServiceManagerApplication extends WebApplication {
 						|| RequestResponseUtil.getPageClassForErrorRequest()
 								.isAssignableFrom(componentClass)
 						|| RequestResponseUtil.getPageClassForErrorPopupRequest()
-								.isAssignableFrom(componentClass))
+								.isAssignableFrom(componentClass)
+						)
 				{
 					return true;
 				}

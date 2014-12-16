@@ -7,6 +7,7 @@ import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.form.validation.IFormValidator;
 import org.apache.wicket.model.Model;
 
+import jp.go.nict.langrid.management.web.annotation.RequireLogin;
 import jp.go.nict.langrid.management.web.model.ResourceModel;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 import jp.go.nict.langrid.management.web.model.service.ResourceService;
@@ -15,6 +16,7 @@ import jp.go.nict.langrid.management.web.view.page.ServiceManagerPage;
 import jp.go.nict.langrid.management.web.view.page.user.component.text.RequiredEMailAddressField;
 import jp.go.nict.langrid.management.web.view.session.ServiceManagerSession;
 
+@RequireLogin(false)
 public class SignupPage extends ServiceManagerPage {
 	
 	private RequiredEMailAddressField email;
