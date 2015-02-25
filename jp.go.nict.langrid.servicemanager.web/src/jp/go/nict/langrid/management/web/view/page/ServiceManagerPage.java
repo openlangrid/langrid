@@ -54,6 +54,7 @@ public class ServiceManagerPage extends BasePage {
 		if(session.isAdministrater()) {
 			sessionStatus = SessionStatus.ADMINISTRATOR;
 		} else if(session.isLogin()) {
+//			session.
 			sessionStatus = SessionStatus.LOGIN;
 		} else {
 			sessionStatus = SessionStatus.LOGOUT;

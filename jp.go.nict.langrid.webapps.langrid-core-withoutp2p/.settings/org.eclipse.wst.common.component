@@ -251,6 +251,9 @@
         <dependent-module archiveName="jp.go.nict.langrid.servicecontainer.handler.axis.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicecontainer.handler.axis/jp.go.nict.langrid.servicecontainer.handler.axis">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.servicemanager.logic.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicemanager.logic/jp.go.nict.langrid.servicemanager.logic">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="java-output-path" value="/jp.go.nict.langrid.webapps.langrid-core-withoutp2p/build/classes"/>
 		<property name="context-root" value="jp.go.nict.langrid.webapps.langrid-core-withoutp2p"/>
     </wb-module>

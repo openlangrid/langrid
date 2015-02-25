@@ -29,6 +29,7 @@
 		<project>jp.go.nict.langrid.client</project>
 		<project>jp.go.nict.langrid.commons</project>
 		<project>jp.go.nict.langrid.servicecontainer.handler.axis</project>
+		<project>jp.go.nict.langrid.servicemanager.logic</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

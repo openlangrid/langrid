@@ -1,5 +1,26 @@
 <wicket:extend>
 	<form wicket:id="form">
+		
+		<div class="table">
+	<table  summary="formtable" >
+		<tr>
+			<th scope="row"><wicket:message key="Common.label.user.Id"></wicket:message>:</th>
+			<td><input class="form-text" wicket:id="userId" type="text" maxlength="254" /><br />
+			<wicket:message key="Common.message.input.id.attention"></wicket:message></td>
+		</tr>
+		<tr>
+			<th scope="row"><wicket:message key="Common.label.Password" />:</th>
+			<td><input class="form-text" wicket:id="password" type="password" maxlength="254" /><br />
+			<wicket:message key="Common.message.attention.input.Password"></wicket:message></td>
+		</tr>
+		<tr>
+			<th scope="row"><wicket:message key="Common.label.password.Confirm" />:</th>
+			<td><input class="form-text" wicket:id="confirm" type="password" maxlength="254" /><br />
+			<wicket:message key="Common.message.attention.input.Password"></wicket:message></td>
+		</tr>
+	</table>
+	</div>
+		
 		<div class="table">
 			<table summary="formtable">
 			<tr>
@@ -34,6 +55,10 @@
 				<th scope="row"><wicket:message key="Common.label.Default.AppType" /></th>
 				<td><select wicket:id="provision"></select></td>
 			</tr>
+		</table>
+		</div>
+		<div class="table">
+			<table summary="formtable">
 			<tr>
 				<th scope="row">Terms of Use<!-- TODO create and use resource string. --></th>
 				<td><div style="overflow: auto; width: 500px; height: 600px; background: white">
@@ -102,11 +127,17 @@ Department of Social Informatics, Kyoto University</td></tr>
 
 				</div></td>
 			</tr>
-		</table>
+				<tr>
+				<th scope="row"><wicket:message key="Common.label.Term" /></th>
+				<td><textarea readonly="readonly" class="form-text" wicket:id="term" rows="5"></textarea><br />
+				<input wicket:id="checkterm" type="checkbox"><wicket:message key="Common.label.attention.CheckTerm"></wicket:message></td>
+			</tr>
+			</table>
 		</div>
+		
 		<div class="btn-s">
 			<input wicket:id="cancel" type="submit" wicket:message="value:Common.label.Cancel">
-			<input wicket:id="submit" type="submit" wicket:message="value:Login.label.Register"/>
+			<input type="submit" wicket:message="value:Login.label.Register"/>
 		</div>
 		<br>
 	</form>
