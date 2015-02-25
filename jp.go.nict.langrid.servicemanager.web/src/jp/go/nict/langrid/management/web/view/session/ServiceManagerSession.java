@@ -17,6 +17,10 @@
  */
 package jp.go.nict.langrid.management.web.view.session;
 
+import java.util.Collection;
+import java.util.Set;
+
+import jp.go.nict.langrid.management.web.model.enumeration.UserRole;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 
 /**
@@ -56,37 +60,18 @@ public interface ServiceManagerSession{
 	 * 
 	 * 
 	 */
-	public String getUserId();
+	String getUserId();
+
+	boolean isLogin();
+	boolean isLoginedAccess();
+	void setLoginedAccess(boolean b);
+	Set<UserRole> getUserRoles();
 
 	/**
 	 * 
 	 * 
 	 */
-	public boolean isAdministrater();
-
-	/**
-	 * 
-	 * 
-	 */
-	public boolean isLogin();
-
-	/**
-	 * 
-	 * 
-	 */
-	public boolean isLoginedAccess();
-
-	/**
-	 * 
-	 * 
-	 */
-	public void setLoginedAccess(boolean init);
-
-	/**
-	 * 
-	 * 
-	 */
-	public void setPassword(String password);
+	void setPassword(String password);
 	
 	public boolean isExpiredPassword();
 	

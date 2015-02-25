@@ -113,7 +113,7 @@ public class DomainServiceImpl implements DomainService {
 	}
 
 	@Override
-	public void setScopeParametar(String serviceGridId, String userGridId, String userId) {
+	public void setScopeParameter(String serviceGridId, String userGridId, String userId) {
 		this.serviceGridId = serviceGridId;
 		this.userGridId = userGridId;
 		this.userId = userId;

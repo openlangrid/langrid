@@ -45,7 +45,7 @@ public class ServiceFactory {
    public AccessLimitControlService getAccessLimitControlService(String serviceGridId, String userGridId, String userId)
 	throws ServiceManagerException
 	{
-	   accessLimitControlService.setScopeParametar(serviceGridId, userGridId, userId);
+	   accessLimitControlService.setScopeParameter(serviceGridId, userGridId, userId);
 	   return accessLimitControlService;
 	}
    public AccessRightControlService getAccessRightControlService(String gridId)
@@ -56,7 +56,7 @@ public class ServiceFactory {
    public AccessRightControlService getAccessRightControlService(String serviceGridId, String userGridId, String userId)
 	throws ServiceManagerException
 	{
-	   accessRightControlService.setScopeParametar(serviceGridId, userGridId, userId);
+	   accessRightControlService.setScopeParameter(serviceGridId, userGridId, userId);
 	   return accessRightControlService;
 	}
    public AtomicServiceService getAtomicServiceService(String gridId)
@@ -67,7 +67,7 @@ public class ServiceFactory {
    public AtomicServiceService getAtomicServiceService(String serviceGridId, String userGridId, String userId)
 	throws ServiceManagerException
 	{
-	   atomicServiceService.setScopeParametar(serviceGridId, userGridId, userId);
+	   atomicServiceService.setScopeParameter(serviceGridId, userGridId, userId);
 	   return atomicServiceService;
 	}
    public CompositeServiceService getCompositeServiceService(String gridId)
@@ -78,7 +78,7 @@ public class ServiceFactory {
    public CompositeServiceService getCompositeServiceService(String serviceGridId, String userGridId, String userId)
 	throws ServiceManagerException
 	{
-	   compositeServiceService.setScopeParametar(serviceGridId, userGridId, userId);
+	   compositeServiceService.setScopeParameter(serviceGridId, userGridId, userId);
 	   return compositeServiceService;
 	}
 
@@ -87,7 +87,7 @@ public class ServiceFactory {
 	}
 
 	public DomainService getDomainService(String serviceGridId, String userGridId, String userId) throws ServiceManagerException  {
-		domainService.setScopeParametar(serviceGridId, userGridId, userId);
+		domainService.setScopeParameter(serviceGridId, userGridId, userId);
 		return domainService;
 	}
 
@@ -105,7 +105,7 @@ public class ServiceFactory {
 	}
    @SuppressWarnings("unchecked")
    public <T> LangridServiceService<T> getLangridServiceService(String serviceGridId, String userGridId, String userId) {
-      langridServiceService.setScopeParametar(serviceGridId, userGridId, userId);
+      langridServiceService.setScopeParameter(serviceGridId, userGridId, userId);
 	   return langridServiceService;
 	}
    public NewsService getNewsService(String gridId)
@@ -116,7 +116,7 @@ public class ServiceFactory {
    public NewsService getNewsService(String serviceGridId, String userGridId, String userId)
 	throws ServiceManagerException
 	{
-	   newsService.setScopeParametar(serviceGridId, userGridId, userId);
+	   newsService.setScopeParameter(serviceGridId, userGridId, userId);
 	   return newsService;
 	}
 
@@ -125,19 +125,19 @@ public class ServiceFactory {
 	}
 
 	public NodeService getNodeService(String serviceGridId, String userGridId, String userId) throws ServiceManagerException {
-	   nodeService.setScopeParametar(serviceGridId, userGridId, userId);
+	   nodeService.setScopeParameter(serviceGridId, userGridId, userId);
 	   return nodeService;
 	}
 
 	public OperationRequestService getOperationService(String serviceGridId, String userGridId, String userId)
 	throws ServiceManagerException
 	{
-	   operationRequestService.setScopeParametar(serviceGridId, userGridId, userId);
+	   operationRequestService.setScopeParameter(serviceGridId, userGridId, userId);
 	   return operationRequestService;
 	}
 
 	public OveruseLimitControlService getOveruseLimitControlService(String serviceGridId, String userGridId) {
-	   overuseLimitControlService.setScopeParametar(serviceGridId, userGridId, "");
+	   overuseLimitControlService.setScopeParameter(serviceGridId, userGridId, "");
 	   return overuseLimitControlService;
 	}
 
@@ -150,7 +150,7 @@ public class ServiceFactory {
 	public ResourceService getResourceService(String serviceGridId, String userGridId, String userId)
 	throws ServiceManagerException
 	{
-	   resourceService.setScopeParametar(serviceGridId, userGridId, userId);
+	   resourceService.setScopeParameter(serviceGridId, userGridId, userId);
 	   return resourceService;
 	}
 
@@ -163,7 +163,7 @@ public class ServiceFactory {
 	public ResourceMetaAttributeService getResourceMetaAttributeService(String serviceGridId, String userGridId, String userId)
 	throws ServiceManagerException
 	{
-	   resourceMetaAttributeService.setScopeParametar(serviceGridId, userGridId, userId);
+	   resourceMetaAttributeService.setScopeParameter(serviceGridId, userGridId, userId);
 	   return resourceMetaAttributeService;
 	}
 
@@ -176,7 +176,7 @@ public class ServiceFactory {
 	public ResourceTypeService getResourceTypeService(String serviceGridId, String userGridId, String userId)
 	throws ServiceManagerException
 	{
-	   resourceTypeService.setScopeParametar(serviceGridId, userGridId, userId);
+	   resourceTypeService.setScopeParameter(serviceGridId, userGridId, userId);
 	   return resourceTypeService;
 	}
 
@@ -189,14 +189,14 @@ public class ServiceFactory {
 	public ScheduleService getScheduleService(String serviceGridId, String userGridId, String userId)
 	throws ServiceManagerException
 	{
-	   scheduleService.setScopeParametar(serviceGridId, userGridId, userId);
+	   scheduleService.setScopeParameter(serviceGridId, userGridId, userId);
 	   return scheduleService;
 	}
 
 	public ServiceInformationService getServiceInformationService(String serviceGridId, String userGridId, String userId)
 	throws ServiceManagerException
 	{
-	   serviceInformationService.setScopeParametar(serviceGridId, userGridId, userId);
+	   serviceInformationService.setScopeParameter(serviceGridId, userGridId, userId);
 	   return serviceInformationService;
 	}
 
@@ -215,7 +215,7 @@ public class ServiceFactory {
 	public TemporaryUserService getTemporaryUserService(String serviceGridId, String userGridId, String userId)
 	throws ServiceManagerException
 	{
-	   temporaryUserService.setScopeParametar(serviceGridId, userGridId, userId);
+	   temporaryUserService.setScopeParameter(serviceGridId, userGridId, userId);
 	   return temporaryUserService;
 	}
 
@@ -224,7 +224,7 @@ public class ServiceFactory {
 	}
 
 	public UserService getUserService(String serviceGridId, String userGridId, String userId) throws ServiceManagerException  {
-		userService.setScopeParametar(serviceGridId, userGridId, userId);
+		userService.setScopeParameter(serviceGridId, userGridId, userId);
 	   return userService;
 	}
 
@@ -235,7 +235,7 @@ public class ServiceFactory {
 	public ProtocolService getProtocolService(String serviceGridId, String userGridId, String userId)
 	throws ServiceManagerException
 	{
-	   protocolService.setScopeParametar(serviceGridId, userGridId, userId);
+	   protocolService.setScopeParameter(serviceGridId, userGridId, userId);
 	   return protocolService;
 	}
 
@@ -246,7 +246,7 @@ public class ServiceFactory {
 
 	public ServiceMetaAttributeService getServiceMetaAttributeService(String serviceGridId, String userGridId, String userId)
 	throws ServiceManagerException {
-	   serviceMetaAttributeService.setScopeParametar(serviceGridId, userGridId, userId);
+	   serviceMetaAttributeService.setScopeParameter(serviceGridId, userGridId, userId);
 	   return serviceMetaAttributeService;
 	}
 
@@ -257,7 +257,7 @@ public class ServiceFactory {
 
 	public ServiceTypeService getServiceTypeService(String serviceGridId, String userGridId, String userId)
 	throws ServiceManagerException {
-	   serviceTypeService.setScopeParametar(serviceGridId, userGridId, userId);
+	   serviceTypeService.setScopeParameter(serviceGridId, userGridId, userId);
 	   return serviceTypeService;
 	}
 

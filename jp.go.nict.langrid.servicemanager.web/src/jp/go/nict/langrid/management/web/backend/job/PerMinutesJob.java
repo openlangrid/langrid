@@ -58,7 +58,7 @@ public class PerMinutesJob extends AbstractJob {
 	protected void doJobExecution() throws ServiceManagerException {
 		ScheduleService service = new ScheduleServiceImpl();
 		String gridId = ServiceFactory.getInstance().getGridService().getSelfGridId();
-		service.setScopeParametar(gridId, gridId, "");
+		service.setScopeParameter(gridId, gridId, "");
 		try {
 			languageResourceJob(service);
 		} catch(ServiceManagerException e) {
@@ -82,7 +82,7 @@ public class PerMinutesJob extends AbstractJob {
 	*/
 	private void clearExpiredTemporaryUser(String gridId) throws ServiceManagerException {
 		TemporaryUserService service = new TemporaryUserServiceImpl();
-		service.setScopeParametar(gridId, gridId, "");
+		service.setScopeParameter(gridId, gridId, "");
 		service.clearExpiredUsers();
 	}
 

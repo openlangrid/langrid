@@ -68,5 +68,5 @@ public interface ServiceInformationService extends Serializable {
 		, MatchingCondition[] conditions, int limitCount)
 	throws ServiceManagerException;
 	
-	public void setScopeParametar(String serviceGridId, String userGridId, String userId);
+	public void setScopeParameter(String serviceGridId, String userGridId, String userId);
 }

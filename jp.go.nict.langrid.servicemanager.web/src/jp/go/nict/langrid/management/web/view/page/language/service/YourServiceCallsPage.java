@@ -120,7 +120,7 @@ public class YourServiceCallsPage extends ServiceManagerPage {
 		ServiceInformationService service = ServiceFactory.getInstance()
 			.getServiceInformationService(
 				gridId, gridId, userId);
-		service.setScopeParametar("", gridId, userId);
+		service.setScopeParameter("", gridId, userId);
 		LangridList<IndividualExecutionInformationModel> list = service.getVerboseList(
 			index * pagingCount, pagingCount, userId, "", start, end
 			, new MatchingCondition[]{new MatchingCondition("callNest", 0)}

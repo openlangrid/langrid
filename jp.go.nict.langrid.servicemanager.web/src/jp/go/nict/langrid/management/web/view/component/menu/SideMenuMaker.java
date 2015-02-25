@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -30,7 +31,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import jp.go.nict.langrid.management.web.model.enumeration.SessionStatus;
+import jp.go.nict.langrid.management.web.model.enumeration.UserRole;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 import jp.go.nict.langrid.management.web.utility.resource.MessageManager;
 import jp.go.nict.langrid.management.web.view.component.menu.panel.SideMenuPanel;
@@ -56,7 +57,7 @@ import org.xml.sax.SAXException;
  */
 public class SideMenuMaker implements IClusterable{
 	public Panel makeMenu(
-			String componentId, String requestPageName, SessionStatus sessionStatus)
+			String componentId, String requestPageName, Set<UserRole> userRoles)
 	throws ServiceManagerException
 	{
 		BufferedInputStream bis = null;
@@ -67,11 +68,11 @@ public class SideMenuMaker implements IClusterable{
 			Document menuDoc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(bis);
 	
 			// link target node
-			Node target = getOpenTargetNode(requestPageName, menuDoc, sessionStatus);
+			Node target = getOpenTargetNode(requestPageName, menuDoc, userRoles);
 			Node first = menuDoc.getFirstChild().getFirstChild();
-			List<Node> topLinkList = createClassNameMap(first, sessionStatus);
-			List<Node> subLinkList = createClassNameMap(target, sessionStatus);
-			SideMenuPanel smp = new SideMenuPanel(componentId, sessionStatus);
+			List<Node> topLinkList = createClassNameMap(first, userRoles);
+			List<Node> subLinkList = createClassNameMap(target, userRoles);
+			SideMenuPanel smp = new SideMenuPanel(componentId, userRoles);
 			smp.setRenderBodyOnly(true);
 
 			if(target.getParentNode().isSameNode(first.getParentNode())
@@ -105,46 +106,37 @@ public class SideMenuMaker implements IClusterable{
 		}
 	}
 
-	private List<Node> createClassNameMap(Node target, SessionStatus status) {
+	private List<Node> createClassNameMap(Node target, Set<UserRole> userRoles) {
 		List<Node> cn = new ArrayList<Node>();
 		Node current = target.getParentNode().getFirstChild();
 		do {
 			Node node = current;
-			String session = "";
+			String requiredRole = "NONE";
 			while(node != null && node.getAttributes() != null) {
-				Node sessionNode = node.getAttributes().getNamedItem("session");
+				Node sessionNode = node.getAttributes().getNamedItem("requiredRoles");
 				if(sessionNode != null && sessionNode.getNodeType() == Node.ATTRIBUTE_NODE) {
-					session = sessionNode.getTextContent();
+					requiredRole = sessionNode.getTextContent();
 					break;
 				}
 				node = node.getParentNode();
 			}
-			if((current.getNodeType() == Node.ELEMENT_NODE) && isAuthorize(session, status)) {
+			if((current.getNodeType() == Node.ELEMENT_NODE) && isAuthorize(requiredRole, userRoles)) {
 				cn.add(current);
 			}
 		}while((current = current.getNextSibling()) != null);
 		return cn;
 	}
 	
-	private boolean isAuthorize(String sessionCode, SessionStatus status) {
-		String code = sessionCode.toUpperCase(Locale.ENGLISH);
-		// all or same session status to menu status.
-		if(code.equals(SessionStatus.ALL.name()) || code.equals(status.name())) {
-			return true;
-		}
-		// administrator's login for login menu.
-		if(code.equals(SessionStatus.LOGIN.name())) {
-			return status.equals(SessionStatus.ADMINISTRATOR);
-		}
-		// administrator's hide menu for general login.
-		if(code.equals(SessionStatus.ADMINISTRATOR_HIDE.name()) && status.equals(SessionStatus.ADMINISTRATOR)){
-		   return true;
-		}
-		// administrator's menu for general login.
-		return code.equals(SessionStatus.ADMINISTRATOR.name()) && status.equals(SessionStatus.LOGIN);
+	private boolean isAuthorize(String requiredRole, Set<UserRole> userRoles) {
+		requiredRole = requiredRole.toUpperCase(Locale.ENGLISH);
+		if(requiredRole.equals("NONE")) return true;
+		if(requiredRole.equals("ANY")) return !userRoles.isEmpty();
+		if(requiredRole.equals("EMPTY")) return userRoles.isEmpty();
+		if(userRoles.contains(UserRole.valueOf(requiredRole))) return true;
+		return false;
 	}
 	
-	private Node getOpenTargetNode(String requestPageName, Document doc, SessionStatus status)
+	private Node getOpenTargetNode(String requestPageName, Document doc, Set<UserRole> userRoles)
 	throws XPathExpressionException
 	{
 		// replace for logout page.

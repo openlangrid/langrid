@@ -19,6 +19,7 @@ package jp.go.nict.langrid.management.web.model.service.impl;
 
 import java.net.URL;
 import java.util.Calendar;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
@@ -213,24 +214,28 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public boolean isAdministrator(String userId)
-			throws ServiceManagerException {
-		try {
-			return new UserLogic().transactRead(userGridId, userId,
-					new BlockPR<User, Boolean>() {
-						public Boolean execute(User user) {
-							for (UserRole ur : user.getRoles()) {
-								if (ur.getRoleName()
-										.equals(UserRole.ADMIN_ROLE)) {
-									return true;
-								}
-							}
-							return false;
-						}
-					});
-		} catch (DaoException e) {
-			throw new ServiceManagerException(e, this.getClass());
+	public Set<jp.go.nict.langrid.management.web.model.enumeration.UserRole> getUserRoles(String userId)
+	throws ServiceManagerException{
+		Set<jp.go.nict.langrid.management.web.model.enumeration.UserRole> ret = EnumSet.noneOf(jp.go.nict.langrid.management.web.model.enumeration.UserRole.class);
+		try{
+			for(UserRole r : new UserLogic().getUser(userGridId, userId).getRoles()){
+				if(r.getRoleName().equals("langridserviceuser")){
+					ret.add(jp.go.nict.langrid.management.web.model.enumeration.UserRole.SERVICEUSER);
+				} else if(r.getRoleName().equals("langridserviceprovider")){
+					ret.add(jp.go.nict.langrid.management.web.model.enumeration.UserRole.SERVICEPROVIDER);
+				} else if(r.getRoleName().equals("langriduser")){
+					ret.add(jp.go.nict.langrid.management.web.model.enumeration.UserRole.SERVICEUSER);
+					ret.add(jp.go.nict.langrid.management.web.model.enumeration.UserRole.SERVICEPROVIDER);
+				} else if(r.getRoleName().equals("langridadministrator")){
+					ret.add(jp.go.nict.langrid.management.web.model.enumeration.UserRole.SERVICEUSER);
+					ret.add(jp.go.nict.langrid.management.web.model.enumeration.UserRole.SERVICEPROVIDER);
+					ret.add(jp.go.nict.langrid.management.web.model.enumeration.UserRole.ADMINISTRATOR);
+				}
+			}
+		} catch(DaoException e){
+			throw new ServiceManagerException(e, UserServiceImpl.class);
 		}
+		return ret;
 	}
 
 	@Override
@@ -256,7 +261,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void setScopeParametar(String serviceGridId, String userGridId,
+	public void setScopeParameter(String serviceGridId, String userGridId,
 			String userId) {
 		this.serviceGridId = serviceGridId;
 		this.userGridId = userGridId;

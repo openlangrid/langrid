@@ -1,9 +1,9 @@
 package jp.go.nict.langrid.management.web.view.component.menu.panel;
 
 import java.util.List;
-import java.util.Locale;
+import java.util.Set;
 
-import jp.go.nict.langrid.management.web.model.enumeration.SessionStatus;
+import jp.go.nict.langrid.management.web.model.enumeration.UserRole;
 import jp.go.nict.langrid.management.web.utility.resource.MessageManager;
 import jp.go.nict.langrid.management.web.view.page.other.Unoperatable;
 
@@ -38,10 +38,10 @@ public class SideMenuPanel extends Panel{
 	 * 
 	 * 
 	 */
-	public SideMenuPanel(String componentId, SessionStatus status){
+	public SideMenuPanel(String componentId, Set<UserRole> userRoles){
 		super(componentId);
 		menu = new RepeatingView("repeating");
-		sessionStatus = status;
+		this.userRoles = userRoles;
 		add(menu);
 	}
 	
@@ -62,7 +62,7 @@ public class SideMenuPanel extends Panel{
 		}
 	}
 
-	public void makeHideMenuComponents(List<Node> nodeList) throws ClassNotFoundException {
+	public void makeDisabledNestMenuComponents(List<Node> nodeList) throws ClassNotFoundException {
 		for(Node node : nodeList) {
 			String label = node.getAttributes().getNamedItem("label").getNodeValue();
 			String className = node.getAttributes().getNamedItem("class").getNodeValue();
@@ -85,18 +85,27 @@ public class SideMenuPanel extends Panel{
 	{
 		for (Node node: topNodeList) {
 			String label = node.getAttributes().getNamedItem("label").getNodeValue();
-			String className = "";
 
-			Node sessionNode = node.getAttributes().getNamedItem("session");
-			if(sessionNode != null && sessionNode.getTextContent().toUpperCase(Locale.ENGLISH).equals(
-				SessionStatus.ADMINISTRATOR.name())
-				&& ! sessionStatus.equals(SessionStatus.ADMINISTRATOR))
-			{
-				className = Unoperatable.class.getName();
-			}else {
-				className = node.getAttributes().getNamedItem("class").getNodeValue();
-			}
-			Link link = getLink("link-on", label, className);
+			Node requiredRolesAttr = node.getAttributes().getNamedItem("requiredRoles");
+			boolean unoperatable = false;
+			do{
+				if(requiredRolesAttr == null) break;
+				String requiredRoles = requiredRolesAttr.getTextContent().toUpperCase();
+				if(requiredRoles.equals("NONE")) break;
+				if(requiredRoles.equals("ANY")){
+					if(!userRoles.isEmpty()) break;
+				} else if(requiredRoles.equals("EMPTY")){
+					if(userRoles.isEmpty()) break;
+				} else{
+					UserRole requiredRole = UserRole.valueOf(requiredRoles);
+					if(userRoles.contains(requiredRole)) break;
+				}
+				unoperatable = true;
+			} while(false);
+			Link link = getLink("link-on", label,
+					unoperatable ?
+							Unoperatable.class.getName() :
+							node.getAttributes().getNamedItem("class").getNodeValue());
 			
 			WebMarkupContainer labelContainer = new WebMarkupContainer("link-off");
 			labelContainer.add(new Label("linkLabel", MessageManager.getMessage(label, getLocale())));
@@ -111,12 +120,9 @@ public class SideMenuPanel extends Panel{
 					(subNodeList.contains(openTarget) && node.equals(subNodeList.get(0).getParentNode())))
 			{
 				link.setVisible(false);
-				SideMenuPanel nestMenu = new SideMenuPanel("nestedMenu", sessionStatus);
-				
-				if(sessionNode.getTextContent().toUpperCase(Locale.ENGLISH).equals(SessionStatus.ADMINISTRATOR.name())
-					&& sessionStatus.equals(SessionStatus.LOGIN))
-				{
-					nestMenu.makeHideMenuComponents(subNodeList);
+				SideMenuPanel nestMenu = new SideMenuPanel("nestedMenu", userRoles);
+				if(unoperatable){
+					nestMenu.makeDisabledNestMenuComponents(subNodeList);
 				}else {
 					nestMenu.makeMenuComponents(subNodeList);
 				}
@@ -132,7 +138,7 @@ public class SideMenuPanel extends Panel{
 	private Link getLink(String componentId, String label, String className)
 	throws ClassNotFoundException
 	{
-		if(sessionStatus.equals(SessionStatus.LOGOUT)){
+		if(userRoles.isEmpty()){
 			final Class page = Class.forName(className.replaceAll("Page$", "LogOutPage"));
 //			Link link = new NoSessionIdBookmarkablePageLink(componentId, page);
 			Link link = new BookmarkablePageLink(componentId, page);
@@ -167,6 +173,6 @@ public class SideMenuPanel extends Panel{
 	}
 
 	private RepeatingView menu;
-	private SessionStatus sessionStatus;
+	private Set<UserRole> userRoles;
 	private static final long serialVersionUID = 1L;
 }

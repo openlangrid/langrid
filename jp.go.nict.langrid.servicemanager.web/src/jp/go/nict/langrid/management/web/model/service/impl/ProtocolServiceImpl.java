@@ -22,7 +22,7 @@ public class ProtocolServiceImpl implements ProtocolService {
 	}
 
 	@Override
-	public void setScopeParametar(String serviceGridId, String userGridId, String userId) {
+	public void setScopeParameter(String serviceGridId, String userGridId, String userId) {
 		this.serviceGridId = serviceGridId;
 	}
 

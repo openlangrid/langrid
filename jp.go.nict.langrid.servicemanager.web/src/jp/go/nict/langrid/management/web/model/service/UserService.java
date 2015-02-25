@@ -6,6 +6,7 @@ import jp.go.nict.langrid.dao.MatchingCondition;
 import jp.go.nict.langrid.dao.Order;
 import jp.go.nict.langrid.management.logic.Scope;
 import jp.go.nict.langrid.management.web.model.UserModel;
+import jp.go.nict.langrid.management.web.model.enumeration.UserRole;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 
 /**
@@ -30,12 +31,6 @@ public interface UserService extends DataService<UserModel> {
 	 * 
 	 * 
 	 */
-	public boolean isAdministrator(String userId) throws ServiceManagerException;
-	
-	/**
-	 * 
-	 * 
-	 */
 	public void changePassword(String changedUserId, String password)
 	throws ServiceManagerException;
 	
@@ -56,6 +51,8 @@ public interface UserService extends DataService<UserModel> {
 	 * 
 	 * 
 	 */
-   boolean isShouldChangePassword(String userId, int day)
-   throws ServiceManagerException;
+	boolean isShouldChangePassword(String userId, int day)
+			throws ServiceManagerException;
+
+	Set<UserRole> getUserRoles(String userId) throws ServiceManagerException;
 }
