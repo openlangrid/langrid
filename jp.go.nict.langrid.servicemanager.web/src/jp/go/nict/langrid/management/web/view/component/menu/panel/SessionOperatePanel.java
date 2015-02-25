@@ -57,9 +57,9 @@ public class SessionOperatePanel extends Panel{
 			Link link = new Link(operateLinkId){
 				@Override
 				public void onClick(){
-					// セッションの破棄
+					// ã‚»ãƒƒã‚·ãƒ§ãƒ³ã�®ç ´æ£„
 					getSession().invalidateNow();
-					// クッキーの削除
+					// ã‚¯ãƒƒã‚­ãƒ¼ã�®å‰Šé™¤
 					HttpServletRequest request = ((WebRequest)RequestCycle.get()
 							.getRequest()).getHttpServletRequest();
 					HttpServletResponse response = ((WebResponse)RequestCycle.get()
