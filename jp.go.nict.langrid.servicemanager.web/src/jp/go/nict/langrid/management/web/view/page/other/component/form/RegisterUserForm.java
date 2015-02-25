@@ -41,6 +41,7 @@ import org.apache.wicket.model.Model;
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
+ * @author Trang
  * @version $Revision: 406 $
  */
 public abstract class RegisterUserForm extends AbstractForm<String> {
