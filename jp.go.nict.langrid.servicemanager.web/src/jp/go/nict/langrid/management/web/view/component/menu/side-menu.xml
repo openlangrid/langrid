@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <menu>
-
+<!-- 
+  This file defines menu structure.
+  "requiredRoles" accepts following values.
+    * none - no role required. The menu is always visible.
+    * any - any role is acceptable. User must have at least one role. That means that the menu
+            is visible for any logged-in users.
+    * empty - any role is not acceptable. The menu is visible for not-logged-in users.
+    * other - other value designates the individual role name. The menu is visible for users who
+              have specified role.
+ -->
+    
 <!-- Overview Menus ************************ -->
    <link
       label='Overview.headline'
@@ -161,7 +171,7 @@
       label='Menu.LanguageGridOperator'
       class='jp.go.nict.langrid.management.web.view.page.admin.OperationRequestPage'
       requiredRoles="administrator"
-      showForUnsufficientUser="disabled"
+      showForUnsufficientUser="unoperatable"
    >
       <link
          label='LanguageGridOperator.headline.RequestedOperations'

@@ -226,7 +226,7 @@ public class UserServiceImpl implements UserService {
 				} else if(r.getRoleName().equals("langriduser")){
 					ret.add(jp.go.nict.langrid.management.web.model.enumeration.UserRole.SERVICEUSER);
 					ret.add(jp.go.nict.langrid.management.web.model.enumeration.UserRole.SERVICEPROVIDER);
-				} else if(r.getRoleName().equals("langridadministrator")){
+				} else if(r.getRoleName().equals("langridadmin")){
 					ret.add(jp.go.nict.langrid.management.web.model.enumeration.UserRole.SERVICEUSER);
 					ret.add(jp.go.nict.langrid.management.web.model.enumeration.UserRole.SERVICEPROVIDER);
 					ret.add(jp.go.nict.langrid.management.web.model.enumeration.UserRole.ADMINISTRATOR);

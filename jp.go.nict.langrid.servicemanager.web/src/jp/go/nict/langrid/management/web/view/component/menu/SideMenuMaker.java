@@ -120,7 +120,11 @@ public class SideMenuMaker implements IClusterable{
 				}
 				node = node.getParentNode();
 			}
-			if((current.getNodeType() == Node.ELEMENT_NODE) && isAuthorize(requiredRole, userRoles)) {
+			if(current.getNodeType() != Node.ELEMENT_NODE) continue;
+			Node showForUnsufficientUser = node.getAttributes().getNamedItem("showForUnsufficientUser");
+			if(isAuthorize(requiredRole, userRoles) ||(showForUnsufficientUser != null &&
+					showForUnsufficientUser.getTextContent().equals("unoperatable") &&
+					!userRoles.isEmpty())) {
 				cn.add(current);
 			}
 		}while((current = current.getNextSibling()) != null);
