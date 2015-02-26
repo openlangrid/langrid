@@ -1,7 +1,6 @@
 package jp.go.nict.langrid.management.web.view.page.other;
 
 import jp.go.nict.langrid.management.web.annotation.RequireLogin;
-
 import jp.go.nict.langrid.management.web.view.page.ServiceManagerPage;
 import jp.go.nict.langrid.management.web.view.page.other.component.form.RegisterUserForm;
 
