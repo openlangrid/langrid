@@ -12,7 +12,6 @@ import org.apache.wicket.validation.IValidator;
  * 
  */
 public class TermofUserCheckedValidator implements IValidator<Boolean> {
-
 	private Component component;
 
 	public TermofUserCheckedValidator(Component component) {
@@ -32,4 +31,5 @@ public class TermofUserCheckedValidator implements IValidator<Boolean> {
 		}
 	}
 
+	private static final long serialVersionUID = -3906255965516062621L;
 }
