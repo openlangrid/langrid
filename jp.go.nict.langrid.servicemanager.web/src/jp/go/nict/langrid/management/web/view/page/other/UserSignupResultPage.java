@@ -1,5 +1,5 @@
 /*
- * $Id: RegistrationOfLanguageGridUserResultPage.java 406 2011-08-25 02:12:29Z t-nakaguchi $
+ * $Id: UserSignupResultPage.java Trang $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and
  * provides composite language services. Copyright (C) 2005-2008 NICT Language Grid Project.
