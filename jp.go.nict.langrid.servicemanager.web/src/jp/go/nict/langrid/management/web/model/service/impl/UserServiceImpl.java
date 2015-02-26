@@ -20,6 +20,7 @@ package jp.go.nict.langrid.management.web.model.service.impl;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -136,6 +137,36 @@ public class UserServiceImpl implements UserService {
 						@Override
 						public void execute(User user) {
 							setProperty(user, obj);
+						}
+					});
+		} catch (Exception e) {
+			throw new ServiceManagerException(e, this.getClass(),
+					"ServiceManager cannot update user.");
+		}
+	}
+
+	@Override
+	public void updateUserRoles(final String userId, final Set<jp.go.nict.langrid.management.web.model.enumeration.UserRole> roles)
+	throws ServiceManagerException {
+		try {
+			new UserLogic().transactUpdate(userGridId, userId,
+					new BlockP<User>() {
+						@Override
+						public void execute(User user) {
+							Set<UserRole> currentRoles = user.getRoles();
+							currentRoles.remove(new UserRole(user.getGridId(), user.getUserId(), UserRole.USER_ROLE));
+							UserRole p = new UserRole(user.getGridId(), user.getUserId(), UserRole.SERVICE_PROVIDER_ROLE);
+							if(!roles.contains(jp.go.nict.langrid.management.web.model.enumeration.UserRole.SERVICEPROVIDER)){
+								currentRoles.remove(p);
+							} else{
+								currentRoles.add(p);
+							}
+							UserRole u = new UserRole(user.getGridId(), user.getUserId(), UserRole.SERVICE_USER_ROLE);
+							if(!roles.contains(jp.go.nict.langrid.management.web.model.enumeration.UserRole.SERVICEUSER)){
+								currentRoles.remove(u);
+							} else{
+								currentRoles.add(u);
+							}
 						}
 					});
 		} catch (Exception e) {

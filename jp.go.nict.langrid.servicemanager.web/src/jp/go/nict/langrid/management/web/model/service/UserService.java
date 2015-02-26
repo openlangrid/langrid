@@ -55,4 +55,7 @@ public interface UserService extends DataService<UserModel> {
 			throws ServiceManagerException;
 
 	Set<UserRole> getUserRoles(String userId) throws ServiceManagerException;
+
+	void updateUserRoles(String userId, Set<UserRole> roles)
+	throws ServiceManagerException;
 }

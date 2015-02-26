@@ -30,13 +30,22 @@
 				<wicket:message key="Common.label.attention.InEnglish"></wicket:message></td>
 			</tr>
 			<tr>
-            <th scope="row"><wicket:message key="Common.label.Default.UseType" /></th>
-            <td><select wicket:id="useService"></select></td>
-         </tr>
-         <tr>
-            <th scope="row"><wicket:message key="Common.label.Default.AppType" /></th>
-            <td><select wicket:id="provision"></select></td>
-         </tr>
+				<th scope="row"><wicket:message key="Common.label.Default.UseType" /></th>
+				<td><select wicket:id="useService"></select></td>
+			</tr>
+			<tr>
+				<th scope="row"><wicket:message key="Common.label.Default.AppType" /></th>
+				<td><select wicket:id="provision"></select></td>
+			</tr>
+			<tr>
+				<th scope="row"><wicket:message key="Common.label.UserRoles" /></th>
+				<td>
+					<input wicket:id="providerRole" id="providerRole" type="checkbox">
+					<label for="providerRole"><wicket:message key="Common.label.userrole.Provider" /></label>
+					<p/><input wicket:id="userRole" id="userRole" type="checkbox">
+					<label for="userRole"><wicket:message key="Common.label.userrole.User" /></label>
+				</td>
+			</tr>
 		</table>
 		</div>
 		<div class="btn-s">
