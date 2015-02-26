@@ -218,24 +218,6 @@
 <dependent-module archiveName="jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.intergrid.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.intergrid/jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.intergrid">
 <dependency-type>uses</dependency-type>
 </dependent-module>
-        <dependent-module archiveName="wicket-devutils-1.4.18.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/apache/wicket-devutils-1.4.18.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="wicket-ioc-1.4.18.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/apache/wicket-ioc-1.4.18.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="wicket-spring-1.4.18.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/apache/wicket-spring-1.4.18.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="wicket-datetime-1.4.18.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/apache/wicket-datetime-1.4.18.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="wicket-extensions-1.4.18.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/apache/wicket-extensions-1.4.18.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="wicket-1.4.18.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/apache/wicket-1.4.18.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.servicemanager.web.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicemanager.web/jp.go.nict.langrid.servicemanager.web">
             <dependency-type>uses</dependency-type>
         </dependent-module>
@@ -252,6 +234,24 @@
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.servicemanager.logic.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicemanager.logic/jp.go.nict.langrid.servicemanager.logic">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="wicket-ioc-1.4.23.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/apache/wicket-ioc-1.4.23.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="wicket-extensions-1.4.23.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/apache/wicket-extensions-1.4.23.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="wicket-spring-1.4.23.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/apache/wicket-spring-1.4.23.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="wicket-devutils-1.4.23.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/apache/wicket-devutils-1.4.23.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="wicket-datetime-1.4.23.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/apache/wicket-datetime-1.4.23.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="wicket-1.4.23.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/apache/wicket-1.4.23.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="java-output-path" value="/jp.go.nict.langrid.webapps.langrid-core-withoutp2p/build/classes"/>
