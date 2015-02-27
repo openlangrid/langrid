@@ -1,5 +1,9 @@
 package jp.go.nict.langrid.management.web.view.page.other.component.form;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
@@ -31,10 +35,13 @@ import jp.go.nict.langrid.management.web.view.page.user.component.text.TermofUse
 import jp.go.nict.langrid.management.web.view.page.user.component.validator.TermofUserCheckedValidator;
 import jp.go.nict.langrid.management.web.view.page.user.component.validator.UserIdAlreadyExistsValidator;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.wicket.Page;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  * 
@@ -78,8 +85,19 @@ public abstract class RegisterUserForm extends AbstractForm<String> {
 				AppProvisionType.CLIENT_CONTROL.name()));
 		add(useService = new UsingServiceDropDownChoice("useService",
 				UseType.NONPROFIT_USE.name()));
-		add(term = new TermofUseField("term", new Model<String>(
-				loadTermofUser())));
+		
+		
+		try {
+			String termofuse = loadTermofUser();
+			Label divTermofUse = new Label("divTermofUse", termofuse);
+			divTermofUse.setEscapeModelStrings(false);
+			add(divTermofUse);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		add(checkterm = new CheckBox("checkterm", new Model<Boolean>()));
 		checkterm.add(new TermofUserCheckedValidator(checkterm));
 		add(new FormRegistUserValidator(password, confirm));
@@ -109,7 +127,7 @@ public abstract class RegisterUserForm extends AbstractForm<String> {
 				um.setRepresentative(representative.getModelObject());
 				um.setAbleToCallServices(true);
 				um.setGridId(gridId);
-				// TODO ?登録時に登録日が自動設定されないのでここで設定する
+				// TODO ?ç™»éŒ²æ™‚ã�«ç™»éŒ²æ—¥ã�Œè‡ªå‹•è¨­å®šã�•ã‚Œã�ªã�„ã�®ã�§ã�“ã�“ã�§è¨­å®šã�™ã‚‹
 				Calendar now = Calendar.getInstance();
 				// um.setPasswordChangedDate(Calendar.getInstance());
 				um.setCreatedDateTime(now);
@@ -119,7 +137,7 @@ public abstract class RegisterUserForm extends AbstractForm<String> {
 						.name());
 				um.setDefaultUseType(UseType.NONPROFIT_USE.name());
 
-				ServiceFactory.getInstance().getUserService(gridId)
+				ServiceFactory.getInstance().getLangridServiceUserService(gridId)
 						.add(um);
 				LogWriter
 						.writeInfo(
@@ -153,9 +171,24 @@ public abstract class RegisterUserForm extends AbstractForm<String> {
 	
 	
 	
-	private String loadTermofUser() {
+	private String loadTermofUser() throws IOException {
 		// todo: Load term of use from a property file or text file
-		return MessageManager.getMessage("openlangrid.termofuse");
+		/*String termofusefile = "termofuse.html";
+		new ClassPathResource("/termofuse.html");
+		BufferedReader reader = new BufferedReader(new FileReader(termofusefile));
+		String line = null;
+		StringBuilder stringBuilder = new StringBuilder();
+		String ls = System.getProperty("line.separator");
+		
+		while((line = reader.readLine()) != null) {
+			stringBuilder.append(line);
+			stringBuilder.append(ls);
+		}
+		
+		return stringBuilder.toString();*/
+		
+		String termofuse = IOUtils.toString(new ClassPathResource("/termofuse.html").getInputStream());
+		return termofuse;
 	}
 
 	private ProvisionControlDropDownChoice provision;

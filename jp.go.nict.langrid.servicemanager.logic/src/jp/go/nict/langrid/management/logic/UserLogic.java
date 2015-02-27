@@ -149,6 +149,51 @@ extends AbstractLogic{
 			}
 		}
 	}
+	
+	//Added by Trang: add LangridServiceUser
+	@DaoTransaction
+	public void addLangridServiceUser(User user) throws UserAlreadyExistsException, DaoException{
+		String ugid = user.getGridId();
+		String uid = user.getUserId();
+		if(getTemporaryUserDao().isUserExists(ugid, uid)){
+			throw new UserAlreadyExistsException(ugid, uid);
+		}
+		if(getUserDao().isUserExist(ugid, uid)){
+			throw new UserAlreadyExistsException(ugid, uid);
+		}
+		user.setPassword(MessageDigestUtil.digestBySHA512(user.getPassword()));
+		user.setPasswordChangedDate(user.getUpdatedDateTime());
+		Iterator<UserAttribute> i = user.getAttributes().iterator();
+		while(i.hasNext()){
+			if(UserUtil.getUserProperties().containsKey(i.next().getName())){
+				// 
+				// What's included in the properties is inaccessible.
+				// 
+				i.remove();
+			}
+		}
+		getUserDao().addUser(user, UserRole.LANGRID_SERVICE_USER_ROLE);
+
+		// 
+		// 
+		Iterable<ServicePK> services = getAccessRightDao().listAccessibleServices(
+				ugid, uid);
+		for(ServicePK s : services){
+			AccessLimitDao ldao = getAccessLimitDao();
+			List<AccessLimit> limits = ldao.getAccessLimits(ugid, "*", s.getGridId(), s.getServiceId());
+			if(limits.size() == 0){
+				// 
+				// 
+				limits = ldao.getAccessLimits("*", "*", s.getGridId(), s.getServiceId());
+			}
+			for(AccessLimit l : limits){
+				ldao.setAccessLimit(ugid, uid, s.getGridId(), s.getServiceId()
+						, l.getPeriod(), l.getLimitType(), l.getLimitCount()
+						);
+			}
+		}
+	}
+	
 
 	@DaoTransaction
 	public void deleteUser(String userGridId, String userId)

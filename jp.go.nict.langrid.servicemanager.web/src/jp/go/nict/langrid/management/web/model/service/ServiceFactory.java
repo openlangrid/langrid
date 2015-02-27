@@ -227,6 +227,16 @@ public class ServiceFactory {
 		userService.setScopeParametar(serviceGridId, userGridId, userId);
 	   return userService;
 	}
+	
+	//added by Trang
+		public LangridServiceUserService getLangridServiceUserService(String gridId) throws ServiceManagerException  {
+			   return getLangridServiceUserService(gridId, gridId, "");
+			}
+		
+		public LangridServiceUserService getLangridServiceUserService(String serviceGridId, String userGridId, String userId) throws ServiceManagerException  {
+			userService.setScopeParametar(serviceGridId, userGridId, userId);
+		   return langridserviceuserService;
+		}
 
 	public ProtocolService getProtocolService(String gridId) throws ServiceManagerException {
 	   return getProtocolService(gridId,  gridId, "");
@@ -321,6 +331,10 @@ public class ServiceFactory {
 
 	@SpringBean
    private UserService userService;
+	
+	//added by Trang
+	@SpringBean
+	private LangridServiceUserService langridserviceuserService;
 
 	@SpringBean
 	private ProtocolService protocolService;

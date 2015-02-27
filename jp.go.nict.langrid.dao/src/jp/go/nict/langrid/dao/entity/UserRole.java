@@ -49,6 +49,12 @@ public class UserRole {
 	 * 
 	 */
 	public static final String ADMIN_ROLE = "langridadmin";
+	
+	/**
+	 * 
+	 * added by Trang
+	 */
+	public static final String LANGRID_SERVICE_USER_ROLE = "langridserviceuser";
 
 	/**
 	 * 

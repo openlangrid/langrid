@@ -50,6 +50,10 @@
 
    <bean name="userService"
       class="jp.go.nict.langrid.management.web.model.service.impl.UserServiceImpl"></bean>
+      
+   <bean name="langridserviceUserService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.LangridServiceUserServiceImpl"></bean>
+    
 
    <bean name="langridServiceService"
       class="jp.go.nict.langrid.management.web.model.service.impl.LangridServiceServiceImpl"></bean>
