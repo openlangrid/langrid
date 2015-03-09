@@ -49,7 +49,7 @@ public class ProtobufParser {
 		List<RpcHeader> headers = new ArrayList<RpcHeader>();
 		Object[] values = new Object[parameterTypes.length];
 		int tag = -1;
-		Map<Integer, Collection<Object>> arrayFields = new HashMap<Integer, Collection<Object>>();
+	    Map<Integer, Collection<Object>> arrayFields = new HashMap<Integer, Collection<Object>>();
 		while((tag = cis.readTag()) != 0){
 			int index = (tag >> 3) - 2;
 			if(index == -1){
@@ -156,31 +156,21 @@ public class ProtobufParser {
 
 	private static void readHeader(CodedInputStream cis, Collection<RpcHeader> headers)
 	throws IOException{
-		int length = cis.readRawVarint32();
-		int oldLength = cis.pushLimit(length);
-		String namespace = null, name = null, value = null;
-		int tag = 0;
+	    int length = cis.readRawVarint32();
+	    int oldLength = cis.pushLimit(length);
+	    String namespace = null, value = null;
+	    int tag = 0;
 		while((tag = cis.readTag()) != 0){
 			switch(tag){
 				case 10:
 					namespace = cis.readString();
 					break;
 				case 18:
-					name = cis.readString();
-					break;
-				case 26:
 					value = cis.readString();
-					break;
-				default:
-					cis.skipField(tag);
 					break;
 			}
 		}
-		if(value == null && namespace != null && name != null){
-			headers.add(new RpcHeader(namespace, null, name));
-		} else{
-			headers.add(new RpcHeader(namespace, name, value));
-		}
+		headers.add(new RpcHeader(namespace, null, value));
 		cis.checkLastTagWas(0);
 		cis.popLimit(oldLength);
 	}

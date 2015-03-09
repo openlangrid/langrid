@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultScanner.java 1381 2015-01-06 01:33:09Z t-nakaguchi $
+ * $Id: DefaultScanner.java 409 2011-08-25 03:12:59Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
  * Copyright (C) 2005-2011 NICT Language Grid Project.
@@ -59,10 +59,7 @@ public class DefaultScanner implements Scanner {
 				continue;
 			}
 			String headWord = trans.getHeadWord().toLowerCase().trim();
-			if (trans.getTargetWords() == null || trans.getTargetWords().length == 0 ||
-					trans.getTargetWords()[0] == null ||
-					trans.getTargetWords()[0].length() == 0
-					) {
+			if (trans.getTargetWords() == null || trans.getTargetWords().length == 0) {
 				continue;
 			}
 
