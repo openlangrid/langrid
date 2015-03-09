@@ -69,7 +69,7 @@ import jp.go.nict.langrid.service_1_2.util.ParameterValidator;
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 302 $
+ * @version $Revision: 1506 $
  */
 public class ResourceManagement 
 extends AbstractLangridService
@@ -157,7 +157,7 @@ implements ResourceManagementService
 		return new ResourceEntrySearchResult(new ResourceEntry[]{}, 0, true);
 	}
 
-	@AccessRightValidatedMethod(policy=RESOURCEOWNER_OR_ADMIN)
+	@AccessRightValidatedMethod(policy=ADMINONLY)
 	@ValidatedMethod
 	@TransactionMethod
 	@Log

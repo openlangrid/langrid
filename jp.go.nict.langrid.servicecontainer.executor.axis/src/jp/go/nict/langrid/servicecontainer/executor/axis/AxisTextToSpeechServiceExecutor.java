@@ -35,10 +35,10 @@ import jp.go.nict.langrid.service_1_2.ServiceNotFoundException;
 import jp.go.nict.langrid.service_1_2.UnsupportedLanguageException;
 import jp.go.nict.langrid.service_1_2.speech.Speech;
 import jp.go.nict.langrid.service_1_2.speech.TextToSpeechService;
-import localhost.service_mock.services.TextToSpeech.TextToSpeech;
-import localhost.service_mock.services.TextToSpeech.TextToSpeechServiceLocator;
 
 import org.apache.axis.client.Stub;
+
+import TextToSpeech.nlp.nict.servicetype.Kyoto1LangridAbstractTextToSpeechLocator;
 
 /**
  * 
@@ -61,7 +61,7 @@ implements TextToSpeechService{
 	ServerBusyException, ServiceNotActiveException,
 	ServiceNotFoundException, UnsupportedLanguageException {
 		try{
-			TextToSpeech port = locator.getTextToSpeech();
+			TextToSpeech.nlp.nict.servicetype.TextToSpeechService port = locator.getTextToSpeech();
 			Stub stub = ( Stub )port ;
 			long iid = preprocessSoap(stub);
 			long s = System.currentTimeMillis( ) ;
@@ -113,5 +113,5 @@ implements TextToSpeechService{
 		return null;
 	}
 
-	private final TextToSpeechServiceLocator locator = new TextToSpeechServiceLocator( ) ;
+	private final Kyoto1LangridAbstractTextToSpeechLocator locator = new Kyoto1LangridAbstractTextToSpeechLocator() ;
 }

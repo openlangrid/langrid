@@ -2,6 +2,7 @@ package jp.go.nict.langrid.management.web.view.page.user.component.form;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -11,8 +12,10 @@ import jp.go.nict.langrid.dao.entity.UseType;
 import jp.go.nict.langrid.dao.entity.UserAttribute;
 import jp.go.nict.langrid.management.web.log.LogWriter;
 import jp.go.nict.langrid.management.web.model.UserModel;
+import jp.go.nict.langrid.management.web.model.enumeration.UserRole;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 import jp.go.nict.langrid.management.web.model.service.ServiceFactory;
+import jp.go.nict.langrid.management.web.model.service.UserService;
 import jp.go.nict.langrid.management.web.view.component.form.AbstractForm;
 import jp.go.nict.langrid.management.web.view.component.text.RequiredPasswordTextField;
 import jp.go.nict.langrid.management.web.view.component.text.RequiredRepresentativeTextField;
@@ -36,7 +39,7 @@ import org.apache.wicket.model.Model;
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 406 $
+ * @version $Revision: 1506 $
  */
 public class RegistrationOfLanguageGridUsersForm extends AbstractForm<String>{
 	/**
@@ -93,7 +96,9 @@ public class RegistrationOfLanguageGridUsersForm extends AbstractForm<String>{
 			um.setDefaultAppProvisionType(AppProvisionType.CLIENT_CONTROL.name());
 			um.setDefaultUseType(UseType.NONPROFIT_USE.name());
 			
-			ServiceFactory.getInstance().getUserService(gridId).add(um);
+			UserService us = ServiceFactory.getInstance().getUserService(gridId);
+			us.add(um);
+			us.updateUserRoles(um.getUserId(), Arrays.asList(UserRole.SERVICEPROVIDER, UserRole.SERVICEUSER));
 			LogWriter.writeInfo(getSessionUserId(), "\"" + userId.getModelObject()
 					+ "\" of langrid user has been registered.", getClass());
 		}catch(ServiceManagerException e){

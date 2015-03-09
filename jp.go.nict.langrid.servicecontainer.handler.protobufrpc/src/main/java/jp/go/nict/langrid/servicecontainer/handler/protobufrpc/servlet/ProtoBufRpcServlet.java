@@ -17,6 +17,7 @@
  */
 package jp.go.nict.langrid.servicecontainer.handler.protobufrpc.servlet;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
@@ -40,6 +41,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import jp.go.nict.langrid.commons.io.StreamUtil;
 import jp.go.nict.langrid.commons.lang.ClassResource;
 import jp.go.nict.langrid.commons.lang.ClassResourceLoader;
 import jp.go.nict.langrid.commons.net.URLUtil;
@@ -55,6 +57,8 @@ import jp.go.nict.langrid.commons.ws.param.ServletConfigParameterContext;
 import jp.go.nict.langrid.servicecontainer.executor.StreamingNotifier;
 import jp.go.nict.langrid.servicecontainer.handler.ServiceFactory;
 import jp.go.nict.langrid.servicecontainer.handler.ServiceLoader;
+import jp.go.nict.langrid.servicecontainer.handler.annotation.ServicesUtil;
+import jp.go.nict.langrid.servicecontainer.handler.loader.ServiceFactoryLoader;
 import jp.go.nict.langrid.servicecontainer.handler.protobufrpc.ProtoBufDynamicHandler;
 import jp.go.nict.langrid.servicecontainer.handler.protobufrpc.ProtoBufHandler;
 import jp.go.nict.langrid.servicecontainer.service.composite.AbstractCompositeService;
@@ -101,20 +105,18 @@ public class ProtoBufRpcServlet extends HttpServlet {
 		} catch(IllegalAccessException e){
 			throw new ServletException(e);
 		}
+		this.defaultLoaders = ServicesUtil.getServiceFactoryLoaders(getClass());
 	}
 
-	@ClassResource(path="css.txt", converter=UTF8ByteArrayToStringTransformer.class)
-	private String css;
+	protected ServiceFactoryLoader[] getDefaultServiceFactoryLoaders(){
+		return defaultLoaders;
+	}
 
-	/**
-	 * 
-	 * 
-	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 	throws ServletException, IOException{
 		ServiceContext sc = new ServletServiceContext(req);
-		ServiceLoader loader = new ServiceLoader(sc);
+		ServiceLoader loader = new ServiceLoader(sc, getDefaultServiceFactoryLoaders());
 		PrintWriter w = resp.getWriter();
 		resp.setContentType("text/html");
 		resp.setCharacterEncoding("UTF-8");
@@ -245,8 +247,13 @@ public class ProtoBufRpcServlet extends HttpServlet {
 		if(h == null){
 			h = new ProtoBufDynamicHandler();
 		}
-		h.handle(serviceName, mn, req, resp, cis, cos);
-		cos.flush();
+		try{
+			h.handle(getDefaultServiceFactoryLoaders(), serviceName, mn, req, resp, cis, cos);
+			cos.flush();
+		} catch(FileNotFoundException e){
+			resp.setStatus(404);
+			StreamUtil.writeString(resp.getOutputStream(), "Service \"" + serviceName + "\" Not Found.", "UTF-8");
+		}
 	}
 
 	private static String prettyName(Class<?> clazz){
@@ -274,6 +281,10 @@ public class ProtoBufRpcServlet extends HttpServlet {
 		}
 		if(b.length() != 0) b.append("&gt;");
 	}
+
+	@ClassResource(path="css.txt", converter=UTF8ByteArrayToStringTransformer.class)
+	private String css;
+	private ServiceFactoryLoader[] defaultLoaders;
 
 	private static Map<String, ProtoBufHandler> handlers = new HashMap<String, ProtoBufHandler>();
 	private static Logger logger = Logger.getLogger(ProtoBufRpcServlet.class.getName());

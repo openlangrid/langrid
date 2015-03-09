@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceManagerSessionImpl.java 406 2011-08-25 02:12:29Z t-nakaguchi $
+ * $Id: ServiceManagerSessionImpl.java 1506 2015-03-02 16:03:34Z t-nakaguchi $
  * 
  * This is a program for Language Grid Core Node. This combines multiple language resources and
  * provides composite language services. Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -17,6 +17,11 @@
  */
 package jp.go.nict.langrid.management.web.view.session;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
+
+import jp.go.nict.langrid.management.web.model.enumeration.UserRole;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 import jp.go.nict.langrid.management.web.model.service.ServiceFactory;
 import jp.go.nict.langrid.management.web.model.service.UserService;
@@ -29,7 +34,7 @@ import org.apache.wicket.protocol.http.WebSession;
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 406 $
+ * @version $Revision: 1506 $
  */
 public final class ServiceManagerSessionImpl extends WebSession
 implements ServiceManagerSession {
@@ -49,7 +54,8 @@ implements ServiceManagerSession {
 				this.userId = userId;
 				this.password = password;
 				this.userGridId = gridId;
-				isAdministrater = service.isAdministrator(userId);
+				this.userRoles = service.getUserRoles(userId);
+				this.isAdministrater = userRoles.contains(UserRole.ADMINISTRATOR);
 				int expiredDay = ServiceFactory.getInstance().getGridService()
 					.getPasswordExpiredDay();
 				isExpired = service.isShouldChangePassword(userId, expiredDay);
@@ -103,12 +109,17 @@ implements ServiceManagerSession {
 		return isLoginedAccess;
 	}
 
-	public void setIsExpiredPassword(boolean isExpired) {
-		this.isExpired = isExpired;
-	}
-
 	public void setLoginedAccess(boolean init) {
 		this.isLoginedAccess = init;
+	}
+
+	@Override
+	public Set<UserRole> getUserRoles() {
+		return userRoles;
+	}
+
+	public void setIsExpiredPassword(boolean isExpired) {
+		this.isExpired = isExpired;
 	}
 
 	public void setPassword(String newPass) {
@@ -124,6 +135,8 @@ implements ServiceManagerSession {
 	 * 
 	 * 
 	 */
+	@SuppressWarnings("unchecked")
+	private Set<UserRole> userRoles = Collections.EMPTY_SET;
 	private boolean isAdministrater = false;
 	private boolean isExpired = false;
 	/**

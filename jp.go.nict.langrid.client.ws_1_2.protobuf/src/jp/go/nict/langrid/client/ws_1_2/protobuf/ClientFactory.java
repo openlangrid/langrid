@@ -1,5 +1,5 @@
 /*
- * $Id: ClientFactory.java 477 2012-05-22 07:43:21Z t-nakaguchi $
+ * $Id: ClientFactory.java 1371 2014-12-31 04:05:21Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
  * Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 
 import jp.go.nict.langrid.client.RequestAttributes;
 import jp.go.nict.langrid.client.ResponseAttributes;
-import jp.go.nict.langrid.client.impl.protobuf.PbClientFactory;
+import jp.go.nict.langrid.client.protobufrpc.PbClientFactory;
 import jp.go.nict.langrid.client.ws_1_2.AdjacencyPairClient;
 import jp.go.nict.langrid.client.ws_1_2.BackTranslationClient;
 import jp.go.nict.langrid.client.ws_1_2.BackTranslationWithTemporalDictionaryClient;
@@ -89,7 +89,7 @@ import jp.go.nict.langrid.service_1_2.templateparalleltext.TemplateParallelTextS
  * 
  * 
  * @author $Author: t-nakaguchi $
- * @version $Revision: 477 $
+ * @version $Revision: 1371 $
  */
 public class ClientFactory{
 	/**

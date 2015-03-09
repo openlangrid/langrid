@@ -43,7 +43,9 @@ implements jp.go.nict.langrid.service_1_2.multihoptranslation.MultihopTranslatio
 	@Override
 	public MultihopTranslationResult multihopTranslate(String sourceLang,
 			String[] intermediateLangs, String targetLang, String source,
-			Translation[] temporalDict, String dictTargetLang)
+			Translation[] temporalDict, String dictTargetLang,
+			String[][][] intermediateDictTargets,
+			String[] intermediateDictTargetLangs)
 			throws AccessLimitExceededException, InvalidParameterException,
 			LanguagePathNotUniquelyDecidedException,
 			NoAccessPermissionException, NoValidEndpointsException,

@@ -39,6 +39,7 @@ public class ServiceApprovalCheck implements Preprocess {
 		Service s = context.getTargetService();
 		if(u.getGridId().equals(s.getGridId())){
 			if(u.isAdminUser()) return;
+			if(s.getOwnerUserId().equals(u.getUserId())) return;
 		}
 		if(s.isApproved()) return;
 

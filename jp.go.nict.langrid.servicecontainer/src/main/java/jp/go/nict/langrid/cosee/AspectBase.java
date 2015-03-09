@@ -1,5 +1,5 @@
 /*
- * $Id: AspectBase.java 1187 2014-04-10 14:25:28Z t-nakaguchi $
+ * $Id: AspectBase.java 1498 2015-02-13 03:50:47Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
  * Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -36,7 +36,7 @@ import jp.go.nict.langrid.commons.cs.calltree.CallNode;
 import jp.go.nict.langrid.commons.cs.calltree.CallTreeUtil;
 import jp.go.nict.langrid.commons.rpc.RpcFault;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
-import jp.go.nict.langrid.commons.util.Pair;
+import jp.go.nict.langrid.commons.rpc.TransportHeader;
 import jp.go.nict.langrid.commons.ws.LangridConstants;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.commons.ws.util.MimeHeadersUtil;
@@ -45,7 +45,7 @@ import jp.go.nict.langrid.commons.ws.util.MimeHeadersUtil;
  * 
  * 
  * @author $Author: t-nakaguchi $
- * @version $Revision: 1187 $
+ * @version $Revision: 1498 $
  */
 public class AspectBase{
 	/**
@@ -82,8 +82,10 @@ public class AspectBase{
 		extractSoapHeader(rHeaders, props, LangridConstants.ACTOR_SERVICE_TREEBINDING);
 		// calltree準備
 		props.put("calltree", new ArrayList<CallNode>());
-		// additionalHttpHeaders準備
-		props.put("additionalMimeHeaders", new ArrayList<Pair<String, String>>());
+		// additionalMimeHeaders準備
+		props.put("additionalMimeHeaders", new ArrayList<TransportHeader>());
+		// additionalRpcHeaders準備
+		props.put("additionalRpcHeaders", new ArrayList<RpcHeader>());
 		// responseHeaders準備
 		props.put("responseHeaders", new ArrayList<RpcHeader>());
 
@@ -181,6 +183,7 @@ public class AspectBase{
 
 			// Rpcヘッダ情報をコピー
 			copyRpcHeader(tempProperties, rpcHeaders, LangridConstants.ACTOR_SERVICE_TREEBINDING);
+			copyAdditionalRpcHeaders(tempProperties, rpcHeaders);
 		}
 	}
 
@@ -298,12 +301,12 @@ public class AspectBase{
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void copyAdditionalMimeHeaders(Map<String, Object> properties, Map<String, Object> mimeHeaders){
-		List<Pair<String, String>> additionalHeaders = (List<Pair<String, String>>)properties.get("additionalMimeHeaders");
+		@SuppressWarnings("unchecked")
+		List<TransportHeader> additionalHeaders = (List<TransportHeader>)properties.get("additionalMimeHeaders");
 		if(additionalHeaders == null) return;
-		for(Pair<String, String> v : additionalHeaders){
-			mimeHeaders.put(v.getFirst(), v.getSecond());
+		for(TransportHeader v : additionalHeaders){
+			mimeHeaders.put(v.getName(), v.getValue());
 		}
 	}
 
@@ -315,6 +318,15 @@ public class AspectBase{
 		if(hds == null) return;
 		for(RpcHeader h : hds){
 			headers.add(h.clone());
+		}
+	}
+
+	private void copyAdditionalRpcHeaders(Map<String, Object> properties, Collection<RpcHeader> rpcHeaders){
+		@SuppressWarnings("unchecked")
+		List<RpcHeader> additionalHeaders = (List<RpcHeader>)properties.get("additionalRpcHeaders");
+		if(additionalHeaders == null) return;
+		for(RpcHeader v : additionalHeaders){
+			rpcHeaders.add(v);
 		}
 	}
 

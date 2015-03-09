@@ -31,7 +31,7 @@ import org.apache.wicket.model.PropertyModel;
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 406 $
+ * @version $Revision: 1506 $
  */
 public abstract class EditUserProfileForm extends AbstractForm<UserModel> {
 	/**
@@ -50,6 +50,22 @@ public abstract class EditUserProfileForm extends AbstractForm<UserModel> {
 	 */
 	public UserModel getProfile() {
 		return profile;
+	}
+
+	protected void updateUserModel(UserModel profile)
+	throws MalformedURLException{
+		if(provision.getModelObject() != null){
+			profile.setDefaultAppProvisionType(provision.getModelObject().name());
+		}else{
+			profile.setDefaultAppProvisionType(AppProvisionType.CLIENT_CONTROL.name());
+		}
+
+		if(useService.getModelObject() != null){
+			profile.setDefaultUseType(useService.getModelObject().name());
+		}else{
+			profile.setDefaultUseType(UseType.NONPROFIT_USE.name());
+		}
+		profile.setHomepageUrl(new EmbeddableStringValueClass<URL>(new URL(homepage.getValue())));
 	}
 
 	@Override
@@ -75,27 +91,15 @@ public abstract class EditUserProfileForm extends AbstractForm<UserModel> {
 		add(new Button("submit") {
 			@Override
 			public void onSubmit() {
-				if(provision.getModelObject() != null){
-					profile.setDefaultAppProvisionType(provision.getModelObject().name());
-				}else{
-					profile.setDefaultAppProvisionType(AppProvisionType.CLIENT_CONTROL.name());
-				}
-
-				if(useService.getModelObject() != null){
-					profile.setDefaultUseType(useService.getModelObject().name());
-				}else{
-					profile.setDefaultUseType(UseType.NONPROFIT_USE.name());
-				}
 				try {
-				   profile.setHomepageUrl(new EmbeddableStringValueClass<URL>(new URL(homepage.getValue())));
-
-				   ServiceFactory.getInstance().getUserService(profile.getGridId()).edit(profile);
-               LogWriter.writeInfo(getSessionUserId(), "\"" + userId
-                  + "\" of langrid user has been edited.", getPage().getClass());
-            } catch(ServiceManagerException e) {
-               raisedException = e;
+					updateUserModel(profile);
+					ServiceFactory.getInstance().getUserService(profile.getGridId()).edit(profile);
+					LogWriter.writeInfo(getSessionUserId(), "\"" + userId
+							+ "\" of langrid user has been edited.", getPage().getClass());
+				} catch(ServiceManagerException e) {
+					raisedException = e;
 				} catch(MalformedURLException e) {
-				   raisedException = new ServiceManagerException(e);
+					raisedException = new ServiceManagerException(e);
 				}
 			}
 

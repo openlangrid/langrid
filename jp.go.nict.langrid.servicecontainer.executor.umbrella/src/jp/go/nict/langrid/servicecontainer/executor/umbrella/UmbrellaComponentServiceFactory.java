@@ -83,6 +83,7 @@ implements ComponentServiceFactory{
 	public <T> T getService(String invocationName, Class<T> interfaceClass) {
 		try{
 			Pair<Long, Endpoint> value = getInvocationIdAndEndpoint(invocationName);
+			if("AbstractService".equals(value.getSecond().getServiceId())) return null;
 			return getFactory(value.getSecond().getProtocol()).getService(
 					invocationName, value.getFirst(), value.getSecond(), interfaceClass);
 		} catch(DaoException e){
@@ -97,6 +98,7 @@ implements ComponentServiceFactory{
 			, Class<T> interfaceClass) {
 		try{
 			Pair<Long, Endpoint> value = getInvocationIdAndEndpoint(invocationName, endpoint);
+			if("AbstractService".equals(value.getSecond().getServiceId())) return null;
 			return getFactory(value.getSecond().getProtocol()).getService(
 					invocationName, value.getFirst(), value.getSecond(), interfaceClass);
 		} catch(DaoException e){

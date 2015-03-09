@@ -16,6 +16,7 @@ import jp.go.nict.langrid.management.logic.ResourceLogic;
 import jp.go.nict.langrid.management.logic.ResourceLogicException;
 import jp.go.nict.langrid.management.logic.Scope;
 import jp.go.nict.langrid.management.web.model.ResourceModel;
+import jp.go.nict.langrid.management.web.model.enumeration.UserRole;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 import jp.go.nict.langrid.management.web.model.service.LangridList;
 import jp.go.nict.langrid.management.web.model.service.ResourceModelUtil;
@@ -81,7 +82,7 @@ public class ResourceServiceImpl implements ResourceService {
 		try {
 			if(ServiceFactory.getInstance().getGridService().isAutoApproveEnabled()
 				|| ServiceFactory.getInstance().getUserService(resource.getGridId())
-					.isAdministrator(resource.getOwnerUserId()))
+					.getUserRoles(resource.getOwnerUserId()).contains(UserRole.ADMINISTRATOR))
 			{
 				resource.setApproved(true);
 			}
@@ -160,7 +161,7 @@ public class ResourceServiceImpl implements ResourceService {
 	}
 
 	@Override
-	public void setScopeParametar(String serviceGridId, String userGridId, String userId) {
+	public void setScopeParameter(String serviceGridId, String userGridId, String userId) {
 		this.serviceGridId = serviceGridId;
 		this.userGridId = userGridId;
 		this.userId = userId;

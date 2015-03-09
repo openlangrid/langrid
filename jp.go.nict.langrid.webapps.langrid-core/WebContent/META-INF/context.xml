@@ -10,11 +10,12 @@
         url="jdbc:postgresql:langrid"
         />
 
+	<Parameter name="langrid.openlangrid" value="true" />
 	<Parameter name="langrid.node.gridId" value="trang" />
 	<Parameter name="langrid.node.gridName" value="trang" />
 	<Parameter name="langrid.node.nodeId" value="trang_core" />
 	<Parameter name="langrid.node.name" value="core node of Trang" />
-	<Parameter name="langrid.node.url" value="http://localhost:8080/langrid" />
+	<Parameter name="langrid.node.url" value="http://localhost:8080/jp.go.nict.langrid.webapps.langrid-core" />
 	<Parameter name="langrid.node.os" value="Windows" />
 	<Parameter name="langrid.node.cpu" value="Intel" />
 	<Parameter name="langrid.node.memory" value="8G" />

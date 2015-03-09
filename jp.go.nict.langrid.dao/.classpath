@@ -16,7 +16,7 @@
 	<classpathentry exported="true" kind="lib" path="/lib/spring/org.springframework.expression-3.0.6.RELEASE.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.commons"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.testresource"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>

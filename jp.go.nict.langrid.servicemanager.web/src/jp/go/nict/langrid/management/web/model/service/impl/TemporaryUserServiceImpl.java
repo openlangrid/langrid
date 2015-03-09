@@ -23,7 +23,7 @@ import jp.go.nict.langrid.management.web.model.service.TemporaryUserService;
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 497 $
+ * @version $Revision: 1506 $
  */
 public class TemporaryUserServiceImpl implements TemporaryUserService {
 	public TemporaryUserServiceImpl() throws ServiceManagerException {
@@ -127,7 +127,7 @@ public class TemporaryUserServiceImpl implements TemporaryUserService {
 	}
 
 	@Override
-	public void setScopeParametar(String serviceGridId, String userGridId, String userId) {
+	public void setScopeParameter(String serviceGridId, String userGridId, String userId) {
 		this.serviceGridId = serviceGridId;
 		this.userGridId = userGridId;
 		this.userId = userId;

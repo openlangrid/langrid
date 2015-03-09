@@ -12,6 +12,15 @@
 						 			<input wicket:id="url" class="form-text-auto-width" type="text"/><br/>
 						 		</td>
 							</tr>
+							<tr wicket:id="protocolContainer">
+								<th scope="row">
+									<wicket:message key="Common.label.Protocol"/>
+								</th>
+								<td>
+									<span wicket:id="protocolLabel"></span>
+									<select wicket:id=protocol"></select>
+								</td>
+							</tr>
 							<tr wicket:id="userNameContainer">
 								<th scope="row">
 									<wicket:message key="Common.label.user.Name" />

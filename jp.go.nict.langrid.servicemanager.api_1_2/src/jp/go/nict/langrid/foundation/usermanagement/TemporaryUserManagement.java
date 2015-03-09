@@ -2,6 +2,7 @@ package jp.go.nict.langrid.foundation.usermanagement;
 
 import static jp.go.nict.langrid.foundation.util.validation.AccessRightValidationPolicy.ADMINONLY;
 import static jp.go.nict.langrid.foundation.util.validation.AccessRightValidationPolicy.PARENT_OR_ADMIN;
+import static jp.go.nict.langrid.foundation.util.validation.AccessRightValidationPolicy.PARENT_OR_SELF_OR_ADMIN;
 
 import java.util.Calendar;
 
@@ -48,7 +49,7 @@ import jp.go.nict.langrid.service_1_2.util.ExceptionConverter;
  * 
  * @author Takao Nakaguchi
  * @author $Author: t-nakaguchi $
- * @version $Revision: 302 $
+ * @version $Revision: 1508 $
  */
 public class TemporaryUserManagement
 extends AbstractLangridService
@@ -225,21 +226,12 @@ implements TemporaryUserManagementService
 			throws AccessLimitExceededException, InvalidParameterException,
 			NoAccessPermissionException, ServiceConfigurationException,
 			UnknownException, UserNotFoundException {
-		String callerUserId = "--unknown--";
 		try{
-			callerUserId = getUserChecker().getUserId();
-			getUserDao().getUser(getGridId(), callerUserId);
-			TemporaryUser u = getTemporaryUserDao().getUser(getGridId(), userId);
-			if(!u.getParentUserId().equals(callerUserId)){
-				throw new NoAccessPermissionException(callerUserId);
-			}
 			logic.deleteUser(getGridId(), userId);
 		} catch(jp.go.nict.langrid.dao.UserNotFoundException e){
 			throw convertException(e);
 		} catch(DaoException e){
 			throw convertException(e);
-		} catch(NoAccessPermissionException e){
-			throw e;
 		} catch(Throwable e){
 			throw ExceptionConverter.convertException(e);
 		}
@@ -252,7 +244,7 @@ implements TemporaryUserManagementService
 	 * 
 	 */
 	@ValidatedMethod
-	@AccessRightValidatedMethod
+	@AccessRightValidatedMethod(policy=PARENT_OR_SELF_OR_ADMIN, argNames="userId")
 	@TransactionMethod
 	public Calendar getBeginAvailableDateTime(
 			@NotEmpty @ValidUserId String userId
@@ -286,7 +278,7 @@ implements TemporaryUserManagementService
 	 * 
 	 */
 	@ValidatedMethod
-	@AccessRightValidatedMethod
+	@AccessRightValidatedMethod(policy=PARENT_OR_SELF_OR_ADMIN, argNames="userId")
 	@TransactionMethod
 	public Calendar getEndAvailableDateTime(
 			@NotEmpty @ValidUserId String userId
@@ -321,7 +313,7 @@ implements TemporaryUserManagementService
 	 * 
 	 */
 	@ValidatedMethod
-	@AccessRightValidatedMethod
+	@AccessRightValidatedMethod(policy=PARENT_OR_ADMIN, argNames="userId")
 	@TransactionMethod
 	@Log
 	public void setAvailableDateTimes(
@@ -339,11 +331,7 @@ implements TemporaryUserManagementService
 					, "beginAvailableDateTime must earlier than endAvailableDateTime.");
 		}
 		try{
-			String callerUserId = getUserChecker().getUserId();
 			TemporaryUser u = getTemporaryUserDao().getUser(getGridId(), userId);
-			if(!u.getParentUserId().equals(callerUserId)){
-				throw new NoAccessPermissionException(callerUserId);
-			}
 			getTemporaryUserDao().setAvailableDateTime(
 					u
 					, beginAvailableDateTime
@@ -353,8 +341,6 @@ implements TemporaryUserManagementService
 			throw convertException(e);
 		} catch(DaoException e){
 			throw convertException(e);
-		} catch(NoAccessPermissionException e){
-			throw e;
 		} catch(Throwable e){
 			throw ExceptionConverter.convertException(e);
 		}

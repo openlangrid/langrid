@@ -12,7 +12,7 @@ import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 497 $
+ * @version $Revision: 1506 $
  */
 public interface DataService<T> extends Serializable {
 	/**
@@ -61,7 +61,7 @@ public interface DataService<T> extends Serializable {
 	 * 
 	 * 
 	 */
-	public void setScopeParametar(String serviceGridId, String userGridId, String userId);
+	public void setScopeParameter(String serviceGridId, String userGridId, String userId);
 	
 	public boolean isExist(String dataId) throws ServiceManagerException;
 }

@@ -46,6 +46,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import jp.go.nict.langrid.commons.io.DuplicatingInputStream;
+import jp.go.nict.langrid.commons.io.IndentedWriter;
 import jp.go.nict.langrid.commons.io.StreamUtil;
 import jp.go.nict.langrid.commons.lang.ClassResource;
 import jp.go.nict.langrid.commons.lang.ClassResourceLoader;
@@ -75,6 +76,7 @@ import jp.go.nict.langrid.commons.ws.servlet.InputStreamServletInputStream;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSONException;
 import jp.go.nict.langrid.servicecontainer.executor.StreamingNotifier;
+import jp.go.nict.langrid.servicecontainer.handler.RIProcessor;
 import jp.go.nict.langrid.servicecontainer.handler.ServiceFactory;
 import jp.go.nict.langrid.servicecontainer.handler.ServiceLoader;
 import jp.go.nict.langrid.servicecontainer.handler.annotation.ServicesUtil;
@@ -151,6 +153,10 @@ public class JsonRpcServlet extends HttpServlet {
 		}
 	}
 
+	protected ServiceFactoryLoader[] getDefaultServiceFactoryLoaders(){
+		return defaultLoaders;
+	}
+
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
@@ -198,7 +204,16 @@ public class JsonRpcServlet extends HttpServlet {
 			doProcess(req, resp);
 			return;
 		}
-		ServiceLoader loader = new ServiceLoader(sc, defaultLoaders);
+		ServiceLoader loader = new ServiceLoader(sc, getDefaultServiceFactoryLoaders());
+		if(param.getValue("ts") != null){
+			RIProcessor.start(sc);
+			try{
+				doGenerateTypeScript(loader, getServiceName(req), resp);
+			} finally{
+				RIProcessor.finish();
+			}
+			return;
+		}
 		String sample = param.getValue("sample");
 		if(sample != null){
 			resp.setContentType("text/plain");
@@ -251,73 +266,78 @@ public class JsonRpcServlet extends HttpServlet {
 					w.println("<font color=\"red\">(Failed to load service factory(null))</font></b></li>");
 					continue;
 				}
-				Object service = f.getService();
-				if(service instanceof StreamingNotifier){
-					w.print("(Streaming ready!)");
-				}
-				String sdesc = RpcAnnotationUtil.getServiceDescriptions(Service.class, "en");
-				if(sdesc != null && sdesc.length() > 0){
-					w.print(" - " + StringEscapeUtils.escapeHtml(sdesc));
-				}
-				w.print("</b><ul>");
-				w.print("<li>interfaces<ul>");
-				try {
-					Set<Class<?>> visited = new HashSet<Class<?>>();
-					for(Class<?> intf : f.getInterfaces()){
-						if(visited.contains(intf)) continue;
-						visited.add(intf);
-						if(StreamingNotifier.class.isAssignableFrom(intf)) continue;
-						w.print("<li>" + prettyName(intf));
-						String desc = RpcAnnotationUtil.getServiceDescriptions(intf, "en");
-						if(desc != null && desc.length() > 0){
-							w.print(" - " + StringEscapeUtils.escapeHtml(desc));
-						}
-						w.print("<ul>");
-						try{
-							Set<Method> methods = new TreeSet<Method>(new Comparator<Method>() {
-								public int compare(Method o1, Method o2) {
-									int r = o1.getName().compareTo(o2.getName());
-									if(r != 0) return r;
-									return o1.getParameterTypes().length - o2.getParameterTypes().length;
+				RIProcessor.start(sc);
+				try{
+					Object service = f.getService();
+					if(service instanceof StreamingNotifier){
+						w.print("(Streaming ready!)");
+					}
+					String sdesc = RpcAnnotationUtil.getServiceDescriptions(Service.class, "en");
+					if(sdesc != null && sdesc.length() > 0){
+						w.print(" - " + StringEscapeUtils.escapeHtml(sdesc));
+					}
+					w.print("</b><ul>");
+					w.print("<li>interfaces<ul>");
+					try {
+						Set<Class<?>> visited = new HashSet<Class<?>>();
+						for(Class<?> intf : f.getInterfaces()){
+							if(visited.contains(intf)) continue;
+							visited.add(intf);
+							if(StreamingNotifier.class.isAssignableFrom(intf)) continue;
+							w.print("<li>" + prettyName(intf));
+							String desc = RpcAnnotationUtil.getServiceDescriptions(intf, "en");
+							if(desc != null && desc.length() > 0){
+								w.print(" - " + StringEscapeUtils.escapeHtml(desc));
+							}
+							w.print("<ul>");
+							try{
+								Set<Method> methods = new TreeSet<Method>(new Comparator<Method>() {
+									public int compare(Method o1, Method o2) {
+										int r = o1.getName().compareTo(o2.getName());
+										if(r != 0) return r;
+										return o1.getParameterTypes().length - o2.getParameterTypes().length;
+									}
+								});
+								methods.addAll(Arrays.asList(intf.getMethods()));
+								for(Method m : methods){
+									if(m.isSynthetic()) continue;
+									if((m.getModifiers() & Modifier.PUBLIC) == 0) continue;
+									printMethod(s, m, getImplementedMethod(service, m), id++, w);
 								}
-							});
-							methods.addAll(Arrays.asList(intf.getMethods()));
-							for(Method m : methods){
-								if(m.isSynthetic()) continue;
-								if((m.getModifiers() & Modifier.PUBLIC) == 0) continue;
-								printMethod(s, m, getImplementedMethod(service, m), id++, w);
+							} finally{
+								w.println("</ul></li>");
 							}
-						} finally{
-							w.println("</ul></li>");
 						}
+					} catch (SecurityException e) {
+					} finally{
+						w.println("</ul></li>");
 					}
-				} catch (SecurityException e) {
-				} finally{
+					w.print("<li>implementation<ul>");
+					if(service != null){
+						w.println("<li>" + prettyName(service.getClass()) + "</li>");
+						if(service instanceof AbstractCompositeService){
+							boolean first = true;
+							for(Pair<Invocation, Class<?>> v : ((AbstractCompositeService)service).invocations()){
+								if(first){
+									w.println("<li>invocations<ul>");
+									first = false;
+								}
+								w.println("<li><b>" + v.getFirst().name() + (v.getFirst().required() ? "(required)" : "") + "</b>: "
+										+ prettyName(v.getSecond()) + "</li>"); 
+							}
+							if(!first){
+								w.println("</ul></li>");
+							}
+						}
+					} else{
+						w.println("<li><font color=\"red\"><b>failed to load implementation class.</b></font></li>");
+					}
 					w.println("</ul></li>");
+					w.println("</ul></li>");
+					w.println("<br/>");
+				} finally{
+					RIProcessor.finish();
 				}
-				w.print("<li>implementation<ul>");
-				if(service != null){
-					w.println("<li>" + prettyName(service.getClass()) + "</li>");
-					if(service instanceof AbstractCompositeService){
-						boolean first = true;
-						for(Pair<Invocation, Class<?>> v : ((AbstractCompositeService)service).invocations()){
-							if(first){
-								w.println("<li>invocations<ul>");
-								first = false;
-							}
-							w.println("<li><b>" + v.getFirst().name() + (v.getFirst().required() ? "(required)" : "") + "</b>: "
-									+ prettyName(v.getSecond()) + "</li>"); 
-						}
-						if(!first){
-							w.println("</ul></li>");
-						}
-					}
-				} else{
-					w.println("<li><font color=\"red\"><b>failed to load implementation class.</b></font></li>");
-				}
-				w.println("</ul></li>");
-				w.println("</ul></li>");
-				w.println("<br/>");
 			}
 		} catch(IOException e){
 			w.println("<pre><font color=\"red\">");
@@ -336,6 +356,67 @@ public class JsonRpcServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 	throws ServletException, IOException{
 		doProcess(req, resp);
+	}
+
+	private String toTs(Class<?> clazz){
+		if(clazz.equals(boolean.class) || clazz.equals(Boolean.class)){
+			return "boolean";
+		} else if(clazz.equals(char.class) || clazz.equals(Character.class) || clazz.equals(String.class)){
+			return "string";
+		} else if(clazz.equals(short.class) || clazz.equals(int.class) || clazz.equals(long.class) ||
+				clazz.equals(float.class) || clazz.equals(double.class) || Number.class.isAssignableFrom(clazz)){
+			return "number";
+		} else if(clazz.equals(void.class)){
+			return "void";
+		} else{
+			return "any";
+		}
+	}
+
+	private void doGenerateTypeScript(ServiceLoader loader, String serviceName, HttpServletResponse resp)
+	throws ServletException, IOException{
+		ServiceFactory f = loader.loadServiceFactory(Thread.currentThread().getContextClassLoader(), serviceName);
+		IndentedWriter w = new IndentedWriter(resp.getWriter());
+		w.println("/// <reference path=\"jquery.d.ts\" />");
+		w.println("class %s{", serviceName);
+		w.indent().println("constructor(path: string){");
+		w.indent().println("this.path = path;");
+		w.unindent().println("}");
+		Object service = f.getService();
+		for(Class<?> intf : f.getInterfaces()){
+			for(Method m : intf.getMethods()){
+				Method imm = getImplementedMethod(service, m);
+				if(imm == null) imm = m;
+				StringBuilder params = new StringBuilder();
+				StringBuilder paramDefs = new StringBuilder();
+				Class<?>[] paramTypes = imm.getParameterTypes();
+				Trio<String, String, String>[] nameSampleDescs = RpcAnnotationUtil.getParameterInfo(m, imm, "en");
+				int n = paramTypes.length;
+				for(int i = 0; i < n; i++){
+					if(i != 0){
+						paramDefs.append(", ");
+						params.append(", ");
+					}
+					String name = nameSampleDescs[i].getFirst();
+					paramDefs.append(name).append(": ").append(toTs(paramTypes[i]));
+					params.append(name);
+				}
+				w.println("public %s(%s): %s{", imm.getName(), paramDefs, toTs(imm.getReturnType()));
+				w.indent().println("return this.ajax(\"%s\", [%s]);", m.getName(), params);
+				w.unindent().println("}");
+			}
+		}
+		w.println("private ajax(methodName: string, params: any[]): any{").indent()
+			.println("return $.ajax({").indent()
+			.println("type: \"POST\", url: this.path,")
+			.println("dataType: \"json\", data: JSON.stringify({").indent()
+			.println("method: methodName,")
+			.println("params: params")
+			.unindent("})")
+			.unindent("});")
+			.unindent("}")
+			.println("private path: string;")
+			.unindent("}");
 	}
 
 	private Method getImplementedMethod(Object instance, Method method){
@@ -508,7 +589,7 @@ public class JsonRpcServlet extends HttpServlet {
 			h = new JsonRpcDynamicHandler();
 		}
 		ServiceContext sc = new ServletServiceContext(getServletConfig(), request, Arrays.asList(req.getHeaders()));
-		ServiceLoader loader = new ServiceLoader(sc, defaultLoaders);
+		ServiceLoader loader = new ServiceLoader(sc, getDefaultServiceFactoryLoaders());
 		OutputStream os = resp.getOutputStream();
 		h.handle(sc, loader, serviceName, req, resp, os);
 		os.flush();

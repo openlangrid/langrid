@@ -11,7 +11,14 @@ import jp.go.nict.langrid.commons.lang.ExceptionUtil;
 import jp.go.nict.langrid.servicecontainer.service.ComponentServiceFactory;
 
 public class LoggingComponentServiceFactory implements ComponentServiceFactory {
+	public LoggingComponentServiceFactory() {
+	}
+
 	public LoggingComponentServiceFactory(ComponentServiceFactory original){
+		this.original = original;
+	}
+	
+	public void setOriginalFactory(ComponentServiceFactory original) {
 		this.original = original;
 	}
 

@@ -17,11 +17,6 @@
  */
 package jp.go.nict.langrid.servicecontainer.handler.protobufrpc;
 
-import java.lang.reflect.InvocationTargetException;
-import java.security.InvalidParameterException;
-
-import jp.go.nict.langrid.client.protobuf.proto.CommonProtos.Fault;
-import jp.go.nict.langrid.commons.lang.ExceptionUtil;
 import jp.go.nict.langrid.commons.rpc.RpcFault;
 import jp.go.nict.langrid.commons.rpc.RpcFaultUtil;
 
@@ -31,6 +26,7 @@ import jp.go.nict.langrid.commons.rpc.RpcFaultUtil;
  * @author Takao Nakaguchi
  */
 public abstract class AbstractProtoBufHandler{
+/*
 	protected Fault createFault(Throwable exception){
 		if(exception instanceof InvocationTargetException){
 			exception = ((InvocationTargetException)exception).getCause();
@@ -45,7 +41,7 @@ public abstract class AbstractProtoBufHandler{
 				.setFaultDetail(ExceptionUtil.getMessageWithStackTrace(exception))
 				.build();
 	}
-
+*/
 	protected RpcFault createRpcFault(Throwable exception){
 		return RpcFaultUtil.throwableToRpcFault("Server.userException", exception);
 /*

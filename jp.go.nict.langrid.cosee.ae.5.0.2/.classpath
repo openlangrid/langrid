@@ -35,5 +35,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="/lib/axis/axis.jar" sourcepath="C:/sources/axis-1_3/src"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.commons"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.servicecontainer.handler.axis"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.servicecontainer"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

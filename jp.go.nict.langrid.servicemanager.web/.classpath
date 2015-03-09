@@ -58,6 +58,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.commons.validator"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.dao"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.dao.hibernate"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.servicemanager.logic"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.language"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.service.common_1_2"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.service.management_1_2"/>
@@ -66,18 +67,17 @@
 	<classpathentry kind="lib" path="/lib/apache/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="/lib/jsonic/jsonic-1.2.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.client.ws_1_2.management"/>
-	<classpathentry kind="lib" path="/lib/apache/wicket-1.4.18.jar"/>
-	<classpathentry kind="lib" path="/lib/apache/wicket-datetime-1.4.18.jar"/>
-	<classpathentry kind="lib" path="/lib/apache/wicket-devutils-1.4.18.jar"/>
-	<classpathentry kind="lib" path="/lib/apache/wicket-extensions-1.4.18.jar"/>
-	<classpathentry kind="lib" path="/lib/apache/wicket-ioc-1.4.18.jar"/>
-	<classpathentry kind="lib" path="/lib/apache/wicket-spring-1.4.18.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v7.0">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
-			<attribute name="owner.project.facets" value="#system#;jst.utility"/>
+			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.servicemanager.logic"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre7"/>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v7.0"/>
+	<classpathentry kind="lib" path="/lib/apache/wicket-1.4.23.jar" sourcepath="/Users/nakaguchi/.m2/repository/org/apache/wicket/wicket/1.4.23/wicket-1.4.23-sources.jar"/>
+	<classpathentry kind="lib" path="/lib/apache/wicket-datetime-1.4.23.jar"/>
+	<classpathentry kind="lib" path="/lib/apache/wicket-devutils-1.4.23.jar"/>
+	<classpathentry kind="lib" path="/lib/apache/wicket-extensions-1.4.23.jar"/>
+	<classpathentry kind="lib" path="/lib/apache/wicket-ioc-1.4.23.jar"/>
+	<classpathentry kind="lib" path="/lib/apache/wicket-spring-1.4.23.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

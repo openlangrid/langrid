@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import jp.go.nict.langrid.commons.cs.binding.BindingNode;
 import jp.go.nict.langrid.commons.cs.binding.DynamicBindingUtil;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
+import jp.go.nict.langrid.commons.rpc.TransportHeader;
 import jp.go.nict.langrid.commons.ws.LangridConstants;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.cosee.binding.TreeBindings;
@@ -58,6 +59,8 @@ public class DynamicBindingRewriter extends AbstractEndpointRewriter{
 							)
 					));
 			properties.put("treeBindings", treeBindings);
+			properties.put("treeBindings.authKey", serviceContext.getInitParameter("langrid.appAuthKey"));
+			properties.put("treeBindings.authUserId", serviceContext.getAuthUser());
 		} catch(ParseException e){
 			logger.log(Level.WARNING
 					, "failed to parse binding information."
@@ -77,9 +80,18 @@ public class DynamicBindingRewriter extends AbstractEndpointRewriter{
 			return original;
 		}
 
-		return makeEndpoint(
+		Endpoint ep = makeEndpoint(
 				original, serviceId, properties
 				);
+		if(!serviceId.contains("://")){
+			String key = (String)properties.get("treeBindings.authKey");
+			String userId = (String)properties.get("treeBindings.authUserId");
+			if(key != null && userId != null){
+				ep.setUserName(key);
+				ep.setPassword(userId);
+			}
+		}
+		return ep;
 	}
 
 	@Override
@@ -89,7 +101,25 @@ public class DynamicBindingRewriter extends AbstractEndpointRewriter{
 	{
 		super.adjustProperties(properties, partnerLinkName);
 		TreeBindings tb = (TreeBindings)properties.get("treeBindings");
-		Collection<BindingNode> children = tb.getChildrenNodes(partnerLinkName);
+		BindingNode node = tb.getBindingNodeFor(partnerLinkName);
+		if(node == null) return;
+
+		{
+			@SuppressWarnings("unchecked")
+			List<TransportHeader> additionalHeaders = (List<TransportHeader>)properties.get("additionalMimeHeaders");
+			for(TransportHeader th : node.getTransportHeaders()){
+				additionalHeaders.add(th);
+			}
+		}
+		{
+			@SuppressWarnings("unchecked")
+			List<RpcHeader> additionalHeaders = (List<RpcHeader>)properties.get("additionalRpcHeaders");
+			for(RpcHeader th : node.getRpcHeaders()){
+				additionalHeaders.add(th);
+			}
+		}
+
+		Collection<BindingNode> children = node.getChildren();
 		if(children != null && children.size() > 0){
 			List<RpcHeader> headers = new ArrayList<RpcHeader>();
 			headers.add(new RpcHeader(

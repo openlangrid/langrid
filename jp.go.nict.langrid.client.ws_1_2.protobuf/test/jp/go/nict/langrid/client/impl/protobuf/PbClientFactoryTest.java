@@ -2,6 +2,7 @@ package jp.go.nict.langrid.client.impl.protobuf;
 
 import java.net.URL;
 
+import jp.go.nict.langrid.client.protobufrpc.PbClientFactory;
 import jp.go.nict.langrid.commons.rpc.intf.Parameter;
 import jp.go.nict.langrid.commons.rpc.intf.Service;
 

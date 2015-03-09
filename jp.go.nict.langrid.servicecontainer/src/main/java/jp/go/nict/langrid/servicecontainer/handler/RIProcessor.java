@@ -282,7 +282,7 @@ public class RIProcessor {
 			 defaultEP = new Endpoint(
 					 "AbstractService"
 					 , new URI("http://langrid.nict.go.jp/langrid-1.2/invoker/AbstractService")
-					 , "", "" ) ;
+					 , null, null) ;
 		} catch(URISyntaxException e){
 			throw new RuntimeException(e);
 		}

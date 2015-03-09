@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceManagerPage.java 497 2012-05-24 04:13:03Z t-nakaguchi $
+ * $Id: ServiceManagerPage.java 1506 2015-03-02 16:03:34Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and
  * provides composite language services. Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -17,9 +17,11 @@
  */
 package jp.go.nict.langrid.management.web.view.page;
 
+import java.util.Set;
+
 import jp.go.nict.langrid.management.web.log.LogWriter;
 import jp.go.nict.langrid.management.web.model.GridModel;
-import jp.go.nict.langrid.management.web.model.enumeration.SessionStatus;
+import jp.go.nict.langrid.management.web.model.enumeration.UserRole;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 import jp.go.nict.langrid.management.web.model.service.ServiceFactory;
 import jp.go.nict.langrid.management.web.utility.resource.MessageUtil;
@@ -37,7 +39,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
  *  BasePageにヘッダ、ログイン用パネル、サイドメニュー、フッタ、フィードバックパネルが追加される
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 497 $
+ * @version $Revision: 1506 $
  */
 public class ServiceManagerPage extends BasePage {
 	/**
@@ -49,27 +51,19 @@ public class ServiceManagerPage extends BasePage {
 		fp.setEscapeModelStrings(false);
 		fp.setOutputMarkupId(true);
 		add(fp);
-		SessionStatus sessionStatus;
 		ServiceManagerSession session = (ServiceManagerSession)getSession();
-		if(session.isAdministrater()) {
-			sessionStatus = SessionStatus.ADMINISTRATOR;
-		} else if(session.isLogin()) {
-//			session.
-			sessionStatus = SessionStatus.LOGIN;
-		} else {
-			sessionStatus = SessionStatus.LOGOUT;
-		}
+		Set<UserRole> userRoles = session.getUserRoles();
 
 		try {
 			add(new SideMenuMaker().makeMenu(
-					"nestedMenu", getPageClass().getName(), sessionStatus));
+					"nestedMenu", getPageClass().getName(), userRoles));
 		} catch(ServiceManagerException e) {
 			LogWriter.writeError("System", e, getClass(), "Menu component can't be maked.");
 			e.printStackTrace();
 		}
 
 		add(new SessionOperatePanel(
-				"SessionOperate", session.isLogin(), session.getUserId()));
+				"SessionOperate", !userRoles.isEmpty(), session.getUserId()));
 		add(new Label("ServiceManagerCopyright"
 			, MessageUtil.getServiceManagerCopyright()).setEscapeModelStrings(false));
 		ServiceFactory sf =ServiceFactory.getInstance();

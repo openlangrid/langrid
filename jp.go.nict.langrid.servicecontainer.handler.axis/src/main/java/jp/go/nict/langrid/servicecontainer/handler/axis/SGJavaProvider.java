@@ -48,6 +48,7 @@ import org.apache.axis.Message;
 import org.apache.axis.MessageContext;
 import org.apache.axis.description.JavaServiceDesc;
 import org.apache.axis.description.OperationDesc;
+import org.apache.axis.description.ParameterDesc;
 import org.apache.axis.handlers.soap.SOAPService;
 import org.apache.axis.message.SOAPEnvelope;
 import org.apache.axis.providers.BasicProvider;
@@ -131,7 +132,8 @@ public class SGJavaProvider extends RPCProvider{
 					String[] names = ParamNameExtractor.getParameterNamesFromDebugInfo(implMethod);
 					if(names != null){
 						for(int i = 0; i < names.length; i++){
-							op.getParameter(i).setName(names[i]);
+							ParameterDesc p = op.getParameter(i);
+							if(p != null) p.setName(names[i]);
 						}
 					}
 				} catch(NoSuchMethodException e){

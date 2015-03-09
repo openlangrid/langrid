@@ -1,5 +1,5 @@
 /*
- * $Id: InternalLanguageModel.java 303 2010-12-01 04:21:52Z t-nakaguchi $
+ * $Id: InternalLanguageModel.java 1469 2015-01-24 07:59:20Z t-nakaguchi $
  * 
  * This is a program for Language Grid Core Node. This combines multiple language resources and
  * provides composite language services. Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -42,7 +42,7 @@ import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 303 $
+ * @version $Revision: 1469 $
  */
 public class InternalLanguageModel{
    public static List<Language> getLanguageList() {
@@ -280,26 +280,21 @@ public class InternalLanguageModel{
 			DEFAULTLOCALE = new Locale("en");
 		}
 		try{
-		   codeMap.put(new Language("*").getCode(), new Language("*"));
+			codeMap.put(new Language("*").getCode(), new Language("*"));
 			setLanguageFromISO639_1To(codeMap);
 		}catch(ServiceManagerException e){
 			e.printStackTrace();
 		} catch(InvalidLanguageTagException e) {
-		   e.printStackTrace();
-      }
+			e.printStackTrace();
+		}
 		setOtherLanguages(codeMap);
 		return codeMap;
 	}
 	
 	private static void setOtherLanguages(Map<String, Language> codeMap){
-		codeMap.put(LangridLanguageTags.en_GB.getCode(), LangridLanguageTags.en_GB);
-		codeMap.put(LangridLanguageTags.en_US.getCode(), LangridLanguageTags.en_US);
-		codeMap.put(LangridLanguageTags.pt_BR.getCode(), LangridLanguageTags.pt_BR);
-		codeMap.put(LangridLanguageTags.pt_PT.getCode(), LangridLanguageTags.pt_PT);
-		codeMap.put(LangridLanguageTags.zh_CN.getCode(), LangridLanguageTags.zh_CN);
-		codeMap.put(LangridLanguageTags.zh_TW.getCode(), LangridLanguageTags.zh_TW);
-//		codeMap.put(zh_CN.getCode(), zh_CN);
-//		codeMap.put(zh_TW.getCode(), zh_TW);
+		for(Language l : LangridLanguageTags.values()){
+			codeMap.put(l.getCode(), l);
+		}
 		codeMap.put(zh_Hans.getCode(), zh_Hans);
 		codeMap.put(zh_Hant.getCode(), zh_Hant);
 	}

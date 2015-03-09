@@ -16,22 +16,18 @@
 	<classpathentry kind="lib" path="lib/jp.go.nict.langrid.client.axis.jar"/>
 	<classpathentry kind="lib" path="lib/jp.go.nict.langrid.client.ws_1_2.jar"/>
 	<classpathentry kind="lib" path="lib/jp.go.nict.langrid.client.ws_1_2.protobuf.jar"/>
-	<classpathentry kind="lib" path="lib/jp.go.nict.langrid.commons.beanutils.jar"/>
-	<classpathentry kind="lib" path="lib/jp.go.nict.langrid.commons.cs.jar"/>
 	<classpathentry kind="lib" path="lib/jp.go.nict.langrid.commons.jar"/>
-	<classpathentry kind="lib" path="lib/jp.go.nict.langrid.commons.net.jar"/>
-	<classpathentry kind="lib" path="lib/jp.go.nict.langrid.commons.ws.jar"/>
 	<classpathentry kind="lib" path="lib/jp.go.nict.langrid.language.jar"/>
 	<classpathentry kind="lib" path="lib/jp.go.nict.langrid.service.common_1_2.jar"/>
 	<classpathentry kind="lib" path="lib/jp.go.nict.langrid.service.language_1_2.jar"/>
-	<classpathentry kind="lib" path="lib/js.jar"/>
 	<classpathentry kind="lib" path="lib/mail.jar"/>
 	<classpathentry kind="lib" path="lib/protobuf-java-2.2.0.jar"/>
 	<classpathentry kind="lib" path="lib/saaj.jar"/>
 	<classpathentry kind="lib" path="lib/wsdl4j-1.5.1.jar"/>
 	<classpathentry kind="lib" path="lib/jp.go.nict.langrid.client.jar"/>
 	<classpathentry kind="lib" path="lib/jp.go.nict.langrid.client.soap.jar"/>
-	<classpathentry kind="lib" path="lib/groovy-all-1.5.6.jar"/>
 	<classpathentry kind="lib" path="lib/jp.go.nict.langrid.commons.protobufrpc.jar"/>
+	<classpathentry kind="lib" path="lib/guava-15.0.jar"/>
+	<classpathentry kind="lib" path="lib/jmte-3.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

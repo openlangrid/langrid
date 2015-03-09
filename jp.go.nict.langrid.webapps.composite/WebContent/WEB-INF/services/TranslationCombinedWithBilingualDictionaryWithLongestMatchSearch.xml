@@ -2,10 +2,6 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
 	<bean id="target" class="jp.go.nict.langrid.servicecontainer.handler.TargetServiceFactory" >
-		<property name="decorators">
-			<list />
-		</property>
-
 		<property name="service">
 			<bean class="jp.go.nict.langrid.composite.translation.TranslationCombinedWithBilingualDictionaryWithLongestMatchSearch">
 				<property name="ComponentServiceFactory">

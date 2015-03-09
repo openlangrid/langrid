@@ -20,10 +20,15 @@ package jp.go.nict.langrid.servicecontainer.executor.jsonrpc;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
+import jp.go.nict.langrid.client.ClientFactory;
+import jp.go.nict.langrid.client.jsonrpc.JsonRpcClientFactory;
 import jp.go.nict.langrid.cosee.Endpoint;
+import jp.go.nict.langrid.servicecontainer.executor.CachingClientFactoryServiceExecutor;
+import jp.go.nict.langrid.servicecontainer.executor.ClientFactoryServiceExecutor;
 import jp.go.nict.langrid.servicecontainer.service.ComponentServiceFactory;
 import jp.go.nict.langrid.servicecontainer.service.component.AbstractComponentServiceFactory;
 
@@ -43,12 +48,18 @@ implements ComponentServiceFactory{
 		try{
 			Constructor<?> ctor = factories.get(interfaceClass);
 			if(ctor == null){
-				return isCacheEnabled() ?
-						CachingDynamicJsonServiceExecutor.create(
-								invocationName, invocationId, endpoint, interfaceClass
-								, getCache()
+				ClientFactory f = new JsonRpcClientFactory();
+				return (T)Proxy.newProxyInstance(
+						Thread.currentThread().getContextClassLoader()
+						, new Class<?>[]{interfaceClass}
+						, isCacheEnabled() ?
+						new CachingClientFactoryServiceExecutor(
+								invocationName, invocationId, endpoint, interfaceClass,
+								f, getCache()
 								) :
-						DynamicJsonRpcServiceExecutor.create(invocationName, invocationId, endpoint, interfaceClass);
+						new ClientFactoryServiceExecutor(
+								invocationName, invocationId, endpoint, interfaceClass,
+								f));
 			}
 			return (T)ctor.newInstance(
 					invocationName, invocationId, endpoint);

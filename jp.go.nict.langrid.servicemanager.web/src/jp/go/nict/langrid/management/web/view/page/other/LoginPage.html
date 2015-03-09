@@ -19,13 +19,12 @@
 		<div class="btn-s">
 			<input type="submit" wicket:message="value:Login.label.Login" />
 		</div>
-		<br>
-		<div id="containerR">
-			<div class="accent">
-				<wicket:message key="Login.label.NotExsistAccount"></wicket:message>
+		<div id="containerR" wicket:id="createAccountContainer">
+			<div class="accent" style="text-align: center">
+				or
+				<p/>
 				<input class="btn-on-larger" wicket:id="createAccount" type="button" wicket:message="value:Login.label.createaccount" />
 			</div>
 		</div>
-
 	</form>
 </wicket:extend>

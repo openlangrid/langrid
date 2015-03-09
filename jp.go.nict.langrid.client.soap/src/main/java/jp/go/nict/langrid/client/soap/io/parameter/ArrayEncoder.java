@@ -14,24 +14,42 @@ public class ArrayEncoder extends Encoder{
 		this.value = value;
 	}
 
+	public static String getTagAttributes(Class<?> type, Object value){
+		StringBuilder brackets = new StringBuilder();
+		do{
+			brackets.append("[");
+			Class<?> ct = type.getComponentType();
+			if(!ct.isArray()){
+				brackets.append(Array.getLength(value));
+			}
+			brackets.append("]");
+			type = ct;
+			if(Array.getLength(value) != 0){
+				value = Array.get(value, 0);
+			}
+		} while(type.isArray());
+		String xsiType = EncoderUtil.typeToXsdType(type);
+		if(xsiType != null){
+			return String.format(
+					"soapenc:arrayType=\"xsd:%s%s\" xsi:type=\"soapenc:Array\"",
+					xsiType, brackets
+					);
+		} else{
+			return String.format(
+					"soapenc:arrayType=\"ns:%s%s\" xsi:type=\"soapenc:Array\" xmlns:ns=\"%s\"",
+					type.getSimpleName(), brackets, EncoderUtil.getNamespace(type)
+					);
+		}
+	}
+
 	public void write(PrintWriter writer) throws IOException{
 		Class<?> ct = type.getComponentType();
 		int n = Array.getLength(value);
 		writeIndent(writer);
-		String xsiType = EncoderUtil.typeToXsdType(ct);
-		if(xsiType != null){
-			writer.println(String.format(
-					"<%s soapenc:arrayType=\"xsd:%s[%s]\" xsi:type=\"soapenc:Array\" %s>"
-					, getName(), xsiType, (n == 0) ? "" : Integer.toString(n)
-					, Constants.soapenc
-					));
-		} else{
-			writer.println(String.format(
-					"<%s soapenc:arrayType=\"ns:%s[%s]\" xsi:type=\"soapenc:Array\" xmlns:ns=\"%s\" %s>"
-					, getName(), ct.getSimpleName(), (n == 0) ? "" : Integer.toString(n)
-					, EncoderUtil.getNamespace(ct), Constants.soapenc
-					));
-		}
+		String tagAttributes = getTagAttributes(type, value);
+		writer.println(String.format(
+				"<%s %s %s>", getName(), tagAttributes, Constants.soapenc));
+
 		try{
 			for(int i = 0; i < n; i++){
 				Object element = Array.get(value, i);

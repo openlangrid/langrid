@@ -23,7 +23,7 @@ import java.util.Calendar;
  * 
  * 
  * @author $Author: t-nakaguchi $
- * @version $Revision: 247 $
+ * @version $Revision: 1513 $
  */
 public class LogInfo {
 	/**
@@ -60,6 +60,9 @@ public class LogInfo {
 	public String getRemoteAddress() {
 		return remoteAddress;
 	}
+	public void setRemoteAddress(String remoteAddress) {
+		this.remoteAddress = remoteAddress;
+	}
 
 	/**
 	 * 
@@ -67,6 +70,9 @@ public class LogInfo {
 	 */
 	public String getRemoteHost() {
 		return remoteHost;
+	}
+	public void setRemoteHost(String remoteHost) {
+		this.remoteHost = remoteHost;
 	}
 
 	/**

@@ -62,4 +62,8 @@ implements jp.go.nict.langrid.service_1_2.translation.TranslationService{
 		}
 		return source;
 	}
+	
+	public void afterLoad(){
+		System.out.println("afterLoad called.");
+	}
 }

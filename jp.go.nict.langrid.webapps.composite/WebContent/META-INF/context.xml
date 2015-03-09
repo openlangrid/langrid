@@ -3,7 +3,7 @@
   reloadable="true"
   displayName="Langrid Composite Services"
 >
-    <Parameter name="langrid.coreNodeUrl" value="${coreNodeUrl}" />
+    <Parameter name="langrid.coreNodeUrl" value="http://langrid.org/service_manager/" />
     <Parameter name="langrid.appAuthKey" value="${appAuthKey}" />
 	<Parameter name="fromCoreNode.appAuth.authIps" value="${fromCoreNode.appAuthIps}" />
     <Parameter name="fromCoreNode.appAuth.authKey" value="${fromCoreNode.appAuthKey}" />

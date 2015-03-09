@@ -44,6 +44,7 @@ import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.commons.util.Trio;
 import jp.go.nict.langrid.commons.ws.HttpServletRequestUtil;
+import jp.go.nict.langrid.commons.ws.InitParam;
 import jp.go.nict.langrid.commons.ws.LangridConstants;
 import jp.go.nict.langrid.commons.ws.Protocols;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
@@ -69,6 +70,7 @@ import jp.go.nict.langrid.dao.entity.Node;
 import jp.go.nict.langrid.dao.entity.Service;
 import jp.go.nict.langrid.dao.entity.User;
 import jp.go.nict.langrid.servicesupervisor.frontend.FrontEnd;
+import jp.go.nict.langrid.servicesupervisor.frontend.LogInfo;
 import jp.go.nict.langrid.servicesupervisor.frontend.ProcessContext;
 import jp.go.nict.langrid.servicesupervisor.frontend.SystemErrorException;
 
@@ -79,11 +81,10 @@ import org.apache.commons.lang.StringEscapeUtils;
  * 
  * @author Takao Nakaguchi
  */
-public class ServiceSupervisor
-implements Filter{
+public class ServiceSupervisor implements Filter {
 	@Override
 	public void init(FilterConfig config) throws ServletException {
-		try{
+		try {
 			factory = DaoFactory.createInstance();
 			daoContext = factory.getDaoContext();
 			gdao = factory.createGridDao();
@@ -94,63 +95,67 @@ implements Filter{
 			aldao = factory.createAccessLimitDao();
 			asdao = factory.createAccessStateDao();
 			algdao = factory.createAccessLogDao();
-		} catch(DaoException e){
+		} catch (DaoException e) {
 			throw new ServletException(e);
 		}
 	}
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-	throws IOException, ServletException {
-		doFilter((HttpServletRequest)request, (HttpServletResponse)response, chain);
+	public void doFilter(ServletRequest request, ServletResponse response,
+			FilterChain chain) throws IOException, ServletException {
+		doFilter((HttpServletRequest) request, (HttpServletResponse) response,
+				chain);
 	}
 
 	@Override
 	public void destroy() {
 	}
 
-	protected void doFilter(
-			HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-	throws IOException, ServletException {
-		try{
+	protected void doFilter(HttpServletRequest request,
+			HttpServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
+		try {
 			// gridId, serviceId, userId
-			ServletServiceContext context = new ServletServiceContext(
-					request, new ArrayList<RpcHeader>());
+			ServletServiceContext context = new ServletServiceContext(request,
+					new ArrayList<RpcHeader>());
 			String[] callerUser = context.getRequestMimeHeaders().getHeader(
-					LangridConstants.HTTPHEADER_FEDERATEDCALL_CALLERUSER
-					);
-			if(callerUser != null){
-				String[] userGridIdAndId = StringUtil.join(callerUser, ",").split(":");
-				context.setAuthorized(userGridIdAndId[0], userGridIdAndId[1], context.getAuthPass());
-			} else if(context.getAuthUser().contains(":")){
+					LangridConstants.HTTPHEADER_FEDERATEDCALL_CALLERUSER);
+			if (callerUser != null) {
+				String[] userGridIdAndId = StringUtil.join(callerUser, ",")
+						.split(":");
+				context.setAuthorized(userGridIdAndId[0], userGridIdAndId[1],
+						context.getAuthPass());
+			} else if (context.getAuthUser().contains(":")) {
 				String[] userGridIdAndId = context.getAuthUser().split(":");
-				context.setAuthorized(userGridIdAndId[0], userGridIdAndId[1], context.getAuthPass());
-			} else if(context.getAuthUserGridId() == null){
-				context.setAuthorized(context.getSelfGridId(), context.getAuthUser(), context.getAuthPass());
+				context.setAuthorized(userGridIdAndId[0], userGridIdAndId[1],
+						context.getAuthPass());
+			} else if (context.getAuthUserGridId() == null) {
+				context.setAuthorized(context.getSelfGridId(),
+						context.getAuthUser(), context.getAuthPass());
 			}
 
 			String userGridId = context.getAuthUserGridId();
 			String userId = context.getAuthUser();
 
-			Trio<String, String, String> ret = HttpServletRequestUtil.parseRequestUrl(request);
+			Trio<String, String, String> ret = HttpServletRequestUtil
+					.parseRequestUrl(request);
 			String serviceGridId = ret.getFirst();
-			if(serviceGridId == null) serviceGridId = context.getSelfGridId();
+			if (serviceGridId == null)
+				serviceGridId = context.getSelfGridId();
 
 			String serviceId = ret.getSecond();
-			doFilterProcess(
-					request, response, chain
-					, context, userGridId, userId, serviceGridId, serviceId
-					);
-		} catch(DaoException e){
+			doFilterProcess(request, response, chain, context, userGridId,
+					userId, serviceGridId, serviceId);
+		} catch (DaoException e) {
 			throw new ServletException(e);
 		}
 	}
 
-	protected void doFilterProcess(
-			HttpServletRequest request, HttpServletResponse response, FilterChain chain
-			, ServiceContext serviceContext
-			, String userGridId, String userId, String serviceGridId, String serviceId)
-	throws ConnectException, DaoException, IOException, ServletException{
+	protected void doFilterProcess(HttpServletRequest request,
+			HttpServletResponse response, FilterChain chain,
+			ServiceContext serviceContext, String userGridId, String userId,
+			String serviceGridId, String serviceId) throws ConnectException,
+			DaoException, IOException, ServletException {
 		// prepare
 		String protocol = getProtocol(request);
 
@@ -160,57 +165,57 @@ implements Filter{
 		FrontEnd fe = FrontEnd.getInstance();
 		daoContext.beginTransaction();
 		Throwable expInPreprocess = null;
-		try{
+		try {
 			Grid g = gdao.getGrid(serviceGridId);
-			Node n = ndao.getNode(serviceContext.getSelfGridId(), serviceContext.getSelfNodeId());
+			Node n = ndao.getNode(serviceContext.getSelfGridId(),
+					serviceContext.getSelfNodeId());
 			service = sdao.getService(serviceGridId, serviceId);
-			if(!service.isActive()){
-				LangridHttpUtil.write403_ServiceNotActive(response, serviceGridId, serviceId);
+			if (!service.isActive()) {
+				LangridHttpUtil.write403_ServiceNotActive(response,
+						serviceGridId, serviceId);
 				return;
 			}
+			response.setHeader(LangridConstants.HTTPHEADER_SERVICENAME, service
+					.getServiceName() != null ? service.getServiceName() : "");
 			response.setHeader(
-					LangridConstants.HTTPHEADER_SERVICENAME
-					, service.getServiceName() != null ? service.getServiceName() : ""
-					);
+					LangridConstants.HTTPHEADER_SERVICECOPYRIGHT,
+					service.getCopyrightInfo() != null ? StringUtil
+							.encodeHttpHeaderValueAsUTF8(service
+									.getCopyrightInfo()) : "");
 			response.setHeader(
-					LangridConstants.HTTPHEADER_SERVICECOPYRIGHT
-					, service.getCopyrightInfo() != null ?
-							StringUtil.encodeHttpHeaderValueAsUTF8(service.getCopyrightInfo()) :
-							""
-					);
-			response.setHeader(
-					LangridConstants.HTTPHEADER_SERVICELICENSE
-					, service.getLicenseInfo() != null ?
-							StringUtil.encodeHttpHeaderValueAsUTF8(service.getLicenseInfo()) :
-							""
-					);
+					LangridConstants.HTTPHEADER_SERVICELICENSE,
+					service.getLicenseInfo() != null ? StringUtil
+							.encodeHttpHeaderValueAsUTF8(service
+									.getLicenseInfo()) : "");
 			User u = udao.getUser(userGridId, userId);
-			c = new ProcessContext(
-					u, g, service, n
-					, daoContext, ardao, aldao, asdao, algdao
-					);
-			if(serviceContext.getSelfGridId().equals(g.getGridId())){
+			c = new ProcessContext(u, g, service, n, daoContext, ardao, aldao,
+					asdao, algdao);
+			if (serviceContext.getSelfGridId().equals(g.getGridId())) {
 				fe.preprocess(c, serviceContext.getRequestMimeHeaders());
 			}
-		} catch(jp.go.nict.langrid.servicesupervisor.frontend.AccessLimitExceededException e){
-			LangridHttpUtil.write403_AccessLimitExceeded(response, serviceGridId, serviceId);
+		} catch (jp.go.nict.langrid.servicesupervisor.frontend.AccessLimitExceededException e) {
+			LangridHttpUtil.write403_AccessLimitExceeded(response,
+					serviceGridId, serviceId);
 			expInPreprocess = e;
-		} catch(jp.go.nict.langrid.servicesupervisor.frontend.NoAccessPermissionException e){
-			LangridHttpUtil.write403_NoAccessPermission(response, serviceGridId, serviceId);
+		} catch (jp.go.nict.langrid.servicesupervisor.frontend.NoAccessPermissionException e) {
+			LangridHttpUtil.write403_NoAccessPermission(response,
+					serviceGridId, serviceId);
 			expInPreprocess = e;
-		} catch(jp.go.nict.langrid.dao.ServiceNotFoundException e){
-			LangridHttpUtil.write404_ServiceNotFound(response, serviceGridId, serviceId);
+		} catch (jp.go.nict.langrid.dao.ServiceNotFoundException e) {
+			LangridHttpUtil.write404_ServiceNotFound(response, serviceGridId,
+					serviceId);
 			expInPreprocess = e;
-		} catch(Throwable e){
-			LangridHttpUtil.write500_Exception(response, serviceGridId, serviceId, e);
+		} catch (Throwable e) {
+			LangridHttpUtil.write500_Exception(response, serviceGridId,
+					serviceId, e);
 			logger.log(Level.SEVERE, "unexpected exception occurred", e);
 			expInPreprocess = e;
-		} finally{
+		} finally {
 			daoContext.commitTransaction();
 		}
 
 		// invoke
-		if(expInPreprocess == null){
+		if (expInPreprocess == null) {
 			ByteArrayOutputStream bout = new ByteArrayOutputStream();
 			AlternateOutputHttpServletResponseWrapper wresponse = new AlternateOutputHttpServletResponseWrapper(
 					response, new OutputStreamServletOutputStream(bout));
@@ -218,118 +223,138 @@ implements Filter{
 			HttpServletRequest wrequest = request;
 			long millis = -1;
 			boolean invocationFailed = false;
-			try{
+			try {
 				long s = System.currentTimeMillis();
 				chain.doFilter(request, response);
 				millis = System.currentTimeMillis() - s;
 				wrequest = request;
-			} catch(ServletException e){
+			} catch (ServletException e) {
 				invocationFailed = true;
-				LangridHttpUtil.write500_Exception(wresponse, serviceGridId, serviceId, e);
-			} catch(IOException e){
+				LangridHttpUtil.write500_Exception(wresponse, serviceGridId,
+						serviceId, e);
+			} catch (IOException e) {
 				invocationFailed = true;
-				LangridHttpUtil.write500_Exception(wresponse, serviceGridId, serviceId, e);
+				LangridHttpUtil.write500_Exception(wresponse, serviceGridId,
+						serviceId, e);
 			}
 			byte[] responseBytes = bout.toByteArray();
 
 			// postprocess
-			if(serviceContext.getSelfGridId().equals(c.getTargetGrid().getGridId())
-					&& !invocationFailed){
+			if (serviceContext.getSelfGridId().equals(
+					c.getTargetGrid().getGridId())
+					&& !invocationFailed) {
 				daoContext.beginTransaction();
-				try{
+				try {
 					fe.postprocess(c, responseBytes.length);
-				} catch(jp.go.nict.langrid.servicesupervisor.frontend.AccessLimitExceededException e){
-					LangridHttpUtil.write403_AccessLimitExceeded(wresponse, serviceGridId, serviceId);
+				} catch (jp.go.nict.langrid.servicesupervisor.frontend.AccessLimitExceededException e) {
+					LangridHttpUtil.write403_AccessLimitExceeded(wresponse,
+							serviceGridId, serviceId);
 					return;
-				} catch(Throwable t){
-					LangridHttpUtil.write500_Exception(wresponse, serviceGridId, serviceId, t);
-					logger.log(
-							Level.SEVERE
-							, "unexpected exception occurred in invoke process."
-							, t);
+				} catch (Throwable t) {
+					LangridHttpUtil.write500_Exception(wresponse,
+							serviceGridId, serviceId, t);
+					logger.log(Level.SEVERE,
+							"unexpected exception occurred in invoke process.",
+							t);
 					return;
-				} finally{
+				} finally {
 					daoContext.commitTransaction();
 				}
 			}
-	
+
 			// reply
 			response.setStatus(wresponse.getStatus());
 			/*
-			for(Map.Entry<String, List<String>> e : wresponse.getResponseHeaders().entrySet()){
-				if(e.getKey().startsWith("X-LanguageGrid-")){
-					for(String v : e.getValue()){
-						response.addHeader(e.getKey(), v);
-					}
-				}
-			}*/
+			 * for(Map.Entry<String, List<String>> e :
+			 * wresponse.getResponseHeaders().entrySet()){
+			 * if(e.getKey().startsWith("X-LanguageGrid-")){ for(String v :
+			 * e.getValue()){ response.addHeader(e.getKey(), v); } } }
+			 */
 			OutputStream os = response.getOutputStream();
 			StreamUtil.transfer(new ByteArrayInputStream(responseBytes), os);
 			os.flush();
 
-			// 
-			// 
+			//
+			//
 			// logProcess
 			daoContext.beginTransaction();
-			try{
+			try {
 				int len = responseBytes.length;
 				int code = wresponse.getStatus();
-				Pair<String, String> soapFault = SOAPBodyUtil.extractSoapFaultString(new ByteArrayInputStream(responseBytes));
-				if(soapFault.getFirst() == null && soapFault.getSecond() == null){
+				Pair<String, String> soapFault = SOAPBodyUtil
+						.extractSoapFaultString(new ByteArrayInputStream(
+								responseBytes));
+				if (soapFault.getFirst() == null
+						&& soapFault.getSecond() == null) {
 					// pb?
 				}
-				if(((code < 200) || (400 <= code)) && soapFault.getFirst() == null && soapFault.getSecond() == null){
-					soapFault = Pair.create(
-							"Server.unknownError"
-							, StringEscapeUtils.escapeHtml(new String(
-									responseBytes, 0, Math.min(700, responseBytes.length)
-									, CharsetUtil.UTF_8
-									))
-							);
+				if (((code < 200) || (400 <= code))
+						&& soapFault.getFirst() == null
+						&& soapFault.getSecond() == null) {
+					soapFault = Pair.create("Server.unknownError",
+							StringEscapeUtils.escapeHtml(new String(
+									responseBytes, 0, Math.min(700,
+											responseBytes.length),
+									CharsetUtil.UTF_8)));
 				}
-				fe.logProcess(c, FrontEnd.createLogInfo(
-								wrequest, new ByteArrayInputStream(responseBytes)
-								, millis, code, len, protocol
-							), soapFault.getFirst(), soapFault.getSecond()
-						);
-			} catch(SystemErrorException e){
-				logger.log(Level.SEVERE
-						, "unexpected exception occurred in log process(commit fase)."
-						, e);
-			} finally{
+				LogInfo li = FrontEnd.createLogInfo(wrequest,
+						new ByteArrayInputStream(responseBytes), millis, code,
+						len, protocol);
+				String olg = serviceContext
+						.getInitParameter(InitParam.openlangrid
+								.getParameterName());
+				if (olg != null && olg.equals("true")) {
+					li.setRemoteHost("");
+					li.setRemoteAddress("");
+				}
+				fe.logProcess(c, li, soapFault.getFirst(),
+						soapFault.getSecond());
+			} catch (SystemErrorException e) {
+				logger.log(
+						Level.SEVERE,
+						"unexpected exception occurred in log process(commit fase).",
+						e);
+			} finally {
 				daoContext.commitTransaction();
 			}
-		} else if(c != null){
-			// 
-			// 
+		} else if (c != null) {
+			//
+			//
 			// logProcess
 			daoContext.beginTransaction();
-			try{
-				fe.logProcess(c
-						, FrontEnd.createLogInfo(
-								request, new EmptyInputStream()
-								, -1, 500, 0, protocol
-						)
-						, "Server.serverException"
-						, ExceptionUtil.getMessageWithStackTrace(expInPreprocess)  // TODO: faultどうすんの?
-						);
-			} catch(SystemErrorException e){
-				logger.log(Level.SEVERE
-						, "unexpected exception occurred in log process(commit fase)."
-						, e);
-			} finally{
+			try {
+				LogInfo li = FrontEnd.createLogInfo(request,
+						new EmptyInputStream(), -1, 500, 0, protocol);
+				String olg = serviceContext
+						.getInitParameter(InitParam.openlangrid
+								.getParameterName());
+				if (olg != null && olg.equals("true")) {
+					li.setRemoteHost("");
+					li.setRemoteAddress("");
+				}
+				fe.logProcess(c, li, "Server.serverException",
+						ExceptionUtil.getMessageWithStackTrace(expInPreprocess) // TODO:
+																				// faultどうすんの?
+				);
+			} catch (SystemErrorException e) {
+				logger.log(
+						Level.SEVERE,
+						"unexpected exception occurred in log process(commit fase).",
+						e);
+			} finally {
 				daoContext.commitTransaction();
 			}
 		}
 	}
 
 	@SuppressWarnings("unused")
-	private static HttpServletRequest invoke2(
-			FilterChain chain, HttpServletRequest request, HttpServletResponse response
-			, String gridId, String serviceId)
-	throws ServletException, IOException{
+	private static HttpServletRequest invoke2(FilterChain chain,
+			HttpServletRequest request, HttpServletResponse response,
+			String gridId, String serviceId) throws ServletException,
+			IOException {
 		final String sid = serviceId;
-		HttpServletRequestWrapper wrequest = new HttpServletRequestWrapper(request){
+		HttpServletRequestWrapper wrequest = new HttpServletRequestWrapper(
+				request) {
 			@Override
 			public String getRequestURI() {
 				String u = super.getRequestURI();
@@ -337,35 +362,43 @@ implements Filter{
 				u = u.substring(0, i);
 				return u + "/Translation?serviceName=" + sid;
 			}
+
 			@Override
 			public String getPathInfo() {
 				return "/Translation";
 			}
 		};
-		request.getSession().getServletContext().getRequestDispatcher(
-				"/axisServices/Translation?serviceName=" + serviceId
-				).include(wrequest, response);
+		request.getSession()
+				.getServletContext()
+				.getRequestDispatcher(
+						"/axisServices/Translation?serviceName=" + serviceId)
+				.include(wrequest, response);
 		return wrequest;
 	}
 
-	private static String getProtocol(HttpServletRequest request){
+	private static String getProtocol(HttpServletRequest request) {
 		String p = request.getHeader("X-Langrid-Protocol");
-		if(p != null) return p;
-		else return Protocols.DEFAULT;
+		if (p != null)
+			return p;
+		else
+			return Protocols.DEFAULT;
 	}
 
-/*
-	private static String tempOutput = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-		+ "   <soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-		+ "      <soapenv:Body>"
-		+ "         <ns1:translate soapenv:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:ns1=\"http://translation.wrapper.langrid.nict.go.jp\">"
-		+ "            <sourceLang xsi:type=\"soapenc:string\" xmlns:soapenc=\"http://schemas.xmlsoap.org/soap/encoding/\">ja</sourceLang>"
-		+ "            <targetLang xsi:type=\"soapenc:string\" xmlns:soapenc=\"http://schemas.xmlsoap.org/soap/encoding/\">en</targetLang>"
-		+ "            <source xsi:type=\"soapenc:string\" xmlns:soapenc=\"http://schemas.xmlsoap.org/soap/encoding/\">奈良女子大で塩水ぶっ掛け懲戒処分奈良女子大（奈良市）は４日、在学生と卒業生計約７０００人分の成績や学籍を管理しているコンピューターに塩水をかけて使えなくしたとして、学務課の男性職員（４９）を半日分の減給とする懲戒処分にしたと発表した。データの入ったハードディスクは無事で、コンピューターの買い替え費用約６５万円は職員が負担するという。同大学によると、職員は９月２６日早朝、ほかの職員が出てくる前に塩水をかけた。職員は仕事の負担が大きいことなどに不満を持っており、「上司や同僚を困らせようと思った」と話しているという。処分は１１月２０日付。</source>"
-		+ "         </ns1:translate>"
-		+ "      </soapenv:Body>"
-		+ "   </soapenv:Envelope>";
-*/
+	/*
+	 * private static String tempOutput =
+	 * "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+	 * "   <soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+	 * + "      <soapenv:Body>" +
+	 * "         <ns1:translate soapenv:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:ns1=\"http://translation.wrapper.langrid.nict.go.jp\">"
+	 * +
+	 * "            <sourceLang xsi:type=\"soapenc:string\" xmlns:soapenc=\"http://schemas.xmlsoap.org/soap/encoding/\">ja</sourceLang>"
+	 * +
+	 * "            <targetLang xsi:type=\"soapenc:string\" xmlns:soapenc=\"http://schemas.xmlsoap.org/soap/encoding/\">en</targetLang>"
+	 * +
+	 * "            <source xsi:type=\"soapenc:string\" xmlns:soapenc=\"http://schemas.xmlsoap.org/soap/encoding/\">奈良女子大で塩水ぶっ掛け懲戒処分奈良女子大（奈良市）は４日、在学生と卒業生計約７０００人分の成績や学籍を管理しているコンピューターに塩水をかけて使えなくしたとして、学務課の男性職員（４９）を半日分の減給とする懲戒処分にしたと発表した。データの入ったハードディスクは無事で、コンピューターの買い替え費用約６５万円は職員が負担するという。同大学によると、職員は９月２６日早朝、ほかの職員が出てくる前に塩水をかけた。職員は仕事の負担が大きいことなどに不満を持っており、「上司や同僚を困らせようと思った」と話しているという。処分は１１月２０日付。</source>"
+	 * + "         </ns1:translate>" + "      </soapenv:Body>" +
+	 * "   </soapenv:Envelope>";
+	 */
 	private DaoFactory factory;
 	private DaoContext daoContext;
 	private GridDao gdao;
@@ -377,5 +410,6 @@ implements Filter{
 	private AccessStatDao asdao;
 	private AccessLogDao algdao;
 
-	private static Logger logger = Logger.getLogger(ServiceSupervisor.class.getName());
+	private static Logger logger = Logger.getLogger(ServiceSupervisor.class
+			.getName());
 }

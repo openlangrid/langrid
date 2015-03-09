@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.client"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.client.soap"/>
@@ -13,10 +14,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.servicecontainer"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.client.axis"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.client.ws_1_2"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
-		<attributes>
-			<attribute name="owner.project.facets" value="java"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

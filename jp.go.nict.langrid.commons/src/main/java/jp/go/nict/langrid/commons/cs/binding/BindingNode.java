@@ -1,5 +1,5 @@
 /*
- * $Id: BindingNode.java 190 2010-10-02 11:28:33Z t-nakaguchi $
+ * $Id: BindingNode.java 1498 2015-02-13 03:50:47Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
  * Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -23,12 +23,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.go.nict.langrid.commons.rpc.RpcHeader;
+import jp.go.nict.langrid.commons.rpc.TransportHeader;
+
 /**
  * 
  * 
  * @author Takao Nakaguchi
  * @author $Author: t-nakaguchi $
- * @version $Revision: 190 $
+ * @version $Revision: 1498 $
  */
 public class BindingNode
 implements Serializable
@@ -107,6 +110,22 @@ implements Serializable
 		this.serviceId = serviceId;
 	}
 
+	public List<TransportHeader> getTransportHeaders() {
+		return transportHeaders;
+	}
+
+	public void setTransportHeaders(List<TransportHeader> transportHeaders) {
+		this.transportHeaders = transportHeaders;
+	}
+
+	public List<RpcHeader> getRpcHeaders() {
+		return rpcHeaders;
+	}
+
+	public void setRpcHeaders(List<RpcHeader> rpcHeaders) {
+		this.rpcHeaders = rpcHeaders;
+	}
+
 	/**
 	 * 
 	 * 
@@ -135,6 +154,8 @@ implements Serializable
 	private String invocationName;
 	private String gridId;
 	private String serviceId;
+	private List<TransportHeader> transportHeaders = new ArrayList<TransportHeader>();
+	private List<RpcHeader> rpcHeaders = new ArrayList<RpcHeader>();
 	private List<BindingNode> children = new ArrayList<BindingNode>();
 
 	private static final long serialVersionUID = -5225173090656327140L;

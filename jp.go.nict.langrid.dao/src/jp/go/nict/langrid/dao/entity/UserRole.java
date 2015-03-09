@@ -38,26 +38,12 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @IdClass(UserRolePK.class)
 @Table(name="userRoles")
 public class UserRole {
-	/**
-	 * 
-	 * 
-	 */
+	public static final String SERVICE_USER_ROLE = "langridserviceuser";
+	public static final String SERVICE_PROVIDER_ROLE = "langridserviceprovider";
 	public static final String USER_ROLE = "langriduser";
-
-	/**
-	 * 
-	 * 
-	 */
 	public static final String ADMIN_ROLE = "langridadmin";
-	
-	/**
-	 * 
-	 * added by Trang
-	 */
-	public static final String LANGRID_SERVICE_USER_ROLE = "langridserviceuser";
 
 	/**
-	 * 
 	 * 
 	 */
 	public UserRole(){

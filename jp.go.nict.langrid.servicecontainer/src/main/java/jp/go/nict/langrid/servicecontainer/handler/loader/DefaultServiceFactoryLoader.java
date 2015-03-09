@@ -3,19 +3,21 @@ package jp.go.nict.langrid.servicecontainer.handler.loader;
 import java.util.Map;
 import java.util.TreeMap;
 
+import jp.go.nict.langrid.commons.util.function.Consumer;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.servicecontainer.handler.ServiceFactory;
 import jp.go.nict.langrid.servicecontainer.handler.TargetServiceFactory;
 
 public class DefaultServiceFactoryLoader implements ServiceFactoryLoader{
-	public static class DefaultServiceFactory extends TargetServiceFactory{
-		public DefaultServiceFactory(Class<?> clazz, Class<?>... interfaceClasses) {
+	public static class DefaultServiceFactory<T> extends TargetServiceFactory{
+		public DefaultServiceFactory(Class<T> clazz, Class<?>[] interfaceClasses, Consumer<? super T> initializer) {
 			this.clazz = clazz;
+			this.initializer = initializer;
 			setInterfaceClasses(interfaceClasses);
 		}
 		@Override
-		public <T> T createService(ClassLoader classLoader,
-				ServiceContext context, Class<T> interfaceClass) {
+		public <U> U createService(ClassLoader classLoader,
+				ServiceContext context, Class<U> interfaceClass) {
 			return newInstance();
 		}
 		@Override
@@ -27,9 +29,11 @@ public class DefaultServiceFactoryLoader implements ServiceFactoryLoader{
 			return super.getService();
 		}
 		@SuppressWarnings("unchecked")
-		private <T> T newInstance(){
+		private <U> U newInstance(){
 			try {
-				return (T)clazz.newInstance();
+				Object instance = clazz.newInstance();
+				initializer.accept((T)instance);
+				return (U)instance;
 			} catch(InstantiationException e){
 				throw new RuntimeException(e);
 			} catch(IllegalAccessException e){
@@ -37,6 +41,7 @@ public class DefaultServiceFactoryLoader implements ServiceFactoryLoader{
 			}
 		}
 		private Class<?> clazz;
+		private Consumer<? super T> initializer;
 	}
 
 	@Override
@@ -55,9 +60,21 @@ public class DefaultServiceFactoryLoader implements ServiceFactoryLoader{
 		return factories.get(serviceName);
 	}
 
-	public void put(String serviceName, Class<?> serviceClass, Class<?>[] interfaces){
-		factories.put(serviceName, new DefaultServiceFactory(serviceClass, interfaces));
+	public <T> void put(String serviceName, Class<T> serviceClass, Class<?>[] interfaces){
+		factories.put(serviceName, new DefaultServiceFactory<T>(serviceClass, interfaces, DefaultServiceFactoryLoader.<T>empty()));
+	}
+
+	public <T> void put(String serviceName, Class<T> serviceClass, Class<?>[] interfaces, Consumer<? super T> initializer){
+		factories.put(serviceName, new DefaultServiceFactory<T>(serviceClass, interfaces, initializer));
 	}
 
 	private Map<String, TargetServiceFactory> factories = new TreeMap<String, TargetServiceFactory>();
+	@SuppressWarnings("rawtypes")
+	private static final Consumer empty = new Consumer(){
+		public void accept(Object value) {
+	}};
+	@SuppressWarnings("unchecked")
+	private static final <U> Consumer<U> empty(){
+		return empty;
+	}
 }

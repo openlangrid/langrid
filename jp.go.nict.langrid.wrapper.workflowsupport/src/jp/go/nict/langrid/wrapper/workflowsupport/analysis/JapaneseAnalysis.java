@@ -1,5 +1,5 @@
 /*
- * $Id: JapaneseAnalysis.java 409 2011-08-25 03:12:59Z t-nakaguchi $
+ * $Id: JapaneseAnalysis.java 1387 2015-01-09 02:30:53Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
  * Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -36,7 +36,9 @@ import jp.go.nict.langrid.service_1_2.UnsupportedLanguageException;
 import jp.go.nict.langrid.service_1_2.bilingualdictionary.TranslationWithPosition;
 import jp.go.nict.langrid.service_1_2.morphologicalanalysis.Morpheme;
 import jp.go.nict.langrid.service_1_2.typed.PartOfSpeech;
+import jp.go.nict.langrid.service_1_2.workflowsupport.CodeAndWords;
 import jp.go.nict.langrid.service_1_2.workflowsupport.SourceAndMorphemesAndCodes;
+import jp.go.nict.langrid.service_1_2.workflowsupport.SourceAndMorphemesAndCodes2;
 import jp.go.nict.langrid.wrapper.workflowsupport.util.LanguageDecision;
 import jp.go.nict.langrid.wrapper.workflowsupport.util.StringUtil;
 
@@ -113,9 +115,10 @@ public class JapaneseAnalysis implements Analysis {
 		NoValidEndpointsException, ProcessFailedException,
 		ServerBusyException, ServiceNotActiveException,
 		ServiceNotFoundException, UnsupportedLanguageException {
-		
+
 		StringBuffer source = new StringBuffer(); 				// 文章生成
 		List<String> codes = new ArrayList<String>();			// 中間コード配列
+		List<String> sourceWords = new ArrayList<String>();		// 元ワード配列
 		List<String> targetWords = new ArrayList<String>();		// 対象ワード配列
 		List<Morpheme> morphemeResult = new ArrayList<Morpheme>(); // 形態素結果配列
 		int markingCount = 1;
@@ -130,11 +133,9 @@ public class JapaneseAnalysis implements Analysis {
 					intermediateCode = StringUtil.markingWord(intermediateCode, markingCount++);
 				}
 				source.append(intermediateCode);
-				// 中間コード配列追加
 				codes.add(intermediateCode);
-				// 対象ワード配列追加
+				sourceWords.add(term);
 				targetWords.add(translation.getTranslation().getTargetWords()[0]);
-				// 結果形態素配列追加
 				morphemeResult.add(new Morpheme(intermediateCode, intermediateCode, PartOfSpeech.noun.name()));
 				i = i + translation.getNumberOfMorphemes() - 1;
 			} else {
@@ -153,6 +154,50 @@ public class JapaneseAnalysis implements Analysis {
 		}
 		SourceAndMorphemesAndCodes smc = new SourceAndMorphemesAndCodes(
 				source.toString(), morphemeResult.toArray(new Morpheme[]{}), codes.toArray(new String[]{}), targetWords.toArray(new String[]{})); 
+		return smc;
+	}
+
+	public SourceAndMorphemesAndCodes2 doConstructSMC2(Morpheme[] morphemes, Map<Integer, TranslationWithPosition> positionMap, boolean marking) 
+	throws InvalidParameterException, LanguageNotUniquelyDecidedException,
+			ProcessFailedException, UnsupportedLanguageException
+	{
+		StringBuffer source = new StringBuffer(); 				// 文章生成
+		List<CodeAndWords> codeAndWords = new ArrayList<CodeAndWords>();	// 中間コード配列
+		List<Morpheme> morphemeResult = new ArrayList<Morpheme>(); // 形態素結果配列
+		int markingCount = 1;
+		int length = morphemes.length;
+		for (int i = 0; i < length; i++) {
+			TranslationWithPosition translation = positionMap.get(Integer.valueOf(i));
+			if (translation != null) {
+				String term = StringUtil.createWord(false, morphemes, translation.getStartIndex(), translation.getNumberOfMorphemes());
+				// 中間コード生成
+				String intermediateCode = StringUtil.generateCode(term, i);
+				if (marking) {
+					intermediateCode = StringUtil.markingWord(intermediateCode, markingCount++);
+				}
+				source.append(intermediateCode);
+				codeAndWords.add(new CodeAndWords(
+						intermediateCode, term,
+						translation.getTranslation().getTargetWords()[0]));
+				morphemeResult.add(new Morpheme(intermediateCode, intermediateCode, PartOfSpeech.noun.name()));
+				i = i + translation.getNumberOfMorphemes() - 1;
+			} else {
+				source.append(morphemes[i].getWord());
+				morphemeResult.add(morphemes[i]);
+			}
+			// 現在の形態素がLatinかつ次の形態素もLatinの場合、空白を挿入する。
+			if (i < (length - 1)) {
+				if (LanguageDecision.isBasicLatin(morphemes[i].getWord()) && LanguageDecision.isBasicLatin(morphemes[i + 1].getWord())) {
+					// periodは空白を入れない
+					if (!morphemes[i + 1].getWord().trim().equals(".")) {
+						source.append(" ");
+					}
+				}
+			}
+		}
+		SourceAndMorphemesAndCodes2 smc = new SourceAndMorphemesAndCodes2(
+				source.toString(), morphemeResult.toArray(new Morpheme[]{}),
+				codeAndWords.toArray(new CodeAndWords[]{})); 
 		return smc;
 	}
 }

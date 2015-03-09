@@ -17,26 +17,22 @@
  */
 package jp.go.nict.langrid.commons.rpc;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import jp.go.nict.langrid.commons.lang.ExceptionUtil;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSONException;
-import jp.go.nict.langrid.repackaged.net.arnx.jsonic.util.PropertyInfo;
 
 public class RpcFaultUtil {
 	public static Exception rpcFaultToThrowable(RpcFault fault){
 		String[] v = fault.getFaultString().split(":", 2);
 		try {
 			Class<?> clazz = Class.forName(v[0]);
-			return (Exception)JSON.decode(v[1], clazz);
+			Exception e = (Exception)json.parse(v[1], clazz);
+			e.fillInStackTrace();
+			return e;
 		} catch (ClassCastException e) {
-			return (Exception)new RuntimeException(JSON.encode(fault));
+			return (Exception)new RuntimeException(json.format(fault));
 		} catch (ClassNotFoundException e) {
-			return (Exception)new RuntimeException(JSON.encode(fault));
+			return (Exception)new RuntimeException(json.format(fault));
 		} catch(JSONException e){
 			return (Exception)new RuntimeException(v[1]);
 		}
@@ -51,29 +47,9 @@ public class RpcFaultUtil {
 	}
 
 	private static JSON json = new JSON(){
-		public Appendable format(Context context, Object source, Appendable ap) throws java.io.IOException {
-			super.format(new JSON.Context(){
-				@Override
-				protected List<PropertyInfo> getGetProperties(Class<?> c) {
-					List<PropertyInfo> props = super.getGetProperties(c);
-					if(Exception.class.isAssignableFrom(c)){
-						Iterator<PropertyInfo> it = props.iterator();
-						while(it.hasNext()){
-							if(ignores.contains(it.next().getName())) it.remove();
-						}
-					}
-					return props;
-				}
-			}, source, ap);
-			return ap;
+		protected boolean ignore(Context context, java.lang.Class<?> target, java.lang.reflect.Member member) {
+			if (member.getDeclaringClass().equals(Throwable.class)) return true;
+			return super.ignore(context, target, member);
 		};
 	};
-
-	private static Set<String> ignores = new HashSet<String>();
-	static{
-		ignores.add("cause");
-		ignores.add("stackTrace");
-		ignores.add("localizedMessage");
-		ignores.add("message");
-	}
 }

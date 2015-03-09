@@ -72,10 +72,7 @@ implements BilingualDictionaryWithLongestMatchSearchService{
 	throws InvalidParameterException, ProcessFailedException {
 		checkConnectionValid();
 		try {
-			DictionaryDataBase ddb = new DictionaryDataBase(
-					tableName, manager.get()
-					, conParams.getDbDictionary(), maxResults
-					);
+			DictionaryDataBase ddb = getDictionaryDataBase();
 			Collection<Translation> ret = ddb.getTranslation(
 					Language.parse(headLang)
 					, Language.parse(targetLang)
@@ -135,6 +132,21 @@ implements BilingualDictionaryWithLongestMatchSearchService{
 			ServerBusyException, ServiceNotActiveException,
 			ServiceNotFoundException {
 		return supportedLanguagePairs;
+	}
+
+	protected DictionaryDataBase getDictionaryDataBase(){
+		return new DictionaryDataBase(
+				tableName, manager.get()
+				, conParams.getDbDictionary(), maxResults
+				);
+	}
+
+	protected ConnectionManager getConnectionManager(){
+		return manager.get();
+	}
+
+	protected void clearCache(){
+		QueryCentricSearch.clearCache();
 	}
 
 	@Override

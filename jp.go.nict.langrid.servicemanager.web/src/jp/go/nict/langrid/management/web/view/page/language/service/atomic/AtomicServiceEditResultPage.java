@@ -1,5 +1,5 @@
 /*
- * $Id: AtomicServiceEditResultPage.java 406 2011-08-25 02:12:29Z t-nakaguchi $
+ * $Id: AtomicServiceEditResultPage.java 1396 2015-01-14 04:25:44Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and
  * provides composite language services. Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -47,7 +47,7 @@ import org.apache.wicket.markup.repeater.RepeatingView;
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 406 $
+ * @version $Revision: 1396 $
  */
 public class AtomicServiceEditResultPage extends ServiceViewPage{
 	/**
@@ -106,6 +106,7 @@ public class AtomicServiceEditResultPage extends ServiceViewPage{
 			for(ServiceEndpointModel ep : epList){
 				WebMarkupContainer wmc = new WebMarkupContainer(rv.newChildId());
 				wmc.add(new HyphenedLabel("url", ep.getUrl()));
+				wmc.add(new HyphenedLabel("protocol", ep.getProtocolId()));
 				wmc.add(new HyphenedLabel("userName"
 						, ep.getAuthUserName()));
 				wmc.add(new HyphenedLabel("password"

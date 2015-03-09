@@ -77,25 +77,16 @@
         <dependent-module archiveName="jp.go.nict.langrid.commons.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.commons/jp.go.nict.langrid.commons">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="jp.go.nict.langrid.commons.protobufrpc.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.commons.protobufrpc/jp.go.nict.langrid.commons.protobufrpc">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.language.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.language/jp.go.nict.langrid.language">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.service.common_1_2.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.service.common_1_2/jp.go.nict.langrid.service.common_1_2">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="jp.go.nict.langrid.service.language_1_2.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.service.language_1_2/jp.go.nict.langrid.service.language_1_2">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.servicecontainer.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicecontainer/jp.go.nict.langrid.servicecontainer">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.servicecontainer.handler.axis.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicecontainer.handler.axis/jp.go.nict.langrid.servicecontainer.handler.axis">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="jp.go.nict.langrid.servicecontainer.handler.jsonrpc.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicecontainer.handler.jsonrpc/jp.go.nict.langrid.servicecontainer.handler.jsonrpc">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.servicecontainer.handler.protobufrpc.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicecontainer.handler.protobufrpc/jp.go.nict.langrid.servicecontainer.handler.protobufrpc">
@@ -110,13 +101,13 @@
         <dependent-module archiveName="jp.go.nict.langrid.servicecontainer.serviceexecutor.jsonrpc.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicecontainer.executor.jsonrpc/jp.go.nict.langrid.servicecontainer.executor.jsonrpc">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="jp.go.nict.langrid.servicecontainer.serviceexecutor.protobufrpc.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicecontainer.executor.protobufrpc/jp.go.nict.langrid.servicecontainer.executor.protobufrpc">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.servicecontainer.serviceexecutor.umbrella.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicecontainer.executor.umbrella/jp.go.nict.langrid.servicecontainer.executor.umbrella">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="guava-15.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/google/guava-15.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.service.language_1_2.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.service.language_1_2/jp.go.nict.langrid.service.language_1_2">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="context-root" value="jp.go.nict.langrid.webapps.mock"/>

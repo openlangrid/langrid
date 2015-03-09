@@ -44,12 +44,14 @@ import jp.go.nict.langrid.commons.lang.ClassUtil;
 import jp.go.nict.langrid.commons.rpc.RpcFault;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.util.Trio;
+import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
 
 import org.apache.commons.codec.binary.Base64;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class SoapResponseParser {
@@ -75,8 +77,7 @@ public class SoapResponseParser {
 				if(res.getLocalName().equals(methodName + "Response")){
 					for(Node ret = res.getFirstChild(); ret != null; ret = ret.getNextSibling()){
 						if(!(ret instanceof Element)) continue;
-						if(ret.getLocalName().equals(methodName + "Return") ||
-								ret.getLocalName().equals(methodName + "Result")){
+						if(ret.getLocalName().equals(methodName + "Return")){
 							try {
 								T r = nodeToType(w, ret, returnType, converter);
 								return new Trio<Collection<RpcHeader>, RpcFault, T>(
@@ -94,12 +95,54 @@ public class SoapResponseParser {
 							}
 						}
 					}
+				} else if(res.getLocalName().equals("Fault")){
+					RpcFault f = new RpcFault();
+					NodeList nl = res.getChildNodes();
+					Converter c = new Converter();
+					for(int i = 0; i < nl.getLength(); i++){
+						Node n = nl.item(i);
+						if(!(n instanceof Element)) continue;
+						if(n.getLocalName().equals("faultcode")){
+							f.setFaultCode(n.getTextContent());
+						} else if(n.getLocalName().equals("faultstring")){
+							f.setFaultString(n.getTextContent());
+						} else if(n.getLocalName().equals("detail")){
+							String detail = n.getNodeValue();
+							f.setDetail(detail);
+							Node expTag = n.getFirstChild();
+							NodeList pl = expTag.getChildNodes();
+							try{
+								Class<?> expClass = Class.forName(expTag.getNodeName());
+								Object expInstance = expClass.newInstance();
+								for(int j = 0; j < pl.getLength(); j++){
+									Node prop = pl.item(j);
+									String propName = prop.getNodeName();
+									Method setter = ClassUtil.findSetter(expClass, propName);
+									if(setter == null) continue;
+									try {
+										setter.invoke(expInstance, c.convert(prop.getTextContent(), setter.getParameterTypes()[0]));
+									} catch (IllegalArgumentException e) {
+									} catch (InvocationTargetException e) {
+									} catch (ConversionException e) {
+									} catch (DOMException e) {
+									}
+								}
+								f.setFaultString(expTag.getNodeName() + ":" + JSON.encode(expInstance));
+							} catch(ClassNotFoundException e){
+							}
+						}
+					}
+					return new Trio<Collection<RpcHeader>, RpcFault, T>(headers, f, null);
 				}
 			}
 			if(returnType.equals(void.class)){
 				return new Trio<Collection<RpcHeader>, RpcFault, T>(headers, null, null);
 			}
 			throw new IOException("not a valid SOAP message.");
+		} catch(IllegalAccessException e){
+			throw new RuntimeException(e);
+		} catch(InstantiationException e){
+			throw new RuntimeException(e);
 		} finally{
 			workspace.remove();
 		}

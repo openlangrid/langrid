@@ -78,25 +78,25 @@ public class JsonRpcDynamicHandler extends AbstractJsonRpcHandler implements Jso
 					response.setStatus(404);
 					return;
 				}
-				Collection<Class<?>> interfaceClasses = f.getInterfaces();
-				Method method = null;
-				int paramLength = req.getParams() == null ? 0 : req.getParams().length;
-				for(Class<?> clz : interfaceClasses){
-					method = ClassUtil.findMethod(clz, req.getMethod(), paramLength);
-					if(method == null) continue;
-					clazz = clz;
-					break;
-				}
-				if(method == null){
-					logger.warning(String.format(
-							"method \"%s(%s)\" not found in service \"%s\"."
-							, req.getMethod(), StringUtil.repeatedString("arg", paramLength, ",")
-							, serviceName));
-					response.setStatus(404);
-					return;
-				}
 				RIProcessor.start(sc);
 				try{
+					Collection<Class<?>> interfaceClasses = f.getInterfaces();
+					Method method = null;
+					int paramLength = req.getParams() == null ? 0 : req.getParams().length;
+					for(Class<?> clz : interfaceClasses){
+						method = ClassUtil.findMethod(clz, req.getMethod(), paramLength);
+						if(method == null) continue;
+						clazz = clz;
+						break;
+					}
+					if(method == null){
+						logger.warning(String.format(
+								"method \"%s(%s)\" not found in service \"%s\"."
+								, req.getMethod(), StringUtil.repeatedString("arg", paramLength, ",")
+								, serviceName));
+						response.setStatus(404);
+						return;
+					}
 					Object service = f.createService(cl, sc, clazz);
 					// Currently only array("[]") is supported, while JsonRpc accepts Object("{}")
 					Class<?>[] ptypes = method.getParameterTypes();

@@ -28,6 +28,7 @@ import java.net.URL;
 import java.util.Collection;
 
 import jp.go.nict.langrid.client.ClientFactory;
+import jp.go.nict.langrid.client.RequestAttributes;
 import jp.go.nict.langrid.client.ResponseAttributes;
 import jp.go.nict.langrid.client.RpcRequestAttributes;
 import jp.go.nict.langrid.client.RpcResponseAttributes;
@@ -43,6 +44,7 @@ import jp.go.nict.langrid.commons.ws.LangridConstants;
 import jp.go.nict.langrid.commons.ws.Protocols;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.xml.sax.SAXException;
 
 public class SoapClientFactory implements ClientFactory {
 	static class AxisStublessInvocationHandler implements InvocationHandler{
@@ -59,7 +61,7 @@ public class SoapClientFactory implements ClientFactory {
 		public Object invoke(Object proxy, Method method, Object[] args)
 		throws Throwable {
 			Class<?> clz = method.getDeclaringClass();
-			if(clz.equals(SoapRequestAttributes.class)){
+			if(RequestAttributes.class.isAssignableFrom(clz)){
 				if(method.getName().equals("setTargetNamespace")){
 					targetNamespace = args[0].toString();
 					return null;
@@ -84,20 +86,24 @@ public class SoapClientFactory implements ClientFactory {
 							os, targetNamespace, reqAttrs.getAllRpcHeaders(), method, args);
 					os.flush();
 					int code = con.getResponseCode();
-					if(code != 200){
+					if(code != 200 && code != 500){
 						String response = "";
 						try{
-							response = ": " + StringEscapeUtils.unescapeXml(
-									StreamUtil.readAsString(con.getErrorStream(), "UTF-8")
-									);
+							InputStream err = con.getErrorStream();
+							if(err != null){
+								response = StringEscapeUtils.unescapeXml(
+										StreamUtil.readAsString(err, "UTF-8")
+										);
+							}
 						} catch(IOException e){
 						}
 						con.disconnect();
+						if(response.length() == 0) response = "HTTP " + code;
 						if(code == 403){
-							throw new RuntimeException("HTTP " + code + response + "  with "
+							throw new RuntimeException(response + "  with "
 									+ reqAttrs.getUserId() + ":*****");
 						}
-						throw new RuntimeException("HTTP " + code + response);
+						throw new RuntimeException(response);
 					}
 					InputStream is = null;
 					try{
@@ -117,6 +123,10 @@ public class SoapClientFactory implements ClientFactory {
 							throw RpcFaultUtil.rpcFaultToThrowable(f);
 						}
 						return ret.getThird();
+					} catch(IOException e){
+						throw new RuntimeException(e);
+					} catch(SAXException e){
+						throw new RuntimeException(e);
 					} finally{
 						is.close();
 					}

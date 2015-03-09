@@ -1,5 +1,5 @@
 /*
- * $Id: LoginForm.java 303 2010-12-01 04:21:52Z t-nakaguchi $
+ * $Id: LoginForm.java 1506 2015-03-02 16:03:34Z t-nakaguchi $
  * 
  * This is a program for Language Grid Core Node. This combines multiple language resources and
  * provides composite language services. Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -19,25 +19,27 @@ package jp.go.nict.langrid.management.web.view.page.other.component.form;
 
 import java.util.HashMap;
 
-import org.apache.wicket.markup.html.link.Link;
-
 import jp.go.nict.langrid.dao.UserNotFoundException;
 import jp.go.nict.langrid.management.web.log.LogWriter;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 import jp.go.nict.langrid.management.web.utility.resource.MessageManager;
+import jp.go.nict.langrid.management.web.utility.resource.MessageUtil;
 import jp.go.nict.langrid.management.web.view.component.form.AbstractStatelessForm;
 import jp.go.nict.langrid.management.web.view.component.text.RequiredPasswordTextField;
-import jp.go.nict.langrid.management.web.view.page.other.LoginPage;
 import jp.go.nict.langrid.management.web.view.page.other.SignupPage;
 import jp.go.nict.langrid.management.web.view.page.user.component.text.RequiredUserIdField;
 import jp.go.nict.langrid.management.web.view.session.ServiceManagerSession;
+
+import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.link.Link;
 
 /**
  * 
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 303 $
+ * @version $Revision: 1506 $
  */
 public abstract class LoginForm extends AbstractStatelessForm<HashMap<String, String>>{
 	/**
@@ -53,14 +55,17 @@ public abstract class LoginForm extends AbstractStatelessForm<HashMap<String, St
 	protected void addComponents(HashMap<String, String> initialParameter){
 		add(userId = new RequiredUserIdField("userId"));
 		add(password = new RequiredPasswordTextField("password"));
-		add(new Link("createAccount"){
-			private static final long serialVersionUID = 1L;
-			
-			@Override
-			public void onClick(){
-				setResponsePage(new SignupPage());
-			}
-		});
+		MarkupContainer c = new WebMarkupContainer("createAccountContainer").add(
+				new Link("createAccount"){
+				private static final long serialVersionUID = 1L;
+				
+				@Override
+				public void onClick(){
+					setResponsePage(new SignupPage());
+				}
+			});
+		c.setVisible(MessageUtil.isOpenLangrid());
+		add(c);
 	}
 
 	@Override

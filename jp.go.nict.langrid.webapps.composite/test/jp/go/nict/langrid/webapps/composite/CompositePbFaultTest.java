@@ -4,7 +4,7 @@ import java.net.URL;
 
 import jp.go.nict.langrid.client.RequestAttributes;
 import jp.go.nict.langrid.client.ResponseAttributes;
-import jp.go.nict.langrid.client.impl.protobuf.PbClientFactory;
+import jp.go.nict.langrid.client.protobufrpc.PbClientFactory;
 import jp.go.nict.langrid.commons.cs.binding.BindingNode;
 import jp.go.nict.langrid.commons.cs.calltree.CallTreeUtil;
 import jp.go.nict.langrid.service_1_2.backtranslation.BackTranslationService;

@@ -8,7 +8,7 @@ import jp.go.nict.langrid.commons.parameter.annotation.ParameterConfig;
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 497 $
+ * @version $Revision: 1506 $
  */
 @ParameterConfig(loadAllFields = true)
 public class ContextInitialMessage {
@@ -77,6 +77,10 @@ public class ContextInitialMessage {
 		this.operatorUserId = operatorUserId;
 	}
 
+	public boolean isOpenlangrid() {
+		return openlangrid;
+	}
+
 	@Parameter(required = true, name="langrid.node.url", defaultValue = "http://localhost:8080/langrid-2.0/")
 	private String corenodeUrl;
 
@@ -101,5 +105,7 @@ public class ContextInitialMessage {
 	@Parameter(name="langrid.operator.userId")
 	private String operatorUserId;
 
+	@Parameter(name="langrid.openlangrid", defaultValue="false")
+	private boolean openlangrid = false;
 
 }

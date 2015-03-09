@@ -17,6 +17,8 @@
  */
 package jp.go.nict.langrid.client.protobufrpc;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,14 +28,19 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.CodingErrorAction;
 import java.util.Collection;
 
 import jp.go.nict.langrid.client.ClientFactory;
-import jp.go.nict.langrid.client.RpcRequestAttributes;
-import jp.go.nict.langrid.client.RpcResponseAttributes;
 import jp.go.nict.langrid.client.RequestAttributes;
 import jp.go.nict.langrid.client.ResponseAttributes;
+import jp.go.nict.langrid.client.RpcRequestAttributes;
+import jp.go.nict.langrid.client.RpcResponseAttributes;
 import jp.go.nict.langrid.commons.io.DuplicatingInputStream;
+import jp.go.nict.langrid.commons.io.EmptyInputStream;
+import jp.go.nict.langrid.commons.io.LimitedFilteredOutputStream;
+import jp.go.nict.langrid.commons.io.StreamUtil;
 import jp.go.nict.langrid.commons.protobufrpc.io.ProtobufParser;
 import jp.go.nict.langrid.commons.protobufrpc.io.ProtobufWriter;
 import jp.go.nict.langrid.commons.rpc.ArrayElementsNotifier;
@@ -48,6 +55,7 @@ import jp.go.nict.langrid.commons.ws.Protocols;
 
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
+import com.google.protobuf.InvalidProtocolBufferException;
 
 public class PbClientFactory implements ClientFactory{
 	class ProtobufInvocationHandler implements InvocationHandler, ArrayElementsNotifier{
@@ -85,17 +93,44 @@ public class PbClientFactory implements ClientFactory{
 					} catch(IOException e){
 						is = con.getErrorStream();
 					}
+					if(is == null){
+						is = new EmptyInputStream();
+					}
+					if(con.getResponseCode() == 404){
+						throw new RuntimeException(StreamUtil.readAsString(is, "UTF-8"));
+					}
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					is = new DuplicatingInputStream(is, new LimitedFilteredOutputStream(baos, 2048));
 					if(dumpStream != null){
 						is = new DuplicatingInputStream(is, dumpStream);
 					}
 					CodedInputStream cis = CodedInputStream.newInstance(is);
 					Trio<Collection<RpcHeader>, RpcFault, Object> ret = null;
 					Class<?> rt = method.getReturnType();
-					if(rt.isArray() && receiver != null){
-						Pair<Collection<RpcHeader>, RpcFault> r = ProtobufParser.parseRpcArrayResponse(cis, rt, receiver);
-						ret = Trio.create(r.getFirst(), r.getSecond(), Array.newInstance(rt.getComponentType(), 0));
-					} else{
-						ret = (Trio<Collection<RpcHeader>, RpcFault, Object>)ProtobufParser.parseRpcResponse(cis, rt);
+					try{
+						if(rt.isArray() && receiver != null){
+							Pair<Collection<RpcHeader>, RpcFault> r = ProtobufParser.parseRpcArrayResponse(cis, rt, receiver);
+							ret = Trio.create(r.getFirst(), r.getSecond(), Array.newInstance(rt.getComponentType(), 0));
+						} else{
+							ret = (Trio<Collection<RpcHeader>, RpcFault, Object>)ProtobufParser.parseRpcResponse(cis, rt);
+						}
+					} catch(InvalidProtocolBufferException e){
+						byte[] b = baos.toByteArray();
+						StringBuilder sb = new StringBuilder();
+						sb.append(StreamUtil.readAsString(new ByteArrayInputStream(b),
+								Charset.forName("UTF-8").newDecoder()
+								.onMalformedInput(CodingErrorAction.REPLACE)
+								.onUnmappableCharacter(CodingErrorAction.REPLACE)));
+						if(b.length == 500){
+							sb.append("\n------snip------\n");
+						}
+						sb.append(StreamUtil.readAsString(is,
+								Charset.forName("UTF-8").newDecoder()
+								.onMalformedInput(CodingErrorAction.REPLACE)
+								.onUnmappableCharacter(CodingErrorAction.REPLACE)));
+						throw new RuntimeException(sb.toString(), e);
+					} catch(Exception e){
+						throw new RuntimeException(e);
 					}
 					resAttrs.loadAttributes(con, ret.getFirst());
 					if(ret.getSecond() != null){

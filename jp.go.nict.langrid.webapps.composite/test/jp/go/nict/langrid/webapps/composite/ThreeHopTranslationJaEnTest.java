@@ -3,7 +3,7 @@ package jp.go.nict.langrid.webapps.composite;
 import java.net.URL;
 
 import jp.go.nict.langrid.client.RequestAttributes;
-import jp.go.nict.langrid.client.impl.protobuf.PbClientFactory;
+import jp.go.nict.langrid.client.protobufrpc.PbClientFactory;
 import jp.go.nict.langrid.commons.cs.binding.BindingNode;
 import jp.go.nict.langrid.service_1_2.translation.TranslationService;
 

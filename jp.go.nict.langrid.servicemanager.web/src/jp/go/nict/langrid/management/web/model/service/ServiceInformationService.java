@@ -15,7 +15,7 @@ import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 328 $
+ * @version $Revision: 1506 $
  */
 public interface ServiceInformationService extends Serializable {
 	/**
@@ -68,5 +68,5 @@ public interface ServiceInformationService extends Serializable {
 		, MatchingCondition[] conditions, int limitCount)
 	throws ServiceManagerException;
 	
-	public void setScopeParametar(String serviceGridId, String userGridId, String userId);
+	public void setScopeParameter(String serviceGridId, String userGridId, String userId);
 }

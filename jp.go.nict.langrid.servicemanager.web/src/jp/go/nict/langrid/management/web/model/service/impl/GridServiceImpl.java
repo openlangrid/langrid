@@ -21,7 +21,7 @@ import jp.go.nict.langrid.management.web.model.service.LangridList;
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 497 $
+ * @version $Revision: 1506 $
  */
 public class GridServiceImpl implements GridService {
 	public GridServiceImpl() throws ServiceManagerException {
@@ -208,7 +208,7 @@ public class GridServiceImpl implements GridService {
 	}
 
 	@Override
-	public void setScopeParametar(String serviceGridId, String userGridId, String userId) {
+	public void setScopeParameter(String serviceGridId, String userGridId, String userId) {
 //		this.serviceGridId = serviceGridId;
 //		this.userGridId = userGridId;
 		this.userId = userId;

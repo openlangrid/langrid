@@ -40,6 +40,7 @@ import jp.go.nict.langrid.management.web.model.ExecutionInformationStatisticsMod
 import jp.go.nict.langrid.management.web.model.IndividualExecutionInformationModel;
 import jp.go.nict.langrid.management.web.model.ServiceEndpointModel;
 import jp.go.nict.langrid.management.web.model.ServiceModel;
+import jp.go.nict.langrid.management.web.model.enumeration.UserRole;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 import jp.go.nict.langrid.management.web.model.service.LangridList;
 import jp.go.nict.langrid.management.web.model.service.LangridServiceService;
@@ -76,7 +77,7 @@ implements LangridServiceService<T>, ServiceInformationService
 		s = setProperty(obj, s);
 		if(ServiceFactory.getInstance().getGridService().isAutoApproveEnabled()
 			|| ServiceFactory.getInstance().getUserService(obj.getGridId())
-				.isAdministrator(obj.getOwnerUserId()))
+				.getUserRoles(obj.getOwnerUserId()).contains(UserRole.ADMINISTRATOR))
 		{
 			s.setApproved(true);
 			obj.setApproved(true);
@@ -622,7 +623,7 @@ implements LangridServiceService<T>, ServiceInformationService
 	}
 
 	@Override
-	public void setScopeParametar(String serviceGridId, String userGridId, String userId) {
+	public void setScopeParameter(String serviceGridId, String userGridId, String userId) {
 		this.serviceGridId = serviceGridId;
 		this.userGridId = userGridId;
 		this.userId = userId;

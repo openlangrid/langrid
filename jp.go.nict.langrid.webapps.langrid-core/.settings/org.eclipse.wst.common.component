@@ -270,6 +270,6 @@
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="java-output-path" value="/jp.go.nict.langrid.webapps.langrid-core/build/classes"/>
-		<property name="context-root" value="jp.go.nict.langrid.webapps.langrid-core"/>
+        <property name="context-root" value="jp.go.nict.langrid.webapps.langrid-core"/>
     </wb-module>
 </project-modules>

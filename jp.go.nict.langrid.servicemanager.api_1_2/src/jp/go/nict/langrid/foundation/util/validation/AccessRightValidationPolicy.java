@@ -1,5 +1,5 @@
 /*
- * $Id: AccessRightValidationPolicy.java 302 2010-12-01 02:49:42Z t-nakaguchi $
+ * $Id: AccessRightValidationPolicy.java 1506 2015-03-02 16:03:34Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
  * Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -29,7 +29,7 @@ import jp.go.nict.langrid.service_1_2.foundation.usermanagement.UserNotFoundExce
  * 
  * 
  * @author $Author: t-nakaguchi $
- * @version $Revision: 302 $
+ * @version $Revision: 1506 $
  */
 public enum AccessRightValidationPolicy {
 	/**
@@ -110,14 +110,34 @@ public enum AccessRightValidationPolicy {
 		public void validate(UserChecker checker, Object[] args)
 		throws NoAccessPermissionException, ServiceConfigurationException
 		, UserNotFoundException
-	{
-		checker.checkAuthUserExists();
-		if(!checker.isAuthUserAdmin()){
+		{
+			checker.checkAuthUserExists();
+			if(checker.isAuthUserAdmin()) return;
 			if((args.length > 0) && (args[0].toString().length() > 0)){
 				checker.checkAuthUserIsParent(args[0].toString());
+			} else{
+				throw new ServiceConfigurationException("parameter needed.");
 			}
 		}
-	}
+	},
+	/**
+	 * 
+	 * 
+	 */
+	PARENT_OR_SELF_OR_ADMIN{
+		public void validate(UserChecker checker, Object[] args)
+		throws NoAccessPermissionException, ServiceConfigurationException
+		, UserNotFoundException
+		{
+			checker.checkAuthUserExists();
+			if(checker.isAuthUserAdmin()) return;
+			if((args.length > 0) && (args[0].toString().length() > 0)){
+				if(checker.getUserId().equals(args[0])) return;
+				checker.checkAuthUserIsParent(args[0].toString());
+			} else{
+				throw new ServiceConfigurationException("parameter needed.");
+			}
+		}
 	},
 	/**
 	 * 

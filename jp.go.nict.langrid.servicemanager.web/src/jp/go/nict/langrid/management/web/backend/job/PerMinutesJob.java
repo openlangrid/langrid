@@ -1,5 +1,5 @@
 /*
- * $Id: PerMinutesJob.java 497 2012-05-24 04:13:03Z t-nakaguchi $
+ * $Id: PerMinutesJob.java 1506 2015-03-02 16:03:34Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and
  * provides composite language services. Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -46,7 +46,7 @@ import jp.go.nict.langrid.management.web.utility.resource.MessageUtil;
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 497 $
+ * @version $Revision: 1506 $
  */
 public class PerMinutesJob extends AbstractJob {
 	@Override
@@ -58,7 +58,7 @@ public class PerMinutesJob extends AbstractJob {
 	protected void doJobExecution() throws ServiceManagerException {
 		ScheduleService service = new ScheduleServiceImpl();
 		String gridId = ServiceFactory.getInstance().getGridService().getSelfGridId();
-		service.setScopeParametar(gridId, gridId, "");
+		service.setScopeParameter(gridId, gridId, "");
 		try {
 			languageResourceJob(service);
 		} catch(ServiceManagerException e) {
@@ -82,7 +82,7 @@ public class PerMinutesJob extends AbstractJob {
 	*/
 	private void clearExpiredTemporaryUser(String gridId) throws ServiceManagerException {
 		TemporaryUserService service = new TemporaryUserServiceImpl();
-		service.setScopeParametar(gridId, gridId, "");
+		service.setScopeParameter(gridId, gridId, "");
 		service.clearExpiredUsers();
 	}
 

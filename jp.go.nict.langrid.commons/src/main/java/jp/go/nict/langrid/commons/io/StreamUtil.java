@@ -1,5 +1,5 @@
 /*
- * $Id: StreamUtil.java 1112 2014-01-17 05:49:39Z t-nakaguchi $
+ * $Id: StreamUtil.java 1313 2014-11-26 06:05:39Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
  * Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -40,41 +40,40 @@ import java.util.List;
 
 import jp.go.nict.langrid.commons.lang.block.BlockPE;
 import jp.go.nict.langrid.commons.nio.charset.CharsetUtil;
+import jp.go.nict.langrid.commons.util.function.Filters;
+import jp.go.nict.langrid.commons.util.function.Predicate;
 
 /**
  * 
  * 
  * @author Takao Nakaguchi
  * @author $Author: t-nakaguchi $
- * @version $Revision: 1112 $
+ * @version $Revision: 1313 $
  */
 public final class StreamUtil {
 	public static Collection<String> readLines(
 			InputStream is, CharsetDecoder decoder)
 	throws IOException{
-		InputStreamReader reader = new InputStreamReader(is, decoder);
-		BufferedReader br = new BufferedReader(reader);
-		List<String> lines = new ArrayList<String>();
-		String line = null;
-		while((line = br.readLine()) != null){
-			lines.add(line);
-		}
-		return lines;
+		return readLines(new InputStreamReader(is, decoder), Filters.<String>pass());
 	}
 
 	public static Collection<String> readLines(
 			InputStream is, String encoding)
 	throws IOException{
-		InputStreamReader reader = new InputStreamReader(is, encoding);
+		return readLines(new InputStreamReader(is, encoding), Filters.<String>pass());
+	}
+
+	public static Collection<String> readLines(Reader reader, Predicate<String> test)
+	throws IOException{
 		BufferedReader br = new BufferedReader(reader);
 		List<String> lines = new ArrayList<String>();
 		String line = null;
 		while((line = br.readLine()) != null){
-			lines.add(line);
+			if(test.test(line)) lines.add(line);
 		}
 		return lines;
 	}
-
+	
 	/**
 	 * 
 	 * 

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions targetNamespace="http://localhost:8080/wrapper-mock-1.2/services/MultihopTranslationWithTemporalDictionary" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://localhost:8080/wrapper-mock-1.2/services/MultihopTranslationWithTemporalDictionary" xmlns:intf="http://localhost:8080/wrapper-mock-1.2/services/MultihopTranslationWithTemporalDictionary" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/" xmlns:tns2="http://langrid.nict.go.jp/ws_1_2/multihoptranslation/" xmlns:tns3="http://langrid.nict.go.jp/ws_1_2/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<wsdl:definitions targetNamespace="servicegrid:servicetype:nict.nlp:MultihopTranslationWithTemporalDictionary" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="servicegrid:servicetype:nict.nlp:MultihopTranslationWithTemporalDictionary" xmlns:intf="servicegrid:servicetype:nict.nlp:MultihopTranslationWithTemporalDictionary" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/" xmlns:tns2="http://langrid.nict.go.jp/ws_1_2/multihoptranslation/" xmlns:tns3="http://langrid.nict.go.jp/ws_1_2/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 <!--WSDLはApache Axis version: 1.4
 Built on Apr 22, 2006 (06:55:48 PDT)によって生成されました / [en]-(WSDL created by Apache Axis version: 1.4
 Built on Apr 22, 2006 (06:55:48 PDT))-->
  <wsdl:types>
-  <schema targetNamespace="http://localhost:8080/wrapper-mock-1.2/services/MultihopTranslationWithTemporalDictionary" xmlns="http://www.w3.org/2001/XMLSchema">
-   <import namespace="http://langrid.nict.go.jp/ws_1_2/multihoptranslation/"/>
-   <import namespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/"/>
+  <schema targetNamespace="servicegrid:servicetype:nict.nlp:MultihopTranslationWithTemporalDictionary" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/multihoptranslation/"/>
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="ArrayOf_xsd_string">
     <complexContent>
@@ -23,6 +23,13 @@ Built on Apr 22, 2006 (06:55:48 PDT))-->
      </restriction>
     </complexContent>
    </complexType>
+   <complexType name="ArrayOfArrayOfArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[][][]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
    <complexType name="ArrayOf_tns3_LanguagePath">
     <complexContent>
      <restriction base="soapenc:Array">
@@ -32,9 +39,9 @@ Built on Apr 22, 2006 (06:55:48 PDT))-->
    </complexType>
   </schema>
   <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/" xmlns="http://www.w3.org/2001/XMLSchema">
-   <import namespace="http://localhost:8080/wrapper-mock-1.2/services/MultihopTranslationWithTemporalDictionary"/>
-   <import namespace="http://langrid.nict.go.jp/ws_1_2/multihoptranslation/"/>
    <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="servicegrid:servicetype:nict.nlp:MultihopTranslationWithTemporalDictionary"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/multihoptranslation/"/>
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="Translation">
     <sequence>
@@ -44,9 +51,9 @@ Built on Apr 22, 2006 (06:55:48 PDT))-->
    </complexType>
   </schema>
   <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/multihoptranslation/" xmlns="http://www.w3.org/2001/XMLSchema">
-   <import namespace="http://localhost:8080/wrapper-mock-1.2/services/MultihopTranslationWithTemporalDictionary"/>
-   <import namespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/"/>
    <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/"/>
+   <import namespace="servicegrid:servicetype:nict.nlp:MultihopTranslationWithTemporalDictionary"/>
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="MultihopTranslationResult">
     <sequence>
@@ -56,9 +63,9 @@ Built on Apr 22, 2006 (06:55:48 PDT))-->
    </complexType>
   </schema>
   <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/" xmlns="http://www.w3.org/2001/XMLSchema">
-   <import namespace="http://localhost:8080/wrapper-mock-1.2/services/MultihopTranslationWithTemporalDictionary"/>
-   <import namespace="http://langrid.nict.go.jp/ws_1_2/multihoptranslation/"/>
    <import namespace="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/"/>
+   <import namespace="servicegrid:servicetype:nict.nlp:MultihopTranslationWithTemporalDictionary"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/multihoptranslation/"/>
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="LangridException">
     <sequence>
@@ -162,55 +169,9 @@ Built on Apr 22, 2006 (06:55:48 PDT))-->
 
    </wsdl:message>
 
-   <wsdl:message name="multihopTranslateRequest">
+   <wsdl:message name="UnsupportedLanguagePathException">
 
-      <wsdl:part name="sourceLang" type="xsd:string"/>
-
-      <wsdl:part name="intermediateLangs" type="impl:ArrayOf_xsd_string"/>
-
-      <wsdl:part name="targetLang" type="xsd:string"/>
-
-      <wsdl:part name="source" type="xsd:string"/>
-
-      <wsdl:part name="temporalDictionary" type="impl:ArrayOf_tns1_Translation"/>
-
-      <wsdl:part name="dictionaryTargetLang" type="xsd:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="LanguagePathNotUniquelyDecidedException">
-
-      <wsdl:part name="fault" type="tns3:LanguagePathNotUniquelyDecidedException"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="ServerBusyException">
-
-      <wsdl:part name="fault" type="tns3:ServerBusyException"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="AccessLimitExceededException">
-
-      <wsdl:part name="fault" type="tns3:AccessLimitExceededException"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="ServiceNotActiveException">
-
-      <wsdl:part name="fault" type="tns3:ServiceNotActiveException"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="NoValidEndpointsException">
-
-      <wsdl:part name="fault" type="tns3:NoValidEndpointsException"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="InvalidParameterException">
-
-      <wsdl:part name="fault" type="tns3:InvalidParameterException"/>
+      <wsdl:part name="fault" type="tns3:UnsupportedLanguagePathException"/>
 
    </wsdl:message>
 
@@ -220,15 +181,15 @@ Built on Apr 22, 2006 (06:55:48 PDT))-->
 
    </wsdl:message>
 
-   <wsdl:message name="UnsupportedLanguagePathException">
+   <wsdl:message name="InvalidParameterException">
 
-      <wsdl:part name="fault" type="tns3:UnsupportedLanguagePathException"/>
+      <wsdl:part name="fault" type="tns3:InvalidParameterException"/>
 
    </wsdl:message>
 
-   <wsdl:message name="ProcessFailedException">
+   <wsdl:message name="ServiceNotActiveException">
 
-      <wsdl:part name="fault" type="tns3:ProcessFailedException"/>
+      <wsdl:part name="fault" type="tns3:ServiceNotActiveException"/>
 
    </wsdl:message>
 
@@ -238,31 +199,81 @@ Built on Apr 22, 2006 (06:55:48 PDT))-->
 
    </wsdl:message>
 
-   <wsdl:portType name="MultihopTranslationWithTemporalDictionary">
+   <wsdl:message name="ServerBusyException">
 
-      <wsdl:operation name="multihopTranslate" parameterOrder="sourceLang intermediateLangs targetLang source temporalDictionary dictionaryTargetLang">
+      <wsdl:part name="fault" type="tns3:ServerBusyException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="ProcessFailedException">
+
+      <wsdl:part name="fault" type="tns3:ProcessFailedException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="LanguagePathNotUniquelyDecidedException">
+
+      <wsdl:part name="fault" type="tns3:LanguagePathNotUniquelyDecidedException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="multihopTranslateRequest">
+
+      <wsdl:part name="sourceLang" type="soapenc:string"/>
+
+      <wsdl:part name="intermediateLangs" type="impl:ArrayOf_xsd_string"/>
+
+      <wsdl:part name="targetLang" type="soapenc:string"/>
+
+      <wsdl:part name="source" type="soapenc:string"/>
+
+      <wsdl:part name="temporalDict" type="impl:ArrayOf_tns1_Translation"/>
+
+      <wsdl:part name="dictTargetLang" type="soapenc:string"/>
+
+      <wsdl:part name="intermediateDictTargets" type="impl:ArrayOfArrayOfArrayOf_xsd_string"/>
+
+      <wsdl:part name="intermediateDictTargetLangs" type="impl:ArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="AccessLimitExceededException">
+
+      <wsdl:part name="fault" type="tns3:AccessLimitExceededException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="NoValidEndpointsException">
+
+      <wsdl:part name="fault" type="tns3:NoValidEndpointsException"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="MultihopTranslationWithTemporalDictionaryService">
+
+      <wsdl:operation name="multihopTranslate" parameterOrder="sourceLang intermediateLangs targetLang source temporalDict dictTargetLang intermediateDictTargets intermediateDictTargetLangs">
 
          <wsdl:input message="impl:multihopTranslateRequest" name="multihopTranslateRequest"/>
 
          <wsdl:output message="impl:multihopTranslateResponse" name="multihopTranslateResponse"/>
 
-         <wsdl:fault message="impl:ServiceNotFoundException" name="ServiceNotFoundException"/>
-
          <wsdl:fault message="impl:ServiceNotActiveException" name="ServiceNotActiveException"/>
-
-         <wsdl:fault message="impl:NoValidEndpointsException" name="NoValidEndpointsException"/>
 
          <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
 
-         <wsdl:fault message="impl:ServerBusyException" name="ServerBusyException"/>
+         <wsdl:fault message="impl:UnsupportedLanguagePathException" name="UnsupportedLanguagePathException"/>
+
+         <wsdl:fault message="impl:ServiceNotFoundException" name="ServiceNotFoundException"/>
 
          <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
 
-         <wsdl:fault message="impl:UnsupportedLanguagePathException" name="UnsupportedLanguagePathException"/>
+         <wsdl:fault message="impl:NoValidEndpointsException" name="NoValidEndpointsException"/>
 
          <wsdl:fault message="impl:ProcessFailedException" name="ProcessFailedException"/>
 
          <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServerBusyException" name="ServerBusyException"/>
 
          <wsdl:fault message="impl:LanguagePathNotUniquelyDecidedException" name="LanguagePathNotUniquelyDecidedException"/>
 
@@ -270,7 +281,7 @@ Built on Apr 22, 2006 (06:55:48 PDT))-->
 
    </wsdl:portType>
 
-   <wsdl:binding name="MultihopTranslationWithTemporalDictionarySoapBinding" type="impl:MultihopTranslationWithTemporalDictionary">
+   <wsdl:binding name="MultihopTranslationWithTemporalDictionarySoapBinding" type="impl:MultihopTranslationWithTemporalDictionaryService">
 
       <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
 
@@ -280,73 +291,73 @@ Built on Apr 22, 2006 (06:55:48 PDT))-->
 
          <wsdl:input name="multihopTranslateRequest">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://multihoptranslation.translation.ws_1_2.wrapper.langrid.nict.go.jp" use="encoded"/>
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://proxy.sun.com" use="encoded"/>
 
          </wsdl:input>
 
          <wsdl:output name="multihopTranslateResponse">
 
-            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/wrapper-mock-1.2/services/MultihopTranslationWithTemporalDictionary" use="encoded"/>
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="servicegrid:servicetype:nict.nlp:MultihopTranslationWithTemporalDictionary" use="encoded"/>
 
          </wsdl:output>
 
-         <wsdl:fault name="ServiceNotFoundException">
-
-            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceNotFoundException" namespace="http://localhost:8080/wrapper-mock-1.2/services/MultihopTranslationWithTemporalDictionary" use="encoded"/>
-
-         </wsdl:fault>
-
          <wsdl:fault name="ServiceNotActiveException">
 
-            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceNotActiveException" namespace="http://localhost:8080/wrapper-mock-1.2/services/MultihopTranslationWithTemporalDictionary" use="encoded"/>
-
-         </wsdl:fault>
-
-         <wsdl:fault name="NoValidEndpointsException">
-
-            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoValidEndpointsException" namespace="http://localhost:8080/wrapper-mock-1.2/services/MultihopTranslationWithTemporalDictionary" use="encoded"/>
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceNotActiveException" namespace="servicegrid:servicetype:nict.nlp:MultihopTranslationWithTemporalDictionary" use="encoded"/>
 
          </wsdl:fault>
 
          <wsdl:fault name="InvalidParameterException">
 
-            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/wrapper-mock-1.2/services/MultihopTranslationWithTemporalDictionary" use="encoded"/>
-
-         </wsdl:fault>
-
-         <wsdl:fault name="ServerBusyException">
-
-            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServerBusyException" namespace="http://localhost:8080/wrapper-mock-1.2/services/MultihopTranslationWithTemporalDictionary" use="encoded"/>
-
-         </wsdl:fault>
-
-         <wsdl:fault name="AccessLimitExceededException">
-
-            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/wrapper-mock-1.2/services/MultihopTranslationWithTemporalDictionary" use="encoded"/>
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="servicegrid:servicetype:nict.nlp:MultihopTranslationWithTemporalDictionary" use="encoded"/>
 
          </wsdl:fault>
 
          <wsdl:fault name="UnsupportedLanguagePathException">
 
-            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnsupportedLanguagePathException" namespace="http://localhost:8080/wrapper-mock-1.2/services/MultihopTranslationWithTemporalDictionary" use="encoded"/>
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnsupportedLanguagePathException" namespace="servicegrid:servicetype:nict.nlp:MultihopTranslationWithTemporalDictionary" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceNotFoundException" namespace="servicegrid:servicetype:nict.nlp:MultihopTranslationWithTemporalDictionary" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="servicegrid:servicetype:nict.nlp:MultihopTranslationWithTemporalDictionary" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoValidEndpointsException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoValidEndpointsException" namespace="servicegrid:servicetype:nict.nlp:MultihopTranslationWithTemporalDictionary" use="encoded"/>
 
          </wsdl:fault>
 
          <wsdl:fault name="ProcessFailedException">
 
-            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ProcessFailedException" namespace="http://localhost:8080/wrapper-mock-1.2/services/MultihopTranslationWithTemporalDictionary" use="encoded"/>
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ProcessFailedException" namespace="servicegrid:servicetype:nict.nlp:MultihopTranslationWithTemporalDictionary" use="encoded"/>
 
          </wsdl:fault>
 
          <wsdl:fault name="NoAccessPermissionException">
 
-            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/wrapper-mock-1.2/services/MultihopTranslationWithTemporalDictionary" use="encoded"/>
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="servicegrid:servicetype:nict.nlp:MultihopTranslationWithTemporalDictionary" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServerBusyException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServerBusyException" namespace="servicegrid:servicetype:nict.nlp:MultihopTranslationWithTemporalDictionary" use="encoded"/>
 
          </wsdl:fault>
 
          <wsdl:fault name="LanguagePathNotUniquelyDecidedException">
 
-            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LanguagePathNotUniquelyDecidedException" namespace="http://localhost:8080/wrapper-mock-1.2/services/MultihopTranslationWithTemporalDictionary" use="encoded"/>
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="LanguagePathNotUniquelyDecidedException" namespace="servicegrid:servicetype:nict.nlp:MultihopTranslationWithTemporalDictionary" use="encoded"/>
 
          </wsdl:fault>
 
@@ -354,11 +365,11 @@ Built on Apr 22, 2006 (06:55:48 PDT))-->
 
    </wsdl:binding>
 
-   <wsdl:service name="MultihopTranslationWithTemporalDictionaryService">
+   <wsdl:service name="MultihopTranslationWithTemporalDictionaryServiceService">
 
       <wsdl:port binding="impl:MultihopTranslationWithTemporalDictionarySoapBinding" name="MultihopTranslationWithTemporalDictionary">
 
-         <wsdlsoap:address location="http://localhost:8080/wrapper-mock-1.2/services/MultihopTranslationWithTemporalDictionary"/>
+         <wsdlsoap:address location="http://127.0.0.1:8080/jp.go.nict.langrid.webapps.mock/services/MultihopTranslationWithTemporalDictionary"/>
 
       </wsdl:port>
 

@@ -19,16 +19,7 @@
  */
 package jp.go.nict.langrid.webapps.mock;
 
-import jp.go.nict.langrid.service_1_2.AccessLimitExceededException;
-import jp.go.nict.langrid.service_1_2.InvalidParameterException;
-import jp.go.nict.langrid.service_1_2.LanguagePathNotUniquelyDecidedException;
-import jp.go.nict.langrid.service_1_2.NoAccessPermissionException;
-import jp.go.nict.langrid.service_1_2.NoValidEndpointsException;
-import jp.go.nict.langrid.service_1_2.ProcessFailedException;
-import jp.go.nict.langrid.service_1_2.ServerBusyException;
-import jp.go.nict.langrid.service_1_2.ServiceNotActiveException;
-import jp.go.nict.langrid.service_1_2.ServiceNotFoundException;
-import jp.go.nict.langrid.service_1_2.UnsupportedLanguagePathException;
+import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
 import jp.go.nict.langrid.service_1_2.bilingualdictionary.Translation;
 import jp.go.nict.langrid.service_1_2.multihoptranslation.MultihopTranslationResult;
 
@@ -43,14 +34,15 @@ implements jp.go.nict.langrid.service_1_2.multihoptranslation.MultihopTranslatio
 	@Override
 	public MultihopTranslationResult multihopTranslate(String sourceLang,
 			String[] intermediateLangs, String targetLang, String source,
-			Translation[] temporalDict, String dictTargetLang)
-			throws AccessLimitExceededException, InvalidParameterException,
-			LanguagePathNotUniquelyDecidedException,
-			NoAccessPermissionException, NoValidEndpointsException,
-			ProcessFailedException, ServerBusyException,
-			ServiceNotActiveException, ServiceNotFoundException,
-			UnsupportedLanguagePathException {
-		// TODO Auto-generated method stub
-		return null;
+			Translation[] temporalDict, String dictTargetLang,
+			String[][][] intermediateDictTargets,
+			String[] intermediateDictTargetLangs){
+		System.out.println(JSON.encode(intermediateDictTargets));
+		String[] targets = new String[intermediateDictTargets.length];
+		for(int i = 0; i < targets.length; i++){
+			targets[i] = intermediateDictTargets[i][0][0];
+		}
+		System.out.println(JSON.encode(targets));
+		return new MultihopTranslationResult(targets, source);
 	}
 }

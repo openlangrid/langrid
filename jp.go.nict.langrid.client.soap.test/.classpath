@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.client"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.client.soap"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.commons"/>
@@ -11,10 +12,6 @@
 	<classpathentry kind="lib" path="/lib/commons/commons-lang-2.4.jar" sourcepath="/sources/commons/commons-lang-2.4-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.service.management_1_2"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
-		<attributes>
-			<attribute name="owner.project.facets" value="java"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="lib" path="/lib/jmte/jmte-3.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

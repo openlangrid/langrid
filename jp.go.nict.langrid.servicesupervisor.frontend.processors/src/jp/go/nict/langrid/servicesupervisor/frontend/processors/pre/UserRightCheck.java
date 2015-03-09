@@ -1,5 +1,5 @@
 /*
- * $Id: UserRightCheck.java 247 2010-10-03 02:07:33Z t-nakaguchi $
+ * $Id: UserRightCheck.java 1506 2015-03-02 16:03:34Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
  * Copyright (C) 2005-2009 NICT Language Grid Project.
@@ -23,6 +23,7 @@ import javax.xml.soap.MimeHeaders;
 
 import jp.go.nict.langrid.dao.entity.Service;
 import jp.go.nict.langrid.dao.entity.User;
+import jp.go.nict.langrid.dao.entity.UserRole;
 import jp.go.nict.langrid.servicesupervisor.frontend.AccessLimitExceededException;
 import jp.go.nict.langrid.servicesupervisor.frontend.NoAccessPermissionException;
 import jp.go.nict.langrid.servicesupervisor.frontend.Preprocess;
@@ -33,19 +34,32 @@ import jp.go.nict.langrid.servicesupervisor.frontend.SystemErrorException;
  * 
  * 
  * @author $Author: t-nakaguchi $
- * @version $Revision: 247 $
+ * @version $Revision: 1506 $
  */
 public class UserRightCheck implements Preprocess {
 	public void process(ProcessContext context, MimeHeaders requestMimeHeaders)
 	throws AccessLimitExceededException, NoAccessPermissionException, SystemErrorException{
 		User u = context.getCallerUser();
 		Service s = context.getTargetService();
-		if(u.getGridId().equals(s.getGridId())){
+		String selfGridId = context.getProcessingNode().getGridId();
+		if(u.getGridId().equals(selfGridId)){
+			if(s.getGridId().equals(selfGridId) &&
+					u.getUserId().equals(s.getOwnerUserId())) return;
 			if(u.isAdminUser()) return;
-			if(u.getUserId().equals(s.getOwnerUserId())) return;
+			if(u.isAbleToCallServices()){
+				boolean permit = false;
+				for(UserRole r : u.getRoles()){
+					String rn = r.getRoleName();
+					if(rn.equals(UserRole.ADMIN_ROLE) ||
+							rn.equals(UserRole.USER_ROLE) ||
+							rn.equals(UserRole.SERVICE_USER_ROLE)){
+						permit = true;
+						break;
+					}
+				}
+				if(permit) return;
+			}
 		}
-		if(u.isAbleToCallServices()) return;
-
 		throw new NoAccessPermissionException(u.getGridId(), u.getUserId());
 	}
 }

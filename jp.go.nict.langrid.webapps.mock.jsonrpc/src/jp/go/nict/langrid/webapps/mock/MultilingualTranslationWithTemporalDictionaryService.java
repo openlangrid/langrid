@@ -29,7 +29,7 @@ import jp.go.nict.langrid.service_1_2.ServerBusyException;
 import jp.go.nict.langrid.service_1_2.ServiceNotActiveException;
 import jp.go.nict.langrid.service_1_2.ServiceNotFoundException;
 import jp.go.nict.langrid.service_1_2.UnsupportedLanguagePairException;
-import jp.go.nict.langrid.service_1_2.bilingualdictionary.Translation;
+import jp.go.nict.langrid.service_1_2.multilingualdictionary.MultilingualTranslation;
 
 /**
  * テスト用の翻訳実装を提供する。
@@ -38,14 +38,14 @@ import jp.go.nict.langrid.service_1_2.bilingualdictionary.Translation;
  * @version $Revision: 14314 $
  */
 public class MultilingualTranslationWithTemporalDictionaryService
-implements jp.go.nict.langrid.service_1_2.translation.MultilingualTranslationWithTemporalDictionaryService{
+implements jp.go.nict.langrid.service_1_2.multilingualtranslation.MultilingualTranslationWithTemporalDictionaryService{
 	@Override
-	public String translate(String sourceLang, String[] targetLangs,
-			String source, Translation[] temporalDict, String[] dictTargetLangs)
-			throws AccessLimitExceededException, InvalidParameterException,
-			LanguagePairNotUniquelyDecidedException,
-			NoAccessPermissionException, ProcessFailedException,
-			NoValidEndpointsException, ServerBusyException,
+	public String[] multilingualTranslate(String sourceLang, String[] targetLangs,
+			String source, MultilingualTranslation[] temporalDict,
+			String[] dictTargetLangs) throws AccessLimitExceededException,
+			InvalidParameterException, LanguagePairNotUniquelyDecidedException,
+			NoAccessPermissionException, NoValidEndpointsException,
+			ProcessFailedException, ServerBusyException,
 			ServiceNotActiveException, ServiceNotFoundException,
 			UnsupportedLanguagePairException {
 		// TODO Auto-generated method stub

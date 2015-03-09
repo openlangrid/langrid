@@ -1,5 +1,5 @@
 /*
- * $Id: UserLogic.java 497 2012-05-24 04:13:03Z t-nakaguchi $
+ * $Id: UserLogic.java 1506 2015-03-02 16:03:34Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
  * Copyright (C) 2005-2009 NICT Language Grid Project.
@@ -41,7 +41,6 @@ import jp.go.nict.langrid.dao.entity.AccessLimit;
 import jp.go.nict.langrid.dao.entity.ServicePK;
 import jp.go.nict.langrid.dao.entity.User;
 import jp.go.nict.langrid.dao.entity.UserAttribute;
-import jp.go.nict.langrid.dao.entity.UserRole;
 
 /**
  * 
@@ -108,7 +107,7 @@ extends AbstractLogic{
 	}
 
 	@DaoTransaction
-	public void addUser(User user) throws UserAlreadyExistsException, DaoException{
+	public void addUser(User user, String... roles) throws UserAlreadyExistsException, DaoException{
 		String ugid = user.getGridId();
 		String uid = user.getUserId();
 		if(getTemporaryUserDao().isUserExists(ugid, uid)){
@@ -128,7 +127,7 @@ extends AbstractLogic{
 				i.remove();
 			}
 		}
-		getUserDao().addUser(user, UserRole.USER_ROLE);
+		getUserDao().addUser(user, roles);
 
 		// 
 		// 
@@ -149,51 +148,6 @@ extends AbstractLogic{
 			}
 		}
 	}
-	
-	//Added by Trang: add LangridServiceUser
-	@DaoTransaction
-	public void addLangridServiceUser(User user) throws UserAlreadyExistsException, DaoException{
-		String ugid = user.getGridId();
-		String uid = user.getUserId();
-		if(getTemporaryUserDao().isUserExists(ugid, uid)){
-			throw new UserAlreadyExistsException(ugid, uid);
-		}
-		if(getUserDao().isUserExist(ugid, uid)){
-			throw new UserAlreadyExistsException(ugid, uid);
-		}
-		user.setPassword(MessageDigestUtil.digestBySHA512(user.getPassword()));
-		user.setPasswordChangedDate(user.getUpdatedDateTime());
-		Iterator<UserAttribute> i = user.getAttributes().iterator();
-		while(i.hasNext()){
-			if(UserUtil.getUserProperties().containsKey(i.next().getName())){
-				// 
-				// What's included in the properties is inaccessible.
-				// 
-				i.remove();
-			}
-		}
-		getUserDao().addUser(user, UserRole.LANGRID_SERVICE_USER_ROLE);
-
-		// 
-		// 
-		Iterable<ServicePK> services = getAccessRightDao().listAccessibleServices(
-				ugid, uid);
-		for(ServicePK s : services){
-			AccessLimitDao ldao = getAccessLimitDao();
-			List<AccessLimit> limits = ldao.getAccessLimits(ugid, "*", s.getGridId(), s.getServiceId());
-			if(limits.size() == 0){
-				// 
-				// 
-				limits = ldao.getAccessLimits("*", "*", s.getGridId(), s.getServiceId());
-			}
-			for(AccessLimit l : limits){
-				ldao.setAccessLimit(ugid, uid, s.getGridId(), s.getServiceId()
-						, l.getPeriod(), l.getLimitType(), l.getLimitCount()
-						);
-			}
-		}
-	}
-	
 
 	@DaoTransaction
 	public void deleteUser(String userGridId, String userId)

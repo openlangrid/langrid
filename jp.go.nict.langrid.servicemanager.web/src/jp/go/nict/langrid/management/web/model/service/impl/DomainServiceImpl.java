@@ -20,7 +20,7 @@ import jp.go.nict.langrid.management.web.model.service.LangridList;
  * 
  * @author Masato Mori
  * @author $Author: t-nakaguchi $
- * @version $Revision: 497 $
+ * @version $Revision: 1506 $
  */
 public class DomainServiceImpl implements DomainService {
 	public DomainServiceImpl() throws ServiceManagerException {
@@ -113,7 +113,7 @@ public class DomainServiceImpl implements DomainService {
 	}
 
 	@Override
-	public void setScopeParametar(String serviceGridId, String userGridId, String userId) {
+	public void setScopeParameter(String serviceGridId, String userGridId, String userId) {
 		this.serviceGridId = serviceGridId;
 		this.userGridId = userGridId;
 		this.userId = userId;

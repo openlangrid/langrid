@@ -5,8 +5,8 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Queue;
 
-import jp.go.nict.langrid.client.impl.protobuf.PbClientFactory;
 import jp.go.nict.langrid.client.jsonrpc.JsonRpcClientFactory;
+import jp.go.nict.langrid.client.protobufrpc.PbClientFactory;
 import jp.go.nict.langrid.client.soap.SoapClientFactory;
 import jp.go.nict.langrid.service_1_2.morphologicalanalysis.Morpheme;
 import jp.go.nict.langrid.service_1_2.morphologicalanalysis.MorphologicalAnalysisService;

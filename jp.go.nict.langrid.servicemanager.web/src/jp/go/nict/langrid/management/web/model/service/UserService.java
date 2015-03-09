@@ -1,11 +1,13 @@
 package jp.go.nict.langrid.management.web.model.service;
 
+import java.util.Collection;
 import java.util.Set;
 
 import jp.go.nict.langrid.dao.MatchingCondition;
 import jp.go.nict.langrid.dao.Order;
 import jp.go.nict.langrid.management.logic.Scope;
 import jp.go.nict.langrid.management.web.model.UserModel;
+import jp.go.nict.langrid.management.web.model.enumeration.UserRole;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 
 /**
@@ -13,7 +15,7 @@ import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 497 $
+ * @version $Revision: 1506 $
  */
 public interface UserService extends DataService<UserModel> {
 	/**
@@ -26,12 +28,6 @@ public interface UserService extends DataService<UserModel> {
 	
 	public boolean authenticate(String userId, String password) throws ServiceManagerException;
 
-	/**
-	 * 
-	 * 
-	 */
-	public boolean isAdministrator(String userId) throws ServiceManagerException;
-	
 	/**
 	 * 
 	 * 
@@ -56,6 +52,11 @@ public interface UserService extends DataService<UserModel> {
 	 * 
 	 * 
 	 */
-   boolean isShouldChangePassword(String userId, int day)
-   throws ServiceManagerException;
+	boolean isShouldChangePassword(String userId, int day)
+			throws ServiceManagerException;
+
+	Set<UserRole> getUserRoles(String userId) throws ServiceManagerException;
+
+	void updateUserRoles(String userId, Collection<UserRole> roles)
+	throws ServiceManagerException;
 }

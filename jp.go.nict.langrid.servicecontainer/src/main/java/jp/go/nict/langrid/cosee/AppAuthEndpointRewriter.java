@@ -1,5 +1,5 @@
 /*
- * $Id: AppAuthEndpointRewriter.java 1187 2014-04-10 14:25:28Z t-nakaguchi $
+ * $Id: AppAuthEndpointRewriter.java 1364 2014-12-29 05:25:10Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
  * Copyright (C) 2010 NICT Language Grid Project.
@@ -28,7 +28,7 @@ import jp.go.nict.langrid.commons.ws.ServiceContext;
  * 
  * 
  * @author $Author: t-nakaguchi $
- * @version $Revision: 1187 $
+ * @version $Revision: 1364 $
  */
 public class AppAuthEndpointRewriter extends AbstractEndpointRewriter{
 	@Override
@@ -46,6 +46,7 @@ public class AppAuthEndpointRewriter extends AbstractEndpointRewriter{
 			, URI processNamespace, String partnerLinkName, URI serviceNamespace
 			)
 	{
+		if(original.getUserName() != null && original.getUserName().length() > 0) return original;
 		String key = (String)properties.get(prefix + ".key");
 		String userId = (String)properties.get(prefix + ".userId");
 		if(key == null || userId == null) return original;

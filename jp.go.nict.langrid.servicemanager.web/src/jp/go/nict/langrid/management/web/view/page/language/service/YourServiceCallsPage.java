@@ -50,7 +50,7 @@ import org.apache.wicket.model.util.WildcardListModel;
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 497 $
+ * @version $Revision: 1512 $
  */
 public class YourServiceCallsPage extends ServiceManagerPage {
 	/**
@@ -120,7 +120,7 @@ public class YourServiceCallsPage extends ServiceManagerPage {
 		ServiceInformationService service = ServiceFactory.getInstance()
 			.getServiceInformationService(
 				gridId, gridId, userId);
-		service.setScopeParametar("", gridId, userId);
+		service.setScopeParameter("", gridId, userId);
 		LangridList<IndividualExecutionInformationModel> list = service.getVerboseList(
 			index * pagingCount, pagingCount, userId, "", start, end
 			, new MatchingCondition[]{new MatchingCondition("callNest", 0)}

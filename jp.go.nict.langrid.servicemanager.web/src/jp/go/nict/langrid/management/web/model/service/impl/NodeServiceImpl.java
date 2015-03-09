@@ -22,7 +22,7 @@ import jp.go.nict.langrid.management.web.model.service.NodeService;
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 497 $
+ * @version $Revision: 1506 $
  */
 public class NodeServiceImpl implements NodeService {
 	public NodeServiceImpl() {
@@ -111,7 +111,7 @@ public class NodeServiceImpl implements NodeService {
 	}
 
 	@Override
-	public void setScopeParametar(String serviceGridId, String userGridId, String userId) {
+	public void setScopeParameter(String serviceGridId, String userGridId, String userId) {
 		this.serviceGridId = serviceGridId;
 		this.userGridId = userGridId;
 		this.userId = userId;

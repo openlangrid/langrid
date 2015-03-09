@@ -17,8 +17,13 @@
  */
 package jp.go.nict.langrid.servicecontainer.handler.protobufrpc;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import jp.go.nict.langrid.servicecontainer.handler.loader.ServiceFactoryLoader;
 
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
@@ -34,8 +39,10 @@ public interface ProtoBufHandler{
 	 * 
 	 */
 	void handle(
+			ServiceFactoryLoader[] sfl,
 			String serviceName, String method
 			, HttpServletRequest request, HttpServletResponse response
 			, CodedInputStream is, CodedOutputStream os
-			);
+			)
+	throws IOException, ServletException;
 }

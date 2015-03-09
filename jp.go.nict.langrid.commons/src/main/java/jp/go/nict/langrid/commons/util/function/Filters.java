@@ -26,4 +26,27 @@ public class Filters {
 			}
 		};
 	}
+
+	public static Predicate<String> ignoreBlankAndComment(){
+		return new Predicate<String>() {
+			@Override
+			public boolean test(String value) {
+				if(value.length() == 0 || value.trim().startsWith("#")) return false;
+				return true;
+			}
+		};
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> Predicate<T> pass(){
+		return PASS;
+	}
+
+	@SuppressWarnings("rawtypes")
+	private static final Predicate PASS = new Predicate() {
+		@Override
+		public boolean test(Object value) {
+			return true;
+		}
+	};
 }

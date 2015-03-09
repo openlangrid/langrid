@@ -21,8 +21,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import jp.go.nict.langrid.client.protobuf.proto.CommonProtos.Header;
-import jp.go.nict.langrid.commons.protobufrpc.util.PbHeadersToRpcHeadersAdapter;
+import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.ws.ServletServiceContext;
 
 /**
@@ -32,7 +31,7 @@ import jp.go.nict.langrid.commons.ws.ServletServiceContext;
  * @author Takao Nakaguchi
  */
 public class PBServiceServiceContext extends ServletServiceContext{
-	public PBServiceServiceContext(HttpServletRequest request, List<Header> headers){
-		super(request, new PbHeadersToRpcHeadersAdapter(headers));
+	public PBServiceServiceContext(HttpServletRequest request, List<RpcHeader> headers){
+		super(request, headers);
 	}
 }

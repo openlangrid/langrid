@@ -40,19 +40,37 @@ public class IndentedWriter {
 		return indent;
 	}
 
-	public void write(String format, Object... args) throws IOException{
+	public IndentedWriter println(String format, Object... args) throws IOException{
 		tabs(indent);
 		appendable.append(String.format(format, args)).append('\n');
+		return this;
 	}
 
-	public void indent(String format, Object... args) throws IOException{
+	public IndentedWriter indent(){
+		indent++;
+		return this;
+	}
+
+	public IndentedWriter unindent(){
+		indent--;
+		return this;
+	}
+
+	public IndentedWriter write(String format, Object... args) throws IOException{
+		println(format, args);
+		return this;
+	}
+
+	public IndentedWriter indent(String format, Object... args) throws IOException{
 		tabs(indent++);
 		appendable.append(String.format(format, args)).append('\n');
+		return this;
 	}
 
-	public void unindent(String format, Object... args) throws IOException{
+	public IndentedWriter unindent(String format, Object... args) throws IOException{
 		tabs(--indent);
 		appendable.append(String.format(format, args)).append('\n');
+		return this;
 	}
 
 	private void tabs(int n) throws IOException{

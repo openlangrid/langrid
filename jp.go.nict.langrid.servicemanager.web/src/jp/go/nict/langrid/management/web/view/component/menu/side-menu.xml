@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <menu>
-
+<!-- 
+  This file defines menu structure.
+  "requiredRoles" accepts following values.
+    * none - no role required. The menu is always visible.
+    * any - any role is acceptable. User must have at least one role. That means that the menu
+            is visible for any logged-in users.
+    * empty - any role is not acceptable. The menu is visible for not-logged-in users.
+    * other - other value designates the individual role name. The menu is visible for users who
+              have specified role.
+ -->
+    
 <!-- Overview Menus ************************ -->
    <link
       label='Overview.headline'
       class='jp.go.nict.langrid.management.web.view.page.other.OverviewPage'
-      session='all'
+      requiredRoles='none'
    >
    </link>
 
@@ -13,7 +23,7 @@
    <link
       label='Menu.ViewOfLanguageGrid'
       class='jp.go.nict.langrid.management.web.view.page.other.NewsPage'
-      session='all'
+      requiredRoles='none'
    >
        <link
          label='News.headline'
@@ -35,18 +45,18 @@
          class='jp.go.nict.langrid.management.web.view.page.language.service.LanguageServicePage'
        >
        </link>
-      <link
+       <link
          label='ProvidingServices.language.service.headline.MonitoringLangridServices'
          class='jp.go.nict.langrid.management.web.view.page.language.service.MonitoringLanguageServicePublicPage'
-         session='logout'
-      >
+         requiredRoles='empty'
+       >
          <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.MonitoringLanguageServiceStatisticPublicPage'/>
-      </link>
-      <link
+       </link>
+       <link
          label='ProvidingServices.language.service.headline.MonitoringLangridServices'
          class='jp.go.nict.langrid.management.web.view.page.language.service.MonitoringAllLanguageServicePage'
-         session='login'
-      >
+         requiredRoles='any'
+       >
          <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.MonitoringAllLanguageServiceStatisticPage'/>
        </link>
 		<link
@@ -64,7 +74,7 @@
    <link
       label='Menu.ProvidingServices'
       class='jp.go.nict.langrid.management.web.view.page.language.resource.YourLanguageResourcesPage'
-      session='login'
+      requiredRoles='serviceprovider'
    >
       <link
          label='ProvidingServices.language.resource.headline.YourLanguageResources'
@@ -147,7 +157,7 @@
    <link
       label='Menu.UsingServices'
       class='jp.go.nict.langrid.management.web.view.page.language.service.YourServiceCallsPage'
-      session='login'
+      requiredRoles='serviceuser'
    >
       <link
          label='UsingServices.headline.YourServiceCalls'
@@ -160,7 +170,8 @@
    <link
       label='Menu.LanguageGridOperator'
       class='jp.go.nict.langrid.management.web.view.page.admin.OperationRequestPage'
-      session="administrator"
+      requiredRoles="administrator"
+      showForUnsufficientUser="unoperatable"
    >
       <link
          label='LanguageGridOperator.headline.RequestedOperations'
@@ -314,7 +325,7 @@
    <link
       label='Menu.DomainSettings'
       class='jp.go.nict.langrid.management.web.view.page.domain.ListPage'
-      session="administrator_hide"
+      requiredRoles="administrator"
    >
       <link
          label='LanguageGridOperator.domainSettings.headline.AllDomains'
@@ -376,7 +387,7 @@
    <link
       label='Menu.UserSettings'
       class='jp.go.nict.langrid.management.web.view.page.user.EditUserProfilePage'
-      session='login'
+      requiredRoles='any'
    >
       <link
          label='UserSettings.headline.EditUserProfile'
@@ -411,7 +422,7 @@
    <link
       label='Menu.Manual'
       class='jp.go.nict.langrid.management.web.view.page.other.ManualPage'
-      session='all'
+      requiredRoles='none'
    >
    </link>
 </menu>

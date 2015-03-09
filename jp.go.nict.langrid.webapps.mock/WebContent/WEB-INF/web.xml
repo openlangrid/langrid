@@ -8,7 +8,7 @@
   </context-param>
 
   <servlet>
-    <servlet-name>AxisServlet</servlet-name>
+    <servlet-name>SGAxisServlet</servlet-name>
     <servlet-class>jp.go.nict.langrid.servicecontainer.handler.axis.SGAxisServlet</servlet-class>
     <init-param>
       <param-name>wsddBeanNamespaceMappings</param-name>
@@ -18,7 +18,7 @@
     </init-param>
   </servlet>
   <servlet-mapping>
-    <servlet-name>AxisServlet</servlet-name>
+    <servlet-name>SGAxisServlet</servlet-name>
     <url-pattern>/services/*</url-pattern>
     <url-pattern>*.jws</url-pattern>
   </servlet-mapping>

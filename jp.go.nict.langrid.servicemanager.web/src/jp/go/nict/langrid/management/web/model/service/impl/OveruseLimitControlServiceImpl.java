@@ -23,7 +23,7 @@ import jp.go.nict.langrid.management.web.model.service.OveruseLimitControlServic
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 497 $
+ * @version $Revision: 1506 $
  */
 public class OveruseLimitControlServiceImpl implements OveruseLimitControlService {
 	public OveruseLimitControlServiceImpl() {
@@ -82,7 +82,7 @@ public class OveruseLimitControlServiceImpl implements OveruseLimitControlServic
 	}
 
 	@Override
-	public void setScopeParametar(String serviceGridId, String userGridId, String userId) {
+	public void setScopeParameter(String serviceGridId, String userGridId, String userId) {
 		this.serviceGridId = serviceGridId;
 		this.userGridId = userGridId;
 	}

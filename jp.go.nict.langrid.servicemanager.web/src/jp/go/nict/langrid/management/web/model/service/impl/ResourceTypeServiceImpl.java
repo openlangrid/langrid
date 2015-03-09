@@ -21,7 +21,7 @@ import jp.go.nict.langrid.management.web.model.service.ResourceTypeService;
  * 
  * @author Masato Mori
  * @author $Author: t-nakaguchi $
- * @version $Revision: 497 $
+ * @version $Revision: 1506 $
  */
 public class ResourceTypeServiceImpl implements ResourceTypeService {
 	public ResourceTypeServiceImpl() throws ServiceManagerException {
@@ -155,7 +155,7 @@ public class ResourceTypeServiceImpl implements ResourceTypeService {
 	}
 
 	@Override
-	public void setScopeParametar(String serviceGridId, String userGridId, String userId) {
+	public void setScopeParameter(String serviceGridId, String userGridId, String userId) {
 		this.serviceGridId = serviceGridId;
 		this.userGridId = userGridId;
 		this.userId = userId;

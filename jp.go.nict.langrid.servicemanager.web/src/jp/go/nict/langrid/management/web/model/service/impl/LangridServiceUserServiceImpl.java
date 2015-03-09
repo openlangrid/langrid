@@ -120,12 +120,12 @@ public class LangridServiceUserServiceImpl implements LangridServiceUserService 
 
 	@Override
 	public void add(UserModel obj) throws ServiceManagerException {
-		try {
+		/*try {
 			new UserLogic().addLangridServiceUser(setProperty(new User(), obj));
 		} catch (DaoException e) {
 			throw new ServiceManagerException(e, this.getClass(),
 					"Cannot add user.");
-		}
+		}*/
 	}
 	
 	
@@ -259,14 +259,6 @@ public class LangridServiceUserServiceImpl implements LangridServiceUserService 
 	}
 
 	@Override
-	public void setScopeParametar(String serviceGridId, String userGridId,
-			String userId) {
-		this.serviceGridId = serviceGridId;
-		this.userGridId = userGridId;
-		this.userId = userId;
-	}
-
-	@Override
 	public boolean isExist(String dataId) throws ServiceManagerException {
 		return get(dataId) != null;
 	}
@@ -317,4 +309,11 @@ public class LangridServiceUserServiceImpl implements LangridServiceUserService 
 	}
 
 	private static final long serialVersionUID = 1L;
+
+	@Override
+	public void setScopeParameter(String serviceGridId, String userGridId,
+			String userId) {
+		// TODO Auto-generated method stub
+		
+	}
 }

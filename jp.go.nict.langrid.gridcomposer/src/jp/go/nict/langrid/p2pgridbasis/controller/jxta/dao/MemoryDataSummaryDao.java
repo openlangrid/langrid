@@ -23,11 +23,10 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.WeakHashMap;
+import java.util.logging.Logger;
 
 import jp.go.nict.langrid.p2pgridbasis.controller.jxta.summary.DataSummary;
 import jp.go.nict.langrid.p2pgridbasis.data.DataID;
-
-import org.apache.log4j.Logger;
 
 /**
  * 
@@ -38,7 +37,7 @@ import org.apache.log4j.Logger;
  */
 public class MemoryDataSummaryDao implements DataSummaryDao {
 	private Map<DataID, DataSummary> summaries;
-	static private Logger logger = Logger.getLogger(MemoryDataSummaryDao.class);
+	private static Logger logger = Logger.getLogger(MemoryDataSummaryDao.class.getName());
 		
 	/**
 	 * The constructor.
@@ -49,10 +48,10 @@ public class MemoryDataSummaryDao implements DataSummaryDao {
 	
 	synchronized public void addDataSummary(DataSummary dataSummary) throws DataSummaryAlreadyExistsException {
 		if(summaries.containsKey(dataSummary.getId())) {
-			throw new DataSummaryAlreadyExistsException(dataSummary.getId());
+			logger.warning(dataSummary.getId() + " is already exists");
+		} else{
+			summaries.put(dataSummary.getId(), dataSummary);
 		}
-		
-		summaries.put(dataSummary.getId(), dataSummary);
 	}
 
 	synchronized public void addLogSummary(DataSummary dataSummary){

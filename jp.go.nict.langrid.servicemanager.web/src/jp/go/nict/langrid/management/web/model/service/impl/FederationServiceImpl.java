@@ -294,7 +294,7 @@ public class FederationServiceImpl implements FederationService {
 	}
 
 	@Override
-	public void setScopeParametar(
+	public void setScopeParameter(
 		String serviceGridId, String userGridId, String userId)
 	{
 		this.serviceGridId = serviceGridId;

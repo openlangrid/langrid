@@ -87,6 +87,11 @@ public class SGAxisServlet extends AxisServlet {
 		updateServiceDeployment();
 	}
 
+	protected ServiceFactoryLoader[] getDefaultServiceFactoryLoaders(){
+		return defaultLoaders;
+	}
+
+
 	private synchronized void updateServiceDeployment() throws ServletException{
 		lastUpdate = System.currentTimeMillis();
 		try{
@@ -94,7 +99,7 @@ public class SGAxisServlet extends AxisServlet {
 			if(!(config instanceof WSDDEngineConfiguration)) return;
 			loadServicesFromServicesPath(
 					((WSDDEngineConfiguration)config).getDeployment()
-					, new ServiceLoader(new ServletConfigServiceContext(getServletConfig()), defaultLoaders)
+					, new ServiceLoader(new ServletConfigServiceContext(getServletConfig()), getDefaultServiceFactoryLoaders())
 					);
 		} catch(AxisFault e){
 		} catch(IOException e){
@@ -151,7 +156,7 @@ public class SGAxisServlet extends AxisServlet {
 			throws ServletException, IOException {
 		ServiceContext sc = new ServletServiceContext(req, new ArrayList<RpcHeader>());
 		currentServletConfig.set(sc);
-		currentServiceLoader.set(new ServiceLoader(sc, defaultLoaders));
+		currentServiceLoader.set(new ServiceLoader(sc, getDefaultServiceFactoryLoaders()));
 		try{
 			if((60 * 1000) <= (System.currentTimeMillis() - lastUpdate)){
 				updateServiceDeployment();
@@ -216,7 +221,7 @@ public class SGAxisServlet extends AxisServlet {
 
 	private void addBeanMapping(WSDDService service, Class<?> clazz, Collection<Class<?>> mappedClasses){
 		while(clazz != null){
-			if(clazz.isArray()){
+			while(clazz.isArray()){
 				clazz = clazz.getComponentType();
 			}
 			if(!needsMapping(clazz)) return;
@@ -234,7 +239,12 @@ public class SGAxisServlet extends AxisServlet {
 
 			WSDDBeanMapping m = new WSDDBeanMapping();
 			m.setLanguageSpecificType(clazz);
-			String packageName = clazz.getPackage().getName();
+			Package p = clazz.getPackage();
+			if(p == null){
+				// arrayちゃんと処理できてる?
+				// System.out.println(clazz);
+			}
+			String packageName = p != null ? p.getName() : "";
 			String simpleName = clazz.getSimpleName();
 			boolean qnameSet = false;
 			for(Pair<String, String> n : namespaceMappings){

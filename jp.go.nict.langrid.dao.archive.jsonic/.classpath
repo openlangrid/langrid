@@ -3,6 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="src_local"/>
 	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.dao"/>
@@ -11,10 +12,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.dao.hibernate"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.servlet.initialize"/>
 	<classpathentry kind="lib" path="/lib/commons/commons-lang-2.4.jar" sourcepath="/sources/commons/commons-lang-2.4-sources.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
-		<attributes>
-			<attribute name="owner.project.facets" value="java"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

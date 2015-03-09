@@ -1,5 +1,5 @@
 /*
- * $Id: LoginPage.java 303 2010-12-01 04:21:52Z t-nakaguchi $
+ * $Id: LoginPage.java 1506 2015-03-02 16:03:34Z t-nakaguchi $
  * 
  * This is a program for Language Grid Core Node. This combines multiple language resources and
  * provides composite language services. Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -35,7 +35,7 @@ import org.apache.wicket.markup.html.link.Link;
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 303 $
+ * @version $Revision: 1506 $
  */
 public class LoginPage extends ServiceManagerPage{
 	/**

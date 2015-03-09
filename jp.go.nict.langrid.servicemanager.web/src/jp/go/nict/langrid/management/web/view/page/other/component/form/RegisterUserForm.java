@@ -1,11 +1,9 @@
 package jp.go.nict.langrid.management.web.view.page.other.component.form;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -15,9 +13,11 @@ import jp.go.nict.langrid.dao.entity.UseType;
 import jp.go.nict.langrid.dao.entity.UserAttribute;
 import jp.go.nict.langrid.management.web.log.LogWriter;
 import jp.go.nict.langrid.management.web.model.UserModel;
+import jp.go.nict.langrid.management.web.model.enumeration.UserRole;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 import jp.go.nict.langrid.management.web.model.service.ServiceFactory;
-import jp.go.nict.langrid.management.web.utility.resource.MessageManager;
+import jp.go.nict.langrid.management.web.model.service.UserService;
+import jp.go.nict.langrid.management.web.utility.resource.MessageUtil;
 import jp.go.nict.langrid.management.web.view.component.form.AbstractForm;
 import jp.go.nict.langrid.management.web.view.component.text.RequiredPasswordTextField;
 import jp.go.nict.langrid.management.web.view.component.text.RequiredRepresentativeTextField;
@@ -114,47 +114,47 @@ public abstract class RegisterUserForm extends AbstractForm<String> {
 
 	@Override
 	protected void onSubmit() {
-		
-			try {
-				UserModel um = new UserModel();
-				um.setHomepageUrl(new EmbeddableStringValueClass<URL>(
-						new URL(homepage.getModelObject())));
-				um.setUserId(userId.getModelObject());
-				um.setPassword(password.getModelObject());
-				um.setAddress(address.getModelObject());
-				um.setEmailAddress(email.getModelObject());
-				um.setOrganization(organization.getModelObject());
-				um.setRepresentative(representative.getModelObject());
-				um.setAbleToCallServices(true);
-				um.setGridId(gridId);
-				// TODO ?ç™»éŒ²æ™‚ã�«ç™»éŒ²æ—¥ã�Œè‡ªå‹•è¨­å®šã�•ã‚Œã�ªã�„ã�®ã�§ã�“ã�“ã�§è¨­å®šã�™ã‚‹
-				Calendar now = Calendar.getInstance();
-				// um.setPasswordChangedDate(Calendar.getInstance());
-				um.setCreatedDateTime(now);
-				um.setUpdatedDateTime(now);
-				um.setAttributes(new HashMap<String, UserAttribute>());
-				um.setDefaultAppProvisionType(AppProvisionType.CLIENT_CONTROL
-						.name());
-				um.setDefaultUseType(UseType.NONPROFIT_USE.name());
-
-				ServiceFactory.getInstance().getLangridServiceUserService(gridId)
-						.add(um);
-				LogWriter
-						.writeInfo(
-								getSessionUserId(),
-								"\""
-										+ userId.getModelObject()
-										+ "\" of langrid user has been registered.",
-								getClass());
-			} catch (ServiceManagerException e) {
-				raisedException = e;
-			} catch (MalformedURLException e) {
-				raisedException = new ServiceManagerException(e,
-						this.getClass());
-			}
+		if(!MessageUtil.isOpenLangrid()){
+			setResponsePage(getCancelPage());
 		}
-	
-	
+		try {
+			UserModel um = new UserModel();
+			um.setHomepageUrl(new EmbeddableStringValueClass<URL>(
+					new URL(homepage.getModelObject())));
+			um.setUserId(userId.getModelObject());
+			um.setPassword(password.getModelObject());
+			um.setAddress(address.getModelObject());
+			um.setEmailAddress(email.getModelObject());
+			um.setOrganization(organization.getModelObject());
+			um.setRepresentative(representative.getModelObject());
+			um.setAbleToCallServices(true);
+			um.setGridId(gridId);
+			Calendar now = Calendar.getInstance();
+			um.setCreatedDateTime(now);
+			um.setUpdatedDateTime(now);
+			um.setAttributes(new HashMap<String, UserAttribute>());
+			um.setDefaultAppProvisionType(AppProvisionType.CLIENT_CONTROL
+					.name());
+			um.setDefaultUseType(UseType.NONPROFIT_USE.name());
+
+			UserService us = ServiceFactory.getInstance().getUserService(gridId);
+			us.add(um);
+			us.updateUserRoles(um.getUserId(), Arrays.asList(UserRole.SERVICEUSER));
+			LogWriter
+					.writeInfo(
+							getSessionUserId(),
+							"\""
+									+ userId.getModelObject()
+									+ "\" of langrid user has been registered.",
+							getClass());
+		} catch (ServiceManagerException e) {
+			raisedException = e;
+		} catch (MalformedURLException e) {
+			raisedException = new ServiceManagerException(e,
+					this.getClass());
+		}
+	}
+
 	@Override
 	protected void setResultPage(String resultParameter) {
 		setResponsePage(new UserSignupResultPage(resultParameter));

@@ -17,9 +17,10 @@
  */
 package jp.go.nict.langrid.composite.commons.test;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 
+import jp.go.nict.langrid.client.jsonrpc.JsonRpcClientFactory;
 import jp.go.nict.langrid.client.ws_1_2.ClientFactory;
 import jp.go.nict.langrid.client.ws_1_2.SpeechRecognitionClient;
 import jp.go.nict.langrid.client.ws_1_2.error.LangridException;
@@ -38,12 +39,13 @@ import jp.go.nict.langrid.service_1_2.speech.SpeechRecognitionService;
 public class SpeechRecognitionClientAdapter implements SpeechRecognitionService{
 	public SpeechRecognitionClientAdapter(String serviceId){
 		try{
+			TestContext tc = new TestContext(getClass(), new JsonRpcClientFactory());
 			client = ClientFactory.createSpeechRecognitionClient(new URL(
-					TestContext.baseUrl + serviceId
+					tc.getBaseUrl() + serviceId
 					));
-			client.setUserId(TestContext.userId);
-			client.setPassword(TestContext.password);
-		} catch(MalformedURLException e){
+			client.setUserId(tc.getUserId());
+			client.setPassword(tc.getPassword());
+		} catch(IOException e){
 			throw new RuntimeException(e);
 		}
 	}

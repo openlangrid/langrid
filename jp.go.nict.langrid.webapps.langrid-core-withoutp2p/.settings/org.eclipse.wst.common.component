@@ -77,6 +77,9 @@
         <dependent-module archiveName="jp.go.nict.langrid.commons.jxpath.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.commons.jxpath/jp.go.nict.langrid.commons.jxpath">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.commons.validator.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.commons.validator/jp.go.nict.langrid.commons.validator">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.dao.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.dao/jp.go.nict.langrid.dao">
             <dependency-type>uses</dependency-type>
         </dependent-module>
@@ -87,9 +90,6 @@
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.service.common_1_2.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.service.common_1_2/jp.go.nict.langrid.service.common_1_2">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="jp.go.nict.langrid.service.language_1_2.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.service.language_1_2/jp.go.nict.langrid.service.language_1_2">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.service.management_1_2.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.service.management_1_2/jp.go.nict.langrid.service.management_1_2">
@@ -203,6 +203,9 @@
         <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicemanager.api_1_2/jp.go.nict.langrid.servicemanager.api_1_2">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicemanager.logic/jp.go.nict.langrid.servicemanager.logic">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.servlet.initialize.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servlet.initialize/jp.go.nict.langrid.servlet.initialize">
             <dependency-type>uses</dependency-type>
         </dependent-module>
@@ -249,6 +252,9 @@
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.servicecontainer.handler.axis.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicecontainer.handler.axis/jp.go.nict.langrid.servicecontainer.handler.axis">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="protobuf-java-2.2.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/google/protobuf-java-2.2.0.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="java-output-path" value="/jp.go.nict.langrid.webapps.langrid-core-withoutp2p/build/classes"/>

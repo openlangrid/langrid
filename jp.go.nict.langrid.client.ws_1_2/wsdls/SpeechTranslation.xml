@@ -321,7 +321,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:binding>
 
-   <wsdl:service name="kyotou.langrid.SpeechTranslation">
+   <wsdl:service name="kyotou.langrid:SpeechTranslation">
 
       <wsdl:port binding="impl:SpeechTranslationSoapBinding" name="SpeechTranslation">
 

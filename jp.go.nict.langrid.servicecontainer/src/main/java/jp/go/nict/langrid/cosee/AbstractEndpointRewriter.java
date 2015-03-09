@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractEndpointRewriter.java 1187 2014-04-10 14:25:28Z t-nakaguchi $
+ * $Id: AbstractEndpointRewriter.java 1364 2014-12-29 05:25:10Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
  * Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -41,7 +41,7 @@ import jp.go.nict.langrid.commons.ws.util.MimeHeadersUtil;
  * 
  * 
  * @author $Author: t-nakaguchi $
- * @version $Revision: 1187 $
+ * @version $Revision: 1364 $
  */
 public abstract class AbstractEndpointRewriter implements EndpointRewriter{
 	/**
@@ -49,7 +49,7 @@ public abstract class AbstractEndpointRewriter implements EndpointRewriter{
 	 * 
 	 * @author Takao Nakaguchi
 	 * @author $Author: t-nakaguchi $
-	 * @version $Revision: 1187 $
+	 * @version $Revision: 1364 $
 	 */
 	@ParameterConfig(prefix="langrid.")
 	public static class Parameters{
@@ -125,7 +125,16 @@ public abstract class AbstractEndpointRewriter implements EndpointRewriter{
 		if(serviceId.startsWith("http://") || serviceId.startsWith("https://")){
 			try{
 				url = new URI(serviceId);
-				return new Endpoint(url);
+				Endpoint ep = new Endpoint(new URI(url.getScheme(), null,
+						url.getHost(), url.getPort(), url.getPath(),
+						url.getQuery(), url.getFragment()));
+				String ui = url.getUserInfo();
+				if(ui != null){
+					String[] idpass = ui.split(":");
+					ep.setUserName(idpass[0]);
+					if(idpass.length > 1) ep.setPassword(idpass[1]);
+				}
+				return ep;
 			} catch(URISyntaxException e){
 			}
 		} else{

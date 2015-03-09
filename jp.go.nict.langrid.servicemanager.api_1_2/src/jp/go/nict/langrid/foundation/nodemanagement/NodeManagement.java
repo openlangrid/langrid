@@ -92,7 +92,7 @@ import jp.go.nict.langrid.servicesupervisor.frontend.processors.pre.AccessRightC
  * 
  * @author Takao Nakaguchi
  * @author $Author: t-nakaguchi $
- * @version $Revision: 302 $
+ * @version $Revision: 1506 $
  */
 public class NodeManagement
 extends AbstractLangridService
@@ -198,7 +198,7 @@ implements NodeManagementService
 	 * 
 	 * 
 	 */
-	@AccessRightValidatedMethod
+	@AccessRightValidatedMethod(policy=ADMINONLY)
 	@ValidatedMethod
 	@TransactionMethod
 	@Log
@@ -426,17 +426,7 @@ implements NodeManagementService
 		, NoAccessPermissionException, ServiceConfigurationException
 		, NodeNotFoundException, UnknownException
 	{
-		Node node = null;
-		try{
-			NodeDao dao = getNodeDao();
-			node = dao.getNode(getGridId(), nodeId);
-		} catch(jp.go.nict.langrid.dao.NodeNotFoundException e){
-			throw convertException(e);
-		} catch(DaoException e){
-			throw convertException(e);
-		} catch(Throwable e){
-			throw ExceptionConverter.convertException(e);
-		}
+		Node node = validateNodeOwnerOrAdmin(nodeId);
 		if(!node.isActive()){
 			return;
 		}

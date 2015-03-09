@@ -47,11 +47,9 @@ public class SoapClientFactoryCompositeLanguageServiceTest{
 
 	@Test
 	public void test_Trans() throws Exception{
-		TranslationWithTemporalDictionaryService service = new SoapClientFactory().create(
-					TranslationWithTemporalDictionaryService.class,
-					new URL("http://langrid.org/service_manager/invoker/TranslationCombinedWithBilingualDictionaryWithLongestMatchSearch"),
-					"ishida.kyoto-u",
-					"tWJaakYm");
+		TranslationWithTemporalDictionaryService service = new SoapTestContext().createClient(
+				"TranslationCombinedWithBilingualDictionaryWithLongestMatchSearch",
+				TranslationWithTemporalDictionaryService.class);
 		RequestAttributes reqAttrs = (RequestAttributes)service;
 		reqAttrs.getTreeBindings().add(new BindingNode(
 				"MorphologicalAnalysisPL", "TreeTagger"));

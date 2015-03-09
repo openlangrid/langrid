@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jp.go.nict.langrid.commons.ws.ServiceContext;
+import jp.go.nict.langrid.commons.ws.param.ServiceContextParameterContext;
 import jp.go.nict.langrid.servicecontainer.handler.ServiceFactory;
 
 import org.springframework.beans.factory.BeanDefinitionStoreException;
@@ -55,7 +56,18 @@ public class XmlServiceFactoryLoader implements FileServiceFactoryLoader{
 			ServiceContext serviceContext, File configPath, final ClassLoader classLoader){
 		final String path = configPath.getAbsoluteFile().toURI().toString();
 		try {
-			return contextCache.get().get(path, new Callable<ServiceFactory>(){
+			Cache<String, ServiceFactory> c = contextCache.get();
+			if(c == null){
+				c = CacheBuilder.newBuilder()
+						.expireAfterWrite(
+								new ServiceContextParameterContext(serviceContext).getInteger(
+										"jp.go.nict.langrid.servicecontainer.handler.loader.XmlServiceFactoryLoader.factoryChacheSeconds",
+										3600),
+								TimeUnit.SECONDS)
+						.build();
+				contextCache.set(c);
+			}
+			return c.get(path, new Callable<ServiceFactory>(){
 				public ServiceFactory call() throws Exception {
 					return loadFrom(classLoader, path);
 				};
@@ -80,13 +92,8 @@ public class XmlServiceFactoryLoader implements FileServiceFactoryLoader{
 		}
 	}
 
-	private static ThreadLocal<Cache<String, ServiceFactory>> contextCache = new ThreadLocal<Cache<String, ServiceFactory>>(){
-		protected Cache<String, ServiceFactory> initialValue(){
-			return CacheBuilder.newBuilder()
-					.expireAfterWrite(3600, TimeUnit.MILLISECONDS)
-					.build();
-		}
-	};
+	private static ThreadLocal<Cache<String, ServiceFactory>> contextCache =
+			new ThreadLocal<Cache<String, ServiceFactory>>();
 
 	private static Logger logger = Logger.getLogger(XmlServiceFactoryLoader.class.getName());
 }

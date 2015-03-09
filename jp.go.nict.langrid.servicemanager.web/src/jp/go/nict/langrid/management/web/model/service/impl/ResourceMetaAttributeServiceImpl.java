@@ -21,7 +21,7 @@ import jp.go.nict.langrid.management.web.model.service.ResourceModelUtil;
  * 
  * @author Masato Mori
  * @author $Author: t-nakaguchi $
- * @version $Revision: 497 $
+ * @version $Revision: 1506 $
  */
 public class ResourceMetaAttributeServiceImpl implements ResourceMetaAttributeService {
 	@Override
@@ -154,7 +154,7 @@ public class ResourceMetaAttributeServiceImpl implements ResourceMetaAttributeSe
 	}
 
 	@Override
-	public void setScopeParametar(String serviceGridId, String userGridId, String userId) {
+	public void setScopeParameter(String serviceGridId, String userGridId, String userId) {
 		this.serviceGridId = serviceGridId;
 		this.userGridId = userGridId;
 		this.userId = userId;

@@ -1,5 +1,5 @@
 /*
- * $Id: MessageUtil.java 497 2012-05-24 04:13:03Z t-nakaguchi $
+ * $Id: MessageUtil.java 1506 2015-03-02 16:03:34Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and
  * provides composite language services. Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -28,7 +28,7 @@ import jp.go.nict.langrid.commons.ws.param.ServletContextParameterContext;
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 497 $
+ * @version $Revision: 1506 $
  */
 public class MessageUtil {
 
@@ -80,6 +80,10 @@ public class MessageUtil {
 
 	public static final String getOperatorUserId() {
 		return cm.getOperatorUserId();
+	}
+	
+	public static final boolean isOpenLangrid(){
+		return cm.isOpenlangrid();
 	}
 
 	private static final ContextInitialMessage cm = new ContextInitialMessage();

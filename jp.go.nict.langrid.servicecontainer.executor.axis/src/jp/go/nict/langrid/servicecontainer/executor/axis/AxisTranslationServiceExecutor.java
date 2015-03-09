@@ -69,6 +69,8 @@ implements TranslationService{
 				return port.translate(sourceLang, targetLang, source);
 			} catch( jp.go.nict.langrid.ws_1_2.InvalidParameterException e ) {
 				throw new InvalidParameterException( e.getParameterName( ), e.getDescription( ) ) ;
+			} catch( jp.go.nict.langrid.ws_1_2.ProcessFailedException e ) {
+				throw new ProcessFailedException( e.getDescription( ) ) ;
 			} catch( jp.go.nict.langrid.ws_1_2.LangridException e ) {
 				throw new ProcessFailedException( e.getDescription( ), e ) ;
 			} catch( RemoteException e ) {

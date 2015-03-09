@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
-import jp.go.nict.langrid.commons.util.Pair;
+import jp.go.nict.langrid.commons.rpc.TransportHeader;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.servicecontainer.handler.RIProcessor.HeaderMessageHandler;
 
@@ -62,10 +62,21 @@ public class RIProcessorContext {
 		headerMessageHandler.getProperties(processId).put(key, value);
 	}
 
-	@SuppressWarnings("unchecked")
+	@Deprecated
 	public void setAdditionalMimeHeader(String name, String value){
-		((List<Pair<String, String>>)headerMessageHandler.getProperties(processId).get("additionalMimeHeaders")).add(
-				Pair.create(name, value));
+		addAdditionalMimeHeader(name, value);
+	}
+
+	@SuppressWarnings("unchecked")
+	public void addAdditionalMimeHeader(String name, String value){
+		((List<TransportHeader>)headerMessageHandler.getProperties(processId).get("additionalMimeHeaders")).add(
+				new TransportHeader(name, value));
+	}
+
+	@SuppressWarnings("unchecked")
+	public void addAdditionalRpcHeader(String namespace, String name, String value){
+		((List<RpcHeader>)headerMessageHandler.getProperties(processId).get("additionalRpcHeaders")).add(
+				new RpcHeader(namespace, name, value));
 	}
 
 	@SuppressWarnings("unchecked")

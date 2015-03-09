@@ -17,12 +17,13 @@
  */
 package jp.go.nict.langrid.composite.commons.test;
 
+import java.io.IOException;
 import java.lang.reflect.Proxy;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import jp.go.nict.langrid.client.axis.ProxySelectingAxisSocketFactory;
 import jp.go.nict.langrid.client.axis.ProxySelectingSecureAxisSocketFactory;
+import jp.go.nict.langrid.client.jsonrpc.JsonRpcClientFactory;
 import jp.go.nict.langrid.client.ws_1_2.impl.AxisStubUtil;
 import jp.go.nict.langrid.commons.beanutils.DynamicInvocationHandler;
 import jp.go.nict.langrid.commons.net.proxy.pac.PacUtil;
@@ -36,15 +37,16 @@ public class StubFactory {
 	public static <T> T create(Class<T> interfaceClass, String serviceId){
 		try{
 			Stub s = AxisStubUtil.createStub(interfaceClass);
-			AxisStubUtil.setUrl(s, new URL(TestContext.baseUrl + serviceId));
-			AxisStubUtil.setUserName(s, TestContext.userId);
-			AxisStubUtil.setPassword(s, TestContext.password);
+			TestContext tc = new TestContext(StubFactory.class, new JsonRpcClientFactory());
+			AxisStubUtil.setUrl(s, new URL(tc.getBaseUrl() + serviceId));
+			AxisStubUtil.setUserName(s, tc.getUserId());
+			AxisStubUtil.setPassword(s, tc.getPassword());
 			return interfaceClass.cast(Proxy.newProxyInstance(
 					Thread.currentThread().getContextClassLoader()
 					, new Class<?>[]{interfaceClass}
 					, new DynamicInvocationHandler<Stub>(s, AxisStubUtil.getConverter())
 					));
-		} catch(MalformedURLException e){
+		} catch(IOException e){
 			throw new RuntimeException(e);
 		}
 	}

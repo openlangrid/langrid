@@ -7,7 +7,7 @@
  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
  <soap:Body soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
   <getSupportedLanguagesResponse>
-   <getSupportedLanguagesResult href="#id1" />
+   <getSupportedLanguagesReturn href="#id1" />
   </getSupportedLanguagesResponse>
   <soapenc:Array id="id1" soapenc:arrayType="xsd:string[1]">
    <Item>vi</Item>

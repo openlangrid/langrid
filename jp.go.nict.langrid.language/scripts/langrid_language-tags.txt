@@ -6,6 +6,7 @@ ko-KR	韓国語	Korean - Republic Of Korea
 ko-KP	朝鮮語 - 北朝鮮	Korean - DPRK
 x-picto-Pangaea	NPOパンゲア絵文字	Pangaea Pictogram
 zh-CN	簡体中国語	Chinese(Simplified)
+zh-HK	繁体中国語(香港)	Chinese(Traditional, Hong Kong SAR)
 zh-TW	繁体中国語	Chinese(Traditional)
 pt-PT	ポルトガル語(ポルトガル)	Portuguese(Portugal)
 pt-BR	ポルトガル語(ブラジル)	Portuguese(Brazil)

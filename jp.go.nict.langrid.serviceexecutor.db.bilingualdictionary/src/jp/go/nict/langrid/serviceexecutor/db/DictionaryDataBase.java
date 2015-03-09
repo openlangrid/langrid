@@ -1,5 +1,5 @@
 /*
- * $Id: DictionaryDataBase.java 240 2010-10-03 01:39:10Z t-nakaguchi $
+ * $Id: DictionaryDataBase.java 1386 2015-01-09 02:27:14Z t-nakaguchi $
  *
  * This is a program to wrap language resources as Web services.
  * Copyright (C) 2008-2009 NICT Language Grid Project.
@@ -68,7 +68,9 @@ public class DictionaryDataBase {
 		this.tableName = tableName;
 		this.manager = manager;
 		try{
-			this.dbDictionary = DbDictionary.valueOf(dbDictionary);
+			if(dbDictionary != null){
+				this.dbDictionary = DbDictionary.valueOf(dbDictionary);
+			}
 		} catch(IllegalArgumentException e){
 			this.dbDictionary = DbDictionary.POSTGRESQL;
 		}
@@ -181,13 +183,13 @@ public class DictionaryDataBase {
 ///			long start = System.currentTimeMillis();	//###
 			sql = s.toString();
 			rs = st.executeQuery(sql);
-			int c = 0; //###
+//			int c = 0; //###
 			while (rs.next()) {
 				int index = rs.getInt(1);
 				String head = rs.getString(hl);
 				String target = rs.getString(tl);
 				result[index] = new Translation(head, new String[]{target});
-				c++;	//###
+//				c++;	//###
 			}
 //			System.out.println((System.currentTimeMillis() - start) + "ms: " + s);		//###
 //			System.out.println(c + " hits.");
@@ -213,6 +215,65 @@ public class DictionaryDataBase {
 				} catch(SQLException e){
 				}
 			}
+		}
+	}
+
+	public boolean addTranslation(String headLang, String targetLang, String headWord, String targetWord)
+	throws SQLException{
+		Connection con = manager.getConnection();
+		try{
+			String sql = "insert into " + StringEscapeUtils.escapeSql(getTableName()) +
+					" (" + StringEscapeUtils.escapeSql(headLang) + ", " +
+					StringEscapeUtils.escapeSql(targetLang) + ") values(?, ?)";
+			PreparedStatement ps = con.prepareStatement(sql);
+			try{
+				ps.setString(1, headWord);
+				ps.setString(2, targetWord);
+				return ps.executeUpdate() == 1;
+			} finally{
+				ps.close();
+			}
+		} finally{
+			con.close();
+		}
+	}
+	public int updateTranslation(String headLang, String targetLang, String headWord, String targetWord)
+	throws SQLException{
+		Connection con = manager.getConnection();
+		try{
+			String sql = "update " + StringEscapeUtils.escapeSql(getTableName()) +
+					" set " + StringEscapeUtils.escapeSql(targetLang) + " = ?" +
+					" where lower(" + StringEscapeUtils.escapeSql(headLang) + ") = ?";
+			PreparedStatement ps = con.prepareStatement(sql);
+			try{
+				ps.setString(1, targetWord);
+				ps.setString(2, headWord);
+				return ps.executeUpdate();
+			} finally{
+				ps.close();
+			}
+		} finally{
+			con.close();
+		}
+	}
+	public int deleteTranslation(String headLang, String targetLang, String headWord, String targetWord)
+	throws SQLException{
+		Connection con = manager.getConnection();
+		try{
+			String sql = "delete from " + StringEscapeUtils.escapeSql(getTableName()) +
+					" where " + StringEscapeUtils.escapeSql(headLang) + " = ?" +
+					" and " + StringEscapeUtils.escapeSql(targetLang) + " = ?";
+			System.out.println(sql);
+			PreparedStatement ps = con.prepareStatement(sql);
+			try{
+				ps.setString(1, headWord);
+				ps.setString(2, targetWord);
+				return ps.executeUpdate();
+			} finally{
+				ps.close();
+			}
+		} finally{
+			con.close();
 		}
 	}
 

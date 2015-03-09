@@ -1,6 +1,7 @@
 /*
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
  * Copyright (C) NICT Language Grid Project.
+ * Copyright (C) 2015 Language Grid Project.
  *
  * This program is free software: you can redistribute it and/or modify it 
  * under the terms of the GNU Lesser General Public License as published by 
@@ -61,6 +62,10 @@ public class TreeBindings{
 	 */
 	public void merge(TreeBindings other){
 		bindings.putAll(other.bindings);
+	}
+
+	public BindingNode getBindingNodeFor(String invocationName){
+		return bindings.get(invocationName);
 	}
 
 	/**

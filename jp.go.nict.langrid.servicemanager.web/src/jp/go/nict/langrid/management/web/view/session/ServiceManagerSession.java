@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceManagerSession.java 406 2011-08-25 02:12:29Z t-nakaguchi $
+ * $Id: ServiceManagerSession.java 1506 2015-03-02 16:03:34Z t-nakaguchi $
  * 
  * This is a program for Language Grid Core Node. This combines multiple language resources and
  * provides composite language services. Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -17,6 +17,10 @@
  */
 package jp.go.nict.langrid.management.web.view.session;
 
+import java.util.Collection;
+import java.util.Set;
+
+import jp.go.nict.langrid.management.web.model.enumeration.UserRole;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 
 /**
@@ -24,7 +28,7 @@ import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 406 $
+ * @version $Revision: 1506 $
  */
 public interface ServiceManagerSession{
 	/**
@@ -56,37 +60,18 @@ public interface ServiceManagerSession{
 	 * 
 	 * 
 	 */
-	public String getUserId();
+	String getUserId();
+
+	boolean isLogin();
+	boolean isLoginedAccess();
+	void setLoginedAccess(boolean b);
+	Set<UserRole> getUserRoles();
 
 	/**
 	 * 
 	 * 
 	 */
-	public boolean isAdministrater();
-
-	/**
-	 * 
-	 * 
-	 */
-	public boolean isLogin();
-
-	/**
-	 * 
-	 * 
-	 */
-	public boolean isLoginedAccess();
-
-	/**
-	 * 
-	 * 
-	 */
-	public void setLoginedAccess(boolean init);
-
-	/**
-	 * 
-	 * 
-	 */
-	public void setPassword(String password);
+	void setPassword(String password);
 	
 	public boolean isExpiredPassword();
 	

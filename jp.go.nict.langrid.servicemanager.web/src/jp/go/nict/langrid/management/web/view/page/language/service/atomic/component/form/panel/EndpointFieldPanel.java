@@ -6,7 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import jp.go.nict.langrid.management.web.model.ProtocolModel;
 import jp.go.nict.langrid.management.web.model.ServiceEndpointModel;
+import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
+import jp.go.nict.langrid.management.web.view.component.choice.ProtocolDropDownChoice;
 import jp.go.nict.langrid.management.web.view.component.container.SwitchableContainer;
 import jp.go.nict.langrid.management.web.view.component.label.HyphenedLabel;
 import jp.go.nict.langrid.management.web.view.component.link.AjaxNonSubmitLink;
@@ -20,6 +23,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.IFormValidator;
@@ -34,7 +38,7 @@ import org.apache.wicket.model.PropertyModel;
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 303 $
+ * @version $Revision: 1398 $
  */
 public class EndpointFieldPanel extends Panel{
 	/**
@@ -42,7 +46,8 @@ public class EndpointFieldPanel extends Panel{
 	 * 
 	 */
 	public EndpointFieldPanel(
-			String componentId, String gridId, String serviceId, List<ServiceEndpointModel> endpointList)
+			String componentId, final String gridId, String serviceId, List<ServiceEndpointModel> endpointList)
+	throws ServiceManagerException
 	{
 		super(componentId);
 		this.serviceId = serviceId;
@@ -60,7 +65,7 @@ public class EndpointFieldPanel extends Panel{
 		
 		repeater= new RepeatingView("endpointList");
 		for(ServiceEndpointModel ep : endpointList) {
-			LastOneSizeContainer container = new LastOneSizeContainer(repeater.newChildId(), ep, false, repeater);
+			LastOneSizeContainer container = new LastOneSizeContainer(gridId, repeater.newChildId(), ep, false, repeater);
 			if(endpointList.size() == 1) {
 				container.setVisibleLastOne();
 			}
@@ -75,6 +80,7 @@ public class EndpointFieldPanel extends Panel{
 				ep.setEnabled(true);
 				ep.setAuthPassword("");
 				ep.setUrl("");
+				ep.setProtocolId("SOAP_RPC_ENCODED");
 				ep.setAuthUserName("");
 				ep.setGridId(serviceGridId);
 				List<LastOneSizeContainer> list = new ArrayList<LastOneSizeContainer>();
@@ -85,22 +91,27 @@ public class EndpointFieldPanel extends Panel{
 					losc.clearVisible();
 					list.add(losc);
 				}
-				LastOneSizeContainer container = new LastOneSizeContainer(repeater.newChildId(), ep, true, repeater);
-				repeater.add(container);
-				target.addComponent(rewriteWrapper);
+				try{
+					LastOneSizeContainer container = new LastOneSizeContainer(gridId, repeater.newChildId(), ep, true, repeater);
+					repeater.add(container);
+					target.addComponent(rewriteWrapper);
+				} catch(ServiceManagerException e){
+					throw new RuntimeException(e);
+				}
 			}
 			private static final long serialVersionUID = 1L;
 		}.setDefaultFormProcessing(false));
 	}
-	
+
 	public List<ServiceEndpointModel> getAddEndpointList() {
 		List<ServiceEndpointModel> list = new ArrayList<ServiceEndpointModel>();
 		Iterator ite = repeater.iterator();
 		while(ite.hasNext()) {
 			LastOneSizeContainer container = (LastOneSizeContainer)ite.next();
-			Object obj = container.getEndpoint();
+			ServiceEndpointModel obj = container.getEndpoint();
 			if(obj != null) {
-				list.add((ServiceEndpointModel)obj);
+				obj.setProtocolId(((ProtocolModel)container.protocolChoice.getDefaultModelObject()).getProtocolId());
+				list.add(obj);
 			}
 		}
 		return list;
@@ -121,13 +132,14 @@ public class EndpointFieldPanel extends Panel{
 	private WebMarkupContainer rewriteWrapper;
 	
 	private class LastOneSizeContainer extends WebMarkupContainer {
-		@SuppressWarnings("unchecked")
 		public LastOneSizeContainer(
-				String componentId, ServiceEndpointModel ep, boolean isAdd, WebMarkupContainer container)
+				String gridId, String componentId, final ServiceEndpointModel ep, boolean isAdd, WebMarkupContainer container)
+		throws ServiceManagerException
 		{
 			super(componentId, new Model<ServiceEndpointModel>(ep));
 			parentContainer = container;
 			this.isAdded = isAdd;
+
 			Label urlLabel = new HyphenedLabel("urlLabel", ep.getUrl());
 			urlLabel.setEscapeModelStrings(false);
 			RequiredURLField ruf = new RequiredURLField("url", new PropertyModel<String>(ep, "url")
@@ -138,7 +150,18 @@ public class EndpointFieldPanel extends Panel{
 					, ruf
 					,  urlLabel
 			);
-			
+
+			Label protocolLabel = new HyphenedLabel("protocolLabel", ep.getProtocolId());
+			protocolLabel.setEscapeModelStrings(false);
+			protocolChoice = new ProtocolDropDownChoice(gridId, "protocol");
+			protocolChoice.setModelById(ep.getProtocolId());
+			SwitchableContainer<ProtocolDropDownChoice, Label> protocolContainer = new SwitchableContainer<ProtocolDropDownChoice, Label>(
+					"protocolContainer"
+					, protocolChoice
+					, protocolLabel
+			);
+			protocolContainer.getFirstComponent().setRequired(false);
+
 			Label nameLabel = new HyphenedLabel("userNameLabel", ep.getAuthUserName());
 			nameLabel.setEscapeModelStrings(false);
 			SwitchableContainer<TextField<String>, Label> nameContainer = new SwitchableContainer<TextField<String>, Label>(
@@ -174,6 +197,7 @@ public class EndpointFieldPanel extends Panel{
 						, nameContainer.getFirstComponent()));
 			} else{
 				urlContainer.switchComponent();
+				protocolContainer.switchComponent();
 				if(ep.getAuthUserName() == null || ep.getAuthUserName().equals("")){
 					nameContainer.setVisible(false);
 					passwordContainer.setVisible(false);
@@ -214,6 +238,7 @@ public class EndpointFieldPanel extends Panel{
 			removeLink.setDefaultFormProcessing(false);
 			add(removeLink);
 			add(urlContainer);
+			add(protocolContainer);
 			add(nameContainer);
 			add(passwordContainer);
 			add(confirmContainer);
@@ -229,14 +254,20 @@ public class EndpointFieldPanel extends Panel{
 			while(ite.hasNext()){
 				Component child = ite.next();
 				if(child instanceof SwitchableContainer){
-					SwitchableContainer<TextField<String>, Label> sc = (SwitchableContainer<TextField<String>, Label>)child;
-					String modelObject;
-					if(sc.getFirstComponent().getModelObject() == null || sc.getFirstComponent().getModelObject().equals("")){
-						modelObject = sc.getFirstComponent().getInput();
-					}else{
-						modelObject = sc.getFirstComponent().getModelObject();
+					SwitchableContainer<FormComponent<?>, Label> sc = (SwitchableContainer<FormComponent<?>, Label>)child;
+					FormComponent<?> c = sc.getFirstComponent();
+					if(c instanceof TextField){
+						String modelObject;
+						if(sc.getFirstComponent().getModelObject() == null || sc.getFirstComponent().getModelObject().equals("")){
+							modelObject = c.getInput();
+						}else{
+							modelObject = c.getModelObject().toString();
+						}
+						((FormComponent<String>)c).setModelObject(modelObject);
+					} else if(c instanceof ProtocolDropDownChoice){
+						ProtocolDropDownChoice p = (ProtocolDropDownChoice)c;
+						p.setModelById(c.getInput());
 					}
-					sc.getFirstComponent().setModelObject(modelObject);
 				}
 			}
 		}
@@ -263,6 +294,7 @@ public class EndpointFieldPanel extends Panel{
 		private boolean isAdded;
 		private AjaxNonSubmitLink removeLink;
 		private WebMarkupContainer parentContainer;
+		private ProtocolDropDownChoice protocolChoice;
 		private static final long serialVersionUID = 1L;
 	}
 	

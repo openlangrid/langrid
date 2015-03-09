@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceManagerApplication.java 920 2013-08-15 09:12:55Z t-nakaguchi $
+ * $Id: ServiceManagerApplication.java 1506 2015-03-02 16:03:34Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and
  * provides composite language services. Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -83,7 +83,7 @@ import org.apache.wicket.util.crypt.KeyInSessionSunJceCryptFactory;
  *
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 920 $
+ * @version $Revision: 1506 $
  */
 public class ServiceManagerApplication extends WebApplication {
 	@Override

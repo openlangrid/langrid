@@ -31,6 +31,8 @@ import jp.go.nict.langrid.client.soap.SoapClientFactory;
 import jp.go.nict.langrid.client.ws_1_2.impl.axis.LangridAxisClientFactory;
 import jp.go.nict.langrid.cosee.Endpoint;
 import jp.go.nict.langrid.service_1_2.translation.TranslationService;
+import jp.go.nict.langrid.servicecontainer.executor.CachingClientFactoryServiceExecutor;
+import jp.go.nict.langrid.servicecontainer.executor.ClientFactoryServiceExecutor;
 import jp.go.nict.langrid.servicecontainer.service.ComponentServiceFactory;
 import jp.go.nict.langrid.servicecontainer.service.component.AbstractComponentServiceFactory;
 

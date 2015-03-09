@@ -1,5 +1,5 @@
 /*
- * $Id: EditUserProfileAdminPage.java 303 2010-12-01 04:21:52Z t-nakaguchi $
+ * $Id: EditUserProfileAdminPage.java 1506 2015-03-02 16:03:34Z t-nakaguchi $
  * 
  * This is a program for Language Grid Core Node. This combines multiple language resources and
  * provides composite language services. Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -18,8 +18,9 @@
 package jp.go.nict.langrid.management.web.view.page.user.admin;
 
 import jp.go.nict.langrid.management.web.model.UserModel;
+import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 import jp.go.nict.langrid.management.web.view.page.ServiceManagerPage;
-import jp.go.nict.langrid.management.web.view.page.user.component.form.EditUserProfileForm;
+import jp.go.nict.langrid.management.web.view.page.user.admin.component.form.EditUserProfileAdminForm;
 
 import org.apache.wicket.Page;
 
@@ -28,16 +29,17 @@ import org.apache.wicket.Page;
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 303 $
+ * @version $Revision: 1506 $
  */
 public class EditUserProfileAdminPage extends ServiceManagerPage{
 	/**
 	 * 
 	 * 
 	 */
-	public EditUserProfileAdminPage(UserModel userEntry){
-		entry = userEntry;
-		EditUserProfileForm form = new EditUserProfileForm("form", userEntry.getUserId(), getSelfGridId(), entry)
+	public EditUserProfileAdminPage(final UserModel model){
+		@SuppressWarnings("serial")
+		EditUserProfileAdminForm form = new EditUserProfileAdminForm(
+				"form", model.getUserId(), getSelfGridId(), model)
 		{
 			@Override
 			protected Page getCancelPageClass(){
@@ -51,12 +53,14 @@ public class EditUserProfileAdminPage extends ServiceManagerPage{
 
 			@Override
 			protected void setResultPage(UserModel resultParameter){
-				setResponsePage(new EditUserProfileResultAdminPage(entry.getUserId(),
-						resultParameter));
+				try {
+					setResponsePage(new EditUserProfileResultAdminPage(model.getUserId(),
+							resultParameter));
+				} catch (ServiceManagerException e) {
+					throw new RuntimeException(e);
+				}
 			}
 		};
 		add(form);
 	}
-
-	private UserModel entry;
 }

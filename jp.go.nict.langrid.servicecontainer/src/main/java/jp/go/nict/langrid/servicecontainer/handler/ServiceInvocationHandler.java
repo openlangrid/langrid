@@ -1,6 +1,7 @@
 package jp.go.nict.langrid.servicecontainer.handler;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import jp.go.nict.langrid.commons.ws.ServiceContext;
@@ -26,6 +27,8 @@ public class ServiceInvocationHandler implements InvocationHandler{
 		ServiceContextUtil.setCurrentServiceContextForAbstractService(context);
 		try{
 			return decoratorChain.next(r);
+		} catch(InvocationTargetException e){
+			throw e.getTargetException();
 		} finally{
 			ServiceContextUtil.setCurrentServiceContextForAbstractService(null);
 		}
