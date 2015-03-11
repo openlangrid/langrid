@@ -30,6 +30,7 @@ import jp.go.nict.langrid.management.web.model.InternalLanguageModel;
 import jp.go.nict.langrid.management.web.model.ServiceMetaAttributeModel;
 import jp.go.nict.langrid.management.web.model.enumeration.LanguagePathType;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
+import jp.go.nict.langrid.management.web.view.component.choice.DomainDropDownChoice;
 import jp.go.nict.langrid.management.web.view.model.LangridSearchCondition;
 import jp.go.nict.langrid.management.web.view.page.language.component.form.panel.LanguageFormPanel;
 import jp.go.nict.langrid.management.web.view.page.language.component.form.panel.LanguagePairFormPanel;
@@ -41,6 +42,7 @@ import jp.go.nict.langrid.management.web.view.page.language.service.component.te
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
@@ -79,6 +81,7 @@ public class ServiceSearchFormPanel extends AbstractSearchFormPanel<LangridSearc
 		if(accessRightCheck.getModelObject() != null){
 			condition.setScope(accessRightCheck.getModelObject() ? Scope.ACCESSIBLE : Scope.ALL);
 		}
+		
 		// add service type condition
 		if(serviceTypeField.getModelObject() != null) {
 			String typeId = serviceTypeField.getModelObject().getTypeId();
@@ -146,9 +149,32 @@ public class ServiceSearchFormPanel extends AbstractSearchFormPanel<LangridSearc
 	}
 
 	@Override
-	protected void initialize(final Form form, String gridId) throws ServiceManagerException{
+	protected void initialize(final Form form, final String gridId) throws ServiceManagerException{
 		languagePathId = "languagePath";
+		
+		
 		form.add(serviceNameField = new SearchTextField("serviceNameField"));
+		form.add(domainChoice = new DomainDropDownChoice(gridId, "domain") {
+			@Override
+			public CharSequence getDefaultChoice(Object selected){
+				String option = getLocalizer()
+						.getString(getId() + ".nullValid", this, "");
+				if(Strings.isEmpty(option)){
+					option = getLocalizer().getString("nullValid", this, "");
+				}
+				// The <option> tag buffer
+				AppendingStringBuffer buffer = new AppendingStringBuffer(32 + option
+						.length());
+				// Add option tag
+				buffer.append("\n<option");
+				// Add body of option tag
+				buffer.append(" value=\"\">").append(option).append("</option>");
+				return buffer;
+			}
+
+			private static final long serialVersionUID = 1L;
+		});
+	
 		form.add(serviceTypeField = new ServiceTypeDropDownChoice(gridId , "serviceTypeField"){
 			@Override
 			public CharSequence getDefaultChoice(Object selected){
@@ -168,6 +194,87 @@ public class ServiceSearchFormPanel extends AbstractSearchFormPanel<LangridSearc
 			}
 
 			private static final long serialVersionUID = 1L;
+		});
+		
+		domainChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				if (domainChoice.getInput() !=null && !domainChoice.getInput().equals("")) {
+					try {
+						form.addOrReplace(serviceTypeField = new ServiceTypeDropDownChoice(gridId, domainChoice.getModelObject().getDomainId(), "serviceTypeField") {
+							@Override
+							public CharSequence getDefaultChoice(Object selected){
+								String option = getLocalizer()
+										.getString(getId() + ".nullValid", this, "");
+								if(Strings.isEmpty(option)){
+									option = getLocalizer().getString("nullValid", this, "");
+								}
+								// The <option> tag buffer
+								AppendingStringBuffer buffer = new AppendingStringBuffer(32 + option
+										.length());
+								// Add option tag
+								buffer.append("\n<option");
+								// Add body of option tag
+								buffer.append(" value=\"\">").append(option).append("</option>");
+								return buffer;
+							}
+
+							private static final long serialVersionUID = 1L;
+						});
+					} catch (ServiceManagerException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else {
+					try {
+						form.addOrReplace(serviceTypeField = new ServiceTypeDropDownChoice(gridId, "serviceTypeField") {
+							@Override
+							public CharSequence getDefaultChoice(Object selected){
+								String option = getLocalizer()
+										.getString(getId() + ".nullValid", this, "");
+								if(Strings.isEmpty(option)){
+									option = getLocalizer().getString("nullValid", this, "");
+								}
+								// The <option> tag buffer
+								AppendingStringBuffer buffer = new AppendingStringBuffer(32 + option
+										.length());
+								// Add option tag
+								buffer.append("\n<option");
+								// Add body of option tag
+								buffer.append(" value=\"\">").append(option).append("</option>");
+								return buffer;
+							}
+
+							private static final long serialVersionUID = 1L;
+						});
+					} catch (ServiceManagerException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+				target.addComponent(getRewriteComponent());
+				
+				serviceTypeField.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+					@Override
+					protected void onUpdate(AjaxRequestTarget target){
+						if(serviceTypeField.getInput() != null && !serviceTypeField.getInput().equals("")){
+							form.addOrReplace(
+									languagePath = getLanguagePathPanel(
+											serviceTypeField.getModelObject().getTypeSet()));
+						}else{
+							form.addOrReplace(languagePath = new LanguageFormPanel(
+									languagePathId));
+						}
+						languagePath.add(new WebMarkupContainer("removePathLink")
+								.setVisible(false));
+						target.addComponent(getRewriteComponent());
+					}
+
+					private static final long serialVersionUID = 1L;
+				});
+			}
 		});
 
 		serviceTypeField.add(new AjaxFormComponentUpdatingBehavior("onchange"){
@@ -238,6 +345,8 @@ public class ServiceSearchFormPanel extends AbstractSearchFormPanel<LangridSearc
 	private ServiceTypeDropDownChoice serviceTypeField;
 	private ProvisionControlDropDownChoice provision;
 	private UsingServiceDropDownChoice usingService;
+	
+	private DomainDropDownChoice domainChoice; 
 
 	private static final long serialVersionUID = 1L;
 }
