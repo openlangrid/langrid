@@ -1,7 +1,0 @@
-Follow instructions below to fix compilation error and create webapps.blank package.
-
-1. Export the project jp.go.nict.langrid.webapps.blank.base as war file.
-2. Extract war file and copy jars in WEB-INF/lib to the jp.go.nict.langrid.webapps.blank/WebContent/WEB-INF/lib
-3. Make sure compile errors on jp.go.nict.langrid.webapps.blank have disappeared.
-4. Export jp.go.nict.langrid.webapps.blank as filesystem.
-5. Zip exported directory, and this zip file is the webapps.blank package.

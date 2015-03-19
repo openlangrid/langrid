@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<wsdlCatalog>
-<% for(wsdl in wsdls){ %>
-  <wsdlEntry
-	location="project:${bpel.processName}/wsdl/${wsdl.filename}"
-	classpath="wsdl/${wsdl.filename}"
-  />
-<% } %>
-</wsdlCatalog>

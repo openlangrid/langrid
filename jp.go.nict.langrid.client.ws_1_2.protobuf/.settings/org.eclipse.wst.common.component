@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project-modules id="moduleCoreId" project-version="1.5.0">
-    <wb-module deploy-name="jp.go.nict.langrid.client.ws_1_2.protobuf">
-        <wb-resource deploy-path="/" source-path="/src"/>
-        <wb-resource deploy-path="/" source-path="/src.proto"/>
-    </wb-module>
-</project-modules>

@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<Context reloadable="true" displayName="Language Grid Service Engine">
-    <Parameter name="langrid.coreNodeUrl" value="${LANGRID_URL}" />
-    <Parameter name="langrid.appAuthKey" value="${LANGRID_APPAUTH_KEY}" />
-	<Parameter name="fromCoreNode.appAuth.authIps" value="${LANGRID_ADDRESS}" />
-    <Parameter name="fromCoreNode.appAuth.authKey" value="${COMPOSITESERVICE_APPAUTH_KEY}" />
-</Context>
