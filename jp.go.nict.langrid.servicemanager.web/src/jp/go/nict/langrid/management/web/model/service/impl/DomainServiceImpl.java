@@ -20,7 +20,7 @@ import jp.go.nict.langrid.management.web.model.service.LangridList;
  * 
  * @author Masato Mori
  * @author $Author: t-nakaguchi $
- * @version $Revision: 1506 $
+ * @version $Revision: 1514 $
  */
 public class DomainServiceImpl implements DomainService {
 	public DomainServiceImpl() throws ServiceManagerException {
@@ -63,7 +63,7 @@ public class DomainServiceImpl implements DomainService {
 	public LangridList<DomainModel> getAllList() throws ServiceManagerException {
 		LangridList<DomainModel> list = new LangridList<DomainModel>();
 		try {
-			List<Domain> result = new DomainLogic().listAllDomain();
+			List<Domain> result = new DomainLogic().listAllDomains();
 			for(Domain d : result) {
 				list.add(makeModel(d));
 			}

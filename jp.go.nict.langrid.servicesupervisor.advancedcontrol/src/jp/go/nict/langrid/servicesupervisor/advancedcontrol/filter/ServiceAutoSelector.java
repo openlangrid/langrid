@@ -43,8 +43,10 @@ import jp.go.nict.langrid.commons.ws.param.FilterConfigParameterContext;
 import jp.go.nict.langrid.commons.ws.servlet.AbstractHttpFilter;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.DaoFactory;
+import jp.go.nict.langrid.dao.DomainDao;
 import jp.go.nict.langrid.dao.ServiceDao;
 import jp.go.nict.langrid.dao.ServiceTypeDao;
+import jp.go.nict.langrid.dao.entity.Domain;
 import jp.go.nict.langrid.dao.entity.ServiceType;
 import jp.go.nict.langrid.servicesupervisor.advancedcontrol.filter.SelectionLogic.Mode;
 
@@ -74,6 +76,7 @@ public class ServiceAutoSelector extends AbstractHttpFilter implements Filter{
 
 		try{
 			factory = DaoFactory.createInstance();
+			ddao = factory.createDomainDao();
 			stdao = factory.createServiceTypeDao();
 			sdao = factory.createServiceDao();
 			logic = new SelectionLogic(
@@ -81,8 +84,10 @@ public class ServiceAutoSelector extends AbstractHttpFilter implements Filter{
 					, sdao
 					, factory.createAccessRightDao()
 					);
-			for(ServiceType t : stdao.listAllServiceTypes()){
-				mappings.put(prefix + t.getServiceTypeId(), Pair.create(t.getDomainId(), t.getServiceTypeId()));
+			for(Domain d : ddao.listAllDomains()){
+				for(ServiceType t : stdao.listAllServiceTypes(d.getDomainId())){
+					mappings.put(prefix + t.getServiceTypeId(), Pair.create(t.getDomainId(), t.getServiceTypeId()));
+				}
 			}
 		} catch(DaoException e){
 			throw new ServletException(e);
@@ -114,10 +119,12 @@ public class ServiceAutoSelector extends AbstractHttpFilter implements Filter{
 		if(type == null){
 			String typeId = sid.substring(prefix.length());
 			try{
-				for(ServiceType st : stdao.listAllServiceTypes()){
-					if(st.getServiceTypeId().equals(typeId)){
-						type = Pair.create(st.getDomainId(), st.getServiceTypeId());
-						mappings.put(sid, type);
+				for(Domain d : ddao.listAllDomains()){
+					for(ServiceType st : stdao.listAllServiceTypes(d.getDomainId())){
+						if(st.getServiceTypeId().equals(typeId)){
+							type = Pair.create(st.getDomainId(), st.getServiceTypeId());
+							mappings.put(sid, type);
+						}
 					}
 				}
 			} catch(DaoException e){
@@ -190,6 +197,7 @@ public class ServiceAutoSelector extends AbstractHttpFilter implements Filter{
 	private String prefix;
 	private SelectionLogic logic;
 	private DaoFactory factory;
+	private DomainDao ddao;
 	private ServiceTypeDao stdao;
 	private ServiceDao sdao;
 	private static Map<String, Pair<String, String>> mappings = new ConcurrentHashMap<String, Pair<String,String>>();

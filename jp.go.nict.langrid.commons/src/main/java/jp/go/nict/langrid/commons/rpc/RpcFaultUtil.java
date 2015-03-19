@@ -24,6 +24,9 @@ import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSONException;
 public class RpcFaultUtil {
 	public static Exception rpcFaultToThrowable(RpcFault fault){
 		String[] v = fault.getFaultString().split(":", 2);
+		if(v.length == 1){
+			return new RuntimeException(v[0]);
+		}
 		try {
 			Class<?> clazz = Class.forName(v[0]);
 			Exception e = (Exception)json.parse(v[1], clazz);

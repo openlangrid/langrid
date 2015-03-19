@@ -33,11 +33,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.commons.ws"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.cosee"/>
 	<classpathentry kind="lib" path="/lib/opensymphony/oscache-2.4.1.jar" sourcepath="/sources/opensymphony/oscache-2.4.1-src.zip"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.commons"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.commons.ws.axis"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.cosee.axis"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -21,8 +21,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
+import jp.go.nict.langrid.commons.io.RegexFileNameFilter;
+import jp.go.nict.langrid.commons.util.function.Consumer;
 import jp.go.nict.langrid.dao.ConnectException;
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
@@ -37,7 +41,49 @@ public class JsonicDaoContext implements DaoContext{
 	public File getBaseDir(){
 		return baseDir;
 	}
-	
+
+	public File getGridsBaseDir(){
+		return new File(baseDir, "grids");
+	}
+
+	public File getGridBaseDir(String gridId){
+		return new File(getGridsBaseDir(), gridId);
+	}
+
+	public File getDomainsBaseDir(){
+		return new File(baseDir, "domains");
+	}
+
+	public File getDomainBaseDir(String domainId){
+		return new File(getDomainsBaseDir(), domainId);
+	}
+
+	public <T> List<T> listAll(File path, Class<T> elementClass)
+	throws DaoException{
+		return listAll(path, elementClass, new Consumer<T>() {
+			@Override
+			public void accept(T value) {
+			}
+		});
+	}
+
+	public <T> List<T> listAll(File path, Class<T> elementClass, Consumer<T> proc)
+	throws DaoException{
+		List<T> users = new ArrayList<T>();
+		File[] files = path.listFiles(new RegexFileNameFilter(".*\\.json"));
+		if(files == null) return users;
+		try{
+			for(File f : files){
+				T e = JsonicUtil.decode(f, elementClass);
+				proc.accept(e);
+				users.add(e);
+			}
+			return users;
+		} catch(IOException e){
+			throw new DaoException(e);
+		}
+	}
+
 	@Override
 	public <T> void addEntityListener(Class<T> clazz, EntityListener<T> listener) {
 		throw new UnsupportedOperationException();

@@ -16,7 +16,6 @@ import javax.sql.rowset.serial.SerialBlob;
 import jp.go.nict.langrid.dao.AccessRankingEntry;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.entity.AccessLog;
-import jp.go.nict.langrid.dao.entity.InstanceType;
 import jp.go.nict.langrid.dao.entity.Invocation;
 import jp.go.nict.langrid.dao.entity.Service;
 import jp.go.nict.langrid.dao.entity.ServiceAttribute;
@@ -56,7 +55,7 @@ import org.hibernate.lob.BlobImpl;
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 553 $
+ * @version $Revision: 1514 $
  */
 public class ServiceModelUtil {
 	/**

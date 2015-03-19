@@ -17,12 +17,8 @@
  */
 package jp.go.nict.langrid.commons.protobufrpc.util;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
-import jp.go.nict.langrid.client.protobuf.proto.CommonProtos.Header;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 
 /**
@@ -32,8 +28,8 @@ import jp.go.nict.langrid.commons.rpc.RpcHeader;
  * @author $Author: nakaguchi $
  * @version $Revision: 15534 $
  */
-public class PbHeadersToRpcHeadersAdapter implements Collection<RpcHeader>{
-	public PbHeadersToRpcHeadersAdapter(){
+abstract class PbHeadersToRpcHeadersAdapter implements Collection<RpcHeader>{
+/*	public PbHeadersToRpcHeadersAdapter(){
 		this.headers = new ArrayList<Header>();
 	}
 
@@ -139,5 +135,5 @@ public class PbHeadersToRpcHeadersAdapter implements Collection<RpcHeader>{
 		};
 	}
 
-	private List<Header> headers;
+	private List<Header> headers;*/
 }

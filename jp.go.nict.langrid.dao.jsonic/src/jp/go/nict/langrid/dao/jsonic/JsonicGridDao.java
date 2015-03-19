@@ -63,7 +63,7 @@ public class JsonicGridDao implements GridDao {
 	public Grid getGrid(String gridId)
 	throws GridNotFoundException, DaoException {
 		try{
-			return JsonicUtil.decode(getFile(gridId), Grid.class);
+			return JsonicUtil.decode(getGridFile(gridId), Grid.class);
 		} catch(FileNotFoundException e){
 			throw new GridNotFoundException(gridId);
 		} catch(IOException e){
@@ -76,12 +76,12 @@ public class JsonicGridDao implements GridDao {
 		throw new UnsupportedOperationException();
 	}
 
-	private File getFile(String gridId){
+	private File getGridFile(String gridId){
 		return new File(getBaseDir(), gridId + ".json");
 	}
 	
 	private File getBaseDir(){
-		return context.getBaseDir();
+		return new File(context.getBaseDir(), "grids");
 	}
 
 	private JsonicDaoContext context;

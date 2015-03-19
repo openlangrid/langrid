@@ -3,37 +3,37 @@
 	<name>jp.go.nict.langrid.webapps.langrid-core</name>
 	<comment></comment>
 	<projects>
-		<project>jp.go.nict.langrid.bpel</project>
-		<project>jp.go.nict.langrid.client</project>
-		<project>jp.go.nict.langrid.client.ws_1_2</project>
-		<project>jp.go.nict.langrid.client.ws_1_2.management</project>
-		<project>jp.go.nict.langrid.commons</project>
+		<project>jp.go.nict.langrid.servlet.filter</project>
 		<project>jp.go.nict.langrid.commons.jxpath</project>
+		<project>jp.go.nict.langrid.servicesupervisor.frontend.accesslimitcheck</project>
+		<project>jp.go.nict.langrid.servicesupervisor.invocationprocessor</project>
+		<project>jp.go.nict.langrid.servicesupervisor</project>
+		<project>jp.go.nict.langrid.servicesupervisor.frontend.processors</project>
 		<project>jp.go.nict.langrid.dao</project>
+		<project>jp.go.nict.langrid.servicesupervisor.frontend</project>
 		<project>jp.go.nict.langrid.dao.hibernate</project>
+		<project>jp.go.nict.langrid.servlet.filter.auth.langrid</project>
+		<project>jp.go.nict.langrid.service.common_1_2</project>
+		<project>jp.go.nict.langrid.service.management_1_2</project>
+		<project>jp.go.nict.langrid.commons.validator</project>
+		<project>jp.go.nict.langrid.service.language_1_2</project>
+		<project>jp.go.nict.langrid.language</project>
+		<project>jp.go.nict.langrid.bpel</project>
+		<project>jp.go.nict.langrid.client.ws_1_2</project>
 		<project>jp.go.nict.langrid.gridcomposer</project>
 		<project>jp.go.nict.langrid.gridcomposer.jxta_2_5</project>
 		<project>jp.go.nict.langrid.gridcomposer.jxta.servlet</project>
 		<project>jp.go.nict.langrid.gridcomposer.platform.jxta_2_5</project>
-		<project>jp.go.nict.langrid.language</project>
-		<project>jp.go.nict.langrid.service.common_1_2</project>
-		<project>jp.go.nict.langrid.service.language_1_2</project>
-		<project>jp.go.nict.langrid.service.management_1_2</project>
-		<project>jp.go.nict.langrid.servicecontainer.handler.axis</project>
 		<project>jp.go.nict.langrid.servicemanager.api_1_2</project>
 		<project>jp.go.nict.langrid.servicemanager.logic</project>
 		<project>jp.go.nict.langrid.servicemanager.web</project>
-		<project>jp.go.nict.langrid.servicesupervisor</project>
-		<project>jp.go.nict.langrid.servicesupervisor.advancedcontrol</project>
-		<project>jp.go.nict.langrid.servicesupervisor.frontend</project>
-		<project>jp.go.nict.langrid.servicesupervisor.frontend.accesslimitcheck</project>
-		<project>jp.go.nict.langrid.servicesupervisor.frontend.processors</project>
-		<project>jp.go.nict.langrid.servicesupervisor.invocationprocessor</project>
-		<project>jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.intergrid</project>
-		<project>jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.intragrid</project>
-		<project>jp.go.nict.langrid.servlet.filter</project>
-		<project>jp.go.nict.langrid.servlet.filter.auth.langrid</project>
 		<project>jp.go.nict.langrid.servlet.initialize</project>
+		<project>jp.go.nict.langrid.servicesupervisor.advancedcontrol</project>
+		<project>jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.intragrid</project>
+		<project>jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.intergrid</project>
+		<project>jp.go.nict.langrid.client.ws_1_2.management</project>
+		<project>jp.go.nict.langrid.client</project>
+		<project>jp.go.nict.langrid.servicecontainer.handler.axis</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

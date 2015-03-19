@@ -61,12 +61,10 @@ public class ProtobufWriter {
 	public static void writeRpcRequest(CodedOutputStream cos, Map<QName, Object> headers
 			, Method method, Object... args)
 	throws IOException, IllegalAccessException, InvocationTargetException{
-		String intfName = method.getDeclaringClass().getSimpleName();
-		int suffix = intfName.indexOf("Service");
-		intfName = intfName.substring(0, 1).toLowerCase()
-				+ (suffix == -1 ? intfName.substring(1) : intfName.substring(1, suffix));
 		// write service header
-		cos.writeStringNoTag(intfName + ".Service." + method.getName());
+		cos.writeStringNoTag(
+				method.getDeclaringClass().getSimpleName() + "." + method.getName()
+				);
 		// write request header
 		for(Map.Entry<QName, Object> h : headers.entrySet()){
 			writeRpcHeader(cos, 1, new RpcHeader(h.getKey().getNamespaceURI()
@@ -86,12 +84,10 @@ public class ProtobufWriter {
 	public static void writeRpcRequest(CodedOutputStream cos, Iterable<RpcHeader> headers
 			, Method method, Object... args)
 	throws IOException, IllegalAccessException, InvocationTargetException{
-		String intfName = method.getDeclaringClass().getSimpleName();
-		int suffix = intfName.indexOf("Service");
-		intfName = intfName.substring(0, 1).toLowerCase()
-				+ (suffix == -1 ? intfName.substring(1) : intfName.substring(1, suffix));
 		// write service header
-		cos.writeStringNoTag(intfName + ".Service." + method.getName());
+		cos.writeStringNoTag(
+				method.getDeclaringClass().getSimpleName() + "." + method.getName()
+				);
 		// write request header
 		for(RpcHeader h : headers){
 			writeRpcHeader(cos, 1, h);
@@ -140,13 +136,16 @@ public class ProtobufWriter {
 	throws IOException{
 		cos.writeTag(fieldNum, WIRETYPE_LENGTH_DELIMITED);
 		String namespace = header.getNamespace();
+		String name = header.getName();
 		String value = header.getValue();
 		int size = 0;
 		size += computeStringSize(1, namespace);
-		size += computeStringSize(2, value);
+		size += computeStringSize(2, name);
+		size += computeStringSize(3, value);
 		cos.writeRawVarint32(size);
 		writeString(cos, 1, namespace);
-		writeString(cos, 2, value);
+		writeString(cos, 2, name);
+		writeString(cos, 3, value);
 	}
 
 	private static void writeRpcFault(CodedOutputStream cos, int fieldNum, RpcFault fault)

@@ -5,35 +5,35 @@
     <Resource
         name="jdbc/langrid" auth="Container" type="javax.sql.DataSource"
         maxActive="100" maxIdle="50" maxWait="10000"
-        username="langridcon" password="e2wknzzd"
+        username="langrid" password="langrid"
         driverClassName="org.postgresql.Driver"
-        url="jdbc:postgresql:langrid-2.0.8-clone"
+        url="jdbc:postgresql:langrid_test"
         />
-
-	<Parameter name="langrid.node.gridId" value="kyoto1.langrid" />
-	<Parameter name="langrid.node.gridName" value="${NODE_GRIDNAME}" />
-	<Parameter name="langrid.node.nodeId" value="${NODE_NODEID}" />
-	<Parameter name="langrid.node.name" value="${NODE_NAME}" />
-	<Parameter name="langrid.node.url" value="http://localhost:8080/jp.go.nict.langrid.webapps.langrid-core-withoutp2p/" />
-	<Parameter name="langrid.node.os" value="${NODE_OS}" />
-	<Parameter name="langrid.node.cpu" value="${NODE_CPU}" />
-	<Parameter name="langrid.node.memory" value="${NODE_MEMORY}" />
-	<Parameter name="langrid.node.specialNotes" value="${NODE_SPECIALNOTES}" />
+	<Parameter name="langrid.openlangrid" value="true" />
+	<Parameter name="langrid.node.gridId" value="kyoto0.langrid" />
+	<Parameter name="langrid.node.gridName" value="Kyoto Open Language Grid" />
+	<Parameter name="langrid.node.nodeId" value="Kyoto1" />
+	<Parameter name="langrid.node.name" value="Kyoto1" />
+	<Parameter name="langrid.node.url" value="http://10.229.59.190:8080/jp.go.nict.langrid.webapps.langrid-core.nlp" />
+	<Parameter name="langrid.node.os" value="Windows" />
+	<Parameter name="langrid.node.cpu" value="Intel" />
+	<Parameter name="langrid.node.memory" value="8G" />
+	<Parameter name="langrid.node.specialNotes" value="None" />
 
 	<Parameter name="langrid.operator.userId" value="langrid" />
-	<Parameter name="langrid.operator.initialPassword" value="${OPERATOR_INITIALPASSWORD}" />
-	<Parameter name="langrid.operator.organization" value="${OPERATOR_ORGANIZATION}" />
-	<Parameter name="langrid.operator.responsiblePerson" value="${OPERATOR_RESPONSIBLEPERSON}" />
-	<Parameter name="langrid.operator.emailAddress" value="${OPERATOR_EMAILADDRESS}" />
-	<Parameter name="langrid.operator.homepageUrl" value="${OPERATOR_HOMEPAGEURL}" />
-	<Parameter name="langrid.operator.address" value="${OPERATOR_ADDRESS}" />
+	<Parameter name="langrid.operator.initialPassword" value="svhuiG6s" />
+	<Parameter name="langrid.operator.organization" value="Language Grid Kyoto Operation Center" />
+	<Parameter name="langrid.operator.responsiblePerson" value="Toru Ishida" />
+	<Parameter name="langrid.operator.emailAddress" value="trangmx@gmail.com" />
+	<Parameter name="langrid.operator.homepageUrl" value="http://langrid.org/operation/" />
+	<Parameter name="langrid.operator.address" value="Department of Social Informatics, Kyoto University" />
 
-	<Parameter name="langrid.gridName" value="${SM_GRIDNAME}" />
-	<Parameter name="langrid.serviceManagerCopyright" value="${SM_COPYRIGHT}" />
+	<Parameter name="langrid.gridName" value="Kyoto Open Language Grid" />
+	<Parameter name="langrid.serviceManagerCopyright" value="Department of Social Informatics, Kyoto University" />
 
-	<Parameter name="langrid.activeBpelServicesUrl" value="${CORE_TO_AE_BASEURL}/services" />
-	<Parameter name="langrid.activeBpelAppAuthKey" value="${CORE_TO_AE_APPAUTHKEY}" />
-	<Parameter name="langrid.javaEngineAppAuthKey" value="${CORE_TO_JC_APPAUTHKEY}" />
+	<Parameter name="langrid.activeBpelServicesUrl" value="http://127.0.0.1:8081/active-bpel/services" />
+	<Parameter name="langrid.activeBpelAppAuthKey" value="e5YPSW3JhgfZ8rHh" />
+	<Parameter name="langrid.javaEngineAppAuthKey" value="e5YPSW3JhgfZ8rHh" />
 	<Parameter name="langrid.droolsServicesUrl" value="${CORE_TO_DRL_BASEURL}/services" />
 	<Parameter name="langrid.droolsAppAuthKey" value="${CORE_TO_DRL_APPAUTHKEY}" />
 
@@ -42,5 +42,5 @@
 	<Parameter name="langrid.maxCallNest" value="16" />
 
 	<Parameter name="appAuth.simpleApp.authIps" value="127.0.0.1" />
-	<Parameter name="appAuth.simpleApp.authKey" value="${AE_TO_CORE_APPAUTHKEY}" />
+	<Parameter name="appAuth.simpleApp.authKey" value="FYdpqsMfoCcxqSqa" />
 </Context>

@@ -41,6 +41,9 @@
         <dependent-module archiveName="jp.go.nict.langrid.service.common_1_2.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.service.common_1_2/jp.go.nict.langrid.service.common_1_2">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.service.language_1_2.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.service.language_1_2/jp.go.nict.langrid.service.language_1_2">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.servicecontainer.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicecontainer/jp.go.nict.langrid.servicecontainer">
             <dependency-type>uses</dependency-type>
         </dependent-module>

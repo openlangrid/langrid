@@ -40,7 +40,7 @@ import org.apache.wicket.model.Model;
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 497 $
+ * @version $Revision: 1521 $
  */
 public class ServiceProfileFieldPanel extends Panel {
 	/**

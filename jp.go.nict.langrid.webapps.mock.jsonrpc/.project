@@ -6,6 +6,7 @@
 		<project>jp.go.nict.langrid.client</project>
 		<project>jp.go.nict.langrid.commons</project>
 		<project>jp.go.nict.langrid.service.common_1_2</project>
+		<project>jp.go.nict.langrid.service.language_1_2</project>
 		<project>jp.go.nict.langrid.servicecontainer</project>
 		<project>jp.go.nict.langrid.servicecontainer.handler.jsonrpc</project>
 	</projects>

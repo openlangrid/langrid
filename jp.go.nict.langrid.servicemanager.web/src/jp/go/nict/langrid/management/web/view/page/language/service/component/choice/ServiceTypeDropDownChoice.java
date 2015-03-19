@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceTypeDropDownChoice.java 497 2012-05-24 04:13:03Z t-nakaguchi $
+ * $Id: AllServiceTypeDropDownChoice.java 1519 2015-03-10 10:07:30Z t-nakaguchi $
  * 
  * This is a program for Language Grid Core Node. This combines multiple language resources and
  * provides composite language services. Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -17,8 +17,10 @@
  */
 package jp.go.nict.langrid.management.web.view.page.language.service.component.choice;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import jp.go.nict.langrid.management.web.model.DomainModel;
 import jp.go.nict.langrid.management.web.model.ServiceTypeModel;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 import jp.go.nict.langrid.management.web.model.service.LangridList;
@@ -35,7 +37,7 @@ import org.apache.wicket.model.util.WildcardListModel;
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 497 $
+ * @version $Revision: 1519 $
  */
 public class ServiceTypeDropDownChoice extends DropDownChoice<ServiceTypeModel> {
 	/**
@@ -92,14 +94,17 @@ public class ServiceTypeDropDownChoice extends DropDownChoice<ServiceTypeModel> 
 	protected List<ServiceTypeModel> getServiceTypeList(String gridId)
 	throws ServiceManagerException {
 		try {
-			typeList = ServiceFactory.getInstance().getServiceTypeService(gridId).getAllList();
+			typeList = new ArrayList<ServiceTypeModel>();
+			for(DomainModel dm : ServiceFactory.getInstance().getDomainService(gridId).getListOnGrid(gridId)){
+				typeList.addAll(ServiceFactory.getInstance().getServiceTypeService(gridId).getAllList(dm.getDomainId()));
+			}
 			typeList.add(ServiceModelUtil.makeOtherServiceTypeModel());
 		} catch(ServiceManagerException e) {
 			return new LangridList<ServiceTypeModel>();
 		}
 		return typeList;
 	}
-	
+
 	protected List<ServiceTypeModel> getServiceTypeList(String gridId, String domainId)
 	throws ServiceManagerException {
 		try {

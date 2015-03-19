@@ -41,11 +41,6 @@ public class JsonicServiceTypeDao implements ServiceTypeDao {
 	}
 
 	@Override
-	public List<ServiceType> listAllServiceTypes() throws DaoException {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public List<ServiceType> listAllServiceTypes(String domainId)
 			throws DaoException {
 		return getList(domainId);
@@ -128,7 +123,7 @@ public class JsonicServiceTypeDao implements ServiceTypeDao {
 	private JsonicDaoContext context;
 
 	private File getServiceTypeDir(String domainId) {
-		return new File(new File(context.getBaseDir(), domainId), "serviceTypes");
+		return new File(context.getDomainBaseDir(domainId), "serviceTypes");
 	}
 
 	private Map<String, List<ServiceType>> serviceTypes = new HashMap<String, List<ServiceType>>();

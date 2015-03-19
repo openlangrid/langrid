@@ -1,5 +1,5 @@
 /*
- * $Id: ResourceTypeDropDownChoice.java 596 2012-12-03 04:05:39Z t-nakaguchi $
+ * $Id: ResourceTypeDropDownChoice.java 1521 2015-03-10 10:29:09Z t-nakaguchi $
  * 
  * This is a program for Language Grid Core Node. This combines multiple language resources and
  * provides composite language services. Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -17,8 +17,10 @@
  */
 package jp.go.nict.langrid.management.web.view.page.language.resource.component.choice;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import jp.go.nict.langrid.management.web.model.DomainModel;
 import jp.go.nict.langrid.management.web.model.ResourceTypeModel;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 import jp.go.nict.langrid.management.web.model.service.ResourceModelUtil;
@@ -35,7 +37,7 @@ import org.apache.wicket.model.util.WildcardListModel;
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 596 $
+ * @version $Revision: 1521 $
  */
 public class ResourceTypeDropDownChoice extends
 		DropDownChoice<ResourceTypeModel> {
@@ -48,8 +50,11 @@ public class ResourceTypeDropDownChoice extends
 		super(componentId, new Model<ResourceTypeModel>(),
 				new WildcardListModel<ResourceTypeModel>());
 		setChoiceRenderer(new ResourceTypeModelChoiceRenderer());
-		list = ServiceFactory.getInstance().getResourceTypeService(gridId)
-				.getAllList();
+		list = new ArrayList<ResourceTypeModel>();
+		for(DomainModel dm : ServiceFactory.getInstance().getDomainService(gridId).getListOnGrid(gridId)){
+			list.addAll(ServiceFactory.getInstance().getResourceTypeService(gridId)
+					.getAllList(dm.getDomainId()));
+		}
 		list.add(ResourceModelUtil.makeOtherResourceTypeModel());
 		setChoices(list);
 	}
@@ -133,7 +138,7 @@ public class ResourceTypeDropDownChoice extends
 	 * 
 	 * @author Masaaki Kamiya
 	 * @author $Author: t-nakaguchi $
-	 * @version $Revision: 596 $
+	 * @version $Revision: 1521 $
 	 */
 	private class ResourceTypeModelChoiceRenderer
 	implements IChoiceRenderer<ResourceTypeModel>

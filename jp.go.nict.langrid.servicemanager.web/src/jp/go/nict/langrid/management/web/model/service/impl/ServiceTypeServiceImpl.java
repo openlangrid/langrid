@@ -13,8 +13,10 @@ import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.MatchingCondition;
 import jp.go.nict.langrid.dao.Order;
 import jp.go.nict.langrid.dao.ServiceTypeNotFoundException;
+import jp.go.nict.langrid.dao.entity.Domain;
 import jp.go.nict.langrid.dao.entity.ServiceInterfaceDefinition;
 import jp.go.nict.langrid.dao.entity.ServiceType;
+import jp.go.nict.langrid.management.logic.DomainLogic;
 import jp.go.nict.langrid.management.logic.Scope;
 import jp.go.nict.langrid.management.logic.ServiceTypeLogic;
 import jp.go.nict.langrid.management.web.model.ServiceTypeModel;
@@ -27,7 +29,9 @@ import jp.go.nict.langrid.management.web.utility.FileUtil;
 import org.apache.commons.lang.SystemUtils;
 
 public class ServiceTypeServiceImpl implements ServiceTypeService {
-   @Override
+	private static final long serialVersionUID = 1392691822058254893L;
+
+	@Override
    public void add(ServiceTypeModel obj) throws ServiceManagerException {
       try {
          new ServiceTypeLogic().addServiceType(ServiceModelUtil.setServiceTypeProperty(obj, new ServiceType()));
@@ -102,25 +106,26 @@ public class ServiceTypeServiceImpl implements ServiceTypeService {
       return null;
    }
 
-   @Override
-   public LangridList<ServiceTypeModel> getAllList() throws ServiceManagerException {
-      try {
-         List<ServiceType> result = new ServiceTypeLogic().listAllServiceType();
-         TreeMap<String, ServiceType> map = new TreeMap<String, ServiceType>();
-         for(ServiceType def : result) {
-        	 map.put(def.getServiceTypeName(), def);
-         }
-         
-         LangridList<ServiceTypeModel> list = new LangridList<ServiceTypeModel>();
-         for(ServiceType def : map.values()) {
-            list.add(ServiceModelUtil.makeServiceTypeModel(def));
-         }
-         return list;
-      } catch(DaoException e) {
-         throw new ServiceManagerException(e);
-      }
-   }
-   
+	@Override
+	public LangridList<ServiceTypeModel> getAllList() throws ServiceManagerException {
+		try {
+			TreeMap<String, ServiceType> map = new TreeMap<String, ServiceType>();
+			for(Domain d : new DomainLogic().listAllDomains()){
+				for(ServiceType def : new ServiceTypeLogic().listServiecType(d.getDomainId())) {
+					map.put(def.getServiceTypeName(), def);
+				}
+			}
+
+			LangridList<ServiceTypeModel> list = new LangridList<ServiceTypeModel>();
+			for(ServiceType def : map.values()) {
+				list.add(ServiceModelUtil.makeServiceTypeModel(def));
+			}
+			return list;
+		} catch(DaoException e) {
+			throw new ServiceManagerException(e);
+		}
+	}
+
    @Override
    public LangridList<ServiceTypeModel> getAllList(String domainId)
    throws ServiceManagerException {
@@ -162,16 +167,21 @@ public class ServiceTypeServiceImpl implements ServiceTypeService {
       return list;
    }
 
-   @Override
-   public int getTotalCount(MatchingCondition[] conditions, Scope scope)
-   throws ServiceManagerException
-   {
-      try {
-         return new ServiceTypeLogic().listAllServiceType().size();
-      } catch(DaoException e) {
-         throw new ServiceManagerException(e);
-      }
-   }
+	@Override
+	public int getTotalCount(MatchingCondition[] conditions, Scope scope)
+	throws ServiceManagerException{
+		try {
+			int c = 0;
+			for(Domain d : new DomainLogic().listAllDomains()){
+				for(@SuppressWarnings("unused") ServiceType def : new ServiceTypeLogic().listServiecType(d.getDomainId())) {
+					c++;
+				}
+			}
+			return c;
+		} catch(DaoException e) {
+			throw new ServiceManagerException(e);
+		}
+	}
    
    public List<String> getDefinitionFileNames(String domainId, String typeId, String protocolId)
    throws ServiceManagerException

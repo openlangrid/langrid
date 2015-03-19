@@ -158,7 +158,7 @@ public class JsonicDaoFactory extends DaoFactory{
 
 	@Override
 	public DomainDao createDomainDao() throws DaoException {
-		return UnsupportedOperationInvocationHandler.newProxy(DomainDao.class);
+		return new JsonicDomainDao(context);
 	}
 
 	@Override

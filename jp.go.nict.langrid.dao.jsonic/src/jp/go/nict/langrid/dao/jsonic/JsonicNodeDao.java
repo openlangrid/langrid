@@ -36,9 +36,11 @@ import jp.go.nict.langrid.dao.entity.Node;
  * 
  * @author Takao Nakaguchi
  */
-public class JsonicNodeDao implements NodeDao {
+public class JsonicNodeDao
+extends AbstractJsonicDao
+implements NodeDao {
 	public JsonicNodeDao(JsonicDaoContext context){
-		this.context = context;
+		super(context);
 	}
 
 	@Override
@@ -47,8 +49,8 @@ public class JsonicNodeDao implements NodeDao {
 	}
 
 	@Override
-	public List<Node> listAllNodes(String nodeGridId) throws DaoException {
-		throw new UnsupportedOperationException();
+	public List<Node> listAllNodes(String gridId) throws DaoException {
+		return listAll(getContext().getGridBaseDir(gridId), Node.class);
 	}
 
 	@Override
@@ -61,7 +63,10 @@ public class JsonicNodeDao implements NodeDao {
 	public NodeSearchResult searchNodes(int startIndex, int maxCount,
 			String nodeGridId, MatchingCondition[] conditions, Order[] orders)
 	throws DaoException {
-		throw new UnsupportedOperationException();
+		List<Node> nodes = listAllNodes(nodeGridId);
+		return new NodeSearchResult(
+				nodes.toArray(new Node[]{}), nodes.size(), true
+				);
 	}
 
 	@Override
@@ -114,12 +119,6 @@ public class JsonicNodeDao implements NodeDao {
 	}
 
 	private File getFile(String gridId, String nodeId){
-		return new File(new File(new File(getBaseDir(), gridId), "nodes"), nodeId + ".json");
+		return new File(new File(getContext().getGridBaseDir(gridId), "nodes"), nodeId + ".json");
 	}
-	
-	private File getBaseDir(){
-		return context.getBaseDir();
-	}
-
-	private JsonicDaoContext context;
 }

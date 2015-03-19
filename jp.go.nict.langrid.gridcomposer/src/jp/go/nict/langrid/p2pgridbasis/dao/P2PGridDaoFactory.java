@@ -1,5 +1,5 @@
 /*
- * $Id: P2PGridDaoFactory.java 401 2011-08-25 01:11:16Z t-nakaguchi $
+ * $Id: P2PGridDaoFactory.java 1522 2015-03-11 02:20:42Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
  * Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -95,7 +95,7 @@ import net.jxta.peer.PeerID;
  * 
  * 
  * @author $Author: t-nakaguchi $
- * @version $Revision: 401 $
+ * @version $Revision: 1522 $
  */
 public class P2PGridDaoFactory extends DaoFactory {
 	@Override
@@ -207,7 +207,9 @@ public class P2PGridDaoFactory extends DaoFactory {
 
 	@Override
 	public ServiceTypeDao createServiceTypeDao() throws DaoException {
-		return new P2PGridBasisServiceTypeDao(hibernateDaoFactory.createServiceTypeDao(), getDaoContext());
+		return new P2PGridBasisServiceTypeDao(
+				hibernateDaoFactory.createDomainDao(),
+				hibernateDaoFactory.createServiceTypeDao(), getDaoContext());
 	}
 
 	@Override

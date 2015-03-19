@@ -1,0 +1,28 @@
+{
+  "active": true,
+  "approved": true,
+  "attributes":   [
+        {
+      "name": "supportedLanguagePairs_AnyCombination",
+      "value": "(af ar be bg ca cs cy da de el en es et fa fi fr ga hi hr hu id is it ja ko lt lv mk ms mt nl no pl pt-PT ro ru sk sl sq sr sv sw th tl tr uk vi yi zh-CN)"
+    }
+  ],
+  "containerType": "ATOMIC",
+  "copyrightInfo": "http://en.wikipedia.org/wiki/Wikipedia:Copyrights",
+  "createdDateTime": "2010/12/06 16:36:23.656 JST",
+  "instanceType": "WEBAPP",
+  "licenseInfo": "http://wikimediafoundation.org/wiki/Terms_of_Use",
+  "ownerUserId": "user1",
+  "serviceDescription": "Bilingual dictionary of Inter-language links extracted from English Wikipedia category \"Anime\"",
+  "serviceEndpoints": [  {
+    "createdDateTime": "2010/12/06 16:36:23.734 JST",
+    "enabled": true,
+    "protocolId": "PROTOCOLBUFFERS_RPC",
+    "url": "http:///pbServices/WikipediaDictionary_Anime_en"
+  }],
+  "serviceId": "WikipediaDictionary_Anime_en",
+  "serviceName": "Wikipedia Dictionary on Anime and Manga (en, 0:00 28 Nov 2010)",
+  "serviceTypeDomainId": "nict.nlp",
+  "serviceTypeId": "BilingualDictionaryWithLongestMatchSearch",
+  "visible": true,
+}

@@ -1,5 +1,5 @@
 /*
- * $Id: DomainLogic.java 302 2010-12-01 02:49:42Z t-nakaguchi $
+ * $Id: DomainLogic.java 1521 2015-03-10 10:29:09Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
  * Copyright (C) 2005-2009 NICT Language Grid Project.
@@ -21,7 +21,6 @@ package jp.go.nict.langrid.management.logic;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import jp.go.nict.langrid.commons.lang.block.BlockP;
 import jp.go.nict.langrid.dao.DaoException;
@@ -32,7 +31,7 @@ import jp.go.nict.langrid.dao.entity.Domain;
  * 
  * @author Masato Mori
  * @author $Author: t-nakaguchi $
- * @version $Revision: 302 $
+ * @version $Revision: 1521 $
  */
 public class DomainLogic
 extends AbstractLogic{
@@ -49,22 +48,29 @@ extends AbstractLogic{
 	}
 	
 	@DaoTransaction
-	public List<Domain> listAllDomain() throws DaoException {
-	   List<Domain> list = new ArrayList<Domain>();
-	   for(Domain d : getDomainDao().listAllDomains()){
-	      list.add(d);
-	   }
-	   return list;
+	public List<Domain> listAllDomains() throws DaoException {
+		List<Domain> list = new ArrayList<Domain>();
+		for(Domain d : getDomainDao().listAllDomains()){
+			list.add(d);
+		}
+		return list;
+	}
+
+	@DaoTransaction
+	public List<Domain> listAllDomains(String gridId) throws DaoException {
+		List<Domain> list = new ArrayList<Domain>();
+		for(Domain d : getDomainDao().listAllDomains(gridId)){
+			list.add(d);
+		}
+		return list;
 	}
 
 	@DaoTransaction
 	public List<Domain> listDomain(String gridId) throws DaoException {
-	   List<Domain> list = new ArrayList<Domain>();
-	   for(Domain d : getDomainDao().listAllDomains()){
-	      if(d.getOwnerUserGridId().equals(gridId)){
-	         list.add(d);
-	      }
-	   }
+		List<Domain> list = new ArrayList<Domain>();
+		for(Domain d : getDomainDao().listAllDomains(gridId)){
+			list.add(d);
+		}
 		return list;
 	}
 
@@ -89,6 +95,4 @@ extends AbstractLogic{
 		block.execute(d);
 		d.touchUpdatedDateTime();
 	}
-
-	private static Logger logger = Logger.getLogger(DomainLogic.class.getName());
 }

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import jp.go.nict.langrid.commons.io.EmptyInputStream;
 import jp.go.nict.langrid.commons.io.FileUtil;
 import jp.go.nict.langrid.commons.io.RegexFileNameFilter;
 import jp.go.nict.langrid.commons.util.ListUtil;
@@ -246,7 +247,7 @@ public class JsonicServiceDao implements ServiceDao {
 	@Override
 	public InputStream getServiceInstance(String serviceGridId, String serviceId)
 	throws DaoException, ServiceNotFoundException {
-		throw new UnsupportedOperationException();
+		return new EmptyInputStream();
 	}
 
 	@Override
@@ -291,11 +292,11 @@ public class JsonicServiceDao implements ServiceDao {
 	}
 
 	private File getBaseDir(String gridId){
-		return new File(new File(context.getBaseDir(), gridId), "services");
+		return new File(context.getGridBaseDir(gridId), "services");
 	}
 
 	private File getServiceTypeDir(String domainId){
-		return new File(new File(context.getBaseDir(), domainId), "serviceTypes");
+		return new File(context.getDomainBaseDir(domainId), "serviceTypes");
 	}
 
 	private JsonicDaoContext context;

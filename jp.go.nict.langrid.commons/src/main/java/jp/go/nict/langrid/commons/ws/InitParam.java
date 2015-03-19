@@ -104,7 +104,7 @@ public enum InitParam {
 	 */
 	wsdlCacheMaxWsdlSize,
 	
-	openlangrid,
+	openLangrid,
 	;
 
 	/**

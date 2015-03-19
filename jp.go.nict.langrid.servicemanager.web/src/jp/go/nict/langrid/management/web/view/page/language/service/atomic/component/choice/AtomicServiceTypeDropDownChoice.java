@@ -1,5 +1,5 @@
 /*
- * $Id: AtomicServiceTypeDropDownChoice.java 406 2011-08-25 02:12:29Z t-nakaguchi $
+ * $Id: AtomicServiceTypeDropDownChoice.java 1521 2015-03-10 10:29:09Z t-nakaguchi $
  * 
  * This is a program for Language Grid Core Node. This combines multiple language resources and
  * provides composite language services. Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -29,7 +29,7 @@ import jp.go.nict.langrid.management.web.view.page.language.service.component.ch
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 406 $
+ * @version $Revision: 1521 $
  */
 public class AtomicServiceTypeDropDownChoice extends ServiceTypeDropDownChoice{
 	/**

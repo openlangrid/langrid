@@ -1069,12 +1069,14 @@ public class JXTAController implements P2PGridController {
 				//ServiceType
 				logger.info("--- publishing rdv ServiceTypes.");
 				c = 0;
-				for (ServiceType serviceType : factory.createServiceTypeDao().listAllServiceTypes()) {
-					ServiceTypeData data = new ServiceTypeData(serviceType);
-					baseSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
-					hostSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
-					platform.publish(new DataAdv(data, platform.getPeerID()));
-					c++;
+				for(Domain d : factory.createDomainDao().listAllDomains(selfGridId)){
+					for (ServiceType serviceType : factory.createServiceTypeDao().listAllServiceTypes(d.getDomainId())) {
+						ServiceTypeData data = new ServiceTypeData(serviceType);
+						baseSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
+						hostSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
+						platform.publish(new DataAdv(data, platform.getPeerID()));
+						c++;
+					}
 				}
 				logger.info("--- " + c + " entities done.");
 
@@ -1159,10 +1161,12 @@ public class JXTAController implements P2PGridController {
 				//ServiceType
 				logger.info("--- publishing edge ServiceTypes.");
 				c = 0;
-				for (ServiceType serviceType : factory.createServiceTypeDao().listAllServiceTypes()) {
-					ServiceTypeData data = new ServiceTypeData(serviceType);
-					baseSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
-					c++;
+				for(Domain d : factory.createDomainDao().listAllDomains(selfGridId)){
+					for (ServiceType serviceType : factory.createServiceTypeDao().listAllServiceTypes(d.getDomainId())) {
+						ServiceTypeData data = new ServiceTypeData(serviceType);
+						baseSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
+						c++;
+					}
 				}
 				logger.info("--- " + c + " entities done.");
 			}

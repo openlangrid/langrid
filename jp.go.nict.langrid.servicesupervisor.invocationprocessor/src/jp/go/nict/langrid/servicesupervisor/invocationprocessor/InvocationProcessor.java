@@ -19,8 +19,13 @@ package jp.go.nict.langrid.servicesupervisor.invocationprocessor;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -170,18 +175,29 @@ extends AbstractLangridServlet{
 			LangridConstants.HTTPHEADER_CALLNEST
 				, Integer.toString(nest)
 				);
-		String[] transHeaders = {
-				LangridConstants.HTTPHEADER_TYPEOFAPPPROVISION
-				, LangridConstants.HTTPHEADER_TYPEOFUSE
-				, LangridConstants.HTTPHEADER_PROTOCOL};
-		for(String h : transHeaders){
-			String v = request.getHeader(h);
-			if(v != null){
-				headers.put(h, v);
+		@SuppressWarnings("unchecked")
+		Enumeration<String> en = request.getHeaderNames();
+		String transHeader = LangridConstants.HTTPHEADER_TRANSFER_TO_SERVICE.toLowerCase();
+		while(en.hasMoreElements()){
+			String name = en.nextElement().toLowerCase();
+			if(transHeaders.contains(name)){
+				headers.put(name, request.getHeader(name));
+			} else if(name.startsWith(transHeader)){
+				String n = name.substring(transHeader.length());
+				headers.put(n, request.getHeader(name));
 			}
 		}
 
 		return headers;
+	}
+
+	private static Set<String> transHeaders;
+	static{
+		transHeaders = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(new String[]{
+				LangridConstants.HTTPHEADER_TYPEOFAPPPROVISION.toLowerCase()
+				, LangridConstants.HTTPHEADER_TYPEOFUSE.toLowerCase()
+				, LangridConstants.HTTPHEADER_PROTOCOL.toLowerCase()
+		})));
 	}
 
 	private String getProtocol(HttpServletRequest request){

@@ -10,12 +10,10 @@
 			<attribute name="owner.project.facets" value="jst.web"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/Java SE 8 [1.8.0_25]">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.service.common_1_2"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.service.language_1_2"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

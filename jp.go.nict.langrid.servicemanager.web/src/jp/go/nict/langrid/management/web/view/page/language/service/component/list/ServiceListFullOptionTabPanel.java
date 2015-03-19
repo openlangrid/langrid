@@ -27,8 +27,8 @@ import org.apache.wicket.markup.html.panel.Panel;
  * 
  * 
  * @author Masaaki Kamiya
- * @author $Author: t-nakaguchi $
- * @version $Revision: 303 $
+ * @author $Author: trangmx $
+ * @version $Revision: 1532 $
  */
 public class ServiceListFullOptionTabPanel extends Panel {
 	/**
@@ -84,15 +84,13 @@ public class ServiceListFullOptionTabPanel extends Panel {
 	      this.conditions.putOrReplaceCondition(
 	         m.getFieldName(), (String)m.getMatchingValue(), m.getMatchingMethod());
 	   }
-//	   this.conditions = conditions;
 	   
 	   this.conditions.putOrReplaceCondition("gridId", targetGridId, MatchingMethod.COMPLETE);
 	   this.conditions.putOrReplaceCondition("membersOnly", atomicMembersOnly);
-//	   this.conditions.putOrReplaceOrder(conditions.getOrders());
 	   this.conditions.setScope(conditions.getScope());
-		listContainer.addOrReplace(makeList("atomicList", ListType.PUBLICATOMICSERVICE, this.conditions));
-		this.conditions.putOrReplaceCondition("membersOnly", compositeMembersOnly);
-		listContainer.addOrReplace(makeList("compositeList", ListType.PUBLICCOMPOSITESERVICE, this.conditions));
+	   listContainer.addOrReplace(makeList("atomicList", ListType.PUBLICATOMICSERVICE, this.conditions));
+	   this.conditions.putOrReplaceCondition("membersOnly", compositeMembersOnly);
+	   listContainer.addOrReplace(makeList("compositeList", ListType.PUBLICCOMPOSITESERVICE, this.conditions));
 	}
 	
 	protected <T extends ServiceModel> ServiceListPanel<T> getListPanel(

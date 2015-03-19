@@ -15,7 +15,5 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.service.common_1_2"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.service.language_1_2"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

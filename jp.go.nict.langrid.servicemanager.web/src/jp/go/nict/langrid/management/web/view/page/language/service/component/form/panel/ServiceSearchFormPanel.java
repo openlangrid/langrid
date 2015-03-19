@@ -1,5 +1,5 @@
 /*
-* $Id: ServiceSearchFormPanel.java 497 2012-05-24 04:13:03Z t-nakaguchi $
+* $Id: ServiceSearchFormPanel.java 1532 2015-03-17 04:15:47Z trangmx $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and
  * provides composite language services. Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -30,19 +30,18 @@ import jp.go.nict.langrid.management.web.model.InternalLanguageModel;
 import jp.go.nict.langrid.management.web.model.ServiceMetaAttributeModel;
 import jp.go.nict.langrid.management.web.model.enumeration.LanguagePathType;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
-import jp.go.nict.langrid.management.web.view.component.choice.DomainDropDownChoice;
+import jp.go.nict.langrid.management.web.view.component.choice.FederationDomainDropDownChoice;
 import jp.go.nict.langrid.management.web.view.model.LangridSearchCondition;
 import jp.go.nict.langrid.management.web.view.page.language.component.form.panel.LanguageFormPanel;
 import jp.go.nict.langrid.management.web.view.page.language.component.form.panel.LanguagePairFormPanel;
 import jp.go.nict.langrid.management.web.view.page.language.service.component.choice.ProvisionControlDropDownChoice;
-import jp.go.nict.langrid.management.web.view.page.language.service.component.choice.ServiceTypeDropDownChoice;
+import jp.go.nict.langrid.management.web.view.page.language.service.component.choice.AllServiceTypeDropDownChoice;
 import jp.go.nict.langrid.management.web.view.page.language.service.component.choice.UsingServiceDropDownChoice;
 import jp.go.nict.langrid.management.web.view.page.language.service.component.text.SearchTextField;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
@@ -55,8 +54,8 @@ import org.apache.wicket.util.string.Strings;
  * 
  * 
  * @author Masaaki Kamiya
- * @author $Author: t-nakaguchi $
- * @version $Revision: 497 $
+ * @author $Author: trangmx $
+ * @version $Revision: 1532 $
  */
 public class ServiceSearchFormPanel extends AbstractSearchFormPanel<LangridSearchCondition>{
 	/**
@@ -81,6 +80,14 @@ public class ServiceSearchFormPanel extends AbstractSearchFormPanel<LangridSearc
 		if(accessRightCheck.getModelObject() != null){
 			condition.setScope(accessRightCheck.getModelObject() ? Scope.ACCESSIBLE : Scope.ALL);
 		}
+		
+		
+		// add service type domainId condition
+		if (domainChoice.getModelObject() != null) {
+			String domainId = domainChoice.getModelObject().getDomainId();
+			condition.putOrReplaceCondition("serviceTypeDomainId", domainId, MatchingMethod.COMPLETE);
+		}
+		
 		
 		// add service type condition
 		if(serviceTypeField.getModelObject() != null) {
@@ -151,37 +158,36 @@ public class ServiceSearchFormPanel extends AbstractSearchFormPanel<LangridSearc
 	@Override
 	protected void initialize(final Form form, final String gridId) throws ServiceManagerException{
 		languagePathId = "languagePath";
-		
-		
 		form.add(serviceNameField = new SearchTextField("serviceNameField"));
-		form.add(domainChoice = new DomainDropDownChoice(gridId, "domain") {
+		form.add(domainChoice = new FederationDomainDropDownChoice(gridId, "domain") {
 			@Override
-			public CharSequence getDefaultChoice(Object selected){
-				String option = getLocalizer()
-						.getString(getId() + ".nullValid", this, "");
-				if(Strings.isEmpty(option)){
+			public CharSequence getDefaultChoice(Object selected) {
+				String option = getLocalizer().getString(
+						getId() + ".nullValid", this, "");
+				if (Strings.isEmpty(option)) {
 					option = getLocalizer().getString("nullValid", this, "");
 				}
 				// The <option> tag buffer
-				AppendingStringBuffer buffer = new AppendingStringBuffer(32 + option
-						.length());
+				AppendingStringBuffer buffer = new AppendingStringBuffer(
+						32 + option.length());
 				// Add option tag
 				buffer.append("\n<option");
 				// Add body of option tag
-				buffer.append(" value=\"\">").append(option).append("</option>");
+				buffer.append(" value=\"\">").append(option)
+						.append("</option>");
 				return buffer;
 			}
 
 			private static final long serialVersionUID = 1L;
 		});
-	
-		form.add(serviceTypeField = new ServiceTypeDropDownChoice(gridId , "serviceTypeField"){
+		String initialdomainID = domainChoice.getInput();
+		form.add(serviceTypeField = new AllServiceTypeDropDownChoice(gridId , initialdomainID, "serviceTypeField"){
 			@Override
 			public CharSequence getDefaultChoice(Object selected){
 				String option = getLocalizer()
-						.getString(getId() + ".nullValid", this, "");
+						.getString(getId() + ".nullValid", this, "Select a domain first");
 				if(Strings.isEmpty(option)){
-					option = getLocalizer().getString("nullValid", this, "");
+					option = getLocalizer().getString("nullValid", this, "Select a domain first");
 				}
 				// The <option> tag buffer
 				AppendingStringBuffer buffer = new AppendingStringBuffer(32 + option
@@ -197,26 +203,30 @@ public class ServiceSearchFormPanel extends AbstractSearchFormPanel<LangridSearc
 		});
 		
 		domainChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-			
+
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
-				if (domainChoice.getInput() !=null && !domainChoice.getInput().equals("")) {
+				if (domainChoice.getInput() != null
+						&& !domainChoice.getInput().equals("")) {
 					try {
-						form.addOrReplace(serviceTypeField = new ServiceTypeDropDownChoice(gridId, domainChoice.getModelObject().getDomainId(), "serviceTypeField") {
+						form.addOrReplace(serviceTypeField = new AllServiceTypeDropDownChoice(
+								gridId, domainChoice.getModelObject().getDomainId(), "serviceTypeField") {
 							@Override
-							public CharSequence getDefaultChoice(Object selected){
-								String option = getLocalizer()
-										.getString(getId() + ".nullValid", this, "");
-								if(Strings.isEmpty(option)){
-									option = getLocalizer().getString("nullValid", this, "");
+							public CharSequence getDefaultChoice(Object selected) {
+								String option = getLocalizer().getString(
+										getId() + ".nullValid", this, "Select a service type");
+								if (Strings.isEmpty(option)) {
+									option = getLocalizer().getString(
+											"nullValid", this, "Select a service type");
 								}
 								// The <option> tag buffer
-								AppendingStringBuffer buffer = new AppendingStringBuffer(32 + option
-										.length());
+								AppendingStringBuffer buffer = new AppendingStringBuffer(
+										32 + option.length());
 								// Add option tag
 								buffer.append("\n<option");
 								// Add body of option tag
-								buffer.append(" value=\"\">").append(option).append("</option>");
+								buffer.append(" value=\"\">").append(option)
+										.append("</option>");
 								return buffer;
 							}
 
@@ -228,21 +238,24 @@ public class ServiceSearchFormPanel extends AbstractSearchFormPanel<LangridSearc
 					}
 				} else {
 					try {
-						form.addOrReplace(serviceTypeField = new ServiceTypeDropDownChoice(gridId, "serviceTypeField") {
+						form.addOrReplace(serviceTypeField = new AllServiceTypeDropDownChoice(
+								gridId, domainChoice.getInput(), "serviceTypeField") {
 							@Override
-							public CharSequence getDefaultChoice(Object selected){
-								String option = getLocalizer()
-										.getString(getId() + ".nullValid", this, "");
-								if(Strings.isEmpty(option)){
-									option = getLocalizer().getString("nullValid", this, "");
+							public CharSequence getDefaultChoice(Object selected) {
+								String option = getLocalizer().getString(
+										getId() + ".nullValid", this, "Select a domain first");
+								if (Strings.isEmpty(option)) {
+									option = getLocalizer().getString(
+											"nullValid", this, "Select a domain first");
 								}
 								// The <option> tag buffer
-								AppendingStringBuffer buffer = new AppendingStringBuffer(32 + option
-										.length());
+								AppendingStringBuffer buffer = new AppendingStringBuffer(
+										32 + option.length());
 								// Add option tag
 								buffer.append("\n<option");
 								// Add body of option tag
-								buffer.append(" value=\"\">").append(option).append("</option>");
+								buffer.append(" value=\"\">").append(option)
+										.append("</option>");
 								return buffer;
 							}
 
@@ -253,22 +266,23 @@ public class ServiceSearchFormPanel extends AbstractSearchFormPanel<LangridSearc
 						e.printStackTrace();
 					}
 				}
-				
+
 				target.addComponent(getRewriteComponent());
-				
-				serviceTypeField.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+
+				serviceTypeField.add(new AjaxFormComponentUpdatingBehavior(
+						"onchange") {
 					@Override
-					protected void onUpdate(AjaxRequestTarget target){
-						if(serviceTypeField.getInput() != null && !serviceTypeField.getInput().equals("")){
-							form.addOrReplace(
-									languagePath = getLanguagePathPanel(
-											serviceTypeField.getModelObject().getTypeSet()));
-						}else{
+					protected void onUpdate(AjaxRequestTarget target) {
+						if (serviceTypeField.getInput() != null
+								&& !serviceTypeField.getInput().equals("")) {
+							form.addOrReplace(languagePath = getLanguagePathPanel(serviceTypeField
+									.getModelObject().getTypeSet()));
+						} else {
 							form.addOrReplace(languagePath = new LanguageFormPanel(
 									languagePathId));
 						}
-						languagePath.add(new WebMarkupContainer("removePathLink")
-								.setVisible(false));
+						languagePath.add(new WebMarkupContainer(
+								"removePathLink").setVisible(false));
 						target.addComponent(getRewriteComponent());
 					}
 
@@ -342,11 +356,10 @@ public class ServiceSearchFormPanel extends AbstractSearchFormPanel<LangridSearc
 	private FormComponentPanel<LanguagePath[]> languagePath;
 	private String languagePathId;
 	private SearchTextField serviceNameField;
-	private ServiceTypeDropDownChoice serviceTypeField;
+	private AllServiceTypeDropDownChoice serviceTypeField;
 	private ProvisionControlDropDownChoice provision;
 	private UsingServiceDropDownChoice usingService;
-	
-	private DomainDropDownChoice domainChoice; 
+	private FederationDomainDropDownChoice domainChoice;
 
 	private static final long serialVersionUID = 1L;
 }

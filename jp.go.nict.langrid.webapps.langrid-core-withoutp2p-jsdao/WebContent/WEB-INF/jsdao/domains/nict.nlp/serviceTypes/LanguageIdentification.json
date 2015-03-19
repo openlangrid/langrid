@@ -1,0 +1,16 @@
+{
+  "createdDateTime": "2010/07/26 17:38:15.265 JST",
+  "description": "Identifies and returns language code for an input text.",
+  "interfaceDefinitions": [{
+    "protocolId": "SOAP_RPC_ENCODED",
+    "definition": "LanguageIdentification.wsdl"
+  }],
+  "metaAttributes": [{
+    "attributeId": "supportedLanguages"
+  },{
+    "attributeId": "supportedEncodings"
+  }],
+  "serviceTypeId": "LanguageIdentification",
+  "serviceTypeName": "LanguageIdentification",
+  "updatedDateTime": "2010/07/26 17:38:15.265 JST"
+}

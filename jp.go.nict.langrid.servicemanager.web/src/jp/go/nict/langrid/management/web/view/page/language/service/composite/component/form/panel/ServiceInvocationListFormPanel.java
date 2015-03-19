@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceInvocationListFormPanel.java 497 2012-05-24 04:13:03Z t-nakaguchi $
+ * $Id: ServiceInvocationListFormPanel.java 1519 2015-03-10 10:07:30Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and
  * provides composite language services. Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -29,7 +29,7 @@ import jp.go.nict.langrid.management.web.model.ServiceModel;
 import jp.go.nict.langrid.management.web.model.ServiceTypeModel;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 import jp.go.nict.langrid.management.web.view.page.language.service.component.choice.ServiceDropDownChoice;
-import jp.go.nict.langrid.management.web.view.page.language.service.component.choice.ServiceTypeDropDownChoice;
+import jp.go.nict.langrid.management.web.view.page.language.service.component.choice.AllServiceTypeDropDownChoice;
 import jp.go.nict.langrid.management.web.view.page.language.service.component.text.RequiredServiceNameField;
 import jp.go.nict.langrid.management.web.view.utility.RequestResponseUtil;
 
@@ -50,7 +50,7 @@ import org.apache.wicket.model.Model;
  * 
  * @author Masaaki Kamiya
  * @author $Author: t-nakaguchi $
- * @version $Revision: 497 $
+ * @version $Revision: 1519 $
  */
 public class ServiceInvocationListFormPanel extends Panel {
 
@@ -135,7 +135,7 @@ public class ServiceInvocationListFormPanel extends Panel {
 			WebMarkupContainer serviceSelect = (WebMarkupContainer)wmc.get("serviceSelect");
 
 			TextField<String> name = (TextField<String>)wmc.get("invocationName");
-			ServiceTypeDropDownChoice typeChoice = (ServiceTypeDropDownChoice)wmc.get("serviceTypeChoice");
+			AllServiceTypeDropDownChoice typeChoice = (AllServiceTypeDropDownChoice)wmc.get("serviceTypeChoice");
 			ServiceDropDownChoice serviceChoice = (ServiceDropDownChoice)serviceSelect.get("serviceChoice");
 
 			InvocationModel invocation = new InvocationModel();
@@ -186,7 +186,7 @@ public class ServiceInvocationListFormPanel extends Panel {
 
 		try {
 			serviceSelect = new WebMarkupContainer("serviceSelect");
-			final ServiceTypeDropDownChoice typeChoice = new ServiceTypeDropDownChoice(modelGridId, "serviceTypeChoice")
+			final AllServiceTypeDropDownChoice typeChoice = new AllServiceTypeDropDownChoice(modelGridId, "serviceTypeChoice")
 			{
 				@Override public boolean isVisible() {return getModelCount() != 0;}
 			};

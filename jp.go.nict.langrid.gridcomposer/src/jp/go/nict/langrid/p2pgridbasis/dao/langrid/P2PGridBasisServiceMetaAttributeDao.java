@@ -1,5 +1,5 @@
 /*
- * $Id: P2PGridBasisServiceMetaAttributeDao.java 401 2011-08-25 01:11:16Z t-nakaguchi $
+ * $Id: P2PGridBasisServiceMetaAttributeDao.java 1514 2015-03-08 12:43:46Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
  * Copyright (C) 2005-2009 NICT Language Grid Project.
@@ -48,7 +48,7 @@ import org.apache.log4j.Logger;
  * 
  * 
  * @author $Author: t-nakaguchi $
- * @version $Revision: 401 $
+ * @version $Revision: 1514 $
  */
 public class P2PGridBasisServiceMetaAttributeDao implements DataDao, ServiceTypeDao {
 	/**
@@ -153,11 +153,6 @@ public class P2PGridBasisServiceMetaAttributeDao implements DataDao, ServiceType
 	@Override
 	public void clear() throws DaoException {
 		dao.clear();
-	}
-
-	@Override
-	public List<ServiceType> listAllServiceTypes() throws DaoException {
-		return dao.listAllServiceTypes();
 	}
 
 	@Override

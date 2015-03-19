@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceTypeDao.java 388 2011-08-23 10:24:50Z t-nakaguchi $
+ * $Id: ServiceTypeDao.java 1514 2015-03-08 12:43:46Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
  * Copyright (C) 2005-2009 NICT Language Grid Project.
@@ -29,7 +29,7 @@ import jp.go.nict.langrid.dao.entity.ServiceType;
  * 
  * @author Takao Nakaguchi
  * @author $Author:nakaguchi $
- * @version $Revision: 388 $
+ * @version $Revision: 1514 $
  */
 public interface ServiceTypeDao{
 	/**
@@ -37,13 +37,6 @@ public interface ServiceTypeDao{
 	 * 
 	 */
 	void clear() throws DaoException;
-
-	/**
-	 * 
-	 * 
-	 */
-	public List<ServiceType> listAllServiceTypes()
-	throws DaoException;
 
 	/**
 	 * 

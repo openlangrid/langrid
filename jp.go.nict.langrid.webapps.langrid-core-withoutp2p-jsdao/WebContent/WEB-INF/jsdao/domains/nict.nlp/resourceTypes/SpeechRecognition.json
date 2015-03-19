@@ -1,0 +1,14 @@
+{
+  "createdDateTime": "2010/11/30 17:38:15.265 JST",
+  "description": "Machine Translation Resource",
+  "metaAttributes": [{
+    "attributeId": "supportedLanguages"
+  },{
+    "attributeId": "supportedVoiceTypes"
+  },{
+    "attributeId": "supportedAudioTypes"
+  }],
+  "resourceTypeId": "SpeechRecognition",
+  "resourceTypeName": "SpeechRecognition",
+  "updatedDateTime": "2010/11/30 17:38:15.265 JST"
+}

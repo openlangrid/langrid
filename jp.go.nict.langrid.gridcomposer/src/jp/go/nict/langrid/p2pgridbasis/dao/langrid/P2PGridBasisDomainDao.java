@@ -1,5 +1,5 @@
 /*
- * $Id: P2PGridBasisDomainDao.java 1043 2014-01-09 13:27:07Z t-nakaguchi $
+ * $Id: P2PGridBasisDomainDao.java 1522 2015-03-11 02:20:42Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
  * Copyright (C) 2005-2009 NICT Language Grid Project.
@@ -48,7 +48,7 @@ import org.apache.log4j.Logger;
  * 
  * 
  * @author $Author: t-nakaguchi $
- * @version $Revision: 1043 $
+ * @version $Revision: 1522 $
  */
 public class P2PGridBasisDomainDao implements DataDao, DomainDao {
 	/**
@@ -96,22 +96,27 @@ public class P2PGridBasisDomainDao implements DataDao, DomainDao {
 		if(data.getClass().equals(DomainData.class) == false) {
 			throw new UnmatchedDataTypeException(DomainData.class.toString(), data.getClass().toString());
 		}
-		
+		DomainData domainData = (DomainData) data;
+		Domain domain = null;
+		try {
+			domain = domainData.getDomain();
+		} catch (DataConvertException e) {
+			throw new DataDaoException(e);
+		}
+		if(domain.getOwnerUserGridId().equals(this.controller.getSerlfGridId())){
+			return false;
+		}
 
 		if(data.getAttributes().getKeys().contains("IsDeleted") &&
 				data.getAttributes().getValue("IsDeleted").equals("true")) {
  			boolean updated = false;
-			try {
+ 			try{
 				logger.info("Delete");
-				DomainData domainData = (DomainData) data;
-				Domain domain = domainData.getDomain();
 				removeEntityListener();
 				dao.deleteDomain(domain.getDomainId());
 				updated = true;
 				setEntityListener();
 				getController().baseSummaryAdd(data);
-			} catch (DataConvertException e) {
-				throw new DataDaoException(e);
 			} catch (DomainNotFoundException e) {
 				// 
 				// 
@@ -126,27 +131,21 @@ public class P2PGridBasisDomainDao implements DataDao, DomainDao {
 				throw new DataDaoException(e);
 			}
 			return updated;
-		}
-
-		Domain domain = null;
-		try {
-			DomainData domainData = (DomainData)data;
-			domain = domainData.getDomain();
-
-			logger.debug("New or UpDate");
-			removeEntityListener();
-			daoContext.beginTransaction();
-			daoContext.mergeEntity(domain);
-			daoContext.commitTransaction();
-			setEntityListener();
-			getController().baseSummaryAdd(data);
-			return true;
-		} catch (DataConvertException e) {
-			throw new DataDaoException(e);
-		} catch (DaoException e) {
-			throw new DataDaoException(e);
-		} catch (ControllerException e) {
-			throw new DataDaoException(e);
+		} else{
+			try {
+				logger.debug("New or UpDate");
+				removeEntityListener();
+				daoContext.beginTransaction();
+				daoContext.mergeEntity(domain);
+				daoContext.commitTransaction();
+				setEntityListener();
+				getController().baseSummaryAdd(data);
+				return true;
+			} catch (DaoException e) {
+				throw new DataDaoException(e);
+			} catch (ControllerException e) {
+				throw new DataDaoException(e);
+			}
 		}
 	}
 

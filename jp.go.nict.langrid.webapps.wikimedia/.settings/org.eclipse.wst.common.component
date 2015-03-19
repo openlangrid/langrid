@@ -47,9 +47,6 @@
         <dependent-module archiveName="protobuf-java-2.2.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/google/protobuf-java-2.2.0.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="jp.go.nict.langrid.commons.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.commons/jp.go.nict.langrid.commons">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.composite.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.composite/jp.go.nict.langrid.composite">
             <dependency-type>uses</dependency-type>
         </dependent-module>
@@ -63,6 +60,9 @@
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.service.common_1_2.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.service.common_1_2/jp.go.nict.langrid.service.common_1_2">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.service.language_1_2.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.service.language_1_2/jp.go.nict.langrid.service.language_1_2">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.servicecontainer.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicecontainer/jp.go.nict.langrid.servicecontainer">
@@ -92,10 +92,16 @@
         <dependent-module archiveName="jp.go.nict.langrid.servlet.filter.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servlet.filter/jp.go.nict.langrid.servlet.filter">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.wrapper.common.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.wrapper.common/jp.go.nict.langrid.wrapper.common">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.wrapper.workflowsupport.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.wrapper.workflowsupport/jp.go.nict.langrid.wrapper.workflowsupport">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.wrapper.bing.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.wrapper.bing/jp.go.nict.langrid.wrapper.bing">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.commons.protobufrpc.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.commons.protobufrpc/jp.go.nict.langrid.commons.protobufrpc">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.client.ws_1_2.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.client.ws_1_2/jp.go.nict.langrid.client.ws_1_2">

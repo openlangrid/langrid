@@ -28,9 +28,6 @@
         <dependent-module archiveName="commons-lang-2.4.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/commons/commons-lang-2.4.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="jp.go.nict.langrid.commons.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.commons/jp.go.nict.langrid.commons">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module archiveName="commons-beanutils.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/commons/commons-beanutils.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
@@ -52,6 +49,9 @@
         <dependent-module archiveName="mail.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/axis/mail.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.service.language_1_2.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.service.language_1_2/jp.go.nict.langrid.service.language_1_2">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.language.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.language/jp.go.nict.langrid.language">
             <dependency-type>uses</dependency-type>
         </dependent-module>
@@ -62,6 +62,9 @@
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.client.soap.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.client.soap/jp.go.nict.langrid.client.soap">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.commons.protobufrpc.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.commons.protobufrpc/jp.go.nict.langrid.commons.protobufrpc">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="guava-15.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/google/guava-15.0.jar">

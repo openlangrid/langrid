@@ -20,11 +20,16 @@ package jp.go.nict.langrid.servicecontainer.executor.protobufrpc;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import jp.go.nict.langrid.client.protobufrpc.PbClientFactory;
+import jp.go.nict.langrid.commons.io.CloseIgnoringFilterOutputStream;
 import jp.go.nict.langrid.cosee.Endpoint;
+import jp.go.nict.langrid.servicecontainer.executor.CachingClientFactoryServiceExecutor;
+import jp.go.nict.langrid.servicecontainer.executor.ClientFactoryServiceExecutor;
 import jp.go.nict.langrid.servicecontainer.service.ComponentServiceFactory;
 import jp.go.nict.langrid.servicecontainer.service.component.AbstractComponentServiceFactory;
 
@@ -45,11 +50,21 @@ implements ComponentServiceFactory{
 		try{
 			Constructor<?> ctor = getExecutor(interfaceClass);
 			if(ctor == null){
-				return isCacheEnabled() ?
-						CachingDynamicPbServiceExecutor.create(
-								invocationName, invocationId, endpoint, interfaceClass
-								, getCache()) :
-						DynamicPbServiceExecutor.create(invocationName, invocationId, endpoint, interfaceClass);
+				PbClientFactory f = new PbClientFactory();
+				if(logExecution){
+					f.setDumpStream(new CloseIgnoringFilterOutputStream(System.out));
+				}
+				return (T)Proxy.newProxyInstance(
+						Thread.currentThread().getContextClassLoader()
+						, new Class<?>[]{interfaceClass}
+						, isCacheEnabled() ?
+						new CachingClientFactoryServiceExecutor(
+								invocationName, invocationId, endpoint, interfaceClass,
+								f, getCache()
+								) :
+						new ClientFactoryServiceExecutor(
+								invocationName, invocationId, endpoint, interfaceClass,
+								f));
 			}
 			return (T)ctor.newInstance(
 					invocationName, invocationId, endpoint);
@@ -80,10 +95,15 @@ implements ComponentServiceFactory{
 		}
 	}
 
+	public void setLogExecution(boolean logExecution){
+		this.logExecution = logExecution;
+	}
+
 	public Constructor<?> getExecutor(Class<?> interfaceClass){
 		return executorConstructors.get(interfaceClass);
 	}
 
 	private Map<Class<?>, Constructor<?>> executorConstructors = new HashMap<Class<?>, Constructor<?>>();
+	private boolean logExecution;
 	private static Logger logger = Logger.getLogger(PbComponentServiceFactory.class.getName());
 }

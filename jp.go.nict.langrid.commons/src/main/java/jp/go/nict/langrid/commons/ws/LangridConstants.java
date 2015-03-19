@@ -1,5 +1,5 @@
 /*
- * $Id: LangridConstants.java 1183 2014-04-10 13:59:44Z t-nakaguchi $
+ * $Id: LangridConstants.java 1520 2015-03-10 10:22:12Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
  * Copyright (C) 2005-2008 NICT Language Grid Project.
@@ -23,7 +23,7 @@ package jp.go.nict.langrid.commons.ws;
  * 
  * 
  * @author $Author: t-nakaguchi $
- * @version $Revision: 1183 $
+ * @version $Revision: 1520 $
  */
 public class LangridConstants {
 	/**
@@ -158,4 +158,7 @@ public class LangridConstants {
 	 */
 	public static final String HTTPHEADER_STREAMING
 		= "X-Langrid-Streaming";
+
+	public static final String HTTPHEADER_TRANSFER_TO_SERVICE
+		= "X-Langrid-Service-";
 }

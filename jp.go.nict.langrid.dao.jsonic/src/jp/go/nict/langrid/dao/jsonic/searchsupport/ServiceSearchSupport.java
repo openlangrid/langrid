@@ -27,13 +27,34 @@ public class ServiceSearchSupport extends SearchSupport<Service> {
 	}
 
 	protected enum ServiceFieldDefs implements FieldDefs<Service> {
+		serviceId {
+			@Override
+			public int compare(Service left, Service right) {
+				return left.getServiceId().compareTo(right.getServiceId());
+			}
+			@Override
+			public boolean match(MatchingCondition cond, Service obj) {
+				switch (cond.getMatchingMethod()) {
+				case EQ:
+				case COMPLETE:
+					if (cond.getMatchingValue() == null) {
+						return obj.getServiceId() == null;
+					}
+					return cond.getMatchingValue().toString()
+							.equalsIgnoreCase(obj.getServiceId());
+				default:
+					throw new IllegalArgumentException(cond.getMatchingMethod() + " is not supported this field.");
+				}
+			}
+		},
+
 		serviceName {
 			@Override
 			public int compare(Service left, Service right) {
 				return left.getServiceName().compareTo(right.getServiceName());
 			}
 		},
-		
+
 		serviceTypeId {
 			@Override
 			public boolean match(MatchingCondition cond, Service obj) {
@@ -111,6 +132,22 @@ public class ServiceSearchSupport extends SearchSupport<Service> {
 				case EQ:
 				case COMPLETE:
 					return value.equals(obj.isApproved());
+				default:
+					throw new IllegalArgumentException(cond.getMatchingMethod() + " is not supported this field.");
+				}
+			}
+		},
+		
+		membersOnly{
+			@Override
+			public boolean match(MatchingCondition cond, Service obj) {
+				Boolean value = Boolean.valueOf(
+						cond.getMatchingValue() == null ?
+								null : cond.getMatchingValue().toString());
+				switch (cond.getMatchingMethod()) {
+				case EQ:
+				case COMPLETE:
+					return value.equals(obj.isMembersOnly());
 				default:
 					throw new IllegalArgumentException(cond.getMatchingMethod() + " is not supported this field.");
 				}

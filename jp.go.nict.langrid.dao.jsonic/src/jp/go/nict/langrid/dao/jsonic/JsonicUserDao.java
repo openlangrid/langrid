@@ -148,7 +148,7 @@ public class JsonicUserDao implements UserDao {
 	}
 
 	private File getUsersBaseDir(String gridId){
-		return new File(new File(context.getBaseDir(), gridId), "users");
+		return new File(context.getGridBaseDir(gridId), "users");
 	}
 
 	private JsonicDaoContext context;

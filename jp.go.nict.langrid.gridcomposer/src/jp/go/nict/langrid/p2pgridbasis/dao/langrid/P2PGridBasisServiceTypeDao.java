@@ -1,5 +1,5 @@
 /*
- * $Id: P2PGridBasisServiceTypeDao.java 401 2011-08-25 01:11:16Z t-nakaguchi $
+ * $Id: P2PGridBasisServiceTypeDao.java 1522 2015-03-11 02:20:42Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
  * Copyright (C) 2005-2009 NICT Language Grid Project.
@@ -25,9 +25,12 @@ import java.util.Set;
 
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
+import jp.go.nict.langrid.dao.DomainDao;
+import jp.go.nict.langrid.dao.DomainNotFoundException;
 import jp.go.nict.langrid.dao.GenericHandler;
 import jp.go.nict.langrid.dao.ServiceTypeDao;
 import jp.go.nict.langrid.dao.ServiceTypeNotFoundException;
+import jp.go.nict.langrid.dao.entity.Domain;
 import jp.go.nict.langrid.dao.entity.ServiceMetaAttribute;
 import jp.go.nict.langrid.dao.entity.ServiceType;
 import jp.go.nict.langrid.dao.entity.ServiceTypePK;
@@ -48,14 +51,15 @@ import org.apache.log4j.Logger;
  * 
  * 
  * @author $Author: t-nakaguchi $
- * @version $Revision: 401 $
+ * @version $Revision: 1522 $
  */
 public class P2PGridBasisServiceTypeDao implements DataDao, ServiceTypeDao {
 	/**
 	 * 
 	 * 
 	 */
-	public P2PGridBasisServiceTypeDao(ServiceTypeDao dao, DaoContext context) {
+	public P2PGridBasisServiceTypeDao(DomainDao domainDao, ServiceTypeDao dao, DaoContext context) {
+		this.domainDao = domainDao;
 		this.dao = dao;
 		this.daoContext = context;
 	}
@@ -97,20 +101,35 @@ public class P2PGridBasisServiceTypeDao implements DataDao, ServiceTypeDao {
 			throw new UnmatchedDataTypeException(ServiceTypeData.class.toString(), data.getClass().toString());
 		}
 
+		ServiceTypeData serviceTypeData = (ServiceTypeData) data;
+		ServiceType serviceType = null;
+		try{
+			serviceType = serviceTypeData.getServiceType();
+		} catch (DataConvertException e) {
+			throw new DataDaoException(e);
+		}
+		try{
+			String did = serviceType.getDomainId();
+			Domain d = domainDao.getDomain(did);
+			if(d.getOwnerUserGridId().equals(controller.getSerlfGridId())){
+				return false;
+			}
+		} catch(DomainNotFoundException e){
+			return false;
+		} catch (DaoException e) {
+			throw new DataDaoException(e);
+		}
+
 		if(data.getAttributes().getKeys().contains("IsDeleted") &&
 				data.getAttributes().getValue("IsDeleted").equals("true")) {
  			boolean updated = false;
 			try {
 				logger.info("Delete");
-				ServiceTypeData serviceTypeData = (ServiceTypeData) data;
-				ServiceType serviceType = serviceTypeData.getServiceType();
 				removeEntityListener();
 				dao.deleteServiceType(serviceType.getDomainId(), serviceType.getServiceTypeId());
 				updated = true;
 				setEntityListener();
 				getController().baseSummaryAdd(data);
-			} catch (DataConvertException e) {
-				throw new DataDaoException(e);
 			} catch (ServiceTypeNotFoundException e) {
 				// 
 				// 
@@ -125,49 +144,38 @@ public class P2PGridBasisServiceTypeDao implements DataDao, ServiceTypeDao {
 				throw new DataDaoException(e);
 			}
 			return updated;
-		}
-
-		ServiceType serviceType = null;
-		try {
-			ServiceTypeData serviceTypeData = (ServiceTypeData)data;
-			serviceType = serviceTypeData.getServiceType();
-
-			logger.debug("New or UpDate");
-			daoContext.beginTransaction();
-			removeEntityListener();
-			try{
-				for(ServiceMetaAttribute a : serviceType.getMetaAttributes().values()){
-					if(!dao.isServiceMetaAttributeExist(a.getDomainId(), a.getAttributeId())){
-						dao.addServiceMetaAttribute(a);
+		} else{
+			try {
+				logger.debug("New or UpDate");
+				daoContext.beginTransaction();
+				removeEntityListener();
+				try{
+					for(ServiceMetaAttribute a : serviceType.getMetaAttributes().values()){
+						if(!dao.isServiceMetaAttributeExist(a.getDomainId(), a.getAttributeId())){
+							dao.addServiceMetaAttribute(a);
+						}
 					}
+					daoContext.mergeEntity(serviceType);
+					daoContext.commitTransaction();
+				} catch(DaoException e){
+					daoContext.rollbackTransaction();
+					throw e;
+				} finally{
+					setEntityListener();
 				}
-				daoContext.mergeEntity(serviceType);
-				daoContext.commitTransaction();
-			} catch(DaoException e){
-				daoContext.rollbackTransaction();
-				throw e;
-			} finally{
-				setEntityListener();
+				getController().baseSummaryAdd(data);
+				return true;
+			} catch (DaoException e) {
+				throw new DataDaoException(e);
+			} catch (ControllerException e) {
+				throw new DataDaoException(e);
 			}
-			getController().baseSummaryAdd(data);
-			return true;
-		} catch (DataConvertException e) {
-			throw new DataDaoException(e);
-		} catch (DaoException e) {
-			throw new DataDaoException(e);
-		} catch (ControllerException e) {
-			throw new DataDaoException(e);
 		}
 	}
 
 	@Override
 	public void clear() throws DaoException {
 		dao.clear();
-	}
-
-	@Override
-	public List<ServiceType> listAllServiceTypes() throws DaoException {
-		return dao.listAllServiceTypes();
 	}
 
 	@Override
@@ -245,6 +253,7 @@ public class P2PGridBasisServiceTypeDao implements DataDao, ServiceTypeDao {
 		dao.deleteServiceType(domainId);
 	}
 
+	private DomainDao domainDao;
 	private ServiceTypeDao dao;
 	private DaoContext daoContext;
 	private P2PGridController controller;

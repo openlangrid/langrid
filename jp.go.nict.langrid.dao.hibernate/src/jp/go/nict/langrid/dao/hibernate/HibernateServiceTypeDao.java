@@ -41,7 +41,7 @@ import org.hibernate.criterion.Property;
  * 
  * 
  * @author $Author: t-nakaguchi $
- * @version $Revision: 1239 $
+ * @version $Revision: 1514 $
  */
 public class HibernateServiceTypeDao
 extends HibernateCRUDDao<ServiceType>
@@ -58,11 +58,6 @@ implements ServiceTypeDao{
 	public void clear() throws DaoException {
 		deleteEntities(ServiceType.class);
 		deleteEntities(ServiceMetaAttribute.class);
-	}
-
-	@Override
-	public List<ServiceType> listAllServiceTypes() throws DaoException {
-		return list();
 	}
 
 	@Override
