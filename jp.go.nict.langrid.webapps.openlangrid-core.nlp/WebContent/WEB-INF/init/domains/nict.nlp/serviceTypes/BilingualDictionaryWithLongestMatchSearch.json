@@ -1,0 +1,16 @@
+{
+  "createdDateTime": "2010/07/26 17:38:15.265 JST",
+  "description": "Bilingual dictionary that supports a longest match search. This service takes parameters for morpheme arrays and uses this information to search for longest language array matches.",
+  "interfaceDefinitions": [{
+    "protocolId": "SOAP_RPC_ENCODED",
+    "definition": "BilingualDictionaryWithLongestMatchSearch.wsdl"
+  }],
+  "metaAttributes": [{
+    "attributeId": "supportedLanguagePairs_PairList"
+  },{
+    "attributeId": "supportedLanguagePairs_AnyCombination"
+  }],
+  "serviceTypeId": "BilingualDictionaryWithLongestMatchSearch",
+  "serviceTypeName": "BilingualDictionaryWithLongestMatchSearch",
+  "updatedDateTime": "2010/07/26 17:38:15.265 JST"
+}

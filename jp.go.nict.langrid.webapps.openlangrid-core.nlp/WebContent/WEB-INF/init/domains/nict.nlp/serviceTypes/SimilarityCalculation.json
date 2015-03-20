@@ -1,0 +1,14 @@
+{
+  "createdDateTime": "2010/07/26 17:38:15.265 JST",
+  "description": "Calculates the level of similarity of two texts in the same language.",
+  "interfaceDefinitions": [{
+    "protocolId": "SOAP_RPC_ENCODED",
+    "definition": "SimilarityCalculation.wsdl"
+  }],
+  "metaAttributes": [{
+    "attributeId": "supportedLanguages"
+  }],
+  "serviceTypeId": "SimilarityCalculation",
+  "serviceTypeName": "SimilarityCalculation",
+  "updatedDateTime": "2010/07/26 17:38:15.265 JST"
+}

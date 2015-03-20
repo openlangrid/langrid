@@ -1,0 +1,14 @@
+{
+  "createdDateTime": "2010/07/26 17:38:15.265 JST",
+  "description": "This service searches for and returns a paraphrased expression in the same language. Well suited for converting simple, easy to handle text in translation.",
+  "interfaceDefinitions": [{
+    "protocolId": "SOAP_RPC_ENCODED",
+    "definition": "Paraphrase.wsdl"
+  }],
+  "metaAttributes": [{
+    "attributeId": "supportedLanguages"
+  }],
+  "serviceTypeId": "Paraphrase",
+  "serviceTypeName": "Paraphrase",
+  "updatedDateTime": "2010/07/26 17:38:15.265 JST"
+}
