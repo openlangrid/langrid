@@ -1,0 +1,21 @@
+
+<wicket:extend>
+<h1><wicket:message key="ProvidingServices.language.service.headline.UnregistrationOfLanguageServices" /></h1>
+	<div wicket:id="feedback"></div>
+	<div class="list-table">
+		<table  summary="formtable" >
+	 		<wicket:container wicket:id="header"></wicket:container>
+			<wicket:container wicket:id="row"></wicket:container>
+		</table>
+	</div>
+
+	<h1><wicket:message key="Common.label.Unregistration.Date" /></h1>
+	<p class="accent"><wicket:message key="Common.message.set.date.Unregistration" />
+	<span wicket:id="locale"></span>
+	<wicket:message key="Common.message.set.date.unregistration.OfService" /></p>
+	<form wicket:id="form">
+		<input type="text" wicket:id="dateTextField" />
+		<input class="btn-on" type="submit" wicket:id="cancel" wicket:message="value:Common.label.Cancel" />
+		<input class="btn-on" type="submit" wicket:id="submit" wicket:message="value:Common.label.Unregister" />
+	</form>
+</wicket:extend>

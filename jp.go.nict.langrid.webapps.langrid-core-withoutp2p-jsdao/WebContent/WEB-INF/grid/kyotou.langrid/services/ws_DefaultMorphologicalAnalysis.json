@@ -1,0 +1,40 @@
+{
+  "active": true,
+  "attributes":   [
+        {
+      "name": "supportedLanguages",
+      "value": "(en)"
+    }
+  ],
+  "copyrightInfo": "National Institute of Information and Communications Technology",
+  "createdDateTime": "2010/08/20 16:36:23.656 JST",
+  "instanceType": "WEBAPP",
+  "licenseInfo": "Users can copy or modify all or part of this resource solely for non-profit use. Users shall not distribute, transfer or lend all or part of the resource to anyone without our permission.",
+  "ownerUserId": "user1",
+  "serviceDescription": "Default MorphologicalAnalysis Service",
+  "serviceEndpoints": [  {
+    "createdDateTime": "2010/08/20 16:36:23.734 JST",
+    "enabled": true,
+    "protocolId": "PROTOCOLBUFFERS_RPC",
+    "updatedDateTime": "2010/08/20 16:36:23.734 JST",
+    "url": "http:///pbServices/DefaultMorphologicalAnalysis"
+  }, {
+    "createdDateTime": "2010/08/20 16:36:23.734 JST",
+    "enabled": true,
+    "protocolId": "SOAP_RPC_ENCODED",
+    "updatedDateTime": "2010/08/20 16:36:23.734 JST",
+    "url": "http:///services/DefaultMorphologicalAnalysis"
+  }, {
+    "createdDateTime": "2010/08/20 16:36:23.734 JST",
+    "enabled": true,
+    "protocolId": "JSON_RPC",
+    "updatedDateTime": "2010/08/20 16:36:23.734 JST",
+    "url": "http:///jsServices/DefaultMorphologicalAnalysis"
+  }],
+  "serviceId": "DefaultMorphologicalAnalysis",
+  "serviceName": "Default Morphological Analysis",
+  "serviceTypeDomainId": "nict.nlp",
+  "serviceTypeId": "MorphologicalAnalysis",
+  "updatedDateTime": "2010/08/20 16:36:23.656 JST",
+  "visible": true,
+}

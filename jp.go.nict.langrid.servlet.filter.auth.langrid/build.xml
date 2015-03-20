@@ -1,0 +1,22 @@
+<project name="langrid-servlet-filter-auth-langrid-2.0.0" default="dist">
+	<import file="../build/lib_common.xml" />
+
+	<fileset id="filesetid.lib" dir="${lib}">
+		<include name="langrid/langrid-commons-1.2.1.jar" />
+		<include name="langrid/langrid-commons-ws-1.2.1.jar" />
+		<include name="langrid/langrid-dao-2.0.0.jar" />
+		<include name="hibernate/hibernate-annotations.jar" />
+		<include name="hibernate/ejb3-persistence.jar" />
+		<include name="opensymphony/oscache-2.4.1.jar" />
+		<include name="ws/servlet-api.jar" />
+	</fileset>
+
+	<fileset id="filesetid.testlib" dir="${lib}">
+		<include name="langrid/langrid-client-ws_1_2-2.0.0.jar" />
+		<include name="langrid/langrid-commons-1.2.1-test.jar" />
+		<include name="langrid/langrid-service-common_1_2-1.2.1.jar" />
+		<include name="langrid/langrid-service-language_1_2-1.2.1.jar" />
+		<include name="langrid/langrid-service-management_1_2-1.2.1.jar" />
+		<include name="langrid/langrid-language-1.2.jar" />
+	</fileset>
+</project>

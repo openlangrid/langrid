@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:ser="servicegrid:servicetype:nict.nlp:SoapRequestWriterTest">
+  <soapenv:Header>
+
+    <ns:name1
+       soapenv:actor="http://schemas.xmlsoap.org/soap/actor/next"
+       soapenv:mustUnderstand="0"
+       xsi:type="soapenc:string"
+       xmlns:ns="header1"
+       xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">value1</ns:name1>
+
+  </soapenv:Header>
+  <soapenv:Body>
+    <ser:func soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+
+      <in0 xsi:type="xsd:int">100</in0>
+
+
+    </ser:func>
+  </soapenv:Body>
+</soapenv:Envelope>

@@ -1,0 +1,19 @@
+{
+  "attributes": [],
+  "autoApproveEnabled": false,
+  "commercialUseAllowed": false,
+  "createdDateTime": "2010/08/11 13:14:49.734 JST",
+  "gridId": "kyotou.langrid",
+  "hosted": false,
+  "operatorUserId": "langrid",
+  "supportedDomains": [  {
+    "createdDateTime": "2010/08/11 13:14:49.734 JST",
+    "description": "Natural Langauge Processing domain defined by NICT",
+    "domainId": "jp.go.nict.language",
+    "domainName": "Natural Language Processing",
+    "ownerUserGridId": "",
+    "ownerUserId": "",
+    "updatedDateTime": "2010/08/11 13:14:49.734 JST"
+  }],
+  "updatedDateTime": "2010/08/11 13:14:49.734 JST"
+}

@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <packaging>jar</packaging>
+  <artifactId>jp.go.nict.langrid.client.axis</artifactId>
+  <name>Client Library for SOAP using Apache Axis</name>
+  <description>Client library including SOAP client based on Apache Axis for the Service Grid Server Software and java web services.</description>
+  <url>http://langrid.org/</url>
+  <licenses>
+    <license>
+      <name>GNU LESSER GENERAL PUBLIC LICENSE</name>
+      <url>http://www.gnu.org/licenses/lgpl-2.1.txt</url>
+    </license>
+  </licenses>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.0</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <parent>
+    <groupId>net.servicegrid</groupId>
+    <artifactId>servicegrid</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <dependencies>
+  	<dependency>
+  		<groupId>junit</groupId>
+  		<artifactId>junit</artifactId>
+  		<version>4.11</version>
+  		<scope>test</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>net.servicegrid</groupId>
+  		<artifactId>jp.go.nict.langrid.commons</artifactId>
+  		<version>1.0-SNAPSHOT</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>net.servicegrid</groupId>
+  		<artifactId>jp.go.nict.langrid.client</artifactId>
+  		<version>1.0-SNAPSHOT</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.apache.axis</groupId>
+  		<artifactId>axis</artifactId>
+  		<version>1.4</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.apache.axis</groupId>
+  		<artifactId>axis-jaxrpc</artifactId>
+  		<version>1.4</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.apache.axis</groupId>
+  		<artifactId>axis-saaj</artifactId>
+  		<version>1.4</version>
+  	</dependency>
+  </dependencies>
+</project>

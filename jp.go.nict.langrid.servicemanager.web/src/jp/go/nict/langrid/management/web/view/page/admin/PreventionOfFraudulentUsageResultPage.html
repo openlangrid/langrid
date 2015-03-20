@@ -1,0 +1,18 @@
+<wicket:extend>
+	<h1><wicket:message key="LanguageGridOperator.headline.PreventionOfFraudulentUsage" /></h1>
+	<div wicket:id="feedback"></div>
+	<font color="#3A32B8"><wicket:message key="LanguageGridOperator.message.periodForPassword.1" />:</font>
+	<span wicket:id="days"></span>&nbsp;<wicket:message key="LanguageGridOperator.message.periodForPassword.2" />
+	<br>
+	<br>
+	<p class="accent"><wicket:message key="LanguageGridOperator.message.criteriaForDetermining" /></p>
+	<table>
+		<tr>
+			<td><wicket:container wicket:id="repeatingView">
+				<p>- <span wicket:id="value"></span></p>
+				</wicket:container>
+				<p><span wicket:id="cleared"></span></p>
+			</td>
+		</tr>
+	</table>
+</wicket:extend>

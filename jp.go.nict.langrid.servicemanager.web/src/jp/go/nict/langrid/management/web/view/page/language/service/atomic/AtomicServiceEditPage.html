@@ -1,0 +1,44 @@
+
+<wicket:extend>
+	<h1><wicket:message key="ProvidingServices.language.service.headline.EditingServerProfile"/></h1>
+	<span wicket:id="feedback"></span>
+    <form wicket:id="form">
+		<p class="accent"><wicket:message key="ProvidingServices.language.service.table.headline.edit.Properties" /></p>
+		<div class="table">
+			<table  summary="formtable" >
+			   <tr>
+				   <th><wicket:message key="Common.label.service.Id" /></th>
+				   <td><div wicket:id="serviceId"></div></td>
+			   </tr>
+	        <tr wicket:id="profileFieldPanel"></tr>
+			   <tr>
+				   <th><wicket:message key="Common.label.Homepage.SourceCode" /></th>
+				   <td><input type="text" class="form-text" wicket:id="sourceUrl"/></td>
+			   </tr>
+	      </table>
+	   </div>
+
+		<p class="accent"><wicket:message key="ProvidingServices.language.service.table.headline.edit.UsingOption" /></p>
+			<div class="table">
+			<table  summary="formtable" >
+				<tr>
+					<div wicket:id="increasingOptionPanel"></div>
+				</tr>
+			</table>
+		</div>
+
+		<p class="accent"> 
+			<wicket:message key="ProvidingServices.language.service.table.headline.edit.AccessSettings" />
+			<wicket:message key="ProvidingServices.language.service.message.edit.attention.LeastOne" />
+		</p>
+		<div class="table">
+			<table  summary="formtable" >
+	        <tr wicket:id="endpointFieldPanel"></tr>
+	      </table>
+	   </div>
+      <div class="btn-s">
+         <input type="submit" wicket:id="cancel" wicket:message="value:Common.label.Cancel"/>
+			<input type="submit" wicket:id="submit" wicket:message="value:Common.label.Update"/>
+      </div>
+    </form>
+</wicket:extend>

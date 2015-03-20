@@ -1,0 +1,33 @@
+@charset "UTF-8";
+
+
+/* Print CSS
+------------------------------------------------------------ */
+body {
+margin:0px auto;width: 740px;	
+}
+
+
+#Container {
+	width: 540px;
+	
+}
+#Header {
+	width:740px;
+}
+#Tab{
+width:726px;
+}
+
+#Contents{width:540px;}
+
+#Contents #Leftside{width:0px;display:none;}
+
+#Header .maintitle{
+	width:400px;}
+#Header .jumpmenu{
+
+	left:550px;
+	width:150px;
+
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.commons"/>
+	<classpathentry kind="lib" path="/lib/ws/servlet-api.jar"/>
+	<classpathentry kind="lib" path="/lib_ext/axis2/axis2-kernel-1.5.1.jar" sourcepath="/sources/axis2/axis2-kernel-1.5.1.jar"/>
+	<classpathentry kind="lib" path="/lib_ext/axis2/axiom-api-1.2.8.jar" sourcepath="/sources/apache/axiom/axiom-api-1.2.8-src.zip"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

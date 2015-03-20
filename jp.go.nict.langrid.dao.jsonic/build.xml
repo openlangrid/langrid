@@ -1,0 +1,27 @@
+<project name="langrid-dao-jsonic-2.0.0" default="dist">
+	<import file="../build/lib_common.xml" />
+
+	<fileset id="filesetid.lib" dir="${lib}">
+		<include name="commons/commons-beanutils.jar" />
+		<include name="commons/commons-lang-2.4.jar" />
+		<include name="hibernate/ejb3-persistence.jar" />
+		<include name="hibernate/hibernate-annotations.jar" />
+		<include name="jsonic/jsonic-1.2.1.jar" />
+		<include name="langrid/langrid-commons-1.2.1.jar" />
+		<include name="langrid/langrid-commons-beanutils-1.2.jar" />
+		<include name="langrid/langrid-language-1.2.jar" />
+		<include name="langrid/langrid-dao-2.0.0.jar" />
+		<include name="ws/servlet-api.jar" />
+	</fileset>
+
+	<fileset id="filesetid.distlib" dir="${lib}">
+		<include name="commons/commons-collections-3.2.1.jar" />
+		<include name="commons/commons-logging-1.0.4.jar" />
+	</fileset>
+
+	<fileset id="filesetid.testlib" dir="${lib}">
+		<include name="langrid/langrid-commons-1.2.1-test.jar" />
+		<include name="langrid/langrid-dao-2.0.0-test.jar" />
+		<include name="junit/junit-4.8.2.jar" />
+	</fileset>
+</project>

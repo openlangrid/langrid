@@ -1,0 +1,37 @@
+<project name="langrid-dao-hibernate-2.0.0" default="dist">
+	<import file="../build/lib_common.xml" />
+
+	<fileset id="filesetid.lib" dir="${lib}">
+		<include name="commons/commons-beanutils.jar" />
+		<include name="commons/commons-lang-2.4.jar" />
+		<include name="hibernate/ejb3-persistence.jar" />
+		<include name="hibernate/hibernate-annotations.jar" />
+		<include name="hibernate/hibernate3.3.2.patched.jar" />
+		<include name="langrid/langrid-commons-1.2.1.jar" />
+		<include name="langrid/langrid-commons-beanutils-1.2.jar" />
+		<include name="langrid/langrid-dao-2.0.0.jar" />
+		<include name="langrid/langrid-language-1.2.jar" />
+	</fileset>
+
+	<fileset id="filesetid.distlib" dir="${lib}">
+		<include name="commons/commons-collections-3.2.1.jar" />
+		<include name="commons/commons-logging-1.0.4.jar" />
+		<include name="hibernate/antlr-2.7.6.jar" />
+		<include name="hibernate/dom4j-1.6.1.jar" />
+		<include name="hibernate/hibernate-commons-annotations.jar" />
+		<include name="hibernate/javassist-3.9.0.GA.jar" />
+		<include name="hibernate/jdbc2_0-stdext.jar" />
+		<include name="hibernate/jta-1.1.jar" />
+		<include name="slf4j/slf4j-api-1.5.8.jar" />
+		<include name="slf4j/slf4j-jdk14-1.5.8.jar" />
+	</fileset>
+
+	<fileset id="filesetid.testlib" dir="${lib}">
+		<include name="hibernate/c3p0-0.9.1.2.jar" />
+		<include name="langrid/langrid-commons-1.2.1-test.jar" />
+		<include name="langrid/langrid-dao-2.0.0-test.jar" />
+		<include name="langrid/langrid-language-1.2.jar" />
+		<include name="langrid/langrid-testresource-2.0.0-test.jar" />
+		<include name="postgre/postgresql-8.1-407.jdbc3.jar" />
+	</fileset>
+</project>

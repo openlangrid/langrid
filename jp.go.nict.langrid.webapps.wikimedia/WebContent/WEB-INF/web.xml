@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>jp.go.nict.langrid.webapps.wikimedia</display-name>
+
+  <filter>
+    <filter-name>JsonicDaoConfig</filter-name>
+    <filter-class>jp.go.nict.langrid.dao.jsonic.ws.Configurator</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>JsonicDaoConfig</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>PassthroughAuthenticator</filter-name>
+    <filter-class>jp.go.nict.langrid.servlet.filter.auth.PassthroughAuthenticator</filter-class>
+    <init-param>
+      <param-name>userId</param-name>
+      <param-value>user1</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>PassthroughAuthenticator</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>ServiceSupervisor</filter-name>
+    <filter-class>jp.go.nict.langrid.servicesupervisor.StreamingServiceSupervisor</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>ServiceSupervisor</filter-name>
+    <url-pattern>/invoker/*</url-pattern>
+  </filter-mapping>
+
+  <servlet>
+    <servlet-name>InvocationProcessor</servlet-name>
+    <servlet-class>jp.go.nict.langrid.servicesupervisor.invocationprocessor.InvocationProcessor</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>InvocationProcessor</servlet-name>
+    <url-pattern>/invoker/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>AxisServlet</servlet-name>
+    <servlet-class>jp.go.nict.langrid.servicecontainer.handler.axis.SGAxisServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AxisServlet</servlet-name>
+    <url-pattern>/services/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>ProtobufRpcServlet</servlet-name>
+    <servlet-class>jp.go.nict.langrid.servicecontainer.handler.protobufrpc.servlet.ProtoBufRpcServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProtobufRpcServlet</servlet-name>
+    <url-pattern>/pbServices/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>JsonRpcServlet</servlet-name>
+    <servlet-class>jp.go.nict.langrid.servicecontainer.handler.jsonrpc.servlet.JsonRpcServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>JsonRpcServlet</servlet-name>
+    <url-pattern>/jsServices/*</url-pattern>
+  </servlet-mapping>
+
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

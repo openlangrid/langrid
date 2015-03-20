@@ -1,0 +1,44 @@
+<wicket:extend>
+	<h1><wicket:message key="ProvidingServices.language.service.headline.ControlOfLanguageServiceWith" /> <span wicket:id="resourceName"></span></h1>
+	<div wicket:id="feedback"></div>
+	<p class="accent">
+		<wicket:message key="ProvidingServices.language.service.table.headline.ChangeLimit" />
+	</p>
+	<div class="list-table">
+	<table  summary="formtable" >
+		<tr>
+			<th><wicket:message key="Common.label.Organization" /></th>
+			<th><wicket:message key="Common.label.Homepage" /></th>
+			<th><wicket:message key="Common.label.AccessRight" /></th>
+		</tr>
+		<tr>
+			<td><a wicket:id="provider"><span wicket:id="organization"></span></a></td>
+			<td><span wicket:id="homepage"></span></td>
+			<td>
+				<div wicket:id="accessRight"></div>			
+			</td>
+		</tr>
+	</table>
+	</div>
+	<p class="accent">
+		<wicket:message key="ProvidingServices.language.service.message.AccessConstraints" />
+	</p>
+	<form wicket:id="form">
+		<table>
+			<tr><td>
+				<div wicket:id="limitsContainer">
+					<wicket:container wicket:id="limits"></wicket:container>
+				</div>
+				<div align="right">
+					<a wicket:id="more"><wicket:message key="Common.label.Add"/></a>
+				</div>
+			</td></tr>
+		</table>
+		<div class="btn-s">
+			<input type="submit" wicket:id="cancel" wicket:message="value:Common.label.Cancel" />
+			<input type="submit" wicket:id="clear" wicket:message="value:Common.label.Clear" />
+			<input type="submit" wicket:id="set" wicket:message="value:Common.label.Set" />
+		</div>
+	</form>
+	<!--/table-->
+</wicket:extend>

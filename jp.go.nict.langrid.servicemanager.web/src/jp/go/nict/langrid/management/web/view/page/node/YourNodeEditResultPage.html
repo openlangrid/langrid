@@ -1,0 +1,37 @@
+<wicket:extend>
+	<h1><wicket:message key="LanguageGridOperator.node.headline.edit.Result" /></h1>
+	<span wicket:id="feedback" style="color:red;font-size: 12pt"></span>
+	<p class="accent"><wicket:message key="LanguageGridOperator.node.message.update.Complete" /></p>
+	<div class="table">
+	<table summary="formtable">
+		<tr>
+			<th><wicket:message key="Common.label.node.Id" /></th>
+			<td><span wicket:id="nodeId"></span></td>
+		</tr>
+		<tr>
+			<th><wicket:message key="Common.label.node.Name" /></th>
+			<td><span wicket:id="nodeName"></span></td>
+		</tr>
+		<tr>
+			<th scope="row"><wicket:message key="Common.label.URL" /></th>
+			<td><span wicket:id="url"></span></td>
+		</tr>
+		<tr>
+			<th><wicket:message key="Common.label.OS" /></th>
+			<td><span wicket:id="os"></span></td>
+		</tr>
+		<tr>
+			<th><wicket:message key="Common.label.CPU" /></th>
+			<td><span wicket:id="cpu"></span></td>
+		</tr>
+		<tr>
+			<th><wicket:message key="Common.label.Memory" /></th>
+			<td><span wicket:id="memory"></span></td>
+		</tr>
+		<tr>
+			<th><wicket:message key="Common.label.SpecialNote" /></th>
+			<td><span wicket:id="specialNotes"></span></td>
+		</tr>
+	</table>
+	</div>
+</wicket:extend>

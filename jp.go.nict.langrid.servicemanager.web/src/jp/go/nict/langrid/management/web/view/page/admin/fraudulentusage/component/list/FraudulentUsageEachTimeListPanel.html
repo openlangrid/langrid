@@ -1,0 +1,39 @@
+<wicket:panel>
+<div class="list-table">
+	<div class="navi">
+	<!-- span wicket:id="topNavigator1"></span-->
+	   <a wicket:id="topPreviewLink"><span wicket:id="topPreview"></span></a>&nbsp;
+	   <a wicket:id="topNextLink"><span wicket:id="topNext"></span></a>
+	</div>
+
+	<table summary="formtable">
+   <tr>
+   <th style="width:16%;"><wicket:message key="Common.label.LastAccessDate" /></th>
+      <th style="width:25%;"><wicket:message key="Common.label.User" /></th>
+      <th style="width:11%;"><wicket:message key="ProvidingServices.language.service.label.access.Count" /></th>
+      <th style="width:17%;"><wicket:message key="Common.label.data.Transfer" /></th>
+      <th style="width:11%;"><wicket:message key="Common.label.Limit" /></th>
+      <th style="width:20%;"><wicket:message key="Common.label.service.Name" /></th>
+   </tr>
+	<wicket:container wicket:id="logList">
+		<wicket:container wicket:id="row"></wicket:container>
+	</wicket:container>
+	<wicket:container wicket:id="hasNoList">
+      <tr>
+         <td>-</td>
+         <td>-</td>
+         <td>-</td>
+         <td>-</td>
+         <td>-</td>
+         <td>-</td>
+      </tr> 
+      </wicket:container>
+	</table>
+
+	<div class="navi">
+     <!-- span wicket:id="underNavigator1"></span-->
+      <a wicket:id="underPreviewLink"><span wicket:id="underPreview"></span></a>&nbsp;
+      <a wicket:id="underNextLink"><span wicket:id="underNext"></span></a>
+   </div>
+</div>
+</wicket:panel>

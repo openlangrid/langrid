@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" xmlns:intf="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="http://langrid.nict.go.jp/ws_1_2/foundation/" xmlns:tns2="http://langrid.nict.go.jp/ws_1_2/foundation/overusemonitoring/" xmlns:tns3="http://langrid.nict.go.jp/ws_1_2/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDLはApache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)によって生成されました / [en]-(WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT))-->
+ <wsdl:types>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/foundation/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/overusemonitoring/"/>
+   <import namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="Order">
+    <sequence>
+     <element name="direction" nillable="true" type="xsd:string"/>
+     <element name="fieldName" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="SearchResult">
+    <sequence>
+     <element name="totalCount" type="xsd:int"/>
+     <element name="totalCountFixed" type="xsd:boolean"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/overusemonitoring/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_tns1_Order">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:Order[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns2_OverUseLimit">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns2:OverUseLimit[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns2_OverUseState">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns2:OverUseState[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/foundation/overusemonitoring/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/"/>
+   <import namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="OverUseLimit">
+    <sequence>
+     <element name="limitCount" type="xsd:int"/>
+     <element name="limitType" nillable="true" type="xsd:string"/>
+     <element name="period" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="OverUseState">
+    <sequence>
+     <element name="baseDateTime" nillable="true" type="xsd:dateTime"/>
+     <element name="currentCount" type="xsd:long"/>
+     <element name="lastAccessDateTime" nillable="true" type="xsd:dateTime"/>
+     <element name="limitCount" type="xsd:int"/>
+     <element name="limitType" nillable="true" type="xsd:string"/>
+     <element name="period" nillable="true" type="xsd:string"/>
+     <element name="serviceId" nillable="true" type="xsd:string"/>
+     <element name="userId" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="OverUseStateSearchResult">
+    <complexContent>
+     <extension base="tns1:SearchResult">
+      <sequence>
+       <element name="elements" nillable="true" type="impl:ArrayOf_tns2_OverUseState"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/overusemonitoring/"/>
+   <import namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="LangridException">
+    <sequence>
+     <element name="description" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="AccessLimitExceededException">
+    <complexContent>
+     <extension base="tns3:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="InvalidParameterException">
+    <complexContent>
+     <extension base="tns3:LangridException">
+      <sequence>
+       <element name="parameterName" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="NoAccessPermissionException">
+    <complexContent>
+     <extension base="tns3:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServiceConfigurationException">
+    <complexContent>
+     <extension base="tns3:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="UnknownException">
+    <complexContent>
+     <extension base="tns3:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="listOverUseLimitsResponse">
+
+      <wsdl:part name="listOverUseLimitsReturn" type="impl:ArrayOf_tns2_OverUseLimit"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setOverUseLimitRequest">
+
+      <wsdl:part name="period" type="xsd:string"/>
+
+      <wsdl:part name="limitType" type="xsd:string"/>
+
+      <wsdl:part name="limitValue" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="clearOverUseLimitsResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="AccessLimitExceededException">
+
+      <wsdl:part name="fault" type="tns3:AccessLimitExceededException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="UnknownException">
+
+      <wsdl:part name="fault" type="tns3:UnknownException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="InvalidParameterException">
+
+      <wsdl:part name="fault" type="tns3:InvalidParameterException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="listOverUseLimitsRequest">
+
+      <wsdl:part name="orders" type="impl:ArrayOf_tns1_Order"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="searchOverUseStateResponse">
+
+      <wsdl:part name="searchOverUseStateReturn" type="tns2:OverUseStateSearchResult"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="clearOverUseLimitsRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteOverUseUseLimitRequest">
+
+      <wsdl:part name="period" type="xsd:string"/>
+
+      <wsdl:part name="limitType" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="ServiceConfigurationException">
+
+      <wsdl:part name="fault" type="tns3:ServiceConfigurationException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteOverUseUseLimitResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="setOverUseLimitResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="searchOverUseStateRequest">
+
+      <wsdl:part name="startIndex" type="xsd:int"/>
+
+      <wsdl:part name="maxCount" type="xsd:int"/>
+
+      <wsdl:part name="startDateTime" type="xsd:dateTime"/>
+
+      <wsdl:part name="endDateTime" type="xsd:dateTime"/>
+
+      <wsdl:part name="orders" type="impl:ArrayOf_tns1_Order"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="NoAccessPermissionException">
+
+      <wsdl:part name="fault" type="tns3:NoAccessPermissionException"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="OverUseMonitoring">
+
+      <wsdl:operation name="listOverUseLimits" parameterOrder="orders">
+
+         <wsdl:input message="impl:listOverUseLimitsRequest" name="listOverUseLimitsRequest"/>
+
+         <wsdl:output message="impl:listOverUseLimitsResponse" name="listOverUseLimitsResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setOverUseLimit" parameterOrder="period limitType limitValue">
+
+         <wsdl:input message="impl:setOverUseLimitRequest" name="setOverUseLimitRequest"/>
+
+         <wsdl:output message="impl:setOverUseLimitResponse" name="setOverUseLimitResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="clearOverUseLimits">
+
+         <wsdl:input message="impl:clearOverUseLimitsRequest" name="clearOverUseLimitsRequest"/>
+
+         <wsdl:output message="impl:clearOverUseLimitsResponse" name="clearOverUseLimitsResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteOverUseUseLimit" parameterOrder="period limitType">
+
+         <wsdl:input message="impl:deleteOverUseUseLimitRequest" name="deleteOverUseUseLimitRequest"/>
+
+         <wsdl:output message="impl:deleteOverUseUseLimitResponse" name="deleteOverUseUseLimitResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="searchOverUseState" parameterOrder="startIndex maxCount startDateTime endDateTime orders">
+
+         <wsdl:input message="impl:searchOverUseStateRequest" name="searchOverUseStateRequest"/>
+
+         <wsdl:output message="impl:searchOverUseStateResponse" name="searchOverUseStateResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="OverUseMonitoringSoapBinding" type="impl:OverUseMonitoring">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="listOverUseLimits">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="listOverUseLimitsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://overusemonitoring.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="listOverUseLimitsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setOverUseLimit">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setOverUseLimitRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://overusemonitoring.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setOverUseLimitResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="clearOverUseLimits">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="clearOverUseLimitsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://overusemonitoring.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="clearOverUseLimitsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteOverUseUseLimit">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteOverUseUseLimitRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://overusemonitoring.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteOverUseUseLimitResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="searchOverUseState">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="searchOverUseStateRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://overusemonitoring.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="searchOverUseStateResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/OverUseMonitoring" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="OverUseMonitoringService">
+
+      <wsdl:port binding="impl:OverUseMonitoringSoapBinding" name="OverUseMonitoring">
+
+         <wsdlsoap:address location="http://localhost:8080/langrid-1.2/services/OverUseMonitoring"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

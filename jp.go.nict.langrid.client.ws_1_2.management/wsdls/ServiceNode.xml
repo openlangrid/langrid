@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://localhost:8080/wrapper-1.2/services/ServiceNode" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://localhost:8080/wrapper-1.2/services/ServiceNode" xmlns:intf="http://localhost:8080/wrapper-1.2/services/ServiceNode" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="http://langrid.nict.go.jp/ws_1_2/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDLはApache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)によって生成されました / [en]-(WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT))-->
+ <wsdl:types>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://localhost:8080/wrapper-1.2/services/ServiceNode"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="LangridException">
+    <sequence>
+     <element name="description" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ServiceConfigurationException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServiceNotFoundException">
+    <complexContent>
+     <extension base="tns1:LangridException">
+      <sequence>
+       <element name="serviceId" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://localhost:8080/wrapper-1.2/services/ServiceNode" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="ServiceConfigurationException">
+
+      <wsdl:part name="fault" type="tns1:ServiceConfigurationException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="hasServiceRequest">
+
+      <wsdl:part name="serviceName" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="hasServiceResponse">
+
+      <wsdl:part name="hasServiceReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="listServicesRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="listServicesResponse">
+
+      <wsdl:part name="listServicesReturn" type="impl:ArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="ServiceNotFoundException">
+
+      <wsdl:part name="fault" type="tns1:ServiceNotFoundException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getEndpointUrlRequest">
+
+      <wsdl:part name="serviceName" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getEndpointUrlResponse">
+
+      <wsdl:part name="getEndpointUrlReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="ServiceNode">
+
+      <wsdl:operation name="getEndpointUrl" parameterOrder="serviceName">
+
+         <wsdl:input message="impl:getEndpointUrlRequest" name="getEndpointUrlRequest"/>
+
+         <wsdl:output message="impl:getEndpointUrlResponse" name="getEndpointUrlResponse"/>
+
+         <wsdl:fault message="impl:ServiceNotFoundException" name="ServiceNotFoundException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listServices">
+
+         <wsdl:input message="impl:listServicesRequest" name="listServicesRequest"/>
+
+         <wsdl:output message="impl:listServicesResponse" name="listServicesResponse"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="hasService" parameterOrder="serviceName">
+
+         <wsdl:input message="impl:hasServiceRequest" name="hasServiceRequest"/>
+
+         <wsdl:output message="impl:hasServiceResponse" name="hasServiceResponse"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="ServiceNodeSoapBinding" type="impl:ServiceNode">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="getEndpointUrl">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getEndpointUrlRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://servicenode.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getEndpointUrlResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/wrapper-1.2/services/ServiceNode" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="ServiceNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceNotFoundException" namespace="http://localhost:8080/wrapper-1.2/services/ServiceNode" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/wrapper-1.2/services/ServiceNode" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listServices">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="listServicesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://servicenode.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="listServicesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/wrapper-1.2/services/ServiceNode" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/wrapper-1.2/services/ServiceNode" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="hasService">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="hasServiceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://servicenode.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="hasServiceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/wrapper-1.2/services/ServiceNode" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/wrapper-1.2/services/ServiceNode" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="ServiceNodeService">
+
+      <wsdl:port binding="impl:ServiceNodeSoapBinding" name="ServiceNode">
+
+         <wsdlsoap:address location="http://localhost:8080/wrapper-1.2/services/ServiceNode"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

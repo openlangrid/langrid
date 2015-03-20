@@ -1,0 +1,34 @@
+<wicket:extend>
+	<h1><wicket:message key="UserSettings.headline.EditOfTemporaryUser" /></h1>
+	<div wicket:id="feedback"></div>
+	<form wicket:id="form">
+	<div class="table">
+		<table  summary="formtable" >
+			<tr>
+				<th scope="row"><wicket:message key="Common.label.user.Id"></wicket:message></th>
+				<td><span wicket:id="userId" ></span></td>
+			</tr>
+			<tr>
+				<th scope="row">
+					<wicket:message key="Common.label.period.user.temporary" />
+					(<span wicket:id="timezone"></span>)
+				</th>
+				<td class="form-date">
+					<wicket:message key="UserSettings.label.From" />:
+					&nbsp;<input type="text" wicket:id="startDate" />&nbsp;00:00
+					&nbsp;&nbsp;<wicket:message key="UserSettings.label.To" />:
+					&nbsp;<input type="text" wicket:id="endDate" />	&nbsp;23:59
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="btn-s">
+		<input wicket:id="cancel"
+			type="submit" wicket:message="value:Common.label.Cancel"
+		/>
+		<input class="form-s-text"
+			type="submit" wicket:message="value:Common.label.Update"
+		/>
+	</div>
+	</form>
+</wicket:extend>

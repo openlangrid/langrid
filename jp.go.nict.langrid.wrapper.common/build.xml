@@ -1,0 +1,27 @@
+<project name="langrid-wrapper-common-1.2.1" default="dist">
+	<import file="common.xml" />
+
+	<target name="init" depends="common.init">
+		<mkdir dir="${dist}" />
+	</target>
+
+	<target name="compile" depends="init,copyResource">
+		<javac5 srcdir="${src}" destdir="${build}">
+			<classpath>
+				<fileset file="lib/*.jar" excludes="*-src.jar" />
+				<fileset file="lib.compile/*.jar" />
+				<fileset file="../wrapper_dist/jars/langrid-servicecontainer-1.0.0.jar" />
+			</classpath>
+		</javac5>
+	</target>
+
+	<available property="has.lib.langrid" file="../lib/langrid" />
+	<target name="copyjar" if="has.lib.langrid">
+		<jar
+			basedir="${build}"
+			destfile="../lib/langrid/${basename}.jar"
+		/>
+	</target>
+
+	<target name="dist" depends="common.dist,copyjar,common.dist.src" />
+</project>

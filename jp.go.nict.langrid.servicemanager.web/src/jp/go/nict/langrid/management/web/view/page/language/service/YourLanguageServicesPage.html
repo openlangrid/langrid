@@ -1,0 +1,31 @@
+
+<wicket:extend>
+	<div class="linked-header">
+		<h1><span wicket:id="headline"></span></h1>
+		<a href="#atomic"><wicket:message key="LanguageServices.list.headline.AtomicServices" /></a>
+      &nbsp;|&nbsp;
+      <a href="#composite"><wicket:message key="LanguageServices.list.headline.CompositeServices" /></a>
+	</div>
+	<div wicket:id="feedback"></div>
+
+	<div class="accent">
+		<wicket:message key="ProvidingServices.language.service.message.add.Atomic"></wicket:message>
+		<input class="btn-on-large" wicket:id="atomicRegister"  type="button" wicket:message="value:Common.label.Registration"/>
+		<wicket:message key="ProvidingServices.language.service.message.add.Composite"></wicket:message>
+		<input class="btn-on-large" wicket:id="compositeRegister"  type="button" wicket:message="value:Common.label.Registration"/>
+	</div>
+
+	<div wicket:id="listContainer">
+      <div class="list-header">
+         <h2><a name="atomic"><wicket:message key="LanguageServices.list.headline.AtomicServices" /></a></h2>
+      </div>
+      <div class="service-list-header-left-nofloat" wicket:id="atomicAccessRightPanel"></div>
+      <div class="no-float" wicket:id="atomicList"></div>
+
+      <div class="list-header">
+         <h2><a name="composite"><wicket:message key="LanguageServices.list.headline.CompositeServices" /></a></h2>
+      </div>
+      <div class="service-list-header-left-nofloat" wicket:id="compositeAccessRightPanel"></div>
+      <div class="no-float" wicket:id="compositeList"></div>
+   </div>
+</wicket:extend>

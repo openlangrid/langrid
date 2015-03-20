@@ -1,0 +1,14 @@
+{
+  "createdDateTime": "2010/07/26 17:38:15.265 JST",
+  "description": "This service searches for the concepts a word possesses.",
+  "interfaceDefinitions": [{
+    "protocolId": "SOAP_RPC_ENCODED",
+    "definition": "ConceptDictionary.wsdl"
+  }],
+  "metaAttributes": [{
+    "attributeId": "supportedLanguages"
+  }],
+  "serviceTypeId": "ConceptDictionary",
+  "serviceTypeName": "ConceptDictionary",
+  "updatedDateTime": "2010/07/26 17:38:15.265 JST"
+}

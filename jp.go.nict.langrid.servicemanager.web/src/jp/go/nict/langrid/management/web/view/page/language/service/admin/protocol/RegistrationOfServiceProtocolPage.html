@@ -1,0 +1,29 @@
+<wicket:extend>
+	<h1><wicket:message key="LanguageGridOperator.protocol.headline.RegistrationOfProtocol" /></h1>
+	<div wicket:id="feedback"></div>
+	<form wicket:id="form">
+	
+		<p class="accent"><wicket:message key="LanguageGridOperator.protocol.table.Headline" /></p>
+		<div class="table">
+			<table>
+				<tr>
+					<th><wicket:message key="Common.label.protocol.Id" /></th>
+					<td><input class="form-text" wicket:id="id"/></td>
+				</tr>
+				<tr>
+					<th><wicket:message key="Common.label.protocol.Name" /></th>
+					<td><input class="form-text" wicket:id="name"/></td>
+				</tr>
+				<tr>
+					<th><wicket:message key="Common.label.protocol.Description" /></th>
+					<td><textarea rows="5" class="form-text" wicket:id="description"></textarea></td>
+				</tr>
+			</table>
+		</div>
+
+		<div class="btn-s">
+			<input type="button" wicket:id="cancel" wicket:message="value:Common.label.Cancel" />
+			<input type="submit" wicket:id="regist" wicket:message="value:Common.label.Register" />
+		</div>
+	</form>
+</wicket:extend>

@@ -1,0 +1,113 @@
+/*
+ * \$Id\$
+ *
+ * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
+ * Copyright (C) 2005-2008 NICT Language Grid Project.
+ *
+ * This program is free software: you can redistribute it and/or modify it 
+ * under the terms of the GNU Lesser General Public License as published by 
+ * the Free Software Foundation, either version 2.1 of the License, or (at 
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser 
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License 
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+package jp.go.nict.langrid.language;
+
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+/**
+ * <#if locale="ja">
+ * Langridで使用される言語表現のエイリアス。
+ * <br>このファイルはスクリプトにより生成されます。
+ * <br>date generated: ${date}
+ * <#elseif locale="en">
+ * </#if>
+ * @author \$Author\$
+ * @version \$Revision\$
+ */
+public final class LangridLanguageTags {
+<%
+  def adjustTag(tag){
+     def first = tag.firstParam
+     if(first.length() == 2){
+       first = "ISO639_1." + first.toUpperCase()
+     } else if(first.length() == 3){
+       first = "ISO639_2." + first.toUpperCase()
+     } else if(first[0] == 'x'){
+       first = "xtag"
+     } else{
+       println "\t// unknown tag format: " + tag
+       return
+     }
+     tag.firstParam = first
+
+     def second = tag.secondParam
+     if(second != ""){
+       if((first != "xtag") && (second.length() == 2)){
+         second = ", ISO3166." + second.toUpperCase()
+       } else{
+         second = ", \"" + second + "\""
+       }
+     }
+     tag.secondParam = second
+     tag
+  }
+%>
+	/**
+	 * <#if locale="ja">
+	 * xで始まるタグ用の言語タグ。
+	 * <#elseif locale="en">
+	 * </#if>
+	 */
+	private static LanguageTag xtag = new LanguageTag(){
+		public String getCode(){
+			return "x";
+		}
+	};
+
+<%
+  for(tag in tags) {
+    tag = adjustTag(tag)
+%>
+	/**
+	 * <#if locale="ja">
+	 * ${tag.description}
+	 * <#elseif locale="en">
+	 * </#if>
+	 */
+	public static final Language ${tag.name} = Language.get(${tag.firstParam}${tag.secondParam}${tag.additionalParams});
+<%
+  }
+%>
+
+	private static Set<Language> tags;
+
+	/**
+	 * <#if locale="ja">
+	 * 定義されている全タグを含むセットを返す。
+	 * @return 全タグを含むセット
+	 * <#elseif locale="en">
+	 * </#if>
+	 */
+	public static Set<Language> values(){
+		return tags;
+	}
+
+	static{
+		Set<Language> tagSet = new LinkedHashSet<Language>();
+<%
+  for(tag in tags){
+%>		tagSet.add(${tag.name});
+<%
+  }
+%>		tags = Collections.unmodifiableSet(tagSet);
+	}
+}

@@ -1,0 +1,3 @@
+<project name="langrid-wrapper-echo-1.0" default="dist">
+	<import file="../jp.go.nict.langrid.wrapper.common/common.xml" />
+</project>

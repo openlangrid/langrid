@@ -1,0 +1,33 @@
+<wicket:panel>
+<div class="list-table">
+<div class="navi">
+<!-- span wicket:id="topNavigator1"></span-->
+   <a wicket:id="topPreviewLink"><span wicket:id="topPreview"></span></a>&nbsp;
+   <a wicket:id="topNextLink"><span wicket:id="topNext"></span></a>
+</div>
+	<table summary="formtable" >
+		<tr>
+			<th><wicket:message key="Common.label.AccessDate" /><span wicket:id="timeZone"></span></th>
+			<th><wicket:message key="Common.label.User" /></th>
+			<th><wicket:message key="Common.label.address.Ip" /></th>
+			<th><wicket:message key="Common.label.DataTransfer" /></th>
+		</tr>
+		<wicket:container wicket:id="logList">
+			<wicket:container wicket:id="row"></wicket:container>
+		</wicket:container>
+		<wicket:container wicket:id="hasNoList">
+		<tr class="container-center">
+			<td>-</td>
+			<td>-</td>
+			<td>-</td>
+			<td>-</td>
+		</tr>	
+		</wicket:container>
+	</table>
+	<div class="navi">
+	  <!-- span wicket:id="underNavigator1"></span-->
+      <a wicket:id="underPreviewLink"><span wicket:id="underPreview"></span></a>&nbsp;
+      <a wicket:id="underNextLink"><span wicket:id="underNext"></span></a>
+	</div>
+</div>
+</wicket:panel>

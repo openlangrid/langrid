@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+    "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+   <bean name="accessLimitControlService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.AccessLimitControlServiceImpl"></bean>
+
+   <bean name="accessRightControlService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.AccessRightControlServiceImpl"></bean>
+
+   <bean name="atomicServiceService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.AtomicServiceServiceImpl"></bean>
+
+   <bean name="compositeServiceService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.CompositeServiceServiceImpl"></bean>
+
+   <bean name="domainService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.DomainServiceImpl"></bean>
+
+   <bean name="federationService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.FederationServiceImpl"></bean>
+
+   <bean name="gridService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.GridServiceImpl"></bean>
+
+   <bean name="newsService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.NewsServiceImpl"></bean>
+
+   <bean name="nodeService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.NodeServiceImpl"></bean>
+
+   <bean name="operationRequestService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.OperationRequestServiceImpl"></bean>
+
+   <bean name="resourceService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.ResourceServiceImpl"></bean>
+
+   <bean name="resourceMetaAttributeService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.ResourceMetaAttributeServiceImpl"></bean>
+
+   <bean name="resourceTypeService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.ResourceTypeServiceImpl"></bean>
+
+   <bean name="scheduleService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.ScheduleServiceImpl"></bean>
+
+   <bean name="temporaryUserService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.TemporaryUserServiceImpl"></bean>
+
+   <bean name="userService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.UserServiceImpl"></bean>
+
+   <bean name="langridServiceService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.LangridServiceServiceImpl"></bean>
+
+   <bean name="serviceInformationService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.LangridServiceServiceImpl"></bean>
+
+   <bean name="overuseLimitControlService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.OveruseLimitControlServiceImpl"></bean>
+
+   <bean name="protocolService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.ProtocolServiceImpl"></bean>
+
+   <bean name="serviceMetaAttributeService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.ServiceMetaAttributeServiceImpl"></bean>
+
+   <bean name="serviceTypeService"
+      class="jp.go.nict.langrid.management.web.model.service.impl.ServiceTypeServiceImpl"></bean>
+</beans>

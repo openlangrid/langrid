@@ -1,0 +1,16 @@
+{
+  "createdDateTime": "2010/07/26 17:38:15.265 JST",
+  "description": "This service translates an input text from a source language to a target language by combining with temporal dictionary data (pairs of texts in source language and target language), and is used when utilizing dictionary data that is not provided as Web service.",
+  "interfaceDefinitions": [{
+    "protocolId": "SOAP_RPC_ENCODED",
+    "definition": "TranslationWithTemporalDictionary.wsdl"
+  }],
+  "metaAttributes": [{
+    "attributeId": "supportedLanguagePairs_PairList"
+  },{
+    "attributeId": "supportedLanguagePairs_AnyCombination"
+  }],
+  "serviceTypeId": "TranslationWithTemporalDictionary",
+  "serviceTypeName": "TranslationWithTemporalDictionary",
+  "updatedDateTime": "2010/07/26 17:38:15.265 JST"
+}

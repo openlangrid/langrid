@@ -1,0 +1,13 @@
+option java_package = "jp.go.nict.langrid.client.protobuf.proto";
+option java_outer_classname = "CommonProtos";
+
+message Header{
+  required string name = 1;
+  required string value = 2;
+}
+
+message Fault{
+  required string faultCode = 1;
+  required string faultString = 2;
+  required string faultDetail = 3;
+}

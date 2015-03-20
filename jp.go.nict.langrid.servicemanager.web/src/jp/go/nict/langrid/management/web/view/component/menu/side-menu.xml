@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<menu>
+<!-- 
+  This file defines menu structure.
+  "requiredRoles" accepts following values.
+    * none - no role required. The menu is always visible.
+    * any - any role is acceptable. User must have at least one role. That means that the menu
+            is visible for any logged-in users.
+    * empty - any role is not acceptable. The menu is visible for not-logged-in users.
+    * other - other value designates the individual role name. The menu is visible for users who
+              have specified role.
+ -->
+    
+<!-- Overview Menus ************************ -->
+   <link
+      label='Overview.headline'
+      class='jp.go.nict.langrid.management.web.view.page.other.OverviewPage'
+      requiredRoles='none'
+   >
+   </link>
+
+<!-- View of Service Grid Menus ************************ -->
+   <link
+      label='Menu.ViewOfLanguageGrid'
+      class='jp.go.nict.langrid.management.web.view.page.other.NewsPage'
+      requiredRoles='none'
+   >
+       <link
+         label='News.headline'
+         class='jp.go.nict.langrid.management.web.view.page.other.NewsPage'
+       >
+       </link>
+       <link
+         label='LanguageGridUsers.headline'
+         class='jp.go.nict.langrid.management.web.view.page.user.LanguageGridUsersPage'
+       >
+       </link>
+       <link
+         label='LanguageResources.headline'
+         class='jp.go.nict.langrid.management.web.view.page.language.resource.LanguageResourcesPage'
+       >
+       </link>
+       <link
+         label='LanguageServices.Headline'
+         class='jp.go.nict.langrid.management.web.view.page.language.service.LanguageServicePage'
+       >
+       </link>
+       <link
+         label='ProvidingServices.language.service.headline.MonitoringLangridServices'
+         class='jp.go.nict.langrid.management.web.view.page.language.service.MonitoringLanguageServicePublicPage'
+         requiredRoles='empty'
+       >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.MonitoringLanguageServiceStatisticPublicPage'/>
+       </link>
+       <link
+         label='ProvidingServices.language.service.headline.MonitoringLangridServices'
+         class='jp.go.nict.langrid.management.web.view.page.language.service.MonitoringAllLanguageServicePage'
+         requiredRoles='any'
+       >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.MonitoringAllLanguageServiceStatisticPage'/>
+       </link>
+		<link
+			label='ComputationResources.Headline'
+			class='jp.go.nict.langrid.management.web.view.page.node.NodeListPage'
+		/>
+      <link
+         label='LanguageGridOperator.type.headline.Service'
+         class='jp.go.nict.langrid.management.web.view.page.language.service.admin.type.ServiceTypeListPage'
+      >
+      </link>
+   </link>
+
+<!-- Providing Services Menus ************************ -->
+   <link
+      label='Menu.ProvidingServices'
+      class='jp.go.nict.langrid.management.web.view.page.language.resource.YourLanguageResourcesPage'
+      requiredRoles='serviceprovider'
+   >
+      <link
+         label='ProvidingServices.language.resource.headline.YourLanguageResources'
+         class='jp.go.nict.langrid.management.web.view.page.language.resource.YourLanguageResourcesPage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.YourLanguageResourcesEditPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.YourLanguageResourcesEditResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.RegistrationOfLanguageResourcePage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.RegistrationOfLanguageResourceResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.UnregistrationOfLanguageResourcesPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.UnregistrationOfLanguageResourcesResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.UnregistrationOfLanguageResourcesCancelResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.UnregistrationOfLanguageResourceNowResultPage'/>
+      </link>
+      <link
+         label='ProvidingServices.language.service.headline.YourLanguageServices'
+         class='jp.go.nict.langrid.management.web.view.page.language.service.YourLanguageServicesPage'
+      >
+      <!-- Edit -->
+      	<!-- Atomic -->
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.atomic.AtomicServiceEditPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.atomic.AtomicServiceEditResultPage'/>
+      	<!-- Composite -->
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.composite.BpelCompositeServiceEditPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.composite.BpelCompositeServiceEditResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.composite.JavaCompositeServiceEditPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.composite.JavaCompositeServiceEditResultPage'/>
+      <!-- /Edit -->
+      <!-- Regist -->
+      	<!-- Atomic -->
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.atomic.RegistrationOfAtomicServiceListPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.atomic.RegistrationOfAtomicServicePage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.atomic.RegistrationOfAtomicServiceResultPage'/>
+      	<!-- Composite -->
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.composite.RegistrationOfCompositeServiceProfilePage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.composite.RegistrationOfJavaCompositeServicePage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.composite.RegistrationOfJavaCompositeServiceResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.composite.RegistrationOfBpelCompositeServicePage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.composite.RegistrationOfBpelCompositeServiceResultPage'/>
+      <!-- /Regist -->
+      <!-- UnRegist -->
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.UnregistrationOfLanguageServicesPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.UnregistrationOfLanguageServicesResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.UnregistrationOfLanguageServicesCancelResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.UnregistrationOfLanguageServiceNowResultPage'/>
+      <!-- /UnRegist -->
+      </link>
+      <link
+         label='ProvidingServices.language.service.headline.MonitoringLangridServices'
+         class='jp.go.nict.langrid.management.web.view.page.language.service.MonitoringLanguageServicePage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.MonitoringLanguageServicePage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.MonitoringLanguageServiceStatisticPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.MonitoringLanguageServiceVerbosePage'/>
+      </link>
+      <link
+         label='ProvidingServices.language.service.headline.ControlOfLanguageServices'
+         class='jp.go.nict.langrid.management.web.view.page.language.service.ControlOfLanguageServicesListPage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.ControlOfLanguageServicesPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.ControlOfLanguageServicesInitialSettingsPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.ControlOfLanguageServicesInitialSettingsResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.ControlOfLanguageServicesChangeRightConfirmPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.ControlOfLanguageServicesChangeRightResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.ControlOfLanguageServicesChangeLimitPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.ControlOfLanguageServicesChangeLimitResultPage'/>
+      </link>
+      <link
+         label='ProvidingServices.language.service.headline.SuspensionOfLanguageServices'
+         class='jp.go.nict.langrid.management.web.view.page.language.service.SuspensionOfLanguageServiceListPage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.SuspensionOfLanguageServicePage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.SuspensionOfLanguageServiceResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.SuspensionOfLanguageServiceRestartResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.SuspensionOfLanguageServiceCancelResultPage'/>
+      </link>
+   </link>
+
+<!-- Using Services Menus ************************ -->
+   <link
+      label='Menu.UsingServices'
+      class='jp.go.nict.langrid.management.web.view.page.language.service.YourServiceCallsPage'
+      requiredRoles='serviceuser'
+   >
+      <link
+         label='UsingServices.headline.YourServiceCalls'
+         class='jp.go.nict.langrid.management.web.view.page.language.service.YourServiceCallsPage'
+      >
+      </link>
+   </link>
+
+<!-- Service Grid Operator Menus ************************ -->
+   <link
+      label='Menu.LanguageGridOperator'
+      class='jp.go.nict.langrid.management.web.view.page.admin.OperationRequestPage'
+      requiredRoles="administrator"
+      showForUnsufficientUser="unoperatable"
+   >
+      <link
+         label='LanguageGridOperator.headline.RequestedOperations'
+         class='jp.go.nict.langrid.management.web.view.page.admin.OperationRequestPage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.OperationOfAuthorizeRequestedServicePage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.OperationOfAuthorizeRequestedServiceResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.OperationOfAuthorizeRequestedResourcePage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.OperationOfAuthorizeRequestedResourceResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.admin.federation.source.FederalOperationRequestPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.admin.federation.source.FederalOperationRequestResultPage'/>
+      </link>
+      <link
+         label='LanguageGridOperator.headline.FraudulentUsage'
+         class='jp.go.nict.langrid.management.web.view.page.admin.fraudulentusage.FraudulentUsagePage'
+      >
+      </link>
+      <link
+         label='LanguageGridOperator.headline.AllLanguageGridUsers'
+         class='jp.go.nict.langrid.management.web.view.page.user.admin.AllLanguageGridUsersPage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.user.admin.RegistrationOfLanguageGridUserPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.user.admin.RegistrationOfLanguageGridUserResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.user.admin.EditUserProfileAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.user.admin.EditUserProfileResultAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.user.admin.ChangePasswordAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.user.admin.ChangePasswordResultAdminPage'/>
+      </link>
+      <link
+         label='LanguageGridOperator.headline.ControlOfAccessRight'
+         class='jp.go.nict.langrid.management.web.view.page.user.admin.AccessControlOfLanguageGridUsersPage'
+      >
+      </link>
+      <link
+         label='LanguageGridOperator.headline.AllLanguageResources'
+         class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.AllLanguageResourcesPage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.YourLanguageResourcesEditAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.YourLanguageResourcesEditResultAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.RegistrationOfLanguageResourceUserListPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.RegistrationOfLanguageResourceAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.RegistrationOfLanguageResourceResultAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.UnregistrationOfLanguageResourcesListAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.UnregistrationOfLanguageResourcesAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.UnregistrationOfLanguageResourcesResultAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.UnregistrationOfLanguageResourcesCancelResultAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.OperationOfAuthorizeRequestedResourceAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.OperationOfAuthorizeRequestedResourceResultAdminPage'/>
+      </link>
+      <link
+         label='LanguageGridOperator.headline.AllLanguageServices'
+         class='jp.go.nict.langrid.management.web.view.page.language.service.admin.AllLanguageServicesPage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.atomic.admin.RegistrationOfAtomicServiceUserListPage' />
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.atomic.admin.RegistrationOfAtomicServiceResourceListPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.atomic.admin.RegistrationOfAtomicServiceAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.atomic.admin.RegistrationOfAtomicServiceResultAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.composite.admin.RegistrationOfCompositeServiceUserListPage' />
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.composite.admin.RegistrationOfCompositeServiceAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.composite.admin.RegistrationOfCompositeServiceResultAdminPage'/>
+
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.composite.admin.RegistrationOfCompositeServiceUserListPage' />
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.composite.admin.RegistrationOfCompositeServiceProfileAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.composite.admin.RegistrationOfBpelCompositeServiceAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.composite.admin.RegistrationOfBpelCompositeServiceResultAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.composite.admin.RegistrationOfJavaCompositeServiceAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.composite.admin.RegistrationOfJavaCompositeServiceResultAdminPage'/>
+
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.atomic.admin.AtomicServiceEditAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.atomic.admin.AtomicServiceEditResultAdminPage'/>
+
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.composite.admin.BpelCompositeServiceEditAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.composite.admin.BpelCompositeServiceEditResultAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.composite.admin.JavaCompositeServiceEditAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.composite.admin.JavaCompositeServiceEditResultAdminPage'/>
+
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.UnregistrationOfLanguageServicesAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.UnregistrationOfLanguageServicesResultAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.UnregistrationOfLanguageServicesCancelResultAdminPage'/>
+
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.OperationOfAuthorizeRequestedServiceAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.OperationOfAuthorizeRequestedServiceResultAdminPage'/>
+
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.UnregistrationOfLanguageServiceNowResultAdminPage'/>
+      </link>
+
+      <link
+         label='ProvidingServices.language.service.headline.MonitoringLangridServices'
+         class='jp.go.nict.langrid.management.web.view.page.language.service.admin.MonitoringLanguageServiceAdminPage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.MonitoringLanguageServiceStatisticAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.MonitoringLanguageServiceVerboseAdminPage'/>
+      </link>
+      <link
+         label='ProvidingServices.language.service.headline.ControlOfLanguageServices'
+         class='jp.go.nict.langrid.management.web.view.page.language.service.admin.ControlOfLanguageServicesListAdminPage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.ControlOfLanguageServicesAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.ControlOfLanguageServicesInitialSettingsAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.ControlOfLanguageServicesInitialSettingsResultAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.ControlOfLanguageServicesChangeRightConfirmAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.ControlOfLanguageServicesChangeRightResultAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.ControlOfLanguageServicesChangeLimitAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.ControlOfLanguageServicesChangeLimitResultAdminPage'/>
+      </link>
+      <link
+         label='ProvidingServices.language.service.headline.SuspensionOfLanguageServices'
+         class='jp.go.nict.langrid.management.web.view.page.language.service.admin.SuspensionOfLanguageServiceListAdminPage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.SuspensionOfLanguageServiceAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.SuspensionOfLanguageServiceResultAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.SuspensionOfLanguageServiceRestartResultAdminPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.SuspensionOfLanguageServiceCancelResultAdminPage'/>
+      </link>
+
+      <link
+         label='LanguageGridOperator.node.headline.AllNodes'
+         class='jp.go.nict.langrid.management.web.view.page.node.YourNodePage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.node.YourNodeEditPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.node.YourNodeEditResultPage'/>
+
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.node.ChangeOfNodeProviderPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.node.ChangeOfNodeProviderResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.node.ChangeOfNodeProviderUserListPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.node.ChangeOfNodeProviderListPage'/>
+
+      </link>
+
+
+      <link
+         label='LanguageGridOperator.gridSettings.headline.GridSettings'
+         class='jp.go.nict.langrid.management.web.view.page.admin.GridSettingsPage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.admin.GridSettingsResultPage'/>
+      </link>
+      <link
+         label='LanguageGridOperator.federation.headline.AllFederations'
+         class='jp.go.nict.langrid.management.web.view.page.admin.federation.AllOperatorsPage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.admin.federation.source.OperationOfConnectionRequestPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.admin.federation.source.OperationOfConnectionRequestResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.admin.federation.target.RequestOfConnectionPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.admin.federation.target.RequestOfConnectionResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.admin.federation.RequestOfDisconnectionPage'/>
+			<relatedpage class='jp.go.nict.langrid.management.web.view.page.admin.federation.RequestOfDisconnectionResultPage'/>
+      </link>
+   </link>
+
+<!-- Service Grid Domain Menus ************************ -->
+   <link
+      label='Menu.DomainSettings'
+      class='jp.go.nict.langrid.management.web.view.page.domain.ListPage'
+      requiredRoles="administrator"
+   >
+      <link
+         label='LanguageGridOperator.domainSettings.headline.AllDomains'
+         class='jp.go.nict.langrid.management.web.view.page.domain.ListPage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.domain.RegistrationPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.domain.RegistrationResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.domain.EditPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.domain.EditResultPage'/>
+      </link>
+      <link
+         label='LanguageGridOperator.protocol.headline.Protocol'
+         class='jp.go.nict.langrid.management.web.view.page.language.service.admin.protocol.ProtocolsOfServiceAdminPage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.protocol.RegistrationOfServiceProtocolPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.protocol.RegistrationOfServiceProtocolResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.protocol.EditOfServiceProtocolPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.protocol.EditOfServiceProtocolResultPage'/>
+      </link>
+      <link
+         label='LanguageGridOperator.resourcemetaattribute.headline'
+         class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.metaattribute.ListPage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.metaattribute.RegistrationPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.metaattribute.RegistrationResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.metaattribute.EditPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.metaattribute.EditResultPage'/>
+      </link>
+      <link
+         label='LanguageGridOperator.resourcetype.headline'
+         class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.type.ListPage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.type.RegistrationPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.type.RegistrationResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.type.EditPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.resource.admin.type.EditResultPage'/>
+      </link>
+      <link
+         label='LanguageGridOperator.metaattribute.headline.Service'
+         class='jp.go.nict.langrid.management.web.view.page.language.service.admin.metaattribute.ServiceMetaAttributeListAdminPage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.metaattribute.RegistrationOfServiceMetaAttributePage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.metaattribute.RegistrationOfServiceMetaAttributeResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.metaattribute.EditOfServiceMetaAttributePage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.metaattribute.EditOfServiceMetaAttributeResultPage'/>
+      </link>
+      <link
+         label='LanguageGridOperator.type.headline.Service'
+         class='jp.go.nict.langrid.management.web.view.page.language.service.admin.type.ServiceTypeListAdminPage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.type.RegistrationOfServiceTypePage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.type.RegistrationOfServiceTypeResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.type.EditOfServiceTypePage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.language.service.admin.type.EditOfServiceTypeResultPage'/>
+      </link>
+   </link>
+
+<!-- User Settings Menus ************************ -->
+   <link
+      label='Menu.UserSettings'
+      class='jp.go.nict.langrid.management.web.view.page.user.EditUserProfilePage'
+      requiredRoles='any'
+   >
+      <link
+         label='UserSettings.headline.EditUserProfile'
+         class='jp.go.nict.langrid.management.web.view.page.user.EditUserProfilePage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.user.EditUserProfileResultPage'/>
+      </link>
+      <link
+         label='UserSettings.headline.ChangePassword'
+         class='jp.go.nict.langrid.management.web.view.page.user.ChangePasswordPage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.user.ChangePasswordResultPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.user.ChangePasswordUseOnetimePasswordPage'/>
+      </link>
+      <link
+         label='UserSettings.headline.YourTemporaryUsersPage'
+         class='jp.go.nict.langrid.management.web.view.page.user.YourTemporaryUsersPage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.user.YourTemporaryUsersPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.user.EditTemporaryUserPage'/>
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.user.EditTemporaryUserResultPage'/>
+      </link>
+      <link
+         label='UserSettings.headline.RegistrationOfTemporaryUser'
+         class='jp.go.nict.langrid.management.web.view.page.user.RegistrationOfTemporaryUserPage'
+      >
+         <relatedpage class='jp.go.nict.langrid.management.web.view.page.user.RegistrationOfTemporaryUserResultPage'/>
+      </link>
+   </link>
+
+<!-- Manual Menus ************************ -->
+   <link
+      label='Menu.Manual'
+      class='jp.go.nict.langrid.management.web.view.page.other.ManualPage'
+      requiredRoles='none'
+   >
+   </link>
+</menu>

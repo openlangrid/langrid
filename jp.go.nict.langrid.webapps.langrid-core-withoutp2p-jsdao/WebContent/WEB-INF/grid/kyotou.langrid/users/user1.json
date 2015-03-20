@@ -1,0 +1,24 @@
+{
+  "ableToCallServices": true,
+  "address": "",
+  "attributes": [],
+  "createdDateTime": "2010/08/12 20:18:00.890 JST",
+  "defaultAppProvisionType": "CLIENT_CONTROL",
+  "defaultUseType": "NONPROFIT_USE",
+  "emailAddress": "",
+  "gridId": "kyotou.langrid",
+  "homepageUrl": null,
+  "lastAuthenticatedDate": "2010/08/12 20:59:58.703 JST",
+  "organization": "",
+  "password": "",
+  "passwordChangedDate": null,
+  "representative": "",
+  "roles": [  {
+    "gridId": "kyotou.langrid",
+    "roleName": "langriduser",
+    "userId": "user1"
+  }],
+  "updatedDateTime": "2010/08/12 20:18:00.890 JST",
+  "userId": "user1",
+  "visible": true
+}

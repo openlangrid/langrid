@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context reloadable="false" displayName="Service Grid Core Node">
+<!-- 
+	<Resource
+		name="jdbc/your-definition" auth="Container" type="javax.sql.DataSource"
+		maxActive="100" maxIdle="50" maxWait="10000"
+		username="your-name" password="your-password"
+		driverClassName="org.postgresql.Driver"
+		url="jdbc:postgresql:your-database"
+	/>
+ -->
+ 
+<!-- For UnitTest: Dummy Parameters -->
+	<Parameter name="langrid.node.gridId" value="smtest.gridId" />
+	<Parameter name="langrid.node.gridName" value="smtest.gridName" />
+	<Parameter name="langrid.node.nodeId" value="smtest.nodeId" />
+	<Parameter name="langrid.node.name" value="Core Node in SMTest" />
+	<Parameter name="langrid.node.url" value="http://localhost:8080/langrid-p2p-smtest/" />
+	<Parameter name="langrid.node.os" value="Fedora Core 6.0" />
+	<Parameter name="langrid.node.cpu" value="2.13 GHz" />
+	<Parameter name="langrid.node.memory" value="2048 MB" />
+	<Parameter name="langrid.node.specialNotes" value="SMTest Special Notes" />
+
+	<Parameter name="langrid.operator.userId" value="smtester" />
+	<Parameter name="langrid.operator.initialPassword" value="smtester" />
+	<Parameter name="langrid.operator.organization" value="smtest.organization" />
+	<Parameter name="langrid.operator.responsiblePerson" value="SM Tester" />
+	<Parameter name="langrid.operator.emailAddress" value="SM.Test@khn.nict.go.jp" />
+	<Parameter name="langrid.operator.homepageUrl" value="http://langrid.org/" />
+	<Parameter name="langrid.operator.address" value="Seikacho" />
+
+	<Parameter name="langrid.gridName" value="SMTest ServiceGrid"/>
+	<Parameter
+		name="langrid.serviceManagerCopyright"
+		value="Operation by ServiceManagerTester.&lt;br/&gt;Copyright (C) 2007-2010 NICT Language Grid Project. All Rights Reserved."
+		/>
+
+	<Parameter name="langrid.activeBpelServicesUrl" value="http://127.0.0.1:8081/active-bpel/services" />
+	<Parameter name="langrid.activeBpelAppAuthKey" value="${ACTIVEBPELAPPAUTHKEY}" />
+
+	<Parameter name="langrid.atomicServiceReadTimeout" value="30000" />
+	<Parameter name="langrid.compositeServiceReadTimeout" value="30000" />
+	<Parameter name="langrid.maxCallNest" value="16" />
+
+	<Parameter name="appAuth.simpleApp.authIps" value="127.0.0.1" />
+	<Parameter name="appAuth.simpleApp.authKey" value="${SIMPLEAPPAUTHKEY}" />
+</Context>

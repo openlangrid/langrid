@@ -1,0 +1,12 @@
+{
+  "createdDateTime": "2010/07/26 17:38:15.265 JST",
+  "description": "Machine Translation Resource",
+  "metaAttributes": [{
+    "attributeId": "supportedLanguagePaths_PathList"
+  },{
+    "attributeId": "supportedLanguagePaths_AnyCombination"
+  }],
+  "resourceTypeId": "MultilingualDictionary",
+  "resourceTypeName": "MultilingualDictionary",
+  "updatedDateTime": "2010/07/26 17:38:15.265 JST"
+}

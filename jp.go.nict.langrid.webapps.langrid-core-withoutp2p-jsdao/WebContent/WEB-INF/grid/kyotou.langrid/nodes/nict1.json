@@ -1,0 +1,10 @@
+{
+  "active": true,
+  "createdDateTime": "2010/08/11 13:14:49.734 JST",
+  "nodeId": "nict1",
+  "nodeName": "Service Grid Node at NICT",
+  "gridId": "kyotou.langrid",
+  "url": "http://localhost/",
+  "ownerUserId": "user1",
+  "updatedDateTime": "2010/08/11 13:14:49.734 JST"
+}

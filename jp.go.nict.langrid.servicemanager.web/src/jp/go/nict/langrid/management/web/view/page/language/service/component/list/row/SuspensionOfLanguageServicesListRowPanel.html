@@ -1,0 +1,17 @@
+<wicket:panel>
+		<tr>
+			<td><a wicket:id="serviceName"><span wicket:id="labelServiceName"></span></a></td>
+			<td><a wicket:id="serviceType"><span wicket:id="labelServiceType"></span></a></td>
+			<td><span wicket:id="languages"></span></td>
+			<td><a wicket:id="provider"><span wicket:id="labelProvider"></span></a></td>
+			<td><span wicket:id="status"></span></td>
+			
+		</tr>
+		<tr>
+			<td colspan="5" align="right" class="btn-area">
+				<input type="submit" class="btn-on" wicket:id="suspend" wicket:message="value:Common.label.status.Suspend" />
+			 	<input type="submit" class="btn-on" wicket:id="cancel" wicket:message="value:Common.label.Cancel" />
+				<input type="submit" class="btn-on" wicket:id="restart-on" wicket:message="value:ProvidingServices.language.service.label.Restart" />
+			</td>
+		</tr>
+</wicket:panel>

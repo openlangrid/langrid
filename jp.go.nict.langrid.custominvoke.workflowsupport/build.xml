@@ -1,0 +1,7 @@
+<project name="langrid-custominvoke-workflowsupport-1.2.1" default="dist">
+	<import file="../jp.go.nict.langrid.wrapper.common/common.xml" />
+		<path id="classpath.compile">
+			<fileset dir="../jp.go.nict.langrid.custominvoke.workflowsupport/lib" />
+			<fileset file="${dist}/langrid-wrapper-workflowsupport-1.2.1.jar" />
+		</path>
+</project>

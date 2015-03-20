@@ -1,0 +1,55 @@
+<wicket:extend>
+	<h1><wicket:message key="LanguageGridOperator.type.headline.registrationOfServiceType.Complete" /></h1>
+	<div wicket:id="feedback"></div>
+
+	<div class="table">
+		<table>
+			<tr>
+				<th><wicket:message key="Common.label.Domain" /></th>
+				<td><span wicket:id="domain"></span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="Common.label.type.service.Id" /></th>
+				<td><span wicket:id="id"></span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="Common.label.type.service.Name" /></th>
+				<td><span wicket:id="name"></span></td>
+			</tr>
+			<tr>
+				<th><wicket:message key="Common.label.type.service.Description" /></th>
+				<td><span wicket:id="description"></span></td>
+			</tr>
+			<tr>
+            <th><wicket:message key="LanguageGridOperator.type.table.header.MetaAttribute" /></th>
+				<td><span wicket:id="attribute"></span></td>
+         </tr>
+		</table>
+	</div>
+	<div class="table">
+		<table>
+			<tr>
+				<th><wicket:message key="LanguageGridOperator.type.table.headline.Interface" /></th>
+				<td>
+				   <div class="table-in-column th-table-in-column-wide">
+	               <div wicket:id="repeating">
+							<table class="table-repeater">
+							   <tr>
+							      <th><wicket:message key="Common.label.Protocol" /></th>
+							      <td><span wicket:id="protocol"></span></td>
+							   </tr>
+							   <tr>
+							      <th><wicket:message key="Common.label.File" /></th>
+							      <td class="nomal-list"><ul><li wicket:id="fileRepeating"><span wicket:id="fileName"></span></li></ul></td>
+							   </tr>
+							</table>
+					   </div>
+		         </div>
+				</td>
+			</tr>
+		</table>
+	</div>
+   <div class="btn-s">
+      <input type="button" wicket:id="back" wicket:message="value:Common.label.Back" />
+   </div>
+</wicket:extend>

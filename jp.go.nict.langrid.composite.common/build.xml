@@ -1,0 +1,7 @@
+<project name="langrid-composite-service-1.2" default="dist">
+	<target name="dist">
+		<jar basedir="bin"
+			includes="**/*.class"
+			destfile="../wrapper_dist/jars/langrid-composite-service-1.2.jar" />
+	</target>
+</project>

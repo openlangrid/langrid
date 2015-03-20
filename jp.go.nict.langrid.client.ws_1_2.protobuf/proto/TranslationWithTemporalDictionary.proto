@@ -1,0 +1,26 @@
+package translationwithtemporaldictionary;
+
+option java_package = "jp.go.nict.langrid.client.protobuf.proto";
+option java_outer_classname = "TranslationWithTemporalDictionaryProtos";
+
+import "common.proto";
+import "BilingualDictionary.proto";
+
+message TranslateRequest {
+  repeated Header headers = 1;
+  required string sourceLang = 2;
+  required string targetLang = 3;
+  required string source = 4;
+  repeated bilingualdictionary.Translation temporalDictionary = 5;
+  optional string dictionaryTargetLang = 6;
+}
+
+message TranslateResponse {
+  repeated Header headers = 1;
+  optional Fault fault = 2;
+  optional string result = 3;
+}
+
+service Service{
+  rpc translate(TranslateRequest) returns (TranslateResponse);
+}

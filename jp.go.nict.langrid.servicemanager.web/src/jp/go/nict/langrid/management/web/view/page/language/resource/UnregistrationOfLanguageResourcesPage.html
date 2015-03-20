@@ -1,0 +1,34 @@
+
+<wicket:extend>
+	<h1><wicket:message key="ProvidingServices.language.resource.headline.UnregistrationOfLanguageResources" /></h1>
+	<div wicket:id="feedback"></div>
+	<p class="accent"><wicket:message key="ProvidingServices.language.resource.table.headline.UnregisterConstraint" /></p>
+	<div class="list-table">
+		<table  summary="formtable" >
+			<tr>
+				<th><wicket:message key="Common.label.resource.Name" /></th>
+				<th><wicket:message key="Common.label.resource.Type" /></th>
+				<th>
+					<wicket:message key="Common.label.Languages" /><br>
+					<span class="font-small">
+					(<a wicket:id="linkLanguagePage"><wicket:message key="Common.label.lanugages.Code" /></a>)
+					</span>
+				</th>
+				<th><wicket:message key="Common.label.Provider" /></th>
+				<th><wicket:message key="Common.label.Status" /></th>
+				
+			</tr>
+			<wicket:container wicket:id="row"></wicket:container>
+		</table>
+	</div>
+	
+	<h1><wicket:message key="Common.label.Unregistration.Date" /></h1>
+	<p class="accent"><wicket:message key="Common.message.set.date.Unregistration" />
+	<span wicket:id="locale"></span>
+	<wicket:message key="ProvidingServices.language.resource.message.Unregister2" /></p>
+	<form wicket:id="form">
+		<input type="text" wicket:id="dateTextField" />
+		<input class="btn-on" type="submit" wicket:id="cancel" wicket:message="value:Common.label.Cancel" />
+		<input class="btn-on" type="submit" wicket:id="submit" wicket:message="value:Common.label.Unregister" />
+	</form>
+</wicket:extend>

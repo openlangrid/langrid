@@ -1,0 +1,31 @@
+<wicket:panel>
+	<div class="table-in-column">
+		<form wicket:id="fileForm">
+			<div wicket:id="uploads-container">
+				<table>
+					<tr>
+						<th><wicket:message key="Common.label.File">File</wicket:message></th>
+						<td><input wicket:id="file" type="file" size="50" /></td>
+					</tr>
+					<wicket:enclosure child="url">
+					<tr>
+						<th><wicket:message key="Common.label.URL">URL</wicket:message></th>
+						<td>
+							<input type="text" class="form-text-with-button" wicket:id="url" />
+							<input type="button" wicket:id="fetch"  wicket:message="value:Common.label.Get"/>
+						</td>
+					</tr>
+					</wicket:enclosure>
+					<tr wicket:id="uploads">
+						<td colspan=2 class="break-all">
+							<span wicket:id="fileName"></span>&nbsp;:&nbsp;
+							<a href="#" wicket:id="deleteFile">
+								<wicket:message key="Common.label.Delete"></wicket:message>
+							</a>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</form>
+	</div>
+</wicket:panel>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>jp.go.nict.langrid.webapps.mock</display-name>
+
+  <context-param>
+    <param-name>servicesPath</param-name>
+    <param-value>WEB-INF/services</param-value>
+  </context-param>
+
+  <servlet>
+    <servlet-name>SGAxisServlet</servlet-name>
+    <servlet-class>jp.go.nict.langrid.servicecontainer.handler.axis.SGAxisServlet</servlet-class>
+    <init-param>
+      <param-name>wsddBeanNamespaceMappings</param-name>
+      <param-value>
+				jp.go.nict.langrid.service_1_2,http://langrid.nict.go.jp/ws_1_2/
+			</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SGAxisServlet</servlet-name>
+    <url-pattern>/services/*</url-pattern>
+    <url-pattern>*.jws</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>ProtobufRpcServlet</servlet-name>
+    <servlet-class>jp.go.nict.langrid.servicecontainer.handler.protobufrpc.servlet.ProtoBufRpcServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProtobufRpcServlet</servlet-name>
+    <url-pattern>/pbServices/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>JsonRpcServlet</servlet-name>
+    <servlet-class>jp.go.nict.langrid.servicecontainer.handler.jsonrpc.servlet.JsonRpcServlet</servlet-class>
+    <init-param>
+      <param-name>dumpRequests</param-name>
+      <param-value>false</param-value>
+    </init-param>
+    <init-param>
+      <param-name>displayProcessTime</param-name>
+      <param-value>false</param-value>
+    </init-param>
+    <init-param>
+      <param-name>getMethodEnabled</param-name>
+      <param-value>true</param-value>
+    </init-param>
+    <!-- **caution** this setting allows cross-domain access. please remove these if you don't need it -->
+    <!--
+    <init-param>
+      <param-name>additionalResponseHeaders</param-name>
+      <param-value>Access-Control-Allow-Origin: *</param-value>
+    </init-param>
+    -->
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>JsonRpcServlet</servlet-name>
+    <url-pattern>/jsServices/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <display-name>Axis Admin Servlet</display-name>
+    <servlet-name>AdminServlet</servlet-name>
+    <servlet-class>org.apache.axis.transport.http.AdminServlet</servlet-class>
+    <load-on-startup>100</load-on-startup>
+  </servlet>
+
+  <servlet>
+    <display-name>SOAPMonitorService</display-name>
+    <servlet-name>SOAPMonitorService</servlet-name>
+    <servlet-class>org.apache.axis.monitor.SOAPMonitorService</servlet-class>
+    <init-param>
+      <param-name>SOAPMonitorPort</param-name>
+      <param-value>5002</param-value>
+    </init-param>
+    <load-on-startup>100</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SOAPMonitorService</servlet-name>
+    <url-pattern>/SOAPMonitor</url-pattern>
+  </servlet-mapping>
+
+  <mime-mapping>
+    <extension>wsdl</extension>
+    <mime-type>text/xml</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>xsd</extension>
+    <mime-type>text/xml</mime-type>
+  </mime-mapping>
+
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

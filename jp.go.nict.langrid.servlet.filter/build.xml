@@ -1,0 +1,13 @@
+<project name="langrid-servlet-filter-1.2.1" default="dist">
+	<import file="../build/lib_common.xml" />
+
+	<fileset id="filesetid.lib" dir="${lib}">
+		<include name="langrid/langrid-commons-1.2.1.jar" />
+		<include name="langrid/langrid-commons-ws-1.2.1.jar" />
+		<include name="ws/servlet-api.jar" />
+	</fileset>
+
+	<fileset id="filesetid.testlib" dir="${lib}">
+		<include name="langrid/langrid-commons-1.2.1-test.jar" />
+	</fileset>
+</project>

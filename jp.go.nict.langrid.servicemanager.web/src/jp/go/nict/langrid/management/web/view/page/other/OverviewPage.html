@@ -1,0 +1,143 @@
+<wicket:extend>
+	<div wicket:id="feedback"></div>
+	<div class="overview">
+		<table>
+			<tr>
+				<td valign="top">
+					<div id="title">
+						<h1>Language Grid Service Manager</h1>
+					</div>
+					<div>
+						The Service Manager is a web-based tool to
+						manage the Language Grid for the Language Grid Users and the
+						Operator.<br/>
+						This tool allows easy management of user information, user access,
+						language/computer resources and language services. Each role in the
+						Language Grid has different range of control. <br/>
+						<br/>
+						This site is compatible with Internet Explorer 7.0 and Firefox.<br/>
+						<br/>
+					</div>
+					<h2>All Language Grid Users</h2>
+					<div>
+						<ul>
+							<li class="has-list">All Language Users access the information
+								<ul>
+									<li>- <a href="#" wicket:id="newsLink">News&nbsp;<img src="images/common/arrow_purple_right.jpg"></a>
+										<ul><li>You can access the operation history of the Language Grid, such as registration/suspending/resuming/deletion of language resources and computation resources.</li></ul>
+									</li>
+								</ul>
+								<ul>
+									<li>- <a href="#" wicket:id="usersLink">Language Grid Users&nbsp;<img src="images/common/arrow_purple_right.jpg"></a>
+										<ul><li>You can access the Language Grid User List to check the registered user groups.</li></ul>
+									</li>
+								</ul>
+								<ul>
+									<li>- <a href="#" wicket:id="resourcesLink">Language Resources&nbsp;<img src="images/common/arrow_purple_right.jpg"></a>
+										<ul><li>You can access a list of all the language resources on the Language Grid.</li></ul>
+									</li>
+								</ul>
+								<ul>
+									<li>- <a href="#" wicket:id="servicesLink">Language Services&nbsp;<img src="images/common/arrow_purple_right.jpg"></a>
+										<ul><li>You can access a list of all the language services on the Language Grid.</li></ul>
+									</li>
+								</ul>
+								<ul>
+									<li>- <a href="#" wicket:id="computersLink">Computation Resources&nbsp;<img src="images/common/arrow_purple_right.jpg"></a>
+										<ul><li>You can access a list of all the computation resources on the Language Grid.</li></ul>
+									</li>
+								</ul>
+								<ul>
+									<li>- <a href="#" wicket:id="typesLink">Service Types&nbsp;<img src="images/common/arrow_purple_right.jpg"></a>
+										<ul><li>You can access a list of all the service types on the Language Grid.</li></ul>
+									</li>
+								</ul>
+							</li>
+							<br/>
+							<li>Password Change
+								<p>To ensure the security and fair use of the Language Grid, Language Grid Users can change the password for their ID.</p>
+							</li>
+							<br/>
+							<li>User Profile Setting
+								<p>Language Grid Users can edit setting of their profile information.</p> 
+							</li>
+						</ul>
+					</div>
+		
+					<div>		
+						<ul>
+							<li>
+							   Registration and Deletion of Language Resources<br/>
+						      You can register your language resources and add the resources' profile information (such as a name, type, target languages of the resources) and release to other Users. Also you can delete the resources and profile information from the Language Grid.
+								<br/><br/>
+							</li>
+							<li>
+							  Setting of Copyright and License Information<br/>
+							  You can put the URL describing the copyright or license information of your language resources in the Language Grid to notify the Users. The information can be displayed with each response message to the Language Grid Users.
+                       <br/><br/>
+							</li>			
+							<li>
+							   Registration and Deletion of Language Services<br/>
+								You can register your language services and add the services' profile information (such as a name, type, target languages of the services) and release to other Users. Also you can delete the services and profile information from the Language Grid.
+								<br/><br/>
+							</li>
+							<li>
+                        Suspending and Restart of Language Services<br/>
+								You can suspend or resume an access to your language services from the Users. Also you can send notification of the suspension or resuming to the Users.
+								<br/><br/>
+							</li>
+							<li>
+							  Access Control of Language Services<br/>
+							  You can set access control on your language services. By each user, you can control access to your service by limiting number of access per year/month/day. Likewise, you can limit maximum data amount per access per year/month/day by each user. Also you can set access right to your services by user, and that allows you to give access permission only to particular users or block access from other particular users.
+							  <br/><br/>
+							</li>
+							<li>
+							  Monitoring of Language Services<br/>
+							  You can check the statistical information on the use of your language services, which includes total number of access to your service per year/month/day, or the information about who accessed when to your services. Also, you can check the registration information of the users of your language services. Please note that the statistical information mentioned above does not include each message sent by the users or the personal information about the users.
+							  <br/><br/>
+							</li>
+						</ul>
+					</div>
+					<div>
+						<ul>
+							<li>Retrieval of Language Services<br/>
+								You can retrieve available language services. <br/>
+								<br/>
+							</li>
+						</ul>
+					</div>
+					
+					<h2>Language Grid Operator</h2>
+					<div>	
+						<ul>
+							<li>Account Registration and Deletion<br/>
+								The Operator can create or delete an account for Language Grid User.
+								<br/>
+								<br/>
+							</li>
+							<li>Monitoring of Language Resource Misuse<br/>
+								Setting conditions of use, the Operator monitors usage of all
+								language resources on the Language Grid to detect misuse of language
+								resources. <br/>
+								<br/>
+							</li>
+							<li>Monitoring of Language Resource Usage<br/>
+								The Operator checks the statistical information including total
+								number of access to all language resources on the Language Grid per
+								year/month/day or full access log about who accessed when. Also, the
+								Operator has access to the registration information of the users to
+								know who exactly used the resources. <br/>
+								<br/>
+							</li>
+							<li>Access Control of Unauthorized Users<br/>
+								The Operator can remove access right of a user who may be misusing
+								language resources. <br/>
+								<br/>
+							</li>
+						</ul>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+</wicket:extend>

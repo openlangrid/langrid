@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns:ser="servicegrid:servicetype:nict.nlp:BackTranslationWithTemporalDictionary">
+  <soapenv:Header>
+
+  </soapenv:Header>
+  <soapenv:Body>
+    <ser:backTranslate soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+
+      <sourceLang xsi:type="xsd:string">en</sourceLang>
+
+
+      <intermediateLang xsi:type="xsd:string">ja</intermediateLang>
+
+
+      <source xsi:type="xsd:string">bank</source>
+
+
+      <temporalDict soapenc:arrayType="ns:Translation[1]" xsi:type="soapenc:Array" xmlns:ns="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">
+        <temporalDict soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xsi:type="ns:Translation" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:ns="http://langrid.nict.go.jp/ws_1_2/bilingualdictionary/">
+          <headWord xsi:type="xsd:string">bank</headWord>
+          <targetWords soapenc:arrayType="xsd:string[1]" xsi:type="soapenc:Array" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">
+            <targetWords xsi:type="xsd:string">&#37504;&#34892;</targetWords>
+          </targetWords>
+        </temporalDict>
+      </temporalDict>
+
+
+      <dictTargetLang xsi:type="xsd:string">ja</dictTargetLang>
+
+
+    </ser:backTranslate>
+  </soapenv:Body>
+</soapenv:Envelope>

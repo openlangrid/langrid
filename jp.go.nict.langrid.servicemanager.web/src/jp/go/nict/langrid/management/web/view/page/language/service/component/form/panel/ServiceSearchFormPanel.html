@@ -1,0 +1,51 @@
+<wicket:panel>
+	<div class="container-searchForm">
+    	<form wicket:id="searchForm">
+			<table>
+				<tr>
+					<th colspan="2">
+						<wicket:message key="LanguageServices.panel.search.Headline"></wicket:message>
+						<hr/>
+					</th>
+				</tr>
+				<tr>
+					<td><wicket:message key="Common.label.service.Name"></wicket:message> : </td>
+					<td><input wicket:id="serviceNameField" size=77></input></td>
+				</tr>
+				<tr>
+					<td><wicket:message key="Common.label.Domain"></wicket:message> : </td>
+					<td><select wicket:id="domain"></select></td>
+				</tr>
+				<tr>
+					<td><wicket:message key="Common.label.service.Type"></wicket:message> : </td>
+					<td><select wicket:id="serviceTypeField"></select></td>
+				</tr>
+				<tr>
+					<td><wicket:message key="Common.label.Languages"></wicket:message> : </td>
+					<td><div wicket:id="languagePath"></div></td>
+				</tr>
+				<tr>
+					<td><wicket:message key="Common.label.UseType"></wicket:message> : </td>
+					<td><select wicket:id="usingService"></select></td>
+				</tr>
+				<tr>
+					<td><wicket:message key="Common.label.ApplicationType"></wicket:message> : </td>
+					<td><select wicket:id="provision"></select></td>
+				</tr>
+			<wicket:container wicket:id="accessRightContainer">
+				<tr>
+					<td colspan=2 class="min-input">
+						<label>
+							<input type="checkbox" wicket:id="accessRightCheck"></input>
+							&nbsp;<wicket:message key="LanguageServices.message.check.SearchTableShowOnly"></wicket:message>
+						</label>
+					</td>
+				</tr>
+			</wicket:container>
+			</table>
+			<div class="container-right">
+				<div class="inline-btn-s"><input wicket:id="search" type="submit" wicket:message="value:LanguageServices.panel.search.button.Search"></input></div>
+			</div>
+		</form>
+	</div>
+</wicket:panel>

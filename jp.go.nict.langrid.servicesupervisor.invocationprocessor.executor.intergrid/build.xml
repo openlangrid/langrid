@@ -1,0 +1,34 @@
+<project name="langrid-servicesupervisor-invocationprocessor-grid-2.0.0" default="dist">
+	<import file="../build/lib_common.xml" />
+
+	<fileset id="filesetid.lib" dir="${lib}">
+		<include name="commons/commons-lang-2.4.jar" />
+		<include name="commons/commons-httpclient-3.1.jar" />
+		<include name="hibernate/ejb3-persistence.jar" />
+		<include name="hibernate/hibernate-annotations.jar" />
+		<include name="langrid/langrid-bpel-2.0.0.jar" />
+		<include name="langrid/langrid-commons-1.2.1.jar" />
+		<include name="langrid/langrid-commons-beanutils-1.2.jar" />
+		<include name="langrid/langrid-commons-jxpath-1.2.jar" />
+		<include name="langrid/langrid-commons-net-1.2.jar" />
+		<include name="langrid/langrid-commons-ws-1.2.1.jar" />
+		<include name="langrid/langrid-dao-2.0.0.jar" />
+		<include name="langrid/langrid-servicesupervisor-invocationprocessor-2.0.0.jar" />
+		<include name="spring/org.springframework.beans-3.0.3.RELEASE.jar" />
+		<include name="spring/org.springframework.core-3.0.3.RELEASE.jar" />
+		<include name="ws/jaxrpc.jar" />
+		<include name="ws/servlet-api.jar" />
+	</fileset>
+
+	<fileset id="filesetid.testlib" dir="${lib}">
+		<include name="hibernate/hibernate3.3.2.patched.jar" />
+		<include name="langrid/langrid-commons-1.2.1-test.jar" />
+		<include name="langrid/langrid-testresource-2.0.0-test.jar" />
+	</fileset>
+
+	<fileset id="filesetid.testlib" dir="${lib}">
+		<include name="langrid/langrid-commons-1.2.1-test.jar" />
+	</fileset>
+
+	<target name="dist" depends="lib_common.dist,dist.to.wrappercommon,dist.src.to.wrappercommon,dist.testlib.to.wrappercommon" />
+</project>

@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context reloadable="true" displayName="Language Grid Service Engine">
+    <Parameter name="langrid.coreNodeUrl" value="${LANGRID_URL}" />
+    <Parameter name="langrid.userAuthUserName" value="${LANGRID_USERID}" />
+    <Parameter name="langrid.userAuthPassword" value="${LANGRID_PASSWORD}" />
+</Context>

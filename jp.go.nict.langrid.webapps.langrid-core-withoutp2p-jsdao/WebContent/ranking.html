@@ -1,0 +1,107 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link type="text/css" href="js/tipTip.css" rel="stylesheet" />
+<script type="text/javascript" src="js/jquery-1.6.min.js"></script>
+<script type="text/javascript" src="js/jquery.tipTip.minified.js"></script>
+<script type="text/javascript" src="js/jquery.tmpl.min.js"></script>
+<script type="text/x-jquery-tmpl" id="rowTemplate">
+  <tr class="rankingRow">
+    <td>${rank}</td>
+    {{if serviceId.length > 20}}
+    <td class="tip" title="${serviceId}">${serviceId.substring(0, 18) + ".."}</td>
+    {{else}}
+    <td>${serviceId}</td>
+    {{/if}}
+    <td>${accessCount}</td>
+    <td>${responseMillisAve}</td>
+    <td>${requestBytes}</td>
+    <td>${responseBytes}</td>
+    <td>${responseMillis}</td>
+  </tr>
+</script>
+<script type="text/javascript">
+function update(){
+	$(".rankingRow").remove();
+	$.get('ranking?' + $('#form').serialize(), function(ranks){
+		$('#rowTemplate').tmpl(ranks).appendTo('#table');
+		$('.tip').tipTip({'maxWidth': 'auto', 'defaultPosition': 'right', 'delay': 100});
+	});
+}
+$(document).ready(function(){
+	$.get('ranking', {'sinceDays': 100}, function(ranks){
+		$('#rowTemplate').tmpl(ranks).appendTo('#table');
+		$('.tip').tipTip({'maxWidth': 'auto', 'defaultPosition': 'right', 'delay': 100});
+	});
+	$('.formElements').change(function(){
+		update();
+	});
+});
+</script>
+</head>
+<body>
+<form id="form" method="GET">
+<table>
+<tr>
+  <td>ランキング:</td>
+  <td>
+    <input type="radio" class="formElements" name="mode" value="FASTEST" checked>応答速度
+    <input type="radio" class="formElements" name="mode" value="MOST_POPULAR">アクセス数
+  </td>
+</tr>
+<tr>
+  <td>集計開始日:</td>
+  <td><input type="text" class="formElements" name="sinceDays" value="100" size="5">日前</td>
+</tr>
+<tr>
+  <td>サービスタイプ:</td>
+  <td>
+    <select class="formElements" name="serviceTypeId">
+      <option value="">全て</option>
+      <option>AdjacencyPair</option>
+      <option>BackTranslation</option>
+      <option>BilingualDictionary</option>
+      <option>BilingualDictionaryWithLongestMatchSearch</option>
+      <option>ConceptDictionary</option>
+      <option>DependencyParser</option>
+      <option>LanguageIdentification</option>
+      <option>MorphologicalAnalysis</option>
+      <option>MultihopTranslation</option>
+      <option>ParallelText</option>
+      <option>Paraphrase</option>
+      <option>PictogramDictionary</option>
+      <option>SimilarityCalculation</option>
+      <option>SpeechRecognition</option>
+      <option>TextToSpeech</option>
+      <option>Translation</option>
+      <option>TranslationWithTemporalDictionary</option>
+    </select>
+  </td>
+</tr>
+<tr>
+  <td>対応言語:</td>
+  <td>
+    <select class="formElements" name="langAttr">
+      <option value="supportedLanguages">言語</option>
+      <option value="supportedLanguagePairs">言語ペア</option>
+      <option value="supportedLanguagePaths">言語パス</option>
+    </select>
+    <input class="formElements" type="text" name="langValue">
+  </td>
+</tr>
+</table>
+</form>
+
+<table id="table" border="2">
+<tr>
+  <th>順位</th>
+  <th>サービスID</th>
+  <th>アクセス数</th>
+  <th>平均応答時間(ミリ秒)</th>
+  <th>要求バイト数</th>
+  <th>応答バイト数</th>
+  <th>応答時間(ミリ秒)</th>
+</tr>
+</table>
+</body>
+</html>

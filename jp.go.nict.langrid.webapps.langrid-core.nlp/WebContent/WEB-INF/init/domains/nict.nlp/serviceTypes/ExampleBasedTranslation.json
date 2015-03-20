@@ -1,0 +1,16 @@
+{
+  "createdDateTime": "2010/12/28 11:30:00.000 JST",
+  "description": "This service learns from parallel texts and outputs a very high-quality translation result if an input sentence is similar to the given parallel texts.",
+  "interfaceDefinitions": [{
+    "protocolId": "SOAP_RPC_ENCODED",
+    "definition": "ExampleBasedTranslation.wsdl"
+  }],
+  "metaAttributes": [{
+    "attributeId": "supportedLanguagePairs_AnyCombination"
+  },{
+    "attributeId": "supportedLanguagePairs_PairList"
+  }],
+  "serviceTypeId": "ExampleBasedTranslation",
+  "serviceTypeName": "ExampleBasedTranslation",
+  "updatedDateTime": "2010/12/28 11:30:00.000 JST"
+}

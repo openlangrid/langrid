@@ -1,0 +1,10 @@
+<project name="langrid-commons-validator-1.2" default="dist">
+	<import file="../build/lib_common.xml" />
+
+	<fileset id="filesetid.lib" dir="${lib}">
+		<include name="rhino/js.jar" />
+		<include name="langrid/langrid-commons-1.2.1.jar" />
+	</fileset>
+
+	<target name="compile" depends="compileWithAjc" />
+</project>

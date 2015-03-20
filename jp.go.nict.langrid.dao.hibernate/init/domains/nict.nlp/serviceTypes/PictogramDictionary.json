@@ -1,0 +1,14 @@
+{
+  "createdDateTime": "2010/07/26 17:38:15.265 JST",
+  "description": "This service searches for pictograms signifying words in a language.",
+  "interfaceDefinitions": [{
+    "protocolId": "SOAP_RPC_ENCODED",
+    "definition": "PictogramDictionary.wsdl"
+  }],
+  "metaAttributes": [{
+    "attributeId": "supportedLanguages"
+  }],
+  "serviceTypeId": "PictogramDictionary",
+  "serviceTypeName": "PictogramDictionary",
+  "updatedDateTime": "2010/07/26 17:38:15.265 JST"
+}

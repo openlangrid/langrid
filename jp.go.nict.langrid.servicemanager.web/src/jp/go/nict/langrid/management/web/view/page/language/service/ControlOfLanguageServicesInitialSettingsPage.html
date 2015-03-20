@@ -1,0 +1,32 @@
+<wicket:extend>
+	<h1>
+		<wicket:message key="ProvidingServices.language.service.headline.ControlOfLanguageServiceWith" />
+		&nbsp;<span wicket:id="resourceName"></span>
+	</h1>
+	<div wicket:id="feedback"></div>
+
+	<p class="accent">
+		<wicket:message key="ProvidingServices.language.service.message.InitialValues" />
+	</p>
+	<form wicket:id="form">
+		<p class="accent">
+			<wicket:message key="ProvidingServices.language.service.message.AccessConstraintsToNewUser" />
+		</p>
+		<table>
+			<tr><td>
+				<div wicket:id="limitsContainer">
+					<wicket:container wicket:id="limits"></wicket:container>
+				</div>
+				<div align="right">
+					<a wicket:id="more"><wicket:message key="Common.label.Add"/></a>
+				</div>
+			</td></tr>
+		</table>
+		<div class="btn-s">
+			<input type="submit" wicket:id="cancel" wicket:message="value:Common.label.Cancel" />
+			<input type="submit" wicket:id="clear" wicket:message="value:Common.label.Clear" />
+			<input type="submit" wicket:id="set" wicket:message="value:Common.label.Set" />
+		</div>
+	</form>
+	<!--/table-->
+</wicket:extend>

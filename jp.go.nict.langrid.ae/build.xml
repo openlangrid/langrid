@@ -1,0 +1,10 @@
+<project name="langrid-ae-undeployer-2.0.0" default="dist">
+	<import file="../build/lib_common.xml" />
+
+	<target name="init" depends="common.init">
+		<fileset id="filesetid.compilelib" dir="${lib}">
+			<include name="axis/axis.jar" />
+			<include name="ws/servlet-api.jar" />
+		</fileset>
+	</target>
+</project>

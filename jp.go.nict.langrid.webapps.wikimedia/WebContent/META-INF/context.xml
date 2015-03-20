@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context
+	displayName="Service Grid Minimum Package"
+>
+	<Resource
+		name="jdbc/langrid-service" auth="Container" type="javax.sql.DataSource"
+		maxActive="100" maxIdle="50" maxWait="10000"
+		username="${DB_USERNAME}" password="${DB_PASSWORD}"
+		driverClassName="org.postgresql.Driver"
+		url="jdbc:postgresql:${DB_NAME}"
+	/>
+	<Parameter name="langrid.node.gridId" value="kyotou.langrid" />
+	<Parameter name="langrid.node.nodeId" value="nict1" />
+</Context>

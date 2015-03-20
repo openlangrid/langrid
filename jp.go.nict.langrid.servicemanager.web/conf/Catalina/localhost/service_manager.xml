@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context
+  reloadable="false"
+  displayName="Service Manager"
+  docBase="${SM_HOME}"
+>
+	<Resource
+		name="jdbc/service_manager" auth="Container" type="javax.sql.DataSource"
+		maxActive="100" maxIdle="50"
+		username="${SM_DB_USERID}" password="${SM_DB_PASSWORD}"
+		driverClassName="org.postgresql.Driver"
+		url="jdbc:postgresql:langrid-sm-${VERSION}"
+	/>
+	
+	<Parameter
+		name="serviceManagerUrl"
+        value="${SM_URL}"
+	/>	
+	<Parameter
+		name="corenodeUrl"
+        value="http://${CORE_TOMCAT_ADDRESS}/langrid-${VERSION}"
+	/>
+	<Parameter
+		name="activeBpelUrl"
+        value="http://${ACTIVEBPEL_TOMCAT_ADDRESS}/active-bpel/services/"
+	/>
+	<Parameter
+		name="resourceUploadDir"
+        value="${SM_RESOURCE_UPLOAD_DIR}"
+	/>
+	<Parameter
+		name="mailHost"
+        value="${SM_MAIL_HOST}"
+	/>
+	<Parameter
+		name="authMailUserName"
+        value="${SM_MAIL_AUTH_USERNAME}"
+	/>
+	<Parameter
+		name="authMailUserPassword"
+        value="${SM_MAIL_AUTH_PASSWORD}"
+	/>
+	<Parameter
+		name="mailAddress"
+        value="${SM_MAIL_ADDRESS}"
+	/>
+	<Parameter
+		name="corenodeAdminUserId"
+        value="${LG_ADMIN_USERID}"
+	/>	
+	<Parameter
+		name="serviceManagerUserId"
+        value="${LG_SM_USERID}"
+	/>	
+	<Parameter
+		name="serviceManagerUserPassword"
+        value="${LG_SM_PASSWORD}"
+	/>	
+	<Parameter
+		name="serviceManagerOperatingOrganization"
+        value="${SM_OperatedOrganization}"
+	/>
+	<Parameter
+		name="serviceManagerCopyright"
+        value="${SM_COPYRIGHT}"
+	/>
+</Context>
+

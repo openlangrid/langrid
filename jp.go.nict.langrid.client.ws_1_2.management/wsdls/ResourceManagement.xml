@@ -1,0 +1,1674 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://localhost:8080/langrid-1.2/services/ResourceManagement" xmlns:intf="http://localhost:8080/langrid-1.2/services/ResourceManagement" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="http://langrid.nict.go.jp/ws_1_2/foundation/resourcemanagement/" xmlns:tns2="http://langrid.nict.go.jp/ws_1_2/" xmlns:tns3="http://langrid.nict.go.jp/ws_1_2/foundation/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDLはApache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)によって生成されました / [en]-(WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT))-->
+ <wsdl:types>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/foundation/resourcemanagement/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/"/>
+   <import namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ResourceProfile">
+    <sequence>
+     <element name="copyrightInfo" nillable="true" type="xsd:string"/>
+     <element name="cpuInfo" nillable="true" type="xsd:string"/>
+     <element name="howToGetMembershipInfo" nillable="true" type="xsd:string"/>
+     <element name="licenseInfo" nillable="true" type="xsd:string"/>
+     <element name="membersOnly" type="xsd:boolean"/>
+     <element name="memoryInfo" nillable="true" type="xsd:string"/>
+     <element name="resourceDescription" nillable="true" type="xsd:string"/>
+     <element name="resourceName" nillable="true" type="xsd:string"/>
+     <element name="specialNoteInfo" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ResourceInstance">
+    <sequence>
+     <element name="resourceType" nillable="true" type="xsd:string"/>
+     <element name="supportedLanguages" nillable="true" type="impl:ArrayOf_tns2_LanguagePath"/>
+    </sequence>
+   </complexType>
+   <complexType name="ResourceAlreadyExistsException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence>
+       <element name="resourceId" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ResourceEntry">
+    <sequence>
+     <element name="active" type="xsd:boolean"/>
+     <element name="authorized" type="xsd:boolean"/>
+     <element name="ownerUserId" nillable="true" type="xsd:string"/>
+     <element name="ownerUserOrganization" nillable="true" type="xsd:string"/>
+     <element name="registeredDate" nillable="true" type="xsd:dateTime"/>
+     <element name="resourceId" nillable="true" type="xsd:string"/>
+     <element name="resourceName" nillable="true" type="xsd:string"/>
+     <element name="resourceType" nillable="true" type="xsd:string"/>
+     <element name="supportedLanguages" nillable="true" type="impl:ArrayOf_tns2_LanguagePath"/>
+     <element name="updatedDate" nillable="true" type="xsd:dateTime"/>
+    </sequence>
+   </complexType>
+   <complexType name="ResourceEntrySearchResult">
+    <complexContent>
+     <extension base="tns3:SearchResult">
+      <sequence>
+       <element name="elements" nillable="true" type="impl:ArrayOf_tns1_ResourceEntry"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ResourceNotFoundException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence>
+       <element name="resourceId" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ResourceNotInactiveException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence>
+       <element name="resourceId" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/resourcemanagement/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns2_LanguagePath">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns2:LanguagePath[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns3_Attribute">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns3:Attribute[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns3_MatchingCondition">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns3:MatchingCondition[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns3_Order">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns3:Order[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_tns1_ResourceEntry">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:ResourceEntry[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/resourcemanagement/"/>
+   <import namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="LanguagePath">
+    <sequence>
+     <element name="languages" nillable="true" type="impl:ArrayOf_xsd_string"/>
+    </sequence>
+   </complexType>
+   <complexType name="LangridException">
+    <sequence>
+     <element name="description" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="AccessLimitExceededException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="InvalidParameterException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence>
+       <element name="parameterName" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="UnsupportedMatchingMethodException">
+    <complexContent>
+     <extension base="tns2:InvalidParameterException">
+      <sequence>
+       <element name="matchingMethod" nillable="true" type="xsd:string"/>
+       <element name="validMethods" nillable="true" type="impl:ArrayOf_xsd_string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="NoAccessPermissionException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServiceConfigurationException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="UnknownException">
+    <complexContent>
+     <extension base="tns2:LangridException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://langrid.nict.go.jp/ws_1_2/foundation/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/foundation/resourcemanagement/"/>
+   <import namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement"/>
+   <import namespace="http://langrid.nict.go.jp/ws_1_2/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="Attribute">
+    <sequence>
+     <element name="name" nillable="true" type="xsd:string"/>
+     <element name="value" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="MatchingCondition">
+    <sequence>
+     <element name="fieldName" nillable="true" type="xsd:string"/>
+     <element name="matchingMethod" nillable="true" type="xsd:string"/>
+     <element name="matchingValue" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="Order">
+    <sequence>
+     <element name="direction" nillable="true" type="xsd:string"/>
+     <element name="fieldName" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="SearchResult">
+    <sequence>
+     <element name="totalCount" type="xsd:int"/>
+     <element name="totalCountFixed" type="xsd:boolean"/>
+    </sequence>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="deauthorizeResourceResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="addResourceRequest">
+
+      <wsdl:part name="resourceId" type="xsd:string"/>
+
+      <wsdl:part name="profile" type="tns1:ResourceProfile"/>
+
+      <wsdl:part name="instance" type="tns1:ResourceInstance"/>
+
+      <wsdl:part name="attributes" type="impl:ArrayOf_tns3_Attribute"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteResourceRequest">
+
+      <wsdl:part name="resourceId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="InvalidParameterException">
+
+      <wsdl:part name="fault" type="tns2:InvalidParameterException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setResourceInstanceRequest">
+
+      <wsdl:part name="resourceId" type="xsd:string"/>
+
+      <wsdl:part name="instance" type="tns1:ResourceInstance"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="searchResourcesRequest">
+
+      <wsdl:part name="startIndex" type="xsd:int"/>
+
+      <wsdl:part name="maxCount" type="xsd:int"/>
+
+      <wsdl:part name="conditions" type="impl:ArrayOf_tns3_MatchingCondition"/>
+
+      <wsdl:part name="orders" type="impl:ArrayOf_tns3_Order"/>
+
+      <wsdl:part name="scope" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setResourceAttributesResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getResourceAttributesResponse">
+
+      <wsdl:part name="getResourceAttributesReturn" type="impl:ArrayOf_tns3_Attribute"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="clearResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="addResourceAsRequest">
+
+      <wsdl:part name="ownerUserId" type="xsd:string"/>
+
+      <wsdl:part name="resourceId" type="xsd:string"/>
+
+      <wsdl:part name="profile" type="tns1:ResourceProfile"/>
+
+      <wsdl:part name="instance" type="tns1:ResourceInstance"/>
+
+      <wsdl:part name="attributes" type="impl:ArrayOf_tns3_Attribute"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="authorizeResourceRequest">
+
+      <wsdl:part name="resourceId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setResourceProfileRequest">
+
+      <wsdl:part name="resourceId" type="xsd:string"/>
+
+      <wsdl:part name="profile" type="tns1:ResourceProfile"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="NoAccessPermissionException">
+
+      <wsdl:part name="fault" type="tns2:NoAccessPermissionException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="ResourceNotFoundException">
+
+      <wsdl:part name="fault" type="tns1:ResourceNotFoundException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deactivateResourceResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="activateResourceResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="ResourceNotInactiveException">
+
+      <wsdl:part name="fault" type="tns1:ResourceNotInactiveException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="ServiceConfigurationException">
+
+      <wsdl:part name="fault" type="tns2:ServiceConfigurationException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="clearRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="deactivateResourceRequest">
+
+      <wsdl:part name="resourceId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getResourceInstanceResponse">
+
+      <wsdl:part name="getResourceInstanceReturn" type="tns1:ResourceInstance"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getResourceProfileRequest">
+
+      <wsdl:part name="resourceId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="AccessLimitExceededException">
+
+      <wsdl:part name="fault" type="tns2:AccessLimitExceededException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getResourceInstanceRequest">
+
+      <wsdl:part name="resourceId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="UnknownException">
+
+      <wsdl:part name="fault" type="tns2:UnknownException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addResourceAsResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="deauthorizeResourceRequest">
+
+      <wsdl:part name="resourceId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="UnsupportedMatchingMethodException">
+
+      <wsdl:part name="fault" type="tns2:UnsupportedMatchingMethodException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getResourceProfileResponse">
+
+      <wsdl:part name="getResourceProfileReturn" type="tns1:ResourceProfile"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="searchResourcesResponse">
+
+      <wsdl:part name="searchResourcesReturn" type="tns1:ResourceEntrySearchResult"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="isResourceActiveResponse">
+
+      <wsdl:part name="isResourceActiveReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setResourceAttributesRequest">
+
+      <wsdl:part name="resourceId" type="xsd:string"/>
+
+      <wsdl:part name="attributes" type="impl:ArrayOf_tns3_Attribute"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addResourceResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="authorizeResourceResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getResourceAttributesRequest">
+
+      <wsdl:part name="resourceId" type="xsd:string"/>
+
+      <wsdl:part name="attributeNames" type="impl:ArrayOf_xsd_string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="ResourceAlreadyExistsException">
+
+      <wsdl:part name="fault" type="tns1:ResourceAlreadyExistsException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteResourceResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="isResourceActiveRequest">
+
+      <wsdl:part name="resourceId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="activateResourceRequest">
+
+      <wsdl:part name="resourceId" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="setResourceProfileResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="setResourceInstanceResponse">
+
+   </wsdl:message>
+
+   <wsdl:portType name="ResourceManagement">
+
+      <wsdl:operation name="addResource" parameterOrder="resourceId profile instance attributes">
+
+         <wsdl:input message="impl:addResourceRequest" name="addResourceRequest"/>
+
+         <wsdl:output message="impl:addResourceResponse" name="addResourceResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:ResourceAlreadyExistsException" name="ResourceAlreadyExistsException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="searchResources" parameterOrder="startIndex maxCount conditions orders scope">
+
+         <wsdl:input message="impl:searchResourcesRequest" name="searchResourcesRequest"/>
+
+         <wsdl:output message="impl:searchResourcesResponse" name="searchResourcesResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:UnsupportedMatchingMethodException" name="UnsupportedMatchingMethodException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteResource" parameterOrder="resourceId">
+
+         <wsdl:input message="impl:deleteResourceRequest" name="deleteResourceRequest"/>
+
+         <wsdl:output message="impl:deleteResourceResponse" name="deleteResourceResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:ResourceNotInactiveException" name="ResourceNotInactiveException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ResourceNotFoundException" name="ResourceNotFoundException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addResourceAs" parameterOrder="ownerUserId resourceId profile instance attributes">
+
+         <wsdl:input message="impl:addResourceAsRequest" name="addResourceAsRequest"/>
+
+         <wsdl:output message="impl:addResourceAsResponse" name="addResourceAsResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:ResourceAlreadyExistsException" name="ResourceAlreadyExistsException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getResourceProfile" parameterOrder="resourceId">
+
+         <wsdl:input message="impl:getResourceProfileRequest" name="getResourceProfileRequest"/>
+
+         <wsdl:output message="impl:getResourceProfileResponse" name="getResourceProfileResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ResourceNotFoundException" name="ResourceNotFoundException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setResourceProfile" parameterOrder="resourceId profile">
+
+         <wsdl:input message="impl:setResourceProfileRequest" name="setResourceProfileRequest"/>
+
+         <wsdl:output message="impl:setResourceProfileResponse" name="setResourceProfileResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ResourceNotFoundException" name="ResourceNotFoundException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getResourceInstance" parameterOrder="resourceId">
+
+         <wsdl:input message="impl:getResourceInstanceRequest" name="getResourceInstanceRequest"/>
+
+         <wsdl:output message="impl:getResourceInstanceResponse" name="getResourceInstanceResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ResourceNotFoundException" name="ResourceNotFoundException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setResourceInstance" parameterOrder="resourceId instance">
+
+         <wsdl:input message="impl:setResourceInstanceRequest" name="setResourceInstanceRequest"/>
+
+         <wsdl:output message="impl:setResourceInstanceResponse" name="setResourceInstanceResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ResourceNotFoundException" name="ResourceNotFoundException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getResourceAttributes" parameterOrder="resourceId attributeNames">
+
+         <wsdl:input message="impl:getResourceAttributesRequest" name="getResourceAttributesRequest"/>
+
+         <wsdl:output message="impl:getResourceAttributesResponse" name="getResourceAttributesResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ResourceNotFoundException" name="ResourceNotFoundException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setResourceAttributes" parameterOrder="resourceId attributes">
+
+         <wsdl:input message="impl:setResourceAttributesRequest" name="setResourceAttributesRequest"/>
+
+         <wsdl:output message="impl:setResourceAttributesResponse" name="setResourceAttributesResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ResourceNotFoundException" name="ResourceNotFoundException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="activateResource" parameterOrder="resourceId">
+
+         <wsdl:input message="impl:activateResourceRequest" name="activateResourceRequest"/>
+
+         <wsdl:output message="impl:activateResourceResponse" name="activateResourceResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ResourceNotFoundException" name="ResourceNotFoundException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deactivateResource" parameterOrder="resourceId">
+
+         <wsdl:input message="impl:deactivateResourceRequest" name="deactivateResourceRequest"/>
+
+         <wsdl:output message="impl:deactivateResourceResponse" name="deactivateResourceResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ResourceNotFoundException" name="ResourceNotFoundException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="isResourceActive" parameterOrder="resourceId">
+
+         <wsdl:input message="impl:isResourceActiveRequest" name="isResourceActiveRequest"/>
+
+         <wsdl:output message="impl:isResourceActiveResponse" name="isResourceActiveResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ResourceNotFoundException" name="ResourceNotFoundException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="authorizeResource" parameterOrder="resourceId">
+
+         <wsdl:input message="impl:authorizeResourceRequest" name="authorizeResourceRequest"/>
+
+         <wsdl:output message="impl:authorizeResourceResponse" name="authorizeResourceResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ResourceNotFoundException" name="ResourceNotFoundException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deauthorizeResource" parameterOrder="resourceId">
+
+         <wsdl:input message="impl:deauthorizeResourceRequest" name="deauthorizeResourceRequest"/>
+
+         <wsdl:output message="impl:deauthorizeResourceResponse" name="deauthorizeResourceResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:InvalidParameterException" name="InvalidParameterException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ResourceNotFoundException" name="ResourceNotFoundException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="clear">
+
+         <wsdl:input message="impl:clearRequest" name="clearRequest"/>
+
+         <wsdl:output message="impl:clearResponse" name="clearResponse"/>
+
+         <wsdl:fault message="impl:UnknownException" name="UnknownException"/>
+
+         <wsdl:fault message="impl:AccessLimitExceededException" name="AccessLimitExceededException"/>
+
+         <wsdl:fault message="impl:NoAccessPermissionException" name="NoAccessPermissionException"/>
+
+         <wsdl:fault message="impl:ServiceConfigurationException" name="ServiceConfigurationException"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="ResourceManagementSoapBinding" type="impl:ResourceManagement">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="addResource">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addResourceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://resourcemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addResourceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ResourceAlreadyExistsException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ResourceAlreadyExistsException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="searchResources">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="searchResourcesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://resourcemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="searchResourcesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="UnsupportedMatchingMethodException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnsupportedMatchingMethodException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteResource">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteResourceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://resourcemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteResourceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ResourceNotInactiveException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ResourceNotInactiveException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ResourceNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ResourceNotFoundException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="addResourceAs">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addResourceAsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://resourcemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addResourceAsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ResourceAlreadyExistsException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ResourceAlreadyExistsException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getResourceProfile">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getResourceProfileRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://resourcemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getResourceProfileResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ResourceNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ResourceNotFoundException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setResourceProfile">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setResourceProfileRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://resourcemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setResourceProfileResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ResourceNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ResourceNotFoundException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getResourceInstance">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getResourceInstanceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://resourcemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getResourceInstanceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ResourceNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ResourceNotFoundException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setResourceInstance">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setResourceInstanceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://resourcemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setResourceInstanceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ResourceNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ResourceNotFoundException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getResourceAttributes">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getResourceAttributesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://resourcemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getResourceAttributesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ResourceNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ResourceNotFoundException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setResourceAttributes">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setResourceAttributesRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://resourcemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setResourceAttributesResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ResourceNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ResourceNotFoundException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="activateResource">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="activateResourceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://resourcemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="activateResourceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ResourceNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ResourceNotFoundException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deactivateResource">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deactivateResourceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://resourcemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deactivateResourceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ResourceNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ResourceNotFoundException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="isResourceActive">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="isResourceActiveRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://resourcemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="isResourceActiveResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ResourceNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ResourceNotFoundException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="authorizeResource">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="authorizeResourceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://resourcemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="authorizeResourceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ResourceNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ResourceNotFoundException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deauthorizeResource">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deauthorizeResourceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://resourcemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deauthorizeResourceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="InvalidParameterException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="InvalidParameterException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ResourceNotFoundException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ResourceNotFoundException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="clear">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="clearRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://resourcemanagement.foundation.langrid.nict.go.jp" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="clearResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="UnknownException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="UnknownException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="AccessLimitExceededException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AccessLimitExceededException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="NoAccessPermissionException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="NoAccessPermissionException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+         <wsdl:fault name="ServiceConfigurationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="ServiceConfigurationException" namespace="http://localhost:8080/langrid-1.2/services/ResourceManagement" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="ResourceManagementService">
+
+      <wsdl:port binding="impl:ResourceManagementSoapBinding" name="ResourceManagement">
+
+         <wsdlsoap:address location="http://localhost:8080/langrid-1.2/services/ResourceManagement"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>
