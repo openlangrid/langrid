@@ -17,6 +17,7 @@
 		<project>jp.go.nict.langrid.servicecontainer.executor.umbrella</project>
 		<project>jp.go.nict.langrid.servicecontainer.handler.axis</project>
 		<project>jp.go.nict.langrid.servicecontainer.handler.protobufrpc</project>
+		<project>jp.go.nict.langrid.commons</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -37,7 +37,7 @@ import jp.go.nict.langrid.service_1_2.ServiceNotActiveException;
 import jp.go.nict.langrid.service_1_2.ServiceNotFoundException;
 import jp.go.nict.langrid.service_1_2.UnsupportedLanguagePairException;
 import jp.go.nict.langrid.service_1_2.bilingualdictionary.Translation;
-import jp.go.nict.langrid.service_1_2.translation.MultilingualTranslationWithTemporalDictionaryService;
+import jp.go.nict.langrid.service_1_2.multilingualtranslation.MultilingualTranslationWithTemporalDictionaryService;
 import jp.go.nict.langrid.service_1_2.util.validator.LanguageValidator;
 import jp.go.nict.langrid.service_1_2.util.validator.StringValidator;
 import jp.go.nict.langrid.wrapper.ws_1_2.AbstractLanguagePairService;
