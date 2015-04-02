@@ -18,7 +18,6 @@
 		<project>jp.go.nict.langrid.service.language_1_2</project>
 		<project>jp.go.nict.langrid.language</project>
 		<project>jp.go.nict.langrid.bpel</project>
-		<project>jp.go.nict.langrid.client.ws_1_2</project>
 		<project>jp.go.nict.langrid.servicemanager.api_1_2</project>
 		<project>jp.go.nict.langrid.servicemanager.logic</project>
 		<project>jp.go.nict.langrid.servicemanager.web</project>

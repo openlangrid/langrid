@@ -4,9 +4,6 @@
         <dependent-module archiveName="jp.go.nict.langrid.client.ws_1_2.protobuf.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.client.ws_1_2.protobuf/jp.go.nict.langrid.client.ws_1_2.protobuf">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="jp.go.nict.langrid.client.ws_1_2.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.client.ws_1_2/jp.go.nict.langrid.client.ws_1_2">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module archiveName="commons-codec-1.3.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/commons/commons-codec-1.3.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>

@@ -12,7 +12,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.wrapper.workflowsupport"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.composite.common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.client"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>

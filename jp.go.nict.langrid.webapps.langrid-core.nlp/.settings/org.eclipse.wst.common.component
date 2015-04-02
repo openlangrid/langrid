@@ -191,9 +191,6 @@
 <dependent-module archiveName="log4j-1.2.15.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/apache/log4j-1.2.15.jar">
 <dependency-type>uses</dependency-type>
 </dependent-module>
-<dependent-module archiveName="jp.go.nict.langrid.client.ws_1_2.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.client.ws_1_2/jp.go.nict.langrid.client.ws_1_2">
-<dependency-type>uses</dependency-type>
-</dependent-module>
 <dependent-module archiveName="cglib-2.2.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/apache/cglib-2.2.jar">
 <dependency-type>uses</dependency-type>
 </dependent-module>

@@ -5,7 +5,6 @@
 	<projects>
 		<project>jp.go.nict.langrid.bpel</project>
 		<project>jp.go.nict.langrid.client</project>
-		<project>jp.go.nict.langrid.client.ws_1_2</project>
 		<project>jp.go.nict.langrid.client.ws_1_2.management</project>
 		<project>jp.go.nict.langrid.commons.jxpath</project>
 		<project>jp.go.nict.langrid.commons.validator</project>

@@ -70,9 +70,6 @@
         <dependent-module archiveName="jp.go.nict.langrid.client.soap.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.client.soap/jp.go.nict.langrid.client.soap">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="jp.go.nict.langrid.client.ws_1_2.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.client.ws_1_2/jp.go.nict.langrid.client.ws_1_2">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.client.ws_1_2.protobuf.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.client.ws_1_2.protobuf/jp.go.nict.langrid.client.ws_1_2.protobuf">
             <dependency-type>uses</dependency-type>
         </dependent-module>
@@ -98,9 +95,6 @@
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.servicecontainer.serviceexecutor.jsonrpc.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicecontainer.executor.jsonrpc/jp.go.nict.langrid.servicecontainer.executor.jsonrpc">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="jp.go.nict.langrid.servicecontainer.serviceexecutor.protobufrpc.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicecontainer.executor.protobufrpc/jp.go.nict.langrid.servicecontainer.executor.protobufrpc">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.servicecontainer.serviceexecutor.umbrella.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicecontainer.executor.umbrella/jp.go.nict.langrid.servicecontainer.executor.umbrella">

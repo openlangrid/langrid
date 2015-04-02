@@ -4,7 +4,6 @@
 	<comment></comment>
 	<projects>
 		<project>jp.go.nict.langrid.client.ws_1_2.protobuf</project>
-		<project>jp.go.nict.langrid.client.ws_1_2</project>
 		<project>jp.go.nict.langrid.service.common_1_2</project>
 		<project>jp.go.nict.langrid.client.axis</project>
 		<project>jp.go.nict.langrid.service.language_1_2</project>
