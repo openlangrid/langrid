@@ -134,6 +134,9 @@
         <dependent-module archiveName="jp.go.nict.langrid.servicecontainer.executor.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicecontainer.executor/jp.go.nict.langrid.servicecontainer.executor">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.commons.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.commons/jp.go.nict.langrid.commons">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="java-output-path"/>
         <property name="context-root" value="jp.go.nict.langrid.webapps.composite"/>
     </wb-module>

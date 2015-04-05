@@ -94,7 +94,8 @@ public class JsonicUserDao implements UserDao {
 	@Override
 	public boolean isUserExist(String userGridId, String userId)
 			throws DaoException {
-		throw new UnsupportedOperationException();
+		File f = new File(getUsersBaseDir(userGridId), userId + ".json");
+		return f.exists() && f.isFile();
 	}
 
 	@Override

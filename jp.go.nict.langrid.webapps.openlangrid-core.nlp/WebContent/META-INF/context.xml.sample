@@ -10,6 +10,8 @@
         url="jdbc:postgresql:langrid-${VERSION}"
         />
 
+	<Parameter name="langrid.openlangrid" value="true" />
+
 	<Parameter name="langrid.node.gridId" value="${NODE_GRIDID}" />
 	<Parameter name="langrid.node.gridName" value="${NODE_GRIDNAME}" />
 	<Parameter name="langrid.node.nodeId" value="${NODE_NODEID}" />

@@ -59,7 +59,10 @@ public class DefaultScanner implements Scanner {
 				continue;
 			}
 			String headWord = trans.getHeadWord().toLowerCase().trim();
-			if (trans.getTargetWords() == null || trans.getTargetWords().length == 0) {
+			if (trans.getTargetWords() == null || trans.getTargetWords().length == 0 ||
+					trans.getTargetWords()[0] == null ||
+					trans.getTargetWords()[0].length() == 0
+					) {
 				continue;
 			}
 

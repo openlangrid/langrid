@@ -27,6 +27,7 @@
 		<project>jp.go.nict.langrid.client.axis</project>
 		<project>jp.go.nict.langrid.client.protobufrpc</project>
 		<project>jp.go.nict.langrid.servicecontainer.executor</project>
+		<project>jp.go.nict.langrid.commons</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
