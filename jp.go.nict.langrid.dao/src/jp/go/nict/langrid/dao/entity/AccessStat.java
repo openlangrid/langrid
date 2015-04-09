@@ -88,7 +88,7 @@ implements Serializable
 		this.period = period;
 		this.accessCount = accessCount;
 		this.requestBytes = requestBytes;
-		this.requestBytes = responseBytes;
+		this.responseBytes = responseBytes;
 		this.responseMillis = responseMillis;
 	}
 
