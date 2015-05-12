@@ -12,7 +12,6 @@
     </license>
   </licenses>
   <build>
-  <pluginManagement>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -42,7 +41,6 @@
         </executions>
       </plugin>
     </plugins>
-    </pluginManagement>
   </build>
   <parent>
     <groupId>net.servicegrid</groupId>
