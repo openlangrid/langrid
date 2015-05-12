@@ -77,6 +77,7 @@
     <module>../jp.go.nict.langrid.language/pom.xml</module>
     <module>../jp.go.nict.langrid.service.common_1_2/pom.xml</module>
     <module>../jp.go.nict.langrid.service.language_1_2/pom.xml</module>
+    <module>../jp.go.nict.langrid.service.management_1_2/pom.xml</module>
     <module>../jp.go.nict.langrid.client/pom.xml</module>
     <module>../jp.go.nict.langrid.client.test/pom.xml</module>
     <module>../jp.go.nict.langrid.client.axis/pom.xml</module>
