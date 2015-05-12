@@ -21,6 +21,10 @@ package jp.go.nict.langrid.service_1_2.foundation.servicemanagement;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import jp.go.nict.langrid.service_1_2.foundation.SearchResult;
 
 /**
@@ -56,6 +60,21 @@ implements Serializable
 			){
 		super(totalCount, totalCountFixed);
 		this.elements = elements;
+	}
+
+	@Override
+	public boolean equals(Object value){
+		return EqualsBuilder.reflectionEquals(this, value);
+	}
+
+	@Override
+	public int hashCode(){
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
+
+	@Override
+	public String toString(){
+		return ToStringBuilder.reflectionToString(this);
 	}
 
 	/**
