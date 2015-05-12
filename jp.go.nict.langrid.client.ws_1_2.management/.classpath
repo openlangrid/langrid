@@ -21,5 +21,7 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.client.soap"/>
+	<classpathentry kind="lib" path="/lib/jmte/jmte-3.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
