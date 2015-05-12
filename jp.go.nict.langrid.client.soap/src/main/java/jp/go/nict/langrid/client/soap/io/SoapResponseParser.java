@@ -110,25 +110,27 @@ public class SoapResponseParser {
 							String detail = n.getNodeValue();
 							f.setDetail(detail);
 							Node expTag = n.getFirstChild();
-							NodeList pl = expTag.getChildNodes();
-							try{
-								Class<?> expClass = Class.forName(expTag.getNodeName());
-								Object expInstance = expClass.newInstance();
-								for(int j = 0; j < pl.getLength(); j++){
-									Node prop = pl.item(j);
-									String propName = prop.getNodeName();
-									Method setter = ClassUtil.findSetter(expClass, propName);
-									if(setter == null) continue;
-									try {
-										setter.invoke(expInstance, c.convert(prop.getTextContent(), setter.getParameterTypes()[0]));
-									} catch (IllegalArgumentException e) {
-									} catch (InvocationTargetException e) {
-									} catch (ConversionException e) {
-									} catch (DOMException e) {
+							if(expTag != null){
+								NodeList pl = expTag.getChildNodes();
+								try{
+									Class<?> expClass = Class.forName(expTag.getNodeName());
+									Object expInstance = expClass.newInstance();
+									for(int j = 0; j < pl.getLength(); j++){
+										Node prop = pl.item(j);
+										String propName = prop.getNodeName();
+										Method setter = ClassUtil.findSetter(expClass, propName);
+										if(setter == null) continue;
+										try {
+											setter.invoke(expInstance, c.convert(prop.getTextContent(), setter.getParameterTypes()[0]));
+										} catch (IllegalArgumentException e) {
+										} catch (InvocationTargetException e) {
+										} catch (ConversionException e) {
+										} catch (DOMException e) {
+										}
 									}
+									f.setFaultString(expTag.getNodeName() + ":" + JSON.encode(expInstance));
+								} catch(ClassNotFoundException e){
 								}
-								f.setFaultString(expTag.getNodeName() + ":" + JSON.encode(expInstance));
-							} catch(ClassNotFoundException e){
 							}
 						}
 					}
