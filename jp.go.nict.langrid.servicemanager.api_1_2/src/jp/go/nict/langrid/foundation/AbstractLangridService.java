@@ -20,6 +20,9 @@
 package jp.go.nict.langrid.foundation;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -30,6 +33,7 @@ import java.util.logging.Logger;
 import jp.go.nict.langrid.commons.beanutils.BeanToBeanTransformer;
 import jp.go.nict.langrid.commons.beanutils.ConversionException;
 import jp.go.nict.langrid.commons.beanutils.Converter;
+import jp.go.nict.langrid.commons.io.StreamUtil;
 import jp.go.nict.langrid.commons.lang.ExceptionUtil;
 import jp.go.nict.langrid.commons.parameter.ParameterContext;
 import jp.go.nict.langrid.commons.transformer.ByteArrayToBlobTransformer;
@@ -686,6 +690,28 @@ public class AbstractLangridService {
 						return entry;
 					}}
 				);
+		converter.addTransformerConversion(
+				Blob.class, byte[].class,
+				new Transformer<Blob, byte[]>(){
+					public byte[] transform(Blob value) throws TransformationException {
+						try{
+							InputStream is = value.getBinaryStream();
+							try{
+								return StreamUtil.readAsBytes(is);
+							} catch (IOException e) {
+								throw new TransformationException(e);
+							} finally{
+								try {
+									is.close();
+								} catch (IOException e) {
+									throw new TransformationException(e);
+								}
+							}
+						} catch (SQLException e) {
+							throw new TransformationException(e);
+						}
+					}
+				});
 		converter.addConcreteClassAlias(CountryName.class, UserDefinedCountryName.class);
 		addBeanTransformerWithAlias(
 				converter, Service.class, ServiceEntry.class
