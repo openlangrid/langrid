@@ -27,17 +27,36 @@ public class RpcFaultUtil {
 		if(v.length == 1){
 			return new RuntimeException(v[0]);
 		}
+		Class<?> clazz = null;
 		try {
-			Class<?> clazz = Class.forName(v[0]);
+			clazz = Class.forName(v[0]);
+		} catch (ClassNotFoundException e) {
+			return (Exception)new RuntimeException(json.format(fault));
+		}
+		try{
 			Exception e = (Exception)json.parse(v[1], clazz);
 			e.fillInStackTrace();
 			return e;
-		} catch (ClassCastException e) {
-			return (Exception)new RuntimeException(json.format(fault));
-		} catch (ClassNotFoundException e) {
-			return (Exception)new RuntimeException(json.format(fault));
 		} catch(JSONException e){
-			return (Exception)new RuntimeException(v[1]);
+		}
+		try {
+			try{
+				Exception e = (Exception)clazz.getConstructor(String.class).newInstance(v[1]);
+				e.fillInStackTrace();
+				return e;
+			} catch(Exception e){
+			}
+			Exception e = (Exception)clazz.newInstance();
+			e.fillInStackTrace();
+			return e;
+		} catch (IllegalArgumentException e) {
+			return (Exception)new RuntimeException(json.format(fault));
+		} catch (SecurityException e) {
+			return (Exception)new RuntimeException(json.format(fault));
+		} catch (InstantiationException e) {
+			return (Exception)new RuntimeException(json.format(fault));
+		} catch (IllegalAccessException e) {
+			return (Exception)new RuntimeException(json.format(fault));
 		}
 	}
 
