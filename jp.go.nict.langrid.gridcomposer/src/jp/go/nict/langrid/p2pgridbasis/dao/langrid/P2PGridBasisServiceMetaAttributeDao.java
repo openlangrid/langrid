@@ -230,6 +230,11 @@ public class P2PGridBasisServiceMetaAttributeDao implements DataDao, ServiceType
 		dao.deleteServiceType(domainId);
 	}
 
+	@Override
+	public void mergeServiceType(ServiceType st) throws DaoException {
+		dao.mergeServiceType(st);
+	}
+
 	private ServiceTypeDao dao;
 	private DaoContext daoContext;
 	private P2PGridController controller;

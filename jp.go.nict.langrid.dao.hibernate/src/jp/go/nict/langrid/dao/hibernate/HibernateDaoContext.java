@@ -241,6 +241,9 @@ public class HibernateDaoContext implements DaoContext{
 	}
 
 	public void mergeEntity(Object entity) throws DaoException{
+		if(entity instanceof ServiceType){
+			throw new DaoException("Don't merge ServiceType because that causes duplication of ServiceInterfaceDefinition.");
+		}
 		beginTransaction();
 		try{
 			getSession().saveOrUpdate(entity);
@@ -267,6 +270,19 @@ public class HibernateDaoContext implements DaoContext{
 		try{
 			getSession().update(entity);
 			commitTransaction();
+		} catch(HibernateException e){
+			rollbackTransaction();
+			throw new DaoException(e);
+		}
+	}
+
+	public <T> List<T> listEntity(Class<T> clazz) throws DaoException{
+		beginTransaction();
+		try{
+			@SuppressWarnings("unchecked")
+			List<T> ret = getSession().createCriteria(clazz).list();
+			commitTransaction();
+			return ret;
 		} catch(HibernateException e){
 			rollbackTransaction();
 			throw new DaoException(e);

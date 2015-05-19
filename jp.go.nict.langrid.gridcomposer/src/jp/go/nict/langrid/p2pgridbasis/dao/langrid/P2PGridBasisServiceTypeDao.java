@@ -155,7 +155,7 @@ public class P2PGridBasisServiceTypeDao implements DataDao, ServiceTypeDao {
 							dao.addServiceMetaAttribute(a);
 						}
 					}
-					daoContext.mergeEntity(serviceType);
+					dao.mergeServiceType(serviceType);
 					daoContext.commitTransaction();
 				} catch(DaoException e){
 					daoContext.rollbackTransaction();
@@ -251,6 +251,11 @@ public class P2PGridBasisServiceTypeDao implements DataDao, ServiceTypeDao {
 	@Override
 	public void deleteServiceType(String domainId) throws DaoException {
 		dao.deleteServiceType(domainId);
+	}
+	
+	@Override
+	public void mergeServiceType(ServiceType st) throws DaoException {
+		dao.mergeServiceType(st);
 	}
 
 	private DomainDao domainDao;

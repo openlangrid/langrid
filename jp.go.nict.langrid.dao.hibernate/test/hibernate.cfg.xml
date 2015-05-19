@@ -7,7 +7,7 @@
 	<session-factory>
 	    <!-- Database connection settings -->
 		<property name="connection.driver_class">org.postgresql.Driver</property>  
-		<property name="connection.url">jdbc:postgresql:langrid-2.0-test</property>
+		<property name="connection.url">jdbc:postgresql:langridtest</property>
 		<property name="connection.username">langridtest</property>
 		<property name="connection.password">langridtest</property>
 		

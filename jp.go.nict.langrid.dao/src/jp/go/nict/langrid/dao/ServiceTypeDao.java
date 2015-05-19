@@ -126,4 +126,6 @@ public interface ServiceTypeDao{
 	 */
 	boolean isServiceMetaAttributeExist(String domainId, String serviceMetaAttributeId)
 	throws DaoException;
+
+	void mergeServiceType(ServiceType st) throws DaoException;
 }

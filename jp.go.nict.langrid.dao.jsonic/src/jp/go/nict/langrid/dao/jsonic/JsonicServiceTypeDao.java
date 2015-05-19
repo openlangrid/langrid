@@ -120,6 +120,11 @@ public class JsonicServiceTypeDao implements ServiceTypeDao {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public void mergeServiceType(ServiceType st) throws DaoException {
+		throw new UnsupportedOperationException();
+	}
+
 	private JsonicDaoContext context;
 
 	private File getServiceTypeDir(String domainId) {

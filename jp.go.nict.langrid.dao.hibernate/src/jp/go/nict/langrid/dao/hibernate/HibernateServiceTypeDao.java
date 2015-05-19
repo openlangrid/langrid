@@ -20,6 +20,7 @@
 package jp.go.nict.langrid.dao.hibernate;
 
 import java.util.List;
+import java.util.Map;
 
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.ServiceMetaAttributeAlreadyExistsException;
@@ -27,6 +28,7 @@ import jp.go.nict.langrid.dao.ServiceMetaAttributeNotFoundException;
 import jp.go.nict.langrid.dao.ServiceTypeAlreadyExistsException;
 import jp.go.nict.langrid.dao.ServiceTypeDao;
 import jp.go.nict.langrid.dao.ServiceTypeNotFoundException;
+import jp.go.nict.langrid.dao.entity.ServiceInterfaceDefinition;
 import jp.go.nict.langrid.dao.entity.ServiceMetaAttribute;
 import jp.go.nict.langrid.dao.entity.ServiceMetaAttributePK;
 import jp.go.nict.langrid.dao.entity.ServiceType;
@@ -56,6 +58,7 @@ implements ServiceTypeDao{
 
 	@Override
 	public void clear() throws DaoException {
+		deleteEntities(ServiceInterfaceDefinition.class);
 		deleteEntities(ServiceType.class);
 		deleteEntities(ServiceMetaAttribute.class);
 	}
@@ -261,5 +264,22 @@ implements ServiceTypeDao{
 			logAdditionalInfo(e);
 			throw e;
 		}
+	}
+
+	@Override
+	public void mergeServiceType(ServiceType st)
+	throws DaoException {
+		// merge
+		ServiceType tgt = getServiceType(st.getDomainId(), st.getServiceTypeId());
+		tgt.setServiceTypeName(st.getServiceTypeName());
+		tgt.setDescription(st.getDescription());
+		for(Map.Entry<String, ServiceMetaAttribute> e : st.getMetaAttributes().entrySet()){
+			tgt.getMetaAttributes().put(e.getKey(), e.getValue());
+		}
+		for(Map.Entry<String, ServiceInterfaceDefinition> e : st.getInterfaceDefinitions().entrySet()){
+			tgt.getInterfaceDefinitions().put(e.getKey(), e.getValue());
+		}
+		tgt.setCreatedDateTime(st.getCreatedDateTime());
+		tgt.setUpdatedDateTime(st.getUpdatedDateTime());
 	}
 }
