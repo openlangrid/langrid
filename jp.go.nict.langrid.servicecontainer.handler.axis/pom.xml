@@ -64,6 +64,12 @@
   		<artifactId>axis-wsdl4j</artifactId>
   		<version>1.5.1</version>
   	</dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>[3.0,)</version>
+      <scope>provided</scope>
+    </dependency>
   	<dependency>
   		<groupId>net.servicegrid</groupId>
   		<artifactId>jp.go.nict.langrid.servicecontainer</artifactId>
