@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.servicegrid</groupId>
   <artifactId>servicegrid</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.6</version>
   <packaging>pom</packaging>
   <name>Root Artifact</name>
   <description>Root artifact for all artifacts.</description>
