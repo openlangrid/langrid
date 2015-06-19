@@ -192,7 +192,7 @@ var prettyPrint = (function(){
 		},
 		
 		shorten: function(str, max) {
-			str = str.replace(/^\s\s*|\s\s*$|\n/g,'');
+			//str = str.replace(/^\s\s*|\s\s*$|\n/g,'');
 			return str.length > max ? (str.substring(0, max-1) + '...') : str;
 		},
 		
@@ -445,7 +445,11 @@ var prettyPrint = (function(){
 		
 		var typeDealer = {
 			string : function(item){
-				return util.txt('"' + util.shorten(item.replace(/"/g,'\\"'), prettyPrintThis.settings.maxStringLength) + '"');
+				if(item.match(/[\n\r\t]/)){
+					return '<pre style="overflow: auto;font-size: 11px;max-width: 1200px; font-family: Consolas,Lucida Console,Courier,mono ; border: 1px solid #000; padding: 3px;">' + item.replace(/"/g,'\\"') + '</pre>';
+				}else{
+					return util.txt('"' + util.shorten(item.replace(/"/g,'\\"'), prettyPrintThis.settings.maxStringLength) + '"');
+				}
 			},
 			number : function(item) {
 				return util.txt(item);
@@ -538,6 +542,7 @@ var prettyPrint = (function(){
 						isEmpty = false;
 						try {
 							table.addRow([i, typeDealer[ type ](item, depth+1, i)], type);
+//							table.addRow([i, '<pre>'+item+'</pre>'], type);
 						} catch(e) {
 							/* Security errors are thrown on certain Window/DOM properties */
 							if (window.console && window.console.log) {
@@ -760,7 +765,7 @@ var prettyPrint = (function(){
 					border: '1px solid #000',
 					verticalAlign: 'top',
 					fontFamily: '"Consolas","Lucida Console",Courier,mono',
-					whiteSpace: 'nowrap'
+					whiteSpace: 'normal'
 				},
 				td_hover: {
 					/* Styles defined here will apply to all tr:hover > td,
@@ -796,7 +801,7 @@ function loadSample(id, sn, mn, sample){
   if(span.html() == "loading...")
     span.html("<iframe src='" + document.URL + "/" + sn + "?method=" + mn + "&sample=" + sample + "'></iframe>");
 }
-var ppcfg = {maxArray: 1000, maxDepth: 100, maxStringLength: 1024,
+var ppcfg = {maxArray: 1000, maxDepth: 100, maxStringLength: 4096,
   styles: {
     array: { th:{ backgroundColor: '#CDED9A', color: '#0', "text-align": "center" } },
     'function': { th: { backgroundColor: '#D82525' } },
