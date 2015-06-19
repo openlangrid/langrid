@@ -85,9 +85,11 @@ implements InvocationHandler{
 		int status = 500;
 		int reqLen = ObjectUtil.getSize(args);
 		int resLen = -1;
+		boolean exceptionInPreprocess = true;
 		try{
 			// do preprocess
 			String serviceId = doFrontEndPreprocessAndServiceLocating(r.getSecond());
+			exceptionInPreprocess = false;
 			// load and invoke service
 			long s = System.currentTimeMillis();
 			Object result = method.invoke(RIProcessor.getCurrentProcessorContext().getServiceLoader().load(
@@ -112,7 +114,8 @@ implements InvocationHandler{
 		} finally{
 			// do logProcess
 			try{
-				doFrontEndLogProcess(r.getSecond(), status, reqLen, deltaTime, resLen);
+				doFrontEndLogProcess(r.getSecond(), status, reqLen, deltaTime, resLen,
+						exceptionInPreprocess);
 			} catch(DaoException e){
 				logger.log(Level.WARNING, "failed to execute log process.", e);
 			} finally{
@@ -224,7 +227,9 @@ implements InvocationHandler{
 	}
 
 	protected void doFrontEndLogProcess(
-			String serviceId, int status, int requestLength, long responseMillis, int responseLength)
+			String serviceId, int status, int requestLength,
+			long responseMillis, int responseLength,
+			boolean exceptionInPreprocess)
 	throws ProcessFailedException, DaoException{
 		ProcessContext pc = currentProcessContext.get();
 		FrontEnd fe = FrontEnd.getInstance();
@@ -236,14 +241,15 @@ implements InvocationHandler{
 						RIProcessor.getCurrentServiceContext().getRequestMimeHeaders()
 						, serviceId, requestLength, responseMillis, status, responseLength
 						, Protocols.JAVA_CALL
-						), "", "");
+						), "", "", exceptionInPreprocess);
 			} else{
 				currentException.remove();
 				fe.logProcess(pc, FrontEnd.createJavaCallLogInfo(
 						RIProcessor.getCurrentServiceContext().getRequestMimeHeaders()
 						, serviceId, requestLength, -1, 500, 0
 						, Protocols.JAVA_CALL
-						), "Server.userException", ExceptionUtil.getMessageWithStackTrace(t));
+						), "Server.userException", ExceptionUtil.getMessageWithStackTrace(t),
+						exceptionInPreprocess);
 			}
 		} catch(SystemErrorException e){
 			throw new ProcessFailedException(e);
