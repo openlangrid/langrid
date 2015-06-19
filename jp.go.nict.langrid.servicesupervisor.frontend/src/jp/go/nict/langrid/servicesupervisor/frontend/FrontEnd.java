@@ -140,10 +140,11 @@ public class FrontEnd {
 	public void logProcess(
 			ProcessContext context, LogInfo logInfo
 			, String faultCode, String faultString
+			, boolean errorInPreprocess
 			)
 	throws SystemErrorException{
 		for(LogProcess p : logProcesses){
-			p.process(context, logInfo, faultCode, faultString);
+			p.process(context, logInfo, faultCode, faultString, errorInPreprocess);
 		}
 	}
 
