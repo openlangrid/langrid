@@ -40,9 +40,11 @@ import jp.go.nict.langrid.servicesupervisor.frontend.SystemErrorException;
 public class AccessStat implements LogProcess{
 	public void process(
 			ProcessContext context, LogInfo logInfo
-			, String faultCode, String faultString)
+			, String faultCode, String faultString,
+			boolean errorInLogProcess)
 	throws SystemErrorException
 	{
+		if(errorInLogProcess) return;
 		if(logInfo.getResponseCode() != HttpServletResponse.SC_OK) return;
 		try{
 			User u = context.getCallerUser();

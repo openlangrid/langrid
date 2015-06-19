@@ -298,7 +298,7 @@ implements Filter{
 					li.setRemoteHost("");
 					li.setRemoteAddress("");
 				}
-				fe.logProcess(c, li, soapFault.getFirst(), soapFault.getSecond());
+				fe.logProcess(c, li, soapFault.getFirst(), soapFault.getSecond(), true);
 			} catch(SystemErrorException e){
 				logger.log(Level.SEVERE
 						, "unexpected exception occurred in log process(commit fase)."
@@ -322,8 +322,8 @@ implements Filter{
 					li.setRemoteAddress("");
 				}
 				fe.logProcess(c, li, "Server.serverException",
-						ExceptionUtil.getMessageWithStackTrace(expInPreprocess) // TODO:
-																				// faultどうすんの?
+						ExceptionUtil.getMessageWithStackTrace(expInPreprocess), // TODO:
+						false														// faultどうすんの?
 				);
 			} catch(SystemErrorException e){
 				logger.log(Level.SEVERE

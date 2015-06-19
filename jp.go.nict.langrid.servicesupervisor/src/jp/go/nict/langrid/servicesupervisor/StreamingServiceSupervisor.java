@@ -252,6 +252,7 @@ implements Filter{
 							, li
 							, "Server.serverException"
 							, ExceptionUtil.getMessageWithStackTrace(expInPreprocess)
+							, true
 							);
 				} catch(SystemErrorException e){
 					logger.log(Level.SEVERE
@@ -386,7 +387,7 @@ implements Filter{
 				li.setRemoteAddress("");
 			}
 
-			fe.logProcess(c, li, soapFault.getFirst(), soapFault.getSecond());
+			fe.logProcess(c, li, soapFault.getFirst(), soapFault.getSecond(), false);
 		} catch(SystemErrorException e){
 			logger.log(Level.SEVERE
 					, "unexpected exception occurred in log process(commit fase)."

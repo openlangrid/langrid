@@ -38,7 +38,8 @@ import jp.go.nict.langrid.servicesupervisor.frontend.SystemErrorException;
 public class AccessLog implements LogProcess{
 	public void process(
 			ProcessContext context, LogInfo logInfo
-			, String faultCode, String faultString)
+			, String faultCode, String faultString,
+			boolean errorInLogProcess)
 	throws SystemErrorException
 	{
 		try{
