@@ -26,5 +26,6 @@
 	<classpathentry kind="lib" path="/jp.go.nict.langrid.wrapper.common/lib/langrid-service-common_1_2-1.2.1.jar"/>
 	<classpathentry kind="lib" path="/jp.go.nict.langrid.wrapper.common/lib/langrid-service-language_1_2-1.2.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.servicecontainer"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.commons"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
