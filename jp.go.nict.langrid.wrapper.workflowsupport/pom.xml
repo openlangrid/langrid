@@ -1,8 +1,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>net.servicegrid</groupId>
+  <packaging>jar</packaging>
   <artifactId>jp.go.nict.langrid.wrapper.workflowsupport</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <name>Support libraries for workflows</name>
+  <description>Support libraries for workflows</description>
+  <url>http://langrid.org/</url>
+  <licenses>
+    <license>
+      <name>GNU LESSER GENERAL PUBLIC LICENSE</name>
+      <url>http://www.gnu.org/licenses/lgpl-2.1.txt</url>
+    </license>
+  </licenses>
+  <properties>
+    <servicegrid-version>1.0.6</servicegrid-version>
+  </properties>
+  <parent>
+    <groupId>net.servicegrid</groupId>
+    <artifactId>servicegrid</artifactId>
+    <version>1.0.6</version>
+  </parent>
   <build>
     <plugins>
       <plugin>
@@ -25,12 +41,12 @@
   	<dependency>
   		<groupId>net.servicegrid</groupId>
   		<artifactId>jp.go.nict.langrid.servicecontainer</artifactId>
-  		<version>1.0-SNAPSHOT</version>
+  		<version>${servicegrid-version}</version>
   	</dependency>
   	<dependency>
   		<groupId>net.servicegrid</groupId>
   		<artifactId>jp.go.nict.langrid.wrapper.common</artifactId>
-  		<version>1.0-SNAPSHOT</version>
+  		<version>${servicegrid-version}</version>
   	</dependency>
   </dependencies>
 </project>
