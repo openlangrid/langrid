@@ -113,5 +113,9 @@
     <module>../jp.go.nict.langrid.servicecontainer.decorator.cache/pom.xml</module>
     <module>../jp.go.nict.langrid.servicecontainer.handler.axis/pom.xml</module>
     <module>../jp.go.nict.langrid.servicecontainer.handler.protobufrpc/pom.xml</module>
+
+    <module>../jp.go.nict.langrid.serviceexecutor/db.bilingualdictionary/pom.xml</module>
+    <module>../jp.go.nict.langrid.wrapper.common/pom.xml</module>
+    <module>../jp.go.nict.langrid.wrapper.workflowsupport/pom.xml</module>
   </modules>
 </project>
