@@ -45,6 +45,7 @@ import jp.go.nict.langrid.client.RpcResponseAttributes;
 import jp.go.nict.langrid.commons.beanutils.Converter;
 import jp.go.nict.langrid.commons.io.DuplicatingInputStream;
 import jp.go.nict.langrid.commons.io.DuplicatingOutputStream;
+import jp.go.nict.langrid.commons.io.EmptyInputStream;
 import jp.go.nict.langrid.commons.net.HttpURLConnectionUtil;
 import jp.go.nict.langrid.commons.rpc.RpcFaultUtil;
 import jp.go.nict.langrid.commons.rpc.json.JsonRpcResponse;
@@ -134,12 +135,11 @@ public class JsonRpcClientFactory implements ClientFactory{
 			JSON.encode(JsonRpcUtil.createRequest(reqAttrs.getAllRpcHeaders(), method, args), os);
 			os.flush();
 		}
-		protected Object readResponse(HttpURLConnection con, Class<?> returnType) throws IOException, ParseException, Exception{
-			InputStream is = null;
-			try{
-				is = con.getInputStream();
-			} catch(IOException e){
-				is = con.getErrorStream();
+		protected Object readResponse(HttpURLConnection con, Class<?> returnType)
+		throws IOException, ParseException, Exception{
+			InputStream is = HttpURLConnectionUtil.openResponseStream(con);
+			if(is == null){
+				is = new EmptyInputStream();
 			}
 			if(responseDumpStream != null){
 				is = new DuplicatingInputStream(is, responseDumpStream);

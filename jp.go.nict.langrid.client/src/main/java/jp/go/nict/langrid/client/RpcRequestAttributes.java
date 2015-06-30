@@ -79,6 +79,15 @@ public class RpcRequestAttributes implements RequestAttributes{
 		this.timeoutMillis = timeoutMillis;
 	}
 
+	public boolean isRequestContentCompression() {
+		return requestContentCompression;
+	}
+
+	@Override
+	public void setRequestContentCompression(boolean requestContentCompression) {
+		this.requestContentCompression = requestContentCompression;
+	}
+
 	@Override
 	public void addRequestMimeHeader(String name, String value) {
 		mightBeModified = true;
@@ -117,6 +126,9 @@ public class RpcRequestAttributes implements RequestAttributes{
 	public void setUpConnection(HttpURLConnection con){
 		if(connectTimeoutMillis != -1) con.setConnectTimeout(connectTimeoutMillis);
 		if(timeoutMillis != -1) con.setReadTimeout(timeoutMillis);
+		if(requestContentCompression){
+			con.addRequestProperty("accept-encoding", "gzip,deflate,identity");
+		}
 		if(userId != null){
 			if(password == null) password = "";
 			con.addRequestProperty(Constants.HEADER_AUTHORIZATION
@@ -152,6 +164,7 @@ public class RpcRequestAttributes implements RequestAttributes{
 	private AuthMethod authMethod;
 	private int connectTimeoutMillis = -1;
 	private int timeoutMillis = -1;
+	private boolean requestContentCompression = true;
 	private Map<String, Object> httpHeaders = new HashMap<String, Object>();
 	private boolean mightBeModified = true;
 	private List<BindingNode> bindings = new ArrayList<BindingNode>();

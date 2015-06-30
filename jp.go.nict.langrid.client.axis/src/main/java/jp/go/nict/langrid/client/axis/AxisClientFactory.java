@@ -35,6 +35,11 @@ import org.apache.axis.EngineConfiguration;
 import org.apache.axis.client.Stub;
 import org.apache.axis.transport.http.HTTPConstants;
 
+/**
+ * ClientFactory using Axis Stubs.
+ * NOTE: The AxisClientFactory doesn't support content-encodings other than identity.
+ * @author Takao Nakaguchi
+ */
 public class AxisClientFactory implements ClientFactory {
 	static class AxisDynamicInvocationHandler extends DynamicInvocationHandler<Stub>{
 		public AxisDynamicInvocationHandler(Stub stub, Converter converter){

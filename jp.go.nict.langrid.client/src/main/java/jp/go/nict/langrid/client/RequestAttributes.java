@@ -30,6 +30,15 @@ public interface RequestAttributes {
 	void setAuthMethod(AuthMethod method);
 	void setConnectTimeout(int timeoutMillis);
 	void setTimeout(int timeoutMillis);
+
+	/**
+	 * Set a boolean value for requestContentCompression.
+	 * If true, client may request content compression to server and
+	 * decompress compressed content before it parses response.
+	 * default: true.
+	 * @param requestContentCompression
+	 */
+	void setRequestContentCompression(boolean requestContentCompression);
 	void addRequestMimeHeader(String name, String value);
 	void addRequestMimeHeaders(Map<String, Object> headers);
 	void addRequestRpcHeader(String namespace, String name, String value);

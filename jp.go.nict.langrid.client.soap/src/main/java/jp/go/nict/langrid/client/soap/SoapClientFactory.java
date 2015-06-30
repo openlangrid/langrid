@@ -27,6 +27,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Collection;
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.xml.sax.SAXException;
+
 import jp.go.nict.langrid.client.ClientFactory;
 import jp.go.nict.langrid.client.RequestAttributes;
 import jp.go.nict.langrid.client.ResponseAttributes;
@@ -35,16 +38,15 @@ import jp.go.nict.langrid.client.RpcResponseAttributes;
 import jp.go.nict.langrid.client.soap.io.SoapRequestWriter;
 import jp.go.nict.langrid.client.soap.io.SoapResponseParser;
 import jp.go.nict.langrid.commons.beanutils.Converter;
+import jp.go.nict.langrid.commons.io.EmptyInputStream;
 import jp.go.nict.langrid.commons.io.StreamUtil;
+import jp.go.nict.langrid.commons.net.HttpURLConnectionUtil;
 import jp.go.nict.langrid.commons.rpc.RpcFault;
 import jp.go.nict.langrid.commons.rpc.RpcFaultUtil;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.util.Trio;
 import jp.go.nict.langrid.commons.ws.LangridConstants;
 import jp.go.nict.langrid.commons.ws.Protocols;
-
-import org.apache.commons.lang.StringEscapeUtils;
-import org.xml.sax.SAXException;
 
 public class SoapClientFactory implements ClientFactory {
 	static class AxisStublessInvocationHandler implements InvocationHandler{
@@ -85,16 +87,17 @@ public class SoapClientFactory implements ClientFactory {
 					SoapRequestWriter.writeSoapRequest(
 							os, targetNamespace, reqAttrs.getAllRpcHeaders(), method, args);
 					os.flush();
+					InputStream is = HttpURLConnectionUtil.openResponseStream(con);
+					if(is == null){
+						is = new EmptyInputStream();
+					}
 					int code = con.getResponseCode();
 					if(code != 200 && code != 500){
 						String response = "";
 						try{
-							InputStream err = con.getErrorStream();
-							if(err != null){
-								response = StringEscapeUtils.unescapeXml(
-										StreamUtil.readAsString(err, "UTF-8")
-										);
-							}
+							response = StringEscapeUtils.unescapeXml(
+									StreamUtil.readAsString(is, "UTF-8")
+									);
 						} catch(IOException e){
 						}
 						con.disconnect();
@@ -104,12 +107,6 @@ public class SoapClientFactory implements ClientFactory {
 									+ reqAttrs.getUserId() + ":*****");
 						}
 						throw new RuntimeException(response);
-					}
-					InputStream is = null;
-					try{
-						is = con.getInputStream();
-					} catch(IOException e){
-						is = con.getErrorStream();
 					}
 					is = inputStreamFilter.filter(is);
 					try{

@@ -19,7 +19,6 @@ package jp.go.nict.langrid.client.protobufrpc;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
@@ -32,6 +31,10 @@ import java.nio.charset.Charset;
 import java.nio.charset.CodingErrorAction;
 import java.util.Collection;
 
+import com.google.protobuf.CodedInputStream;
+import com.google.protobuf.CodedOutputStream;
+import com.google.protobuf.InvalidProtocolBufferException;
+
 import jp.go.nict.langrid.client.ClientFactory;
 import jp.go.nict.langrid.client.RequestAttributes;
 import jp.go.nict.langrid.client.ResponseAttributes;
@@ -41,6 +44,7 @@ import jp.go.nict.langrid.commons.io.DuplicatingInputStream;
 import jp.go.nict.langrid.commons.io.EmptyInputStream;
 import jp.go.nict.langrid.commons.io.LimitedFilteredOutputStream;
 import jp.go.nict.langrid.commons.io.StreamUtil;
+import jp.go.nict.langrid.commons.net.HttpURLConnectionUtil;
 import jp.go.nict.langrid.commons.protobufrpc.io.ProtobufParser;
 import jp.go.nict.langrid.commons.protobufrpc.io.ProtobufWriter;
 import jp.go.nict.langrid.commons.rpc.ArrayElementsNotifier;
@@ -52,10 +56,6 @@ import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.commons.util.Trio;
 import jp.go.nict.langrid.commons.ws.LangridConstants;
 import jp.go.nict.langrid.commons.ws.Protocols;
-
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
-import com.google.protobuf.InvalidProtocolBufferException;
 
 public class PbClientFactory implements ClientFactory{
 	class ProtobufInvocationHandler implements InvocationHandler, ArrayElementsNotifier{
@@ -87,12 +87,7 @@ public class PbClientFactory implements ClientFactory{
 							cos, reqAttrs.getAllRpcHeaders(), method, args
 							);
 					cos.flush();
-					InputStream is = null;
-					try{
-						is = con.getInputStream();
-					} catch(IOException e){
-						is = con.getErrorStream();
-					}
+					InputStream is = HttpURLConnectionUtil.openResponseStream(con);
 					if(is == null){
 						is = new EmptyInputStream();
 					}

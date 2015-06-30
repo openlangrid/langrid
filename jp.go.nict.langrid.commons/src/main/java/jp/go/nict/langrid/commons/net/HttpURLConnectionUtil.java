@@ -17,8 +17,13 @@
  */
 package jp.go.nict.langrid.commons.net;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.DeflaterInputStream;
+import java.util.zip.GZIPInputStream;
 
 import jp.go.nict.langrid.commons.lang.StringUtil;
 import jp.go.nict.langrid.commons.security.MessageDigestUtil;
@@ -53,5 +58,32 @@ public class HttpURLConnectionUtil {
 				userName, wwwAuthElements.get("realm"), wwwAuthElements.get("nonce"),
 				uri, qop, 1, cnonce, response, wwwAuthElements.get("opaque")
 				);
+	}
+
+	/**
+	 * Creates and returns the content stream.
+	 * This method is aware of IOException when calling getInputStream and content-codings (gzip, deflate).
+	 * @param con
+	 * @return Proper InputStream or null.
+	 * @throws IOException
+	 */
+	public static InputStream openResponseStream(HttpURLConnection con) throws IOException{
+		InputStream is = null;
+		try{
+			is = con.getInputStream();
+		} catch(IOException e){
+			is = con.getErrorStream();
+		}
+		if(is != null){
+			String ce = con.getContentEncoding();
+			if(ce != null){
+				if(ce.equals("gzip")) {
+					is = new GZIPInputStream(is);
+				} else if(ce.equals("deflate")){
+					is = new DeflaterInputStream(is);
+				}
+			}
+		}
+		return is;
 	}
 }
