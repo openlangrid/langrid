@@ -19,6 +19,7 @@ package jp.go.nict.langrid.servicecontainer.handler.protobufrpc.servlet;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.GenericDeclaration;
@@ -35,11 +36,16 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.google.protobuf.CodedInputStream;
+import com.google.protobuf.CodedOutputStream;
 
 import jp.go.nict.langrid.commons.io.StreamUtil;
 import jp.go.nict.langrid.commons.lang.ClassResource;
@@ -63,9 +69,6 @@ import jp.go.nict.langrid.servicecontainer.handler.protobufrpc.ProtoBufDynamicHa
 import jp.go.nict.langrid.servicecontainer.handler.protobufrpc.ProtoBufHandler;
 import jp.go.nict.langrid.servicecontainer.service.composite.AbstractCompositeService;
 import jp.go.nict.langrid.servicecontainer.service.composite.Invocation;
-
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
 
 @SuppressWarnings("serial")
 public class ProtoBufRpcServlet extends HttpServlet {
@@ -219,7 +222,16 @@ public class ProtoBufRpcServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 	throws ServletException, IOException{
-		CodedInputStream cis = CodedInputStream.newInstance(req.getInputStream());
+		InputStream is = req.getInputStream();
+		String contentEncoding = req.getHeader("Content-Encoding");
+		if(contentEncoding != null){
+			if(contentEncoding.equals("deflate")) {
+				is = new InflaterInputStream(is);
+			} else if(contentEncoding.equals("gzip")) {
+				is = new GZIPInputStream(is);
+			}
+		}
+		CodedInputStream cis = CodedInputStream.newInstance(is);
 		CodedOutputStream cos = CodedOutputStream.newInstance(resp.getOutputStream());
 
 		String fullName = cis.readString();

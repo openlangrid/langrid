@@ -64,6 +64,18 @@ public class AxisStubRequestAttributes implements RequestAttributes{
 	}
 
 	@Override
+	public void setRequestContentCompressionThreashold(int bytes) {
+	}
+
+	@Override
+	public void setRequestContentCompressionAlgorithm(String algorithm) {
+	}
+
+	@Override
+	public void setResponseContentCompression(boolean responseContentCompression) {
+	}
+
+	@Override
 	public void setAuthMethod(AuthMethod method) {
 		throw new UnsupportedOperationException();
 	}

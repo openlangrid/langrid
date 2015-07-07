@@ -17,13 +17,17 @@
  */
 package jp.go.nict.langrid.commons.net;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.DeflaterInputStream;
+import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import jp.go.nict.langrid.commons.lang.StringUtil;
 import jp.go.nict.langrid.commons.security.MessageDigestUtil;
@@ -85,5 +89,42 @@ public class HttpURLConnectionUtil {
 			}
 		}
 		return is;
+	}
+
+	public static interface WriteProcess{
+		void write(OutputStream out) throws IOException;
+	}
+	public static OutputStream processWriteRequest(HttpURLConnection con,
+			boolean compressContent, int compressThreashold, String compressAlgorithm,
+			WriteProcess proc)
+	throws IOException{
+		if(compressContent){
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			proc.write(baos);
+			byte[] content = baos.toByteArray();
+			OutputStream os = con.getOutputStream();
+			if(content.length >= compressThreashold){
+				if(compressAlgorithm.equals("gzip")){
+					con.addRequestProperty("Content-Encoding", "gzip");
+					GZIPOutputStream gzos = new GZIPOutputStream(os);
+					gzos.write(content);
+					gzos.finish();
+					gzos.flush();
+				} else{
+					con.addRequestProperty("Content-Encoding", "deflate");
+					DeflaterOutputStream dos = new DeflaterOutputStream(os);
+					dos.write(content);
+					dos.finish();
+					dos.flush();
+				}
+			} else{
+				os.write(content);
+			}
+			return os;
+		} else{
+			OutputStream os = con.getOutputStream();
+			proc.write(os);
+			return os;
+		}
 	}
 }

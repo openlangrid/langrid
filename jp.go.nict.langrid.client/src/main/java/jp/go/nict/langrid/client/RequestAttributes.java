@@ -33,12 +33,28 @@ public interface RequestAttributes {
 
 	/**
 	 * Set a boolean value for requestContentCompression.
-	 * If true, client may request content compression to server and
-	 * decompress compressed content before it parses response.
-	 * default: true.
+	 * If true, client compress request content before send it to server and
+	 * add Content-Encoding header to request headers.
+	 * default: false.
 	 * @param requestContentCompression
 	 */
 	void setRequestContentCompression(boolean requestContentCompression);
+	void setRequestContentCompressionThreashold(int bytes);
+	/**
+	 * Set a algorithm of request content compression.
+	 * Currently "gzip" and "deflate" are supported.
+	 * default: deflate.
+	 * @param algorithm
+	 */
+	void setRequestContentCompressionAlgorithm(String algorithm);
+	/**
+	 * Set a boolean value for responseContentCompression.
+	 * If true, client may request response content compression to server and
+	 * decompress compressed content before it is parses as response.
+	 * default: true.
+	 * @param responseContentCompression
+	 */
+	void setResponseContentCompression(boolean responseContentCompression);
 	void addRequestMimeHeader(String name, String value);
 	void addRequestMimeHeaders(Map<String, Object> headers);
 	void addRequestRpcHeader(String namespace, String name, String value);

@@ -19,6 +19,7 @@ package jp.go.nict.langrid.servicecontainer.handler.jsonrpc.servlet;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -39,11 +40,15 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringEscapeUtils;
 
 import jp.go.nict.langrid.commons.io.DuplicatingInputStream;
 import jp.go.nict.langrid.commons.io.IndentedWriter;
@@ -85,8 +90,6 @@ import jp.go.nict.langrid.servicecontainer.handler.jsonrpc.JsonRpcHandler;
 import jp.go.nict.langrid.servicecontainer.handler.loader.ServiceFactoryLoader;
 import jp.go.nict.langrid.servicecontainer.service.composite.AbstractCompositeService;
 import jp.go.nict.langrid.servicecontainer.service.composite.Invocation;
-
-import org.apache.commons.lang.StringEscapeUtils;
 
 @SuppressWarnings("serial")
 public class JsonRpcServlet extends HttpServlet {
@@ -573,7 +576,16 @@ public class JsonRpcServlet extends HttpServlet {
 		if(request.getMethod().equals("GET")){
 			req = decodeFromPC(new URLParameterContext(request.getQueryString()));
 		} else{
-			req = JSON.decode(StreamUtil.readAsString(request.getInputStream(), "UTF-8"), JsonRpcRequest.class);
+			InputStream is = request.getInputStream();
+			String contentEncoding = request.getHeader("Content-Encoding");
+			if(contentEncoding != null){
+				if(contentEncoding.equals("deflate")){
+					is = new InflaterInputStream(is);
+				} else if(contentEncoding.equals("gzip")){
+					is = new GZIPInputStream(is);
+				}
+			}
+			req = JSON.decode(StreamUtil.readAsString(is, "UTF-8"), JsonRpcRequest.class);
 			String cb = request.getParameter("callback");
 			if(cb != null){
 				req.setCallback(cb);

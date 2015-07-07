@@ -123,16 +123,24 @@ public class JsonRpcClientFactory implements ClientFactory{
 		protected void closeConnection(HttpURLConnection con){
 			con.disconnect();
 		}
-		protected void writeRequest(HttpURLConnection con, Method method, Object[] args) throws IOException{
+		protected void writeRequest(HttpURLConnection con, final Method method, final Object[] args) throws IOException{
 			con.setRequestProperty("Accept", "application/json-rpc");
 			con.setRequestProperty("Content-type", "application/json-rpc");
 			con.setRequestProperty(LangridConstants.HTTPHEADER_PROTOCOL, Protocols.JSON_RPC);
 			reqAttrs.setUpConnection(con);
-			OutputStream os = con.getOutputStream();
-			if(requestDumpStream != null){
-				os = new DuplicatingOutputStream(os, requestDumpStream);
-			}
-			JSON.encode(JsonRpcUtil.createRequest(reqAttrs.getAllRpcHeaders(), method, args), os);
+			OutputStream os = HttpURLConnectionUtil.processWriteRequest(
+					con,
+					reqAttrs.isRequestContentCompression(),
+					reqAttrs.getRequestContentComporessionThreashold(),
+					reqAttrs.getRequestContentCompressionAlgorithm(),
+					new HttpURLConnectionUtil.WriteProcess(){
+						public void write(OutputStream os) throws IOException{
+							if(requestDumpStream != null){
+								os = new DuplicatingOutputStream(os, requestDumpStream);
+							}
+							JSON.encode(JsonRpcUtil.createRequest(reqAttrs.getAllRpcHeaders(), method, args), os);
+						};
+					});
 			os.flush();
 		}
 		protected Object readResponse(HttpURLConnection con, Class<?> returnType)

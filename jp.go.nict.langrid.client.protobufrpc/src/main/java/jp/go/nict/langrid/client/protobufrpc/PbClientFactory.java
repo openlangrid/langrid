@@ -19,10 +19,12 @@ package jp.go.nict.langrid.client.protobufrpc;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.HttpURLConnection;
@@ -64,7 +66,7 @@ public class PbClientFactory implements ClientFactory{
 		}
 		@Override
 		@SuppressWarnings("unchecked")
-		public Object invoke(Object proxy, Method method, Object[] args)
+		public Object invoke(Object proxy, final Method method, final Object[] args)
 		throws Throwable{
 			Class<?> clz = method.getDeclaringClass();
 			if(clz.equals(RequestAttributes.class)){
@@ -81,12 +83,28 @@ public class PbClientFactory implements ClientFactory{
 					con.setReadTimeout(10 * 60 * 1000);
 					con.setRequestProperty(LangridConstants.HTTPHEADER_PROTOCOL, Protocols.PROTOBUF_RPC);
 					reqAttrs.setUpConnection(con);
-					CodedOutputStream cos = CodedOutputStream.newInstance(
-							con.getOutputStream());
-					ProtobufWriter.writeRpcRequest(
-							cos, reqAttrs.getAllRpcHeaders(), method, args
-							);
-					cos.flush();
+					OutputStream os = HttpURLConnectionUtil.processWriteRequest(
+							con,
+							reqAttrs.isRequestContentCompression(),
+							reqAttrs.getRequestContentComporessionThreashold(),
+							reqAttrs.getRequestContentCompressionAlgorithm(),
+							new HttpURLConnectionUtil.WriteProcess() {
+								@Override
+								public void write(OutputStream out) throws IOException {
+									CodedOutputStream cos = CodedOutputStream.newInstance(out);
+									try {
+										ProtobufWriter.writeRpcRequest(
+												cos, reqAttrs.getAllRpcHeaders(), method, args
+												);
+									} catch (IllegalAccessException e) {
+										throw new IOException(e);
+									} catch (InvocationTargetException e) {
+										throw new IOException(e);
+									}
+									cos.flush();
+								}
+							});
+					os.flush();
 					InputStream is = HttpURLConnectionUtil.openResponseStream(con);
 					if(is == null){
 						is = new EmptyInputStream();
