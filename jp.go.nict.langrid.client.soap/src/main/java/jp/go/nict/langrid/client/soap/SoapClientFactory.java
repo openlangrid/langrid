@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.HttpURLConnection;
@@ -41,6 +42,7 @@ import jp.go.nict.langrid.commons.beanutils.Converter;
 import jp.go.nict.langrid.commons.io.EmptyInputStream;
 import jp.go.nict.langrid.commons.io.StreamUtil;
 import jp.go.nict.langrid.commons.net.HttpURLConnectionUtil;
+import jp.go.nict.langrid.commons.net.HttpURLConnectionUtil.WriteProcess;
 import jp.go.nict.langrid.commons.rpc.RpcFault;
 import jp.go.nict.langrid.commons.rpc.RpcFaultUtil;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
@@ -60,7 +62,7 @@ public class SoapClientFactory implements ClientFactory {
 		}
 		protected void postInvocation() {
 		}
-		public Object invoke(Object proxy, Method method, Object[] args)
+		public Object invoke(Object proxy, final Method method, final Object[] args)
 		throws Throwable {
 			Class<?> clz = method.getDeclaringClass();
 			if(RequestAttributes.class.isAssignableFrom(clz)){
@@ -83,9 +85,24 @@ public class SoapClientFactory implements ClientFactory {
 					con.setRequestProperty("Content-Type", "text/xml; charset=utf-8");
 					con.setRequestProperty("SOAPAction", "\"\"");
 					reqAttrs.setUpConnection(con);
-					OutputStream os = outputStreamFilter.filter(con.getOutputStream());
-					SoapRequestWriter.writeSoapRequest(
-							os, targetNamespace, reqAttrs.getAllRpcHeaders(), method, args);
+					OutputStream os = HttpURLConnectionUtil.processWriteRequest(
+							con,
+							reqAttrs.isRequestContentCompression(),
+							reqAttrs.getRequestContentComporessionThreashold(),
+							reqAttrs.getRequestContentCompressionAlgorithm(),
+							new WriteProcess() {
+								@Override
+								public void write(OutputStream out) throws IOException {
+									try {
+										SoapRequestWriter.writeSoapRequest(
+												outputStreamFilter.filter(out), targetNamespace, reqAttrs.getAllRpcHeaders(), method, args);
+									} catch (IllegalAccessException e) {
+										throw new IOException(e);
+									} catch (InvocationTargetException e) {
+										throw new IOException(e);
+									}
+								}
+							});
 					os.flush();
 					InputStream is = HttpURLConnectionUtil.openResponseStream(con);
 					if(is == null){

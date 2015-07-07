@@ -88,6 +88,33 @@ public class RpcRequestAttributes implements RequestAttributes{
 		this.requestContentCompression = requestContentCompression;
 	}
 
+	public String getRequestContentCompressionAlgorithm() {
+		return requestContentCompressionAlgorithm;
+	}
+
+	@Override
+	public void setRequestContentCompressionAlgorithm(String algorithm) {
+		this.requestContentCompressionAlgorithm = algorithm;
+	}
+
+	public boolean isResponseContentCompression() {
+		return responseContentCompression;
+	}
+	
+	public int getRequestContentComporessionThreashold() {
+		return requestContentComporessionThreashold;
+	}
+
+	@Override
+	public void setRequestContentCompressionThreashold(int bytes) {
+		this.requestContentComporessionThreashold = bytes;
+	}
+
+	@Override
+	public void setResponseContentCompression(boolean responseContentCompression) {
+		this.responseContentCompression = responseContentCompression;
+	}
+
 	@Override
 	public void addRequestMimeHeader(String name, String value) {
 		mightBeModified = true;
@@ -126,7 +153,7 @@ public class RpcRequestAttributes implements RequestAttributes{
 	public void setUpConnection(HttpURLConnection con){
 		if(connectTimeoutMillis != -1) con.setConnectTimeout(connectTimeoutMillis);
 		if(timeoutMillis != -1) con.setReadTimeout(timeoutMillis);
-		if(requestContentCompression){
+		if(responseContentCompression){
 			con.addRequestProperty("accept-encoding", "gzip,deflate,identity");
 		}
 		if(userId != null){
@@ -164,7 +191,10 @@ public class RpcRequestAttributes implements RequestAttributes{
 	private AuthMethod authMethod;
 	private int connectTimeoutMillis = -1;
 	private int timeoutMillis = -1;
-	private boolean requestContentCompression = true;
+	private boolean requestContentCompression = false;
+	private String requestContentCompressionAlgorithm = "deflate";
+	private int requestContentComporessionThreashold = 1024;
+	private boolean responseContentCompression = true;
 	private Map<String, Object> httpHeaders = new HashMap<String, Object>();
 	private boolean mightBeModified = true;
 	private List<BindingNode> bindings = new ArrayList<BindingNode>();
