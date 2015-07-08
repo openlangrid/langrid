@@ -102,25 +102,29 @@ public class HttpURLConnectionUtil {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			proc.write(baos);
 			byte[] content = baos.toByteArray();
-			OutputStream os = con.getOutputStream();
 			if(content.length >= compressThreashold){
 				if(compressAlgorithm.equals("gzip")){
 					con.addRequestProperty("Content-Encoding", "gzip");
+					OutputStream os = con.getOutputStream();
 					GZIPOutputStream gzos = new GZIPOutputStream(os);
 					gzos.write(content);
 					gzos.finish();
 					gzos.flush();
+					return os;
 				} else{
 					con.addRequestProperty("Content-Encoding", "deflate");
+					OutputStream os = con.getOutputStream();
 					DeflaterOutputStream dos = new DeflaterOutputStream(os);
 					dos.write(content);
 					dos.finish();
 					dos.flush();
+					return os;
 				}
 			} else{
+				OutputStream os = con.getOutputStream();
 				os.write(content);
+				return os;
 			}
-			return os;
 		} else{
 			OutputStream os = con.getOutputStream();
 			proc.write(os);
