@@ -91,11 +91,22 @@ public class P2PGridBasisProtocolDao implements DataDao, ProtocolDao {
 	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateData(jp.go.nict.langrid.p2pgridbasis.data.Data)
 	 */
 	synchronized public boolean updateDataTarget(Data data) throws UnmatchedDataTypeException, DataDaoException {
-		return true;
-/*
 		logger.debug("[Protocol] : " + data.getId());
 		if(data.getClass().equals(ProtocolData.class) == false) {
 			throw new UnmatchedDataTypeException(ProtocolData.class.toString(), data.getClass().toString());
+		}
+
+		ProtocolData protocolData = (ProtocolData) data;
+		Protocol protocol = null;
+		try{
+			protocol = protocolData.getProtocol();
+			if(protocol.getOwnerUserGridId().equals(getController().getSelfGridId())){
+				return false;
+			}
+		} catch(ControllerException e){
+			return false;
+		} catch (DataConvertException e) {
+			throw new DataDaoException(e);
 		}
 
 		if(data.getAttributes().getKeys().contains("IsDeleted") &&
@@ -103,15 +114,11 @@ public class P2PGridBasisProtocolDao implements DataDao, ProtocolDao {
  			boolean updated = false;
 			try {
 				logger.info("Delete");
-				ProtocolData protocolData = (ProtocolData) data;
-				Protocol protocol = protocolData.getProtocol();
 				removeEntityListener();
 				dao.deleteProtocol(protocol.getProtocolId());
 				updated = true;
 				setEntityListener();
 				getController().baseSummaryAdd(data);
-			} catch (DataConvertException e) {
-				throw new DataDaoException(e);
 			} catch (ProtocolNotFoundException e) {
 				// 
 				// 
@@ -128,11 +135,7 @@ public class P2PGridBasisProtocolDao implements DataDao, ProtocolDao {
 			return updated;
 		}
 
-		Protocol protocol = null;
 		try {
-			ProtocolData protocolData = (ProtocolData)data;
-			protocol = protocolData.getProtocol();
-
 			logger.debug("New or UpDate");
 			removeEntityListener();
 			daoContext.beginTransaction();
@@ -141,14 +144,12 @@ public class P2PGridBasisProtocolDao implements DataDao, ProtocolDao {
 			setEntityListener();
 			getController().baseSummaryAdd(data);
 			return true;
-		} catch (DataConvertException e) {
-			throw new DataDaoException(e);
 		} catch (DaoException e) {
 			throw new DataDaoException(e);
 		} catch (ControllerException e) {
 			throw new DataDaoException(e);
 		}
-*/	}
+	}
 
 
 	@Override

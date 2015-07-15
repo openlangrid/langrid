@@ -103,17 +103,21 @@ public class P2PGridBasisDomainDao implements DataDao, DomainDao {
 		} catch (DataConvertException e) {
 			throw new DataDaoException(e);
 		}
-		if(domain.getOwnerUserGridId().equals(this.controller.getSelfGridId())){
-			return false;
-		}
-		try {
-			Domain domainInDb = getDomain(domain.getDomainId());
-			if(domainInDb.getOwnerUserGridId().equals(this.controller.getSelfGridId())){
+		try{
+			if(domain.getOwnerUserGridId().equals(getController().getSelfGridId())){
 				return false;
 			}
-		} catch (DomainNotFoundException e) {
-		} catch (DaoException e) {
-			e.printStackTrace();
+			try {
+				Domain domainInDb = getDomain(domain.getDomainId());
+				if(domainInDb.getOwnerUserGridId().equals(getController().getSelfGridId())){
+					return false;
+				}
+			} catch (DomainNotFoundException e) {
+			} catch (DaoException e) {
+				e.printStackTrace();
+				return false;
+			}
+		} catch(ControllerException e){
 			return false;
 		}
 

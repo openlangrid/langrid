@@ -110,9 +110,11 @@ public class P2PGridBasisResourceMetaAttributeDao implements DataDao, ResourceTy
 		}
 		try {
 			Domain domainInDb = domainDao.getDomain(resourceMetaAttribute.getDomainId());
-			if(domainInDb.getOwnerUserGridId().equals(this.controller.getSelfGridId())){
+			if(domainInDb.getOwnerUserGridId().equals(getController().getSelfGridId())){
 				return false;
 			}
+		} catch(ControllerException e){
+			return false;
 		} catch (DomainNotFoundException e) {
 		} catch (DaoException e) {
 			e.printStackTrace();
