@@ -127,5 +127,5 @@ public interface P2PGridController {
 	 * 
 	 * 
 	 */
-	String getSerlfGridId();
+	String getSelfGridId();
 }

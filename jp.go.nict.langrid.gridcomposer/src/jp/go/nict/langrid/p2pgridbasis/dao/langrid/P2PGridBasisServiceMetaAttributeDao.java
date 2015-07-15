@@ -23,11 +23,16 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
+import jp.go.nict.langrid.dao.DomainDao;
+import jp.go.nict.langrid.dao.DomainNotFoundException;
 import jp.go.nict.langrid.dao.GenericHandler;
 import jp.go.nict.langrid.dao.ServiceMetaAttributeNotFoundException;
 import jp.go.nict.langrid.dao.ServiceTypeDao;
+import jp.go.nict.langrid.dao.entity.Domain;
 import jp.go.nict.langrid.dao.entity.ServiceMetaAttribute;
 import jp.go.nict.langrid.dao.entity.ServiceMetaAttributePK;
 import jp.go.nict.langrid.dao.entity.ServiceType;
@@ -42,8 +47,6 @@ import jp.go.nict.langrid.p2pgridbasis.data.Data;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.DataConvertException;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.ServiceMetaAttributeData;
 
-import org.apache.log4j.Logger;
-
 /**
  * 
  * 
@@ -55,7 +58,8 @@ public class P2PGridBasisServiceMetaAttributeDao implements DataDao, ServiceType
 	 * 
 	 * 
 	 */
-	public P2PGridBasisServiceMetaAttributeDao(ServiceTypeDao dao, DaoContext context) {
+	public P2PGridBasisServiceMetaAttributeDao(DomainDao domainDao, ServiceTypeDao dao, DaoContext context) {
+		this.domainDao = domainDao;
 		this.dao = dao;
 		this.daoContext = context;
 	}
@@ -97,23 +101,35 @@ public class P2PGridBasisServiceMetaAttributeDao implements DataDao, ServiceType
 			throw new UnmatchedDataTypeException(ServiceMetaAttributeData.class.toString(), data.getClass().toString());
 		}
 
+		ServiceMetaAttributeData serviceMetaAttributeData = (ServiceMetaAttributeData) data;
+		ServiceMetaAttribute serviceMetaAttribute = null;
+		try {
+			serviceMetaAttribute = serviceMetaAttributeData.getServiceMetaAttribute();
+		} catch (DataConvertException e) {
+			throw new DataDaoException(e);
+		}
+		try {
+			Domain domainInDb = domainDao.getDomain(serviceMetaAttribute.getDomainId());
+			if(domainInDb.getOwnerUserGridId().equals(this.controller.getSelfGridId())){
+				return false;
+			}
+		} catch (DomainNotFoundException e) {
+		} catch (DaoException e) {
+			e.printStackTrace();
+			return false;
+		}
+
 		if(data.getAttributes().getKeys().contains("IsDeleted") &&
 				data.getAttributes().getValue("IsDeleted").equals("true")) {
  			boolean updated = false;
 			try {
 				logger.info("Delete");
-				ServiceMetaAttributeData serviceMetaAttributeData = (ServiceMetaAttributeData) data;
-				ServiceMetaAttribute serviceMetaAttribute = serviceMetaAttributeData.getServiceMetaAttribute();
 				removeEntityListener();
 				dao.deleteServiceMetaAttribute(serviceMetaAttribute.getDomainId(), serviceMetaAttribute.getAttributeId());
 				updated = true;
 				setEntityListener();
 				getController().baseSummaryAdd(data);
-			} catch (DataConvertException e) {
-				throw new DataDaoException(e);
 			} catch (ServiceMetaAttributeNotFoundException e) {
-				// 
-				// 
 				try {
 					getController().baseSummaryAdd(data);
 				} catch (ControllerException e1) {
@@ -127,11 +143,7 @@ public class P2PGridBasisServiceMetaAttributeDao implements DataDao, ServiceType
 			return updated;
 		}
 
-		ServiceMetaAttribute serviceMetaAttribute = null;
 		try {
-			ServiceMetaAttributeData serviceMetaAttributeData = (ServiceMetaAttributeData)data;
-			serviceMetaAttribute = serviceMetaAttributeData.getServiceMetaAttribute();
-
 			logger.debug("New or UpDate");
 			removeEntityListener();
 			daoContext.beginTransaction();
@@ -140,8 +152,6 @@ public class P2PGridBasisServiceMetaAttributeDao implements DataDao, ServiceType
 			setEntityListener();
 			getController().baseSummaryAdd(data);
 			return true;
-		} catch (DataConvertException e) {
-			throw new DataDaoException(e);
 		} catch (DaoException e) {
 			throw new DataDaoException(e);
 		} catch (ControllerException e) {
@@ -235,6 +245,7 @@ public class P2PGridBasisServiceMetaAttributeDao implements DataDao, ServiceType
 		dao.mergeServiceType(st);
 	}
 
+	private DomainDao domainDao;
 	private ServiceTypeDao dao;
 	private DaoContext daoContext;
 	private P2PGridController controller;

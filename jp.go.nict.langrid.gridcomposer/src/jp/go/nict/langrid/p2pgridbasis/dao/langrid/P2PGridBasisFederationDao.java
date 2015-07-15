@@ -262,7 +262,7 @@ public class P2PGridBasisFederationDao implements DataDao, FederationDao {
 			try{
 				P2PGridController c = getController();
 				c.createFederation();
-				String selfGridId = c.getSerlfGridId();
+				String selfGridId = c.getSelfGridId();
 				Federation f = daoContext.loadEntity(Federation.class, id);
 				Grid tg = daoContext.loadEntity(Grid.class, f.getTargetGridId());
 				c.publish(new FederationData(f));

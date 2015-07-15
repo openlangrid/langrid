@@ -23,11 +23,16 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
+import jp.go.nict.langrid.dao.DomainDao;
+import jp.go.nict.langrid.dao.DomainNotFoundException;
 import jp.go.nict.langrid.dao.GenericHandler;
 import jp.go.nict.langrid.dao.ResourceMetaAttributeNotFoundException;
 import jp.go.nict.langrid.dao.ResourceTypeDao;
+import jp.go.nict.langrid.dao.entity.Domain;
 import jp.go.nict.langrid.dao.entity.ResourceMetaAttribute;
 import jp.go.nict.langrid.dao.entity.ResourceMetaAttributePK;
 import jp.go.nict.langrid.dao.entity.ResourceType;
@@ -42,8 +47,6 @@ import jp.go.nict.langrid.p2pgridbasis.data.Data;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.DataConvertException;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.ResourceMetaAttributeData;
 
-import org.apache.log4j.Logger;
-
 /**
  * 
  * 
@@ -55,7 +58,8 @@ public class P2PGridBasisResourceMetaAttributeDao implements DataDao, ResourceTy
 	 * 
 	 * 
 	 */
-	public P2PGridBasisResourceMetaAttributeDao(ResourceTypeDao dao, DaoContext context) {
+	public P2PGridBasisResourceMetaAttributeDao(DomainDao domainDao, ResourceTypeDao dao, DaoContext context) {
+		this.domainDao = domainDao;
 		this.dao = dao;
 		this.daoContext = context;
 	}
@@ -97,20 +101,34 @@ public class P2PGridBasisResourceMetaAttributeDao implements DataDao, ResourceTy
 			throw new UnmatchedDataTypeException(ResourceMetaAttributeData.class.toString(), data.getClass().toString());
 		}
 
+		ResourceMetaAttributeData resourceMetaAttributeData = (ResourceMetaAttributeData) data;
+		ResourceMetaAttribute resourceMetaAttribute = null;
+		try {
+			resourceMetaAttribute = resourceMetaAttributeData.getResourceMetaAttribute();
+		} catch (DataConvertException e) {
+			throw new DataDaoException(e);
+		}
+		try {
+			Domain domainInDb = domainDao.getDomain(resourceMetaAttribute.getDomainId());
+			if(domainInDb.getOwnerUserGridId().equals(this.controller.getSelfGridId())){
+				return false;
+			}
+		} catch (DomainNotFoundException e) {
+		} catch (DaoException e) {
+			e.printStackTrace();
+			return false;
+		}
+
 		if(data.getAttributes().getKeys().contains("IsDeleted") &&
 				data.getAttributes().getValue("IsDeleted").equals("true")) {
  			boolean updated = false;
 			try {
 				logger.info("Delete");
-				ResourceMetaAttributeData resourceMetaAttributeData = (ResourceMetaAttributeData) data;
-				ResourceMetaAttribute resourceMetaAttribute = resourceMetaAttributeData.getResourceMetaAttribute();
 				removeEntityListener();
 				dao.deleteResourceMetaAttribute(resourceMetaAttribute.getDomainId(), resourceMetaAttribute.getAttributeId());
 				updated = true;
 				setEntityListener();
 				getController().baseSummaryAdd(data);
-			} catch (DataConvertException e) {
-				throw new DataDaoException(e);
 			} catch (ResourceMetaAttributeNotFoundException e) {
 				// 
 				// 
@@ -127,11 +145,7 @@ public class P2PGridBasisResourceMetaAttributeDao implements DataDao, ResourceTy
 			return updated;
 		}
 
-		ResourceMetaAttribute resourceMetaAttribute = null;
 		try {
-			ResourceMetaAttributeData resourceMetaAttributeData = (ResourceMetaAttributeData)data;
-			resourceMetaAttribute = resourceMetaAttributeData.getResourceMetaAttribute();
-
 			logger.debug("New or UpDate");
 			removeEntityListener();
 			daoContext.beginTransaction();
@@ -140,8 +154,6 @@ public class P2PGridBasisResourceMetaAttributeDao implements DataDao, ResourceTy
 			setEntityListener();
 			getController().baseSummaryAdd(data);
 			return true;
-		} catch (DataConvertException e) {
-			throw new DataDaoException(e);
 		} catch (DaoException e) {
 			throw new DataDaoException(e);
 		} catch (ControllerException e) {
@@ -235,6 +247,7 @@ public class P2PGridBasisResourceMetaAttributeDao implements DataDao, ResourceTy
 		dao.deleteResourceType(domainId);
 	}
 
+	private DomainDao domainDao;
 	private ResourceTypeDao dao;
 	private DaoContext daoContext;
 	private P2PGridController controller;

@@ -111,7 +111,7 @@ public class P2PGridBasisServiceTypeDao implements DataDao, ServiceTypeDao {
 		try{
 			String did = serviceType.getDomainId();
 			Domain d = domainDao.getDomain(did);
-			if(d.getOwnerUserGridId().equals(controller.getSerlfGridId())){
+			if(d.getOwnerUserGridId().equals(controller.getSelfGridId())){
 				return false;
 			}
 		} catch(DomainNotFoundException e){

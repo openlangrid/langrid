@@ -23,11 +23,16 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
+import jp.go.nict.langrid.dao.DomainDao;
+import jp.go.nict.langrid.dao.DomainNotFoundException;
 import jp.go.nict.langrid.dao.GenericHandler;
 import jp.go.nict.langrid.dao.ResourceTypeDao;
 import jp.go.nict.langrid.dao.ResourceTypeNotFoundException;
+import jp.go.nict.langrid.dao.entity.Domain;
 import jp.go.nict.langrid.dao.entity.ResourceMetaAttribute;
 import jp.go.nict.langrid.dao.entity.ResourceType;
 import jp.go.nict.langrid.dao.entity.ResourceTypePK;
@@ -42,8 +47,6 @@ import jp.go.nict.langrid.p2pgridbasis.data.Data;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.DataConvertException;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.ResourceTypeData;
 
-import org.apache.log4j.Logger;
-
 /**
  * 
  * 
@@ -55,7 +58,8 @@ public class P2PGridBasisResourceTypeDao implements DataDao, ResourceTypeDao {
 	 * 
 	 * 
 	 */
-	public P2PGridBasisResourceTypeDao(ResourceTypeDao dao, DaoContext context) {
+	public P2PGridBasisResourceTypeDao(DomainDao domainDao, ResourceTypeDao dao, DaoContext context) {
+		this.domainDao = domainDao;
 		this.dao = dao;
 		this.daoContext = context;
 	}
@@ -97,20 +101,35 @@ public class P2PGridBasisResourceTypeDao implements DataDao, ResourceTypeDao {
 			throw new UnmatchedDataTypeException(ResourceTypeData.class.toString(), data.getClass().toString());
 		}
 
+		ResourceTypeData resourceTypeData = (ResourceTypeData) data;
+		ResourceType resourceType = null;
+		try{
+			resourceType = resourceTypeData.getResourceType();
+		} catch (DataConvertException e) {
+			throw new DataDaoException(e);
+		}
+		try{
+			String did = resourceType.getDomainId();
+			Domain d = domainDao.getDomain(did);
+			if(d.getOwnerUserGridId().equals(controller.getSelfGridId())){
+				return false;
+			}
+		} catch(DomainNotFoundException e){
+			return false;
+		} catch (DaoException e) {
+			throw new DataDaoException(e);
+		}
+
 		if(data.getAttributes().getKeys().contains("IsDeleted") &&
 				data.getAttributes().getValue("IsDeleted").equals("true")) {
  			boolean updated = false;
 			try {
 				logger.info("Delete");
-				ResourceTypeData resourceTypeData = (ResourceTypeData) data;
-				ResourceType resourceType = resourceTypeData.getResourceType();
 				removeEntityListener();
 				dao.deleteResourceType(resourceType.getDomainId(), resourceType.getResourceTypeId());
 				updated = true;
 				setEntityListener();
 				getController().baseSummaryAdd(data);
-			} catch (DataConvertException e) {
-				throw new DataDaoException(e);
 			} catch (ResourceTypeNotFoundException e) {
 				// 
 				// 
@@ -127,11 +146,7 @@ public class P2PGridBasisResourceTypeDao implements DataDao, ResourceTypeDao {
 			return updated;
 		}
 
-		ResourceType resourceType = null;
 		try {
-			ResourceTypeData resourceTypeData = (ResourceTypeData)data;
-			resourceType = resourceTypeData.getResourceType();
-
 			logger.debug("New or UpDate");
 			daoContext.beginTransaction();
 			removeEntityListener();
@@ -151,8 +166,6 @@ public class P2PGridBasisResourceTypeDao implements DataDao, ResourceTypeDao {
 			}
 			getController().baseSummaryAdd(data);
 			return true;
-		} catch (DataConvertException e) {
-			throw new DataDaoException(e);
 		} catch (DaoException e) {
 			throw new DataDaoException(e);
 		} catch (ControllerException e) {
@@ -246,7 +259,7 @@ public class P2PGridBasisResourceTypeDao implements DataDao, ResourceTypeDao {
 		dao.deleteResourceType(domainId);
 	}
 
-
+	private DomainDao domainDao;
 	private ResourceTypeDao dao;
 	private DaoContext daoContext;
 	private P2PGridController controller;

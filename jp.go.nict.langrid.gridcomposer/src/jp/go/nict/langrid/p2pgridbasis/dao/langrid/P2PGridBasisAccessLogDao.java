@@ -134,7 +134,7 @@ public class P2PGridBasisAccessLogDao implements DataDao, AccessLogDao {
 				logger.debug("DateTime of 24 Hours ago");
 				return false;
 			}
-			if(!log.getServiceAndNodeGridId().equals(getController().getSerlfGridId())){
+			if(!log.getServiceAndNodeGridId().equals(getController().getSelfGridId())){
 				return false;
 			}
 			logger.debug("New");

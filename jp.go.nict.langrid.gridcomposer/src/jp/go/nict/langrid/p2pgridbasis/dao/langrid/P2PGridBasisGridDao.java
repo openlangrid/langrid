@@ -100,7 +100,7 @@ public class P2PGridBasisGridDao implements DataDao, GridDao {
 		Grid grid = null;
 		try{
 			grid = ((GridData)data).getGrid();
-			if(getController().getSerlfGridId().equals(grid.getGridId())) return false;
+			if(getController().getSelfGridId().equals(grid.getGridId())) return false;
 		} catch (ControllerException e) {
 			throw new DataDaoException(e);
 		} catch (DataConvertException e) {
@@ -138,7 +138,7 @@ public class P2PGridBasisGridDao implements DataDao, GridDao {
 			removeEntityListener();
 			DaoException exp = null;
 			try{
-				if(!getController().getSerlfGridId().equals(grid.getGridId())){
+				if(!getController().getSelfGridId().equals(grid.getGridId())){
 					grid.setHosted(false);
 					daoContext.mergeEntity(grid);
 				}

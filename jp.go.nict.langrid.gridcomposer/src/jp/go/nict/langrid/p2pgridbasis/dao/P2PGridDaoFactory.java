@@ -100,156 +100,161 @@ import net.jxta.peer.PeerID;
 public class P2PGridDaoFactory extends DaoFactory {
 	@Override
 	public AccessRightDao createAccessRightDao() throws DaoException {
-		return new P2PGridBasisAccessRightDao(hibernateDaoFactory.createAccessRightDao(), getDaoContext());
+		return new P2PGridBasisAccessRightDao(daoFactory.createAccessRightDao(), getDaoContext());
 	}
 
 	@Override
 	public ResourceDao createResourceDao() throws DaoException {
-		return new P2PGridBasisResourceDao(hibernateDaoFactory.createResourceDao(), getDaoContext());
+		return new P2PGridBasisResourceDao(daoFactory.createResourceDao(), getDaoContext());
 	}
 
 	@Override
 	public ServiceDao createServiceDao() throws DaoException {
 		return new P2PGridBasisServiceDao(
-				hibernateDaoFactory.createServiceDao(), getDaoContext()
+				daoFactory.createServiceDao(), getDaoContext()
 				, activeBpelServicesUrl, activeBpelDeployBinding
 				);
 	}
 
 	@Override
 	public UserDao createUserDao() throws DaoException {
-		return new P2PGridBasisUserDao(hibernateDaoFactory.createUserDao(), getDaoContext());
+		return new P2PGridBasisUserDao(daoFactory.createUserDao(), getDaoContext());
 	}
 
 	@Override
 	public TemporaryUserDao createTemporaryUserDao() throws DaoException {
-		return new P2PGridBasisTemporaryUserDao(hibernateDaoFactory.createTemporaryUserDao(), getDaoContext());
+		return new P2PGridBasisTemporaryUserDao(daoFactory.createTemporaryUserDao(), getDaoContext());
 	}
 
 	@Override
 	public AccessLimitDao createAccessLimitDao() throws DaoException {
-		return new P2PGridBasisAccessLimitDao(hibernateDaoFactory.createAccessLimitDao(), getDaoContext());
+		return new P2PGridBasisAccessLimitDao(daoFactory.createAccessLimitDao(), getDaoContext());
 	}
 
 	@Override
 	public OverUseLimitDao createOverUseLimitDao() throws DaoException {
-		return new P2PGridBasisOverUseLimitDao(hibernateDaoFactory.createOverUseLimitDao(), getDaoContext());
+		return new P2PGridBasisOverUseLimitDao(daoFactory.createOverUseLimitDao(), getDaoContext());
 	}
 
 	@Override
 	public AccessLogDao createAccessLogDao() throws DaoException {
-		return new P2PGridBasisAccessLogDao(hibernateDaoFactory.createAccessLogDao(), getDaoContext());
+		return new P2PGridBasisAccessLogDao(daoFactory.createAccessLogDao(), getDaoContext());
 	}
 
 	@Override
 	public AccessStatDao createAccessStateDao() throws DaoException {
-		return new P2PGridBasisAccessStateDao(hibernateDaoFactory.createAccessStateDao(), getDaoContext());
+		return new P2PGridBasisAccessStateDao(daoFactory.createAccessStateDao(), getDaoContext());
 	}
 
 	@Override
 	public DomainDao createDomainDao() throws DaoException {
-		return new P2PGridBasisDomainDao(hibernateDaoFactory.createDomainDao(), getDaoContext());
+		return new P2PGridBasisDomainDao(daoFactory.createDomainDao(), getDaoContext());
 	}
 
 	@Override
 	public FederationDao createFederationDao() throws DaoException {
-		return new P2PGridBasisFederationDao(hibernateDaoFactory.createFederationDao(), getDaoContext());
+		return new P2PGridBasisFederationDao(daoFactory.createFederationDao(), getDaoContext());
 	}
 
 	@Override
 	public GridDao createGridDao() throws DaoException {
-		return new P2PGridBasisGridDao(hibernateDaoFactory.createGridDao(), getDaoContext());
+		return new P2PGridBasisGridDao(daoFactory.createGridDao(), getDaoContext());
 	}
 
 	@Override
 	public NodeDao createNodeDao() throws DaoException {
-		return new P2PGridBasisNodeDao(hibernateDaoFactory.createNodeDao(), getDaoContext());
+		return new P2PGridBasisNodeDao(daoFactory.createNodeDao(), getDaoContext());
 	}
 
 	@Override
 	public ProtocolDao createProtocolDao() throws DaoException {
-		return new P2PGridBasisProtocolDao(hibernateDaoFactory.createProtocolDao(), getDaoContext());
+		return new P2PGridBasisProtocolDao(daoFactory.createProtocolDao(), getDaoContext());
 	}
 
 	@Override
 	public ResourceTypeDao createResourceTypeDao() throws DaoException {
-		return new P2PGridBasisResourceTypeDao(hibernateDaoFactory.createResourceTypeDao(), getDaoContext());
+		return new P2PGridBasisResourceTypeDao(
+				daoFactory.createDomainDao(),
+				daoFactory.createResourceTypeDao(),
+				getDaoContext());
 	}
 
 	private static P2PGridBasisResourceMetaAttributeDao createResourceMetaAttributeDao() {
-		HibernateDaoFactory dao = new HibernateDaoFactory();
-		ResourceTypeDao resourceTypeDao;
+		HibernateDaoFactory factory = new HibernateDaoFactory();
 		try {
-			resourceTypeDao = dao.createResourceTypeDao();
+			return new P2PGridBasisResourceMetaAttributeDao(
+					factory.createDomainDao(),
+					factory.createResourceTypeDao(),
+					factory.getDaoContext());
 		} catch (DaoException e) {
 			e.printStackTrace();
 			return null;
 		}
-		return new P2PGridBasisResourceMetaAttributeDao(resourceTypeDao, dao.getDaoContext());
 	}
 
 	private static P2PGridBasisServiceMetaAttributeDao createServiceMetaAttributeDao() {
-		HibernateDaoFactory dao = new HibernateDaoFactory();
-		ServiceTypeDao resourceTypeDao;
+		HibernateDaoFactory factory = new HibernateDaoFactory();
 		try {
-			resourceTypeDao = dao.createServiceTypeDao();
+			return new P2PGridBasisServiceMetaAttributeDao(
+					factory.createDomainDao(),
+					factory.createServiceTypeDao(),
+					factory.getDaoContext());
 		} catch (DaoException e) {
 			e.printStackTrace();
 			return null;
 		}
-		return new P2PGridBasisServiceMetaAttributeDao(resourceTypeDao, dao.getDaoContext());
 	}
 
 	@Override
 	public NewsDao createNewsDao() throws DaoException {
-		return new P2PGridBasisNewsDao(hibernateDaoFactory.createNewsDao(), getDaoContext());
+		return new P2PGridBasisNewsDao(daoFactory.createNewsDao(), getDaoContext());
 	}
 
 	@Override
 	public ServiceTypeDao createServiceTypeDao() throws DaoException {
 		return new P2PGridBasisServiceTypeDao(
-				hibernateDaoFactory.createDomainDao(),
-				hibernateDaoFactory.createServiceTypeDao(), getDaoContext());
+				daoFactory.createDomainDao(),
+				daoFactory.createServiceTypeDao(), getDaoContext());
 	}
 
 	@Override
 	public InvocationDao createInvocationDao() throws DaoException {
-		return hibernateDaoFactory.createInvocationDao();
+		return daoFactory.createInvocationDao();
 	}
 
 	@Override
 	public DaoContext getDaoContext() {
-		return hibernateDaoFactory.getDaoContext();
+		return daoFactory.getDaoContext();
 	}
 
 	@Override
 	public OverUseStateDao createOverUseStateDao() throws DaoException {
-		return hibernateDaoFactory.createOverUseStateDao();
+		return daoFactory.createOverUseStateDao();
 	}
 
 	@Override
 	public ServiceDeploymentDao createServiceDeploymentDao() throws DaoException {
-		return hibernateDaoFactory.createServiceDeploymentDao();
+		return daoFactory.createServiceDeploymentDao();
 	}
 
 	@Override
 	public AcceptableRemoteAddressDao createAcceptableRemoteAddressDao() throws DaoException {
-		return hibernateDaoFactory.createAcceptableRemoteAddressDao();
+		return daoFactory.createAcceptableRemoteAddressDao();
 	}
 
 	@Override
 	public SystemPropertyDao createSystemPropertyDao() throws DaoException {
-		return hibernateDaoFactory.createSystemPropertyDao();
+		return daoFactory.createSystemPropertyDao();
 	}
 
 	@Override
 	public OperationRequestDao createOperationRequestDao() throws DaoException {
-		return hibernateDaoFactory.createOperationRequestDao();
+		return daoFactory.createOperationRequestDao();
 	}
 
 	@Override
 	public ServiceActionScheduleDao createServiceActionScheduleDao() throws DaoException {
-		return hibernateDaoFactory.createServiceActionScheduleDao();
+		return daoFactory.createServiceActionScheduleDao();
 	}
 
 	public static DataDao getDataDao(String dataType) throws DataTypeNotFoundException{
@@ -290,10 +295,10 @@ public class P2PGridDaoFactory extends DaoFactory {
 	@Override
 	public void initialize(List<Class<?>> additionalEntities)
 			throws DaoException {
-		hibernateDaoFactory.initialize(additionalEntities);
+		daoFactory.initialize(additionalEntities);
 	}
 
-	private DaoFactory hibernateDaoFactory = new HibernateDaoFactory();
+	private DaoFactory daoFactory = new HibernateDaoFactory();
 	private static Map<String, DataDao> dataDaoMap = new HashMap<String, DataDao>();
 	private static String activeBpelServicesUrl;
 	private static String activeBpelDeployBinding;

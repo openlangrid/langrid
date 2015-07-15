@@ -1275,7 +1275,7 @@ public class JXTAController implements P2PGridController {
 	}
 
 	@Override
-	public String getSerlfGridId() {
+	public String getSelfGridId() {
 		return selfGridId;
 	}
 

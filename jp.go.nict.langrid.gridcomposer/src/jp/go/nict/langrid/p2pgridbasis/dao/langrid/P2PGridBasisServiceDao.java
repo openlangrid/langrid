@@ -128,30 +128,44 @@ public class P2PGridBasisServiceDao implements DataDao, ServiceDao {
 			throw new UnmatchedDataTypeException(ServiceData.class.toString(), data.getClass().toString());
 		}
 
+		Service service = null;
+		try {
+			ServiceData serviceData = (ServiceData)data;
+			if(data.getAttributes().getValue("instanceType").equals("BPEL")){
+				service = serviceData.getBPELService();
+			}else if(data.getAttributes().getValue("instanceType").equals("EXTERNAL")){
+				service = serviceData.getExternalService();
+			}else if(data.getAttributes().getValue("instanceType").equals("Java")){
+				service = serviceData.getExternalService();
+			}else if(data.getAttributes().getValue("instanceType").equals("WEBAPP")){
+				service = serviceData.getWebappService();
+			}else{
+				logger.error("instanceType : " + data.getAttributes().getValue("instanceType"));
+				throw new UnmatchedDataTypeException(ServiceData.class.toString(), data.getClass().toString());
+			}
+		} catch (DataConvertException e) {
+			throw new DataDaoException(e);
+		}
+		try{
+			if(service.getGridId().equals(getController().getSelfGridId())){
+				// we must consider mirror mode. when mirror mode, we have to 
+				// deploy services sent from the node which belongs to same grid.
+				return false;
+			}
+		} catch (ControllerException e) {
+			throw new DataDaoException(e);
+		}
+
 		if(data.getAttributes().getKeys().contains("IsDeleted") &&
 				data.getAttributes().getValue("IsDeleted").equals("true")) {
  			boolean updated = false;
 			try {
 				logger.info("Delete");
-				ServiceData serviceData = (ServiceData) data;
-				Service service = null;
-				if(data.getAttributes().getValue("instanceType").equals("BPEL")){
-					service = serviceData.getBPELService();
-				}else if(data.getAttributes().getValue("instanceType").equals("EXTERNAL")){
-					service = serviceData.getExternalService();
-				}else if(data.getAttributes().getValue("instanceType").equals("WEBAPP")){
-					service = serviceData.getWebappService();
-				}else{
-					logger.error("instanceType : " + data.getAttributes().getValue("instanceType"));
-					throw new UnmatchedDataTypeException(ServiceData.class.toString(), data.getClass().toString());
-				}
 				removeEntityListener();
 				dao.deleteService(service.getGridId(), service.getServiceId());
 				updated = true;
 				setEntityListener();
 				getController().baseSummaryAdd(data);
-			} catch (DataConvertException e) {
-				throw new DataDaoException(e);
 			} catch (ServiceNotFoundException e) {
 				// 
 				// 
@@ -168,30 +182,14 @@ public class P2PGridBasisServiceDao implements DataDao, ServiceDao {
 			return updated;
 		}
 
-		Service service = null;
 		try {
-			ServiceData serviceData = (ServiceData)data;
-
-			if(data.getAttributes().getValue("instanceType").equals("BPEL")){
-				service = serviceData.getBPELService();
-			}else if(data.getAttributes().getValue("instanceType").equals("EXTERNAL")){
-				service = serviceData.getExternalService();
-			}else if(data.getAttributes().getValue("instanceType").equals("Java")){
-				service = serviceData.getExternalService();
-			}else if(data.getAttributes().getValue("instanceType").equals("WEBAPP")){
-				service = serviceData.getWebappService();
-			}else{
-				logger.error("instanceType : " + data.getAttributes().getValue("instanceType"));
-				throw new UnmatchedDataTypeException(ServiceData.class.toString(), data.getClass().toString());
-			}
 			if(service.getServiceDescription() == null){
 				service.setServiceDescription("");
 			}
-			if(!service.getGridId().equals(getController().getSerlfGridId())){
+			if(!service.getGridId().equals(getController().getSelfGridId())){
 				service.getServiceEndpoints().clear();
 				service.getServiceDeployments().clear();
 			}
-
 
 			removeEntityListener();
 			try{
@@ -208,7 +206,7 @@ public class P2PGridBasisServiceDao implements DataDao, ServiceDao {
 				setEntityListener();
 			}
 
-			if(service.getGridId().equals(getController().getSerlfGridId())){
+			if(service.getGridId().equals(getController().getSelfGridId())){
 				daoContext.beginTransaction();
 				removeEntityListener();
 				try{
@@ -269,8 +267,6 @@ public class P2PGridBasisServiceDao implements DataDao, ServiceDao {
 
 			getController().baseSummaryAdd(data);
 			return true;
-		} catch (DataConvertException e) {
-			throw new DataDaoException(e);
 		} catch (DaoException e) {
 			throw new DataDaoException(e);
 		} catch (ControllerException e) {
