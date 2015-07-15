@@ -19,7 +19,6 @@ package jp.go.nict.langrid.servicesupervisor.frontend.processors.pre;
 
 import javax.xml.soap.MimeHeaders;
 
-import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.entity.Service;
 import jp.go.nict.langrid.dao.entity.User;
 import jp.go.nict.langrid.servicesupervisor.frontend.AccessLimitExceededException;

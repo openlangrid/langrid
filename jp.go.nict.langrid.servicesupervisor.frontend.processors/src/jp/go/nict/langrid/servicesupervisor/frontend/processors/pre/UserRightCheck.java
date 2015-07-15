@@ -59,6 +59,8 @@ public class UserRightCheck implements Preprocess {
 				}
 				if(permit) return;
 			}
+		} else{
+			return;
 		}
 		throw new NoAccessPermissionException(u.getGridId(), u.getUserId());
 	}
