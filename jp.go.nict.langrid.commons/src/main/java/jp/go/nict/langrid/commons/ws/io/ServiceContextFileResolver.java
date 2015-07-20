@@ -38,6 +38,9 @@ public class ServiceContextFileResolver implements FileResolver {
 			return new File(pathElement);
 		} else{
 			String ret = context.getRealPath(pathElement);
+			if(ret == null && !pathElement.startsWith("/")){
+				ret = context.getRealPath("/" + pathElement);
+			}
 			if(ret != null) return new File(ret);
 			else return null;
 		}
