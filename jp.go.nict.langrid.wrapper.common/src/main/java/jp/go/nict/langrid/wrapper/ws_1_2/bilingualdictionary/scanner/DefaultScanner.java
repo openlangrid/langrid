@@ -71,7 +71,7 @@ public class DefaultScanner implements Scanner {
 			for (int j = startIndex; j < morphemes.length; j++) {
 				Morpheme morph = morphemes[j];
 				String prevSentence = sentence.toString();
-				if (!first && !LANGUAGES.contains(language) && !morph.getWord().equals(".")) {
+				if (!first && !LANGUAGES.contains(language) && !morph.getWord().equals(".") && !morph.getWord().startsWith("'")) {
 					sentence.append(" ");
 				}
 				sentence.append(morph.getWord().toLowerCase());
