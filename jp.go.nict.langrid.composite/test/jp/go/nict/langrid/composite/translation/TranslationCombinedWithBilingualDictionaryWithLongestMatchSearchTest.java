@@ -43,6 +43,23 @@ public class TranslationCombinedWithBilingualDictionaryWithLongestMatchSearchTes
 	}
 
 	@Test
+	public void testEnJaWithQuote() throws Throwable{
+		TranslationWithTemporalDictionaryService s =  new TranslationCombinedWithBilingualDictionaryWithLongestMatchSearch(){
+			@SuppressWarnings("unchecked")
+			public ComponentServiceFactory getComponentServiceFactory() {
+				return new LoggingComponentServiceFactory(new ComponentServiceFactoryImpl(
+						Pair.<String, Object>create("TranslationPL", newSoapContext().createClient(
+								"KyotoUJServer", TranslationService.class)),
+						Pair.<String, Object>create("MorphologicalAnalysisPL", newSoapContext().createClient(
+								"TreeTagger", MorphologicalAnalysisService.class))
+						));
+			};
+		};
+		System.out.println(s.translate("en", "ja", "Hello Y's Men",
+				new Translation[]{new Translation("Y's Men", new String[]{"ワイズメン"})}, "ja"));
+	}
+
+	@Test
 	public void testEquals() throws Throwable{
 		TranslationWithTemporalDictionaryService s =  new TranslationCombinedWithBilingualDictionaryWithLongestMatchSearch(){
 			public ComponentServiceFactory getComponentServiceFactory() {
