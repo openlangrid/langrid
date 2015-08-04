@@ -102,13 +102,17 @@ public class ServletConfigServiceContext extends ServiceContext{
 
 	@Override
 	public String getRealPath(String path) {
-		return servletContext.getRealPath(path);
+		String ret = servletContext.getRealPath(path);
+		if(ret == null && !path.startsWith("/")){
+			ret = servletContext.getRealPath("/" + path);
+		}
+		return ret;
 	}
 
 	private synchronized void prepareProperties(){
 		if(props != null) return;
 		props = new FilePersistentProperties(new File(
-				servletContext.getRealPath("WEB-INF/node.properties")
+				getRealPath("WEB-INF/node.properties")
 				));
 	}
 

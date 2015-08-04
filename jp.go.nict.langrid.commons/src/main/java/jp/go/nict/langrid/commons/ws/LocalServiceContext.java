@@ -178,7 +178,7 @@ public class LocalServiceContext extends ServiceContext{
 	private String password = "pass";
 	private String remoteAddress ="127.0.0.1";
 	private String requestRootUrl = "http://localhost/";
-	private String realPathBase = "";
+	private String realPathBase = ".";
 	private FilePersistentProperties props = new FilePersistentProperties(
 			new File("local.properties"));
 }
