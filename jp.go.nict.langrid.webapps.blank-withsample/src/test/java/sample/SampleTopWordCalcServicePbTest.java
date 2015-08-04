@@ -2,10 +2,10 @@ package sample;
 
 import java.net.URL;
 
-import jp.go.nict.langrid.client.impl.protobuf.PbClientFactory;
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
+
+import jp.go.nict.langrid.client.protobufrpc.PbClientFactory;
 
 public class SampleTopWordCalcServicePbTest {
 	@Test

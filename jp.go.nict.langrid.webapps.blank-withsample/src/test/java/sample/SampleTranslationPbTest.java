@@ -2,11 +2,11 @@ package sample;
 
 import java.net.URL;
 
-import jp.go.nict.langrid.client.impl.protobuf.PbClientFactory;
-import jp.go.nict.langrid.service_1_2.translation.TranslationService;
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
+
+import jp.go.nict.langrid.client.protobufrpc.PbClientFactory;
+import jp.go.nict.langrid.service_1_2.translation.TranslationService;
 
 public class SampleTranslationPbTest {
 	@Test
