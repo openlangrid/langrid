@@ -143,6 +143,9 @@
         <dependent-module archiveName="jp.go.nict.langrid.servicecontainer.serviceexecutor.protobufrpc.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicecontainer.executor.protobufrpc/jp.go.nict.langrid.servicecontainer.executor.protobufrpc">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.wrapper.common.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.wrapper.common/jp.go.nict.langrid.wrapper.common">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="java-output-path"/>
         <property name="context-root" value="jp.go.nict.langrid.webapps.composite"/>
     </wb-module>
