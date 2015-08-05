@@ -68,6 +68,9 @@ public class LangridConstants {
 	public static final String ACTOR_SERVICE_CALLTREE
 		= "http://langrid.nict.go.jp/process/calltree";
 
+	public static final String ACTOR_SERVICE_INVOCATIONLOG
+		= "http://langrid.org/process/invocationlog";
+
 	/**
 	 * 
 	 * 
@@ -159,6 +162,13 @@ public class LangridConstants {
 	public static final String HTTPHEADER_STREAMING
 		= "X-Langrid-Streaming";
 
-	public static final String HTTPHEADER_TRANSFER_TO_SERVICE
+	public static final String HTTPHEADER_TRANSFER_TO_ENDPOINT
+		= "X-ServiceGrid-TransferToEndpoint-";
+
+	public static final String HTTPHEADER_SERVICECONTAINER_ENABLE_SERVICE_LOG
+		= "X-ServiceGrid-ServiceContainer-GatherInvocationLog";
+
+	// for backward compatibility
+	public static final String HTTPHEADER_TRANSFER_TO_ENDPOINT_OBSOLETE
 		= "X-Langrid-Service-";
 }
