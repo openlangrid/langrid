@@ -17,8 +17,6 @@
  */
 package jp.go.nict.langrid.commons.rpc;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-
 public class RpcHeader implements Cloneable{
 	public RpcHeader() {
 	}
@@ -29,7 +27,11 @@ public class RpcHeader implements Cloneable{
 	}
 	@Override
 	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
+		return new StringBuilder()
+				.append("namespace: ").append(namespace)
+				.append(", name: ").append(name)
+				.append(", value: ").append(value)
+				.toString();
 	}
 	public RpcHeader clone(){
 		return new RpcHeader(namespace, name, value);
