@@ -175,15 +175,18 @@ extends AbstractLangridServlet{
 			LangridConstants.HTTPHEADER_CALLNEST
 				, Integer.toString(nest)
 				);
-		@SuppressWarnings("unchecked")
 		Enumeration<String> en = request.getHeaderNames();
-		String transHeader = LangridConstants.HTTPHEADER_TRANSFER_TO_SERVICE.toLowerCase();
+		String transHeader1 = LangridConstants.HTTPHEADER_TRANSFER_TO_ENDPOINT.toLowerCase();
+		String transHeader2 = LangridConstants.HTTPHEADER_TRANSFER_TO_ENDPOINT_OBSOLETE.toLowerCase();
 		while(en.hasMoreElements()){
 			String name = en.nextElement().toLowerCase();
 			if(transHeaders.contains(name)){
 				headers.put(name, request.getHeader(name));
-			} else if(name.startsWith(transHeader)){
-				String n = name.substring(transHeader.length());
+			} else if(name.startsWith(transHeader1)){
+				String n = name.substring(transHeader1.length());
+				headers.put(n, request.getHeader(name));
+			} else if(name.startsWith(transHeader2)){
+				String n = name.substring(transHeader2.length());
 				headers.put(n, request.getHeader(name));
 			}
 		}
