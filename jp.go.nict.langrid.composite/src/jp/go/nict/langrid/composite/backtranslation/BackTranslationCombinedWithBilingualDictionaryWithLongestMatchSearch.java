@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import jp.go.nict.langrid.commons.lang.ExceptionUtil;
 import jp.go.nict.langrid.commons.util.ArrayUtil;
 import jp.go.nict.langrid.language.Language;
 import jp.go.nict.langrid.language.LanguagePair;
@@ -119,14 +118,14 @@ implements BackTranslationWithTemporalDictionaryService{
 
 			Morpheme[] analyzeResult = null;
 			{
-				log("invoke MorphologicalAnalysis.analyze");
+				info("invoke MorphologicalAnalysis.analyze");
 				if(s.morph != null){
 					try{
 						analyzeResult = s.morph.analyze(sl, src);
 					} catch(ServiceNotActiveException e){
-						log("service is not active: " + e.getServiceId());
+						warning("service is not active: " + e.getServiceId());
 					} catch(Exception e){
-						log("exception occurred: " + ExceptionUtil.getMessageWithStackTrace(e));
+						warning("exception occurred at MorphologicalAnalysisPL.", e);
 					}
 				}
 				if(analyzeResult == null || analyzeResult.length == 0){
@@ -143,7 +142,7 @@ implements BackTranslationWithTemporalDictionaryService{
 				tempDictResult = tempDictMatch.doSearchAllLongestMatchingTerms(
 					pair.getSource(), analyzeResult, tempDict);
 			} catch(Exception e){
-				log("exception occurred: " + ExceptionUtil.getMessageWithStackTrace(e));
+				warning("exception occurred at tempdictmatch.", e);
 			}
 			log("invoke TemporalBilingualDictionaryWithLongestMatchSearch.doSearchAllLongestMatchingTerms done("
 						+ tempDictResult.size() + "translations)");
@@ -168,9 +167,9 @@ implements BackTranslationWithTemporalDictionaryService{
 									sl, dl, firstSmc.getMorphemes()
 									);
 				} catch(ServiceNotActiveException e){
-					log("service is not active: " + e.getServiceId());
+					warning("service is not active: " + e.getServiceId());
 				} catch(Exception e){
-					log("exception occurred: " + ExceptionUtil.getMessageWithStackTrace(e));
+					warning("exception occurred at bdict search.", e);
 				}
 				log("invoke BilingualDictionaryWithLongestMatchSearchService.searchLongestMatchingTerms done(" +
 						dictResult.length + "translations)");

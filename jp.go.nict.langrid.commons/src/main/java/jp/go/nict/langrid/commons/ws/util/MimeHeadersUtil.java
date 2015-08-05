@@ -41,6 +41,20 @@ public class MimeHeadersUtil {
 	 * 
 	 * 
 	 */
+	public static boolean isTrue(MimeHeaders headers, String name){
+		String[] values = headers.getHeader(name);
+		if(values == null) return false;
+		if(values.length == 0) return false;
+		for(String v : values){
+			if(!v.equals("true")) return false;
+		}
+		return true;
+	}
+
+	/**
+	 * 
+	 * 
+	 */
 	public static String getJoinedValue(MimeHeaders headers, String name){
 		String[] values = headers.getHeader(name);
 		if(values == null) return null;

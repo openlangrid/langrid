@@ -29,13 +29,18 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
+import jp.go.nict.langrid.commons.ws.LangridConstants;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
+import jp.go.nict.langrid.commons.ws.util.MimeHeadersUtil;
 import jp.go.nict.langrid.servicecontainer.decorator.Decorator;
 import jp.go.nict.langrid.servicecontainer.decorator.FirstDecoratorChain;
 import jp.go.nict.langrid.servicecontainer.decorator.ServiceInvoker;
 import jp.go.nict.langrid.servicecontainer.executor.DynamicService;
 import jp.go.nict.langrid.servicecontainer.executor.StreamingNotifier;
 import jp.go.nict.langrid.servicecontainer.service.AbstractService;
+import jp.go.nict.langrid.servicecontainer.service.ComponentServiceFactory;
+import jp.go.nict.langrid.servicecontainer.service.component.LoggingComponentServiceFactory;
+import jp.go.nict.langrid.servicecontainer.service.component.logger.AppendableLogger;
 
 /**
  * 
@@ -62,14 +67,25 @@ public abstract class AbstractServiceFactory implements ServiceFactory{
 		if(service instanceof StreamingNotifier){
 			interfaces.add(StreamingNotifier.class);
 		}
+		boolean gil = MimeHeadersUtil.isTrue(
+				context.getRequestMimeHeaders(),
+				LangridConstants.HTTPHEADER_SERVICECONTAINER_GATAHER_INVOCATION_LOG);
+		StringBuilder il = null;
 		if(service instanceof AbstractService){
-			((AbstractService) service).setServiceName(serviceName);
+			AbstractService as = (AbstractService)service;
+			as.setServiceName(serviceName);
+			if(gil){
+				il = new StringBuilder();
+				ComponentServiceFactory cs = as.getComponentServiceFactory();
+				as.setComponentServiceFactory(new LoggingComponentServiceFactory(cs, new AppendableLogger(il)));
+			}
 		}
 		return interfaceClass.cast(Proxy.newProxyInstance(
 				classLoader, interfaces.toArray(new Class<?>[]{})
 				, new ServiceInvocationHandler(context, serviceName
 						, new FirstDecoratorChain(decorators, new ServiceInvoker())
-						, service)
+						, service
+						, il)
 				));
 	}
 

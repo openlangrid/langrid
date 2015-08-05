@@ -11,7 +11,7 @@
 						</property>
 					</bean>
 				</property>
-				<property name="logLevel" value="INFO" />
+				<property name="logLevel" value="WARNING" />
 			</bean>
 		</property>
 	</bean>

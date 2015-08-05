@@ -99,23 +99,32 @@ extends AbstractService{
 	}
 
 	public void info(String message){
-		if(logLevel >= Level.INFO.intValue())
+		if(logLevel <= Level.INFO.intValue()){
 			logger.info(message);
+		}
 	}
 
 	public void info(String format, Object... args){
-		if(logLevel >= Level.INFO.intValue())
+		if(logLevel <= Level.INFO.intValue()){
 			logger.info(String.format(format, args));
+		}
+	}
+
+	public void warning(String format, Object... args){
+		if(logLevel <= Level.WARNING.intValue())
+			logger.log(Level.WARNING, String.format(format, args));
 	}
 
 	public void warning(String message, Throwable t){
-		if(logLevel >= Level.WARNING.intValue())
+		if(logLevel <= Level.WARNING.intValue()){
 			logger.log(Level.WARNING, message, t);
+		}
 	}
 
 	public void severe(String message, Throwable t){
-		if(logLevel >= Level.SEVERE.intValue())
+		if(logLevel <= Level.SEVERE.intValue()){
 			logger.log(Level.SEVERE, message, t);
+		}
 	}
 
 	private int logLevel = Level.WARNING.intValue();

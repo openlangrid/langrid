@@ -165,7 +165,7 @@ public class LangridConstants {
 	public static final String HTTPHEADER_TRANSFER_TO_ENDPOINT
 		= "X-ServiceGrid-TransferToEndpoint-";
 
-	public static final String HTTPHEADER_SERVICECONTAINER_ENABLE_SERVICE_LOG
+	public static final String HTTPHEADER_SERVICECONTAINER_GATAHER_INVOCATION_LOG
 		= "X-ServiceGrid-ServiceContainer-GatherInvocationLog";
 
 	// for backward compatibility
