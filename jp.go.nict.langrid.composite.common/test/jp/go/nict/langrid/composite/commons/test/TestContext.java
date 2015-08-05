@@ -11,6 +11,7 @@ import jp.go.nict.langrid.client.ClientFactory;
 import jp.go.nict.langrid.client.RequestAttributes;
 import jp.go.nict.langrid.commons.beanutils.Converter;
 import jp.go.nict.langrid.commons.io.StreamUtil;
+import jp.go.nict.langrid.commons.lang.reflect.LoggingProxy;
 import jp.go.nict.langrid.commons.transformer.TransformationException;
 import jp.go.nict.langrid.commons.transformer.Transformer;
 import jp.go.nict.langrid.commons.util.function.Filters;
@@ -47,6 +48,7 @@ public class TestContext {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T> T createClient(String name, Class<T> clazz){
 		T c = factory.create(clazz, url(name));
 		RequestAttributes reqAttrs = (RequestAttributes)c;
@@ -54,7 +56,7 @@ public class TestContext {
 			reqAttrs.setUserId(userId);
 			reqAttrs.setPassword(password);
 		}
-		return c;
+		return (T)LoggingProxy.create(c);
 	}
 
 	public String getBaseUrl() {
