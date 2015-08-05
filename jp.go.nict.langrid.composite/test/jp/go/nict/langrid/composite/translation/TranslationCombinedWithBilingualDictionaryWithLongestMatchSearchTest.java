@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.junit.Test;
+
 import jp.go.nict.langrid.client.RequestAttributes;
 import jp.go.nict.langrid.client.ResponseAttributes;
 import jp.go.nict.langrid.client.soap.SoapClientFactory;
@@ -23,11 +25,25 @@ import jp.go.nict.langrid.service_1_2.translation.TranslationWithTemporalDiction
 import jp.go.nict.langrid.servicecontainer.service.ComponentServiceFactory;
 import jp.go.nict.langrid.servicecontainer.service.component.LoggingComponentServiceFactory;
 
-import org.junit.Test;
-
 public class TranslationCombinedWithBilingualDictionaryWithLongestMatchSearchTest {
 	@Test
 	public void testEnJaHello() throws Throwable{
+		TranslationWithTemporalDictionaryService s =  new TranslationCombinedWithBilingualDictionaryWithLongestMatchSearch(){
+			@SuppressWarnings("unchecked")
+			public ComponentServiceFactory getComponentServiceFactory() {
+				return new LoggingComponentServiceFactory(new ComponentServiceFactoryImpl(
+						Pair.<String, Object>create("TranslationPL", newSoapContext().createClient(
+								"KyotoUJServer", TranslationService.class)),
+						Pair.<String, Object>create("MorphologicalAnalysisPL", newSoapContext().createClient(
+								"TreeTagger", MorphologicalAnalysisService.class))
+						));
+			};
+		};
+		System.out.println(s.translate("en", "ja", "hello", new Translation[]{}, "ja"));
+	}
+
+	@Test
+	public void testEnJaHelloWithLog() throws Throwable{
 		TranslationWithTemporalDictionaryService s =  new TranslationCombinedWithBilingualDictionaryWithLongestMatchSearch(){
 			@SuppressWarnings("unchecked")
 			public ComponentServiceFactory getComponentServiceFactory() {
@@ -62,8 +78,8 @@ public class TranslationCombinedWithBilingualDictionaryWithLongestMatchSearchTes
 	@Test
 	public void testEquals() throws Throwable{
 		TranslationWithTemporalDictionaryService s =  new TranslationCombinedWithBilingualDictionaryWithLongestMatchSearch(){
+			@SuppressWarnings("unchecked")
 			public ComponentServiceFactory getComponentServiceFactory() {
-				final SoapClientFactory f = new SoapClientFactory();
 				return new LoggingComponentServiceFactory(new ComponentServiceFactoryImpl(
 						Pair.<String, Object>create("TranslationPL", newSoapContext().createClient(
 								"KyotoUJServer", TranslationService.class)),
@@ -80,6 +96,7 @@ public class TranslationCombinedWithBilingualDictionaryWithLongestMatchSearchTes
 		TranslationWithTemporalDictionaryService s =  new TranslationCombinedWithBilingualDictionaryWithLongestMatchSearch(){
 			public ComponentServiceFactory getComponentServiceFactory() {
 				return new ComponentServiceFactory() {
+					@SuppressWarnings("unchecked")
 					@Override
 					public <T> T getService(String invocationName, Class<T> interfaceClass) {
 						if(invocationName.equals("TranslationPL")){
@@ -92,7 +109,7 @@ public class TranslationCombinedWithBilingualDictionaryWithLongestMatchSearchTes
 								public ComponentServiceFactory getComponentServiceFactory() {
 									return new ComponentServiceFactory() {
 										@Override
-										public <T> T getService(String invocationName, Class<T> interfaceClass) {
+										public <U> U getService(String invocationName, Class<U> interfaceClass) {
 											try{
 												if(invocationName.equals("BilingualDictionaryWithLongestMatchCrossSearchPL1")){
 													return new SoapClientFactory().create(interfaceClass, new URL(
