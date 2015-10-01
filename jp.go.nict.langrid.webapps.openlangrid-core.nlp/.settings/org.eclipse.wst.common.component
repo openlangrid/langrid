@@ -269,6 +269,12 @@
         <dependent-module archiveName="jp.go.nict.langrid.service.language_1_2.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.service.language_1_2/jp.go.nict.langrid.service.language_1_2">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.commons.protobufrpc.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.commons.protobufrpc/jp.go.nict.langrid.commons.protobufrpc">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.commons.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.commons/jp.go.nict.langrid.commons">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="java-output-path" value="/jp.go.nict.langrid.webapps.langrid-core.nlp/build/classes"/>
         <property name="context-root" value="jp.go.nict.langrid.webapps.openlangrid-core.nlp"/>
     </wb-module>

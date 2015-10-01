@@ -33,6 +33,8 @@
 		<project>jp.go.nict.langrid.servlet.filter</project>
 		<project>jp.go.nict.langrid.servlet.filter.auth.langrid</project>
 		<project>jp.go.nict.langrid.servlet.initialize</project>
+		<project>jp.go.nict.langrid.commons.protobufrpc</project>
+		<project>jp.go.nict.langrid.commons</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
