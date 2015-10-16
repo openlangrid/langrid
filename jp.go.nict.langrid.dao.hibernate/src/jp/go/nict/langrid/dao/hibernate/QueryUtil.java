@@ -175,7 +175,8 @@ public class QueryUtil {
 		if(acrossGrids){
 			hql.append(" where (" +
 					"this_.gridId=:gridId" +
-					" or exists(select f from Federation f where f.sourceGridId=:gridId and this_.gridId=f.targetGridId and this_.federatedUseAllowed=true)" +
+					" or exists(select f from Federation f where f.sourceGridId=:gridId and this_.gridId=f.targetGridId"
+					+ " and f.connected=true and this_.federatedUseAllowed=true)" +
 					")");
 			params.put("gridId", serviceGridId);
 		} else{
