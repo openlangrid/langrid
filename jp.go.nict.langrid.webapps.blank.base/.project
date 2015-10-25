@@ -22,6 +22,10 @@
 		<project>jp.go.nict.langrid.servlet.filter</project>
 		<project>jp.go.nict.langrid.wrapper.common.db</project>
 		<project>jp.go.nict.langrid.wrapper.workflowsupport</project>
+		<project>jp.go.nict.langrid.commons</project>
+		<project>jp.go.nict.langrid.wrapper.common</project>
+		<project>jp.go.nict.langrid.client.protobufrpc</project>
+		<project>jp.go.nict.langrid.client.ws_1_2</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
