@@ -45,6 +45,7 @@ public class FederationAuthenticator extends AbstractLangridBasicAuthenticator{
 				);
 		String federationResponse = federationResponses != null ? StringUtil.join(federationResponses, ",") : null;
 		if(federationResponse != null){
+			// request about connecting/disconnecting federation
 			try{
 				Federation f = null;
 				String selfGridId = context.getSelfGridId();
@@ -66,6 +67,7 @@ public class FederationAuthenticator extends AbstractLangridBasicAuthenticator{
 				return false;
 			}
 		}
+		// service call or request of information sharing from other grid.
 		String[] sourceGridIds = context.getRequestMimeHeaders().getHeader(
 				LangridConstants.HTTPHEADER_FEDERATEDCALL_SOURCEGRIDID
 				);
@@ -89,6 +91,7 @@ public class FederationAuthenticator extends AbstractLangridBasicAuthenticator{
 		} catch(FederationNotFoundException e){
 			return false;
 		}
+		if(f.isRequesting() || !f.isConnected()) return false;
 		if(!authUser.equals(f.getTargetGridUserId())) return false;
 		if(!authPass.equals(f.getTargetGridAccessToken())) return false;
 		context.setAuthorized(callerUserGridId, callerUserId, authPass);
