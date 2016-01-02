@@ -7,6 +7,26 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
+import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.image.Image;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.tree.BaseTree;
+import org.apache.wicket.markup.html.tree.LabelIconPanel;
+import org.apache.wicket.markup.html.tree.LabelTree;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.util.WildcardListModel;
+
 import jp.go.nict.langrid.commons.util.CalendarUtil;
 import jp.go.nict.langrid.dao.MatchingCondition;
 import jp.go.nict.langrid.dao.Order;
@@ -22,28 +42,8 @@ import jp.go.nict.langrid.management.web.view.component.text.RequiredFromDateTex
 import jp.go.nict.langrid.management.web.view.component.text.RequiredToDateTextField;
 import jp.go.nict.langrid.management.web.view.page.ServiceManagerPage;
 import net.sf.json.JSONArray;
+import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
-
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.wicket.Component;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
-import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
-import org.apache.wicket.markup.ComponentTag;
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.image.Image;
-import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.tree.BaseTree;
-import org.apache.wicket.markup.html.tree.LabelIconPanel;
-import org.apache.wicket.markup.html.tree.LabelTree;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.util.WildcardListModel;
 
 /**
  * 
@@ -202,33 +202,38 @@ public class YourServiceCallsPage extends ServiceManagerPage {
 	}
 
 	private void buildChildrenTree(CallTreeNode parent, String callTree) {
-		JSONArray ja = JSONArray.fromObject(callTree);
-		for(int i = 0; i < ja.size(); i++) {
-			JSONObject jo = JSONObject.fromObject(ja.get(i));
-			CallTreeModel ctm = new CallTreeModel();
-			ctm.setServiceId(jo.getString("serviceId"));
-			if(jo.getString("serviceName") != null
-				&& !jo.getString("serviceName").equals("")
-				&& !jo.getString("serviceName").equals("null"))
-			{
-				ctm.setServiceName(jo.getString("serviceName"));
+		try{
+			JSONArray ja = JSONArray.fromObject(callTree);
+			for(int i = 0; i < ja.size(); i++) {
+				JSONObject jo = JSONObject.fromObject(ja.get(i));
+				CallTreeModel ctm = new CallTreeModel();
+				if(jo.isNullObject()) continue;
+				ctm.setServiceId(jo.getString("serviceId"));
+				if(jo.getString("serviceName") != null
+					&& !jo.getString("serviceName").equals("")
+					&& !jo.getString("serviceName").equals("null"))
+				{
+					ctm.setServiceName(jo.getString("serviceName"));
+				}
+				ctm.setInvocationName(jo.getString("invocationName"));
+				ctm.setResponseTime(String.valueOf(jo.getInt("responseTimeMillis")));
+				ctm.setFault(jo.getString("faultCode"));
+				ctm.setFaultString(jo.getString("faultString"));
+				ctm.setCopyright(jo.getString("serviceCopyright"));
+				ctm.setLicense(jo.getString("serviceLicense"));
+				CallTreeNode own = new CallTreeNode(
+					"<div class=\"calltree-header-break\">" + ctm.getServiceId() + "</div>"
+					, ctm.getFault() != null && !ctm.getFault().equals("null")
+						&& !ctm.getFault().equals(""));
+				own.add(new CallTreeNode(getDescriptionString(ctm)));
+				parent.add(own);
+				String ownCallTree = jo.getString("children");
+				if(ownCallTree != null && !ownCallTree.equals("")) {
+					buildChildrenTree(own, ownCallTree);
+				}
 			}
-			ctm.setInvocationName(jo.getString("invocationName"));
-			ctm.setResponseTime(String.valueOf(jo.getInt("responseTimeMillis")));
-			ctm.setFault(jo.getString("faultCode"));
-			ctm.setFaultString(jo.getString("faultString"));
-			ctm.setCopyright(jo.getString("serviceCopyright"));
-			ctm.setLicense(jo.getString("serviceLicense"));
-			CallTreeNode own = new CallTreeNode(
-				"<div class=\"calltree-header-break\">" + ctm.getServiceId() + "</div>"
-				, ctm.getFault() != null && !ctm.getFault().equals("null")
-					&& !ctm.getFault().equals(""));
-			own.add(new CallTreeNode(getDescriptionString(ctm)));
-			parent.add(own);
-			String ownCallTree = jo.getString("children");
-			if(ownCallTree != null && !ownCallTree.equals("")) {
-				buildChildrenTree(own, ownCallTree);
-			}
+		} catch(JSONException e){
+			return;
 		}
 	}
 	
