@@ -181,6 +181,17 @@
     <url-pattern>/wsdl/st/*</url-pattern>
     <url-pattern>/wsdl/*</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>DomainInitializer</servlet-name>
+    <servlet-class>jp.go.nict.langrid.servlet.initialize.DomainInitializer</servlet-class>
+    <init-param>
+      <param-name>dropAndCreate</param-name>
+      <param-value>false</param-value>
+    </init-param>
+    <load-on-startup>12</load-on-startup>
+  </servlet>
+
   <servlet>
     <servlet-name>Ranking</servlet-name>
     <servlet-class>jp.go.nict.langrid.servicesupervisor.advancedcontrol.servlet.RankingServlet</servlet-class>
