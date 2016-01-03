@@ -1,5 +1,6 @@
 package jp.go.nict.langrid.dao.initializer;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -10,9 +11,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import jp.go.nict.langrid.commons.beanutils.ConverterForJsonRpc;
 import jp.go.nict.langrid.commons.io.RegexFileNameFilter;
+import jp.go.nict.langrid.commons.io.StreamUtil;
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.DaoFactory;
@@ -43,6 +47,7 @@ public class DomainInitializer {
 			ServiceTypeDao stDao = f.createServiceTypeDao();
 			String path = baseDir;
 			if(dropAndCreate){
+				logger.info("dropAndCreate specified, refreshing entries..");
 				clearDomains(g, dDao, rtDao, stDao);
 				clearProtocols(g, pDao);
 			}
@@ -64,20 +69,26 @@ public class DomainInitializer {
 	}
 
 	private static void clearProtocols(Grid grid, ProtocolDao pdao) throws DaoException{
+		int count = 0;
 		for(Protocol p : pdao.listAllProtocols(grid.getGridId())){
 			pdao.deleteProtocol(p.getProtocolId());
+			count++;
 		}
+		logger.info(count + " protocols deleted.");
 	}
 
 	private static void clearDomains(Grid grid, DomainDao ddao, ResourceTypeDao rtDao, ServiceTypeDao stDao) throws DaoException{
 		Iterator<Domain> dit = grid.getSupportedDomains().iterator();
+		int count = 0;
 		while(dit.hasNext()){
 			String did = dit.next().getDomainId();
 			rtDao.deleteResourceType(did);
 			stDao.deleteServiceType(did);
 			ddao.deleteDomain(did);
 			dit.remove();
+			count++;
 		}
+		logger.info(count + " domains deleted.");
 	}
 
 	private static void initProtocols(File protocolsDir, ProtocolDao pdao, Grid grid)
@@ -153,18 +164,33 @@ public class DomainInitializer {
 	public static ServiceType getServiceType(File stJson, String domainId, ServiceTypeDao stdao)
 	throws DaoException, IOException, SQLException{
 		Map<String, Object> stMap = null;
-		InputStream is = new FileInputStream(stJson);
-		try{
-			stMap = json.parse(is);
-		} finally{
-			is.close();
+		{
+			InputStream is = new FileInputStream(stJson);
+			try{
+				stMap = json.parse(is);
+			} finally{
+				is.close();
+			}
 		}
 		ServiceType st = new ConverterForJsonRpc().convert(stMap, ServiceType.class);
 		st.setDomainId(domainId);
 		for(Map<String, Object> def : (List<Map<String, Object>>)stMap.get("interfaceDefinitions")){
 			String pid = def.get("protocolId").toString();
 			ServiceInterfaceDefinition d = new ServiceInterfaceDefinition(st, pid);
-			d.setDefinition(LobUtil.createBlob(new File(stJson.getParentFile(), def.get("definition").toString())));
+			byte[] content;
+			File f = new File(stJson.getParentFile(), def.get("definition").toString());
+			InputStream is = new FileInputStream(f);
+			try{
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				ZipOutputStream zos = new ZipOutputStream(baos);
+				zos.putNextEntry(new ZipEntry(f.getName()));
+				StreamUtil.transfer(is, zos);
+				zos.finish();
+				content = baos.toByteArray();
+			} finally{
+				is.close();
+			}
+			d.setDefinition(LobUtil.createBlob(content));
 			st.getInterfaceDefinitions().put(pid, d);
 		}
 		for(Map<String, Object> meta : (List<Map<String, Object>>)stMap.get("metaAttributes")){
