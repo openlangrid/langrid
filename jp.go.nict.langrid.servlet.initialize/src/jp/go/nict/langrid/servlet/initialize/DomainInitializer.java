@@ -32,7 +32,7 @@ import jp.go.nict.langrid.commons.transformer.TransformationException;
 import jp.go.nict.langrid.commons.transformer.Transformer;
 import jp.go.nict.langrid.commons.util.CollectionUtil;
 import jp.go.nict.langrid.commons.ws.Protocols;
-import jp.go.nict.langrid.commons.ws.param.ServletContextParameterContext;
+import jp.go.nict.langrid.commons.ws.param.ServletConfigParameterContext;
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.DaoFactory;
@@ -52,7 +52,7 @@ public class DomainInitializer extends HttpServlet{
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		try{
-			ParameterContext c = new ServletContextParameterContext(config.getServletContext());
+			ParameterContext c = new ServletConfigParameterContext(config);
 			String gridId = c.getValue("langrid.node.gridId");
 			if(gridId == null){
 				logger.info("langrid.node.gridId is not set. ignore initializing domain.");
