@@ -3,7 +3,5 @@
   "description": "Natural Langauge Processing domain defined by NICT",
   "domainId": "nict.nlp",
   "domainName": "Natural Language Processing",
-  "updatedDateTime": "2010/07/26 17:38:15.234 JST",
-  "ownerUserGridId": "kyotou.langrid",
-  "ownerUserId": "langrid"
+  "updatedDateTime": "2010/07/26 17:38:15.234 JST"
 }
