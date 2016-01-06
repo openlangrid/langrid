@@ -1,0 +1,7 @@
+{
+	"dbDictionary": "POSTGRESQL",
+	"driverName": "org.postgresql.Driver",
+	"password": "pass",
+	"url": "jdbc:postgresql:dburl",
+	"username": "user"
+}
