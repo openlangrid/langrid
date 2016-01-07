@@ -1,14 +1,14 @@
 {
 	"createdDateTime": "2012/08/31 10:03:32.690 JST",
-	"description": "Mophemes Dependency Parser",
+	"description": "Morphemes Dependency Parser",
 	"interfaceDefinitions": [{
-		"definition": "MophemesDependencyParser.wsdl",
+		"definition": "MorphemesDependencyParser.wsdl",
 		"protocolId": "SOAP_RPC_ENCODED",
 	}],
 	"metaAttributes": [{
 		"attributeId": "supportedLanguages",
 	}],
-	"serviceTypeId": "MophemesDependencyParser",
-	"serviceTypeName": "Mophemes Dependency Parser",
+	"serviceTypeId": "MorphemesDependencyParser",
+	"serviceTypeName": "Morphemes Dependency Parser",
 	"updatedDateTime": "2012/08/31 10:03:32.690 JST"
 }
