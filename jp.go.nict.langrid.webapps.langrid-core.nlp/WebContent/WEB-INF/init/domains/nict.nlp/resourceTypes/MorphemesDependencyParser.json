@@ -4,7 +4,7 @@
 	"metaAttributes": [{
 		"attributeId": "supportedLanguages"
 	}],
-	"resourceTypeId": "MophemesDependencyParser",
-	"resourceTypeName": "Mophemes Dependency Parser",
+	"resourceTypeId": "MorphemesDependencyParser",
+	"resourceTypeName": "Morphemes Dependency Parser",
 	"updatedDateTime": "2012/08/31 22:17:35.325 JST"
 }
