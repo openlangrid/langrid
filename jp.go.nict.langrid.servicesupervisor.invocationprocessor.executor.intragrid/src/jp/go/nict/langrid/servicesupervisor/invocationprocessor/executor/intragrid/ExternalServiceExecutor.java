@@ -31,14 +31,21 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.core.io.ClassPathResource;
 
 import jp.go.nict.langrid.commons.io.StreamUtil;
 import jp.go.nict.langrid.commons.net.URLUtil;
@@ -60,11 +67,6 @@ import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.Service
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.TooManyCallNestException;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.intragrid.balancer.Balancer;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.intragrid.balancer.MinLatencyBalancer;
-
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.ClassPathResource;
 
 public class ExternalServiceExecutor implements ServiceExecutor{
 	public ExternalServiceExecutor(
@@ -107,7 +109,6 @@ public class ExternalServiceExecutor implements ServiceExecutor{
 			)
 	throws DaoException, TooManyCallNestException, NoValidEndpointsException
 	, ProcessFailedException, IOException{
-		List<ServiceEndpoint> modified = new ArrayList<ServiceEndpoint>();
 		String appAuthKey = null;
 		if(service.getContainerType().equals(COMPOSITE)){
 			if(service.getAppAuthKey() != null){
@@ -136,6 +137,7 @@ public class ExternalServiceExecutor implements ServiceExecutor{
 		}
 
 		// System.out.println("atomic timeoutMillis = " + timeoutMillis);
+		Set<ServiceEndpoint> modified = new LinkedHashSet<ServiceEndpoint>();
 		Trio<Integer, Long, ServiceEndpoint> ret = doInvoke(
 				serviceContext, service.getServiceId()
 				, additionalUrlPart, appAuthKey, endpoints, headers
@@ -179,7 +181,7 @@ public class ExternalServiceExecutor implements ServiceExecutor{
 			, Map<String, String> headers
 			, byte[] input, HttpServletResponse output
 			, int connectionTimeoutMillis, int readTimeoutMillis, InstanceType instanceType
-			, Collection<ServiceEndpoint> modifiedEndpoints
+			, Set<ServiceEndpoint> modifiedEndpoints
 			)
 	throws IOException, NoValidEndpointsException, ProcessFailedException{
 		if(endpoints == null){
@@ -284,7 +286,10 @@ public class ExternalServiceExecutor implements ServiceExecutor{
 			}
 
 			// service invocation failed.
-			if(activeEndpoints.size() > 1){
+			if(activeEndpoints.size() > 1 &&
+					resCode != 500 && resCode != 400 &&
+					resCode != 405 && resCode != 415){
+				// turn ep disabled if errors, except that are caused by SOAP Fault, occurred.
 				ep.setEnabled(false);
 				ep.setDisabledByErrorDate(Calendar.getInstance());
 				if(exception != null){
@@ -320,6 +325,12 @@ public class ExternalServiceExecutor implements ServiceExecutor{
 				return Trio.create(resCode, -1L, null);
 			}
 			if(activeEndpoints.size() == 0){
+				// revive all endpoints since no endpoint alive.
+				for(ServiceEndpoint e : endpoints){
+					e.setEnabled(true);
+					modifiedEndpoints.add(e);
+				}
+				// transfer latest response
 				StreamUtil.transfer(
 						new ByteArrayInputStream(errorOut.toByteArray())
 						, output.getOutputStream()
