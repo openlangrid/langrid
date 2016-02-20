@@ -70,6 +70,18 @@
         <dependent-module archiveName="jmte-3.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/jmte/jmte-3.1.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.client.ws_1_2.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.client.ws_1_2/jp.go.nict.langrid.client.ws_1_2">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.commons.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.commons/jp.go.nict.langrid.commons">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.client.protobufrpc.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.client.protobufrpc/jp.go.nict.langrid.client.protobufrpc">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.client.ws_1_2.management.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.client.ws_1_2.management/jp.go.nict.langrid.client.ws_1_2.management">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="jp.go.nict.langrid.clientapps.blank.base"/>
         <property name="java-output-path" value="/jp.go.nict.langrid.clientapps.blank.base/build/classes"/>
     </wb-module>
