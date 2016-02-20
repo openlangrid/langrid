@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
+
 import jp.go.nict.langrid.commons.beanutils.Converter;
 import jp.go.nict.langrid.commons.io.DuplicatingInputStream;
 import jp.go.nict.langrid.commons.lang.ExceptionUtil;
@@ -47,8 +49,6 @@ import jp.go.nict.langrid.cosee.Endpoint;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSONException;
 import jp.go.nict.langrid.servicecontainer.executor.StreamingNotifier;
-
-import org.apache.commons.codec.binary.Base64;
 
 /**
  * 
@@ -79,7 +79,7 @@ implements InvocationHandler{
 	throws Throwable {
 		Map<String, Object> mimeHeaders = new HashMap<String, Object>();
 		final List<RpcHeader> rpcHeaders = new ArrayList<RpcHeader>();
-		Pair<Endpoint, Long> r = preprocessJsonRpc(mimeHeaders, rpcHeaders);
+		Pair<Endpoint, Long> r = preprocessJsonRpc(mimeHeaders, rpcHeaders, method, args);
 		Endpoint ep = r.getFirst();
 		long s = System.currentTimeMillis();
 		HttpURLConnection con = null;

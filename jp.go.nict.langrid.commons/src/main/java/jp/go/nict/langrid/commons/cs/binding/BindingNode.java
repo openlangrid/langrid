@@ -43,10 +43,20 @@ implements Serializable
 	public BindingNode(){
 	}
 
-	/**
-	 * 
-	 * 
-	 */
+	public BindingNode(String invocationName, Condition[] conditions, String serviceId){
+		this.invocationName = invocationName;
+		this.conditions = conditions;
+		this.serviceId = serviceId;
+	}
+
+	public BindingNode(String invocationName, String paramName, String op, String value, String serviceId){
+		this.invocationName = invocationName;
+		this.conditions = new Condition[]{
+				new Condition(paramName, op, value)
+		};
+		this.serviceId = serviceId;
+	}
+
 	public BindingNode(String invocationName, String gridId, String serviceId){
 		this.invocationName = invocationName;
 		this.gridId = gridId;
@@ -76,6 +86,13 @@ implements Serializable
 	 */
 	public void setInvocationName(String invocationName) {
 		this.invocationName = invocationName;
+	}
+
+	public Condition[] getConditions() {
+		return conditions;
+	}
+	public void setConditions(Condition[] conditions) {
+		this.conditions = conditions;
 	}
 
 	/**
@@ -152,6 +169,7 @@ implements Serializable
 	}
 
 	private String invocationName;
+	private Condition[] conditions;
 	private String gridId;
 	private String serviceId;
 	private List<TransportHeader> transportHeaders = new ArrayList<TransportHeader>();

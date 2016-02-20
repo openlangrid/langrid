@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import jp.go.nict.langrid.commons.util.ArrayUtil;
+import jp.go.nict.langrid.cosee.binding.NoBindingFoundException;
 import jp.go.nict.langrid.language.Language;
 import jp.go.nict.langrid.language.LanguagePair;
 import jp.go.nict.langrid.service_1_2.AccessLimitExceededException;
@@ -116,15 +117,12 @@ implements TranslationWithTemporalDictionaryService{
 			{
 				info("invoke MorphologicalAnalysis.analyze");
 				try{
+					log("calling service specified for MorphologicalAnalysisPL"
+							+ " with lang(%s) and text(length: %d).", sl, src.length());
 					if(s.morph != null){
-						log("calling service specified for MorphologicalAnalysisPL"
-								+ " with lang(%s) and text(length: %d).", sl, src.length());
 						analyzeResult = s.morph.analyze(sl, src);
 					}
-				} catch(ServiceNotActiveException e){
-					if(!e.getServiceId().equals("AbstractService")){
-						warning("service is not active: " + e.getServiceId());
-					}
+				} catch(NoBindingFoundException e){
 				} catch(Exception e){
 					warning("exception occurred at morphologicalanalysis.", e);
 				}
@@ -187,10 +185,7 @@ implements TranslationWithTemporalDictionaryService{
 					if(s.bdict != null){
 						dictResult = s.bdict.searchLongestMatchingTerms(sl, dl, m);
 					}
-				} catch(ServiceNotActiveException e){
-					if(!e.getServiceId().equals("AbstractService")){
-						warning("service is not active: " + e.getServiceId());
-					}
+				} catch(NoBindingFoundException e){
 				} catch(Exception e){
 					warning("exception occurred at bdict search.", e);
 				}

@@ -21,6 +21,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import jp.go.nict.langrid.commons.rpc.intf.Parameter;
+
 /**
  * 
  * 
@@ -46,5 +48,15 @@ public class MethodUtil {
 		} catch(InvocationTargetException e){
 			throw e.getTargetException();
 		}
+	}
+	
+	public static String[] getParameterNames(Method method){
+		java.lang.reflect.Parameter[] params = method.getParameters();
+		String[] ret = new String[params.length];
+		for(int i = 0; i < ret.length; i++){
+			Parameter p = params[i].getAnnotation(Parameter.class);
+			ret[i] = (p != null) ? p.name() : "arg" + i;
+		}
+		return ret;
 	}
 }

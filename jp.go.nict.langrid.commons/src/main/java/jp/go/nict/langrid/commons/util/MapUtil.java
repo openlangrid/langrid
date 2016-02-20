@@ -19,6 +19,7 @@
  */
 package jp.go.nict.langrid.commons.util;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -27,6 +28,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
+
+import jp.go.nict.langrid.commons.util.function.Supplier;
 
 /**
  * 
@@ -95,5 +98,15 @@ public class MapUtil {
 
 	public static SOMapBuilder newSOMapBuilder(){
 		return new SOMapBuilder();
+	}
+	
+	public static <K, V, C extends Collection<V>> void addValueToCollection(
+			Map<K, C> map, K key, V value, Supplier<C> sup){
+		C v = map.get(key);
+		if(v == null){
+			v = sup.get();
+			map.put(key, v);
+		}
+		v.add(value);
 	}
 }

@@ -18,6 +18,7 @@
  */
 package jp.go.nict.langrid.servicecontainer.executor.jsonrpc;
 
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.util.Collection;
 import java.util.List;
@@ -50,8 +51,9 @@ extends AbstractServiceExecutor{
 	 * 
 	 * 
 	 */
-	protected Pair<Endpoint, Long> preprocessJsonRpc(Map<String, Object> mimeHeaders, Collection<RpcHeader> rpcHeaders){
-		return preprocess(mimeHeaders, rpcHeaders);
+	protected Pair<Endpoint, Long> preprocessJsonRpc(Map<String, Object> mimeHeaders, Collection<RpcHeader> rpcHeaders,
+			Method method, Object[] args){
+		return preprocess(mimeHeaders, rpcHeaders, method, args);
 	}
 
 	/**

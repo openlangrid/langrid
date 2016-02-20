@@ -17,6 +17,9 @@
  */
 package jp.go.nict.langrid.servicecontainer.service.component;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.cache.Cache;
@@ -88,8 +91,8 @@ implements ComponentServiceFactory{
 	}
 
 	@Override
-	public <T> T getService(String invocationName, final Class<T> interfaceClass) {
-		long iid = RIProcessor.newInvocationId();
+	public <T> T getService(final String invocationName, final Class<T> interfaceClass) {
+		final long iid = RIProcessor.newInvocationId();
 		String name = getClass().getName() + "#" + hashCode() + ".rewritersInitialized";
 		RIProcessorContext pc = RIProcessor.getCurrentProcessorContext();
 		Object initialized = pc.getProperty(name);
@@ -97,8 +100,19 @@ implements ComponentServiceFactory{
 			RIProcessor.initEndpointRewriters(rewriters);
 			pc.setProperty(name, true);
 		}
-		Endpoint endpoint = RIProcessor.rewriteEndpoint(iid, invocationName, rewriters);
-		return getService(invocationName, iid, endpoint, interfaceClass);
+		return interfaceClass.cast(Proxy.newProxyInstance(
+				Thread.currentThread().getContextClassLoader(),
+				new Class<?>[]{interfaceClass},
+				new InvocationHandler() {
+					@Override
+					public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+						Endpoint endpoint = RIProcessor.rewriteEndpoint(
+								iid, invocationName, rewriters,
+								method, args);
+						return method.invoke(getService(invocationName, iid, endpoint, interfaceClass),
+								args);
+					}
+				}));
 	}
 
 	public abstract <T> T getService(

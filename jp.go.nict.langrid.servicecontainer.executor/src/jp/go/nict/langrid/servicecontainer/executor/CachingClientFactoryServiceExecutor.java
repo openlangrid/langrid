@@ -27,6 +27,8 @@ import java.util.Map;
 
 import javax.xml.soap.MimeHeaders;
 
+import com.google.common.cache.Cache;
+
 import jp.go.nict.langrid.client.ClientFactory;
 import jp.go.nict.langrid.client.RequestAttributes;
 import jp.go.nict.langrid.client.ResponseAttributes;
@@ -36,8 +38,6 @@ import jp.go.nict.langrid.commons.ws.util.MimeHeadersUtil;
 import jp.go.nict.langrid.cosee.Endpoint;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
 import jp.go.nict.langrid.servicecontainer.service.component.AbstractServiceExecutor;
-
-import com.google.common.cache.Cache;
 
 /**
  * 
@@ -62,7 +62,7 @@ implements InvocationHandler{
 			throws Throwable {
 		Map<String, Object> httpHeaders = new Hashtable<String, Object>();
 		List<RpcHeader> headers = new ArrayList<RpcHeader>();
-		Pair<Endpoint, Long> r = preprocess(httpHeaders, headers);
+		Pair<Endpoint, Long> r = preprocess(httpHeaders, headers, method, args);
 
 		Endpoint endpoint = r.getFirst();
 		long iid = r.getSecond();

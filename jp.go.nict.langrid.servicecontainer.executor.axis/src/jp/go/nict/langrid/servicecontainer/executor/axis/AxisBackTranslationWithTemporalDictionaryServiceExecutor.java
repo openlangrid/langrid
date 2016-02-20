@@ -51,7 +51,7 @@ extends AbstractAxisServiceExecutor
 implements BackTranslationWithTemporalDictionaryService{
 	public AxisBackTranslationWithTemporalDictionaryServiceExecutor(
 			String invocationName, long iid, Endpoint endpoint){
-		super(invocationName, iid, endpoint);
+		super(BackTranslationWithTemporalDictionaryService.class, invocationName, iid, endpoint);
 	}
 
 	@Override
@@ -69,7 +69,7 @@ implements BackTranslationWithTemporalDictionaryService{
 			BackTranslationWithTemporalDictionary port
 				= backTransLocator.getBackTranslationWithTemporalDictionary();
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub, sourceLang, intermediateLang, source, temporalDict, dictTargetLang);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				return convert(port.backTranslate(sourceLang, intermediateLang, source

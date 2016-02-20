@@ -19,14 +19,17 @@
 package jp.go.nict.langrid.cosee.binding;
 
 import java.text.ParseException;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import jp.go.nict.langrid.commons.cs.binding.BindingNode;
+import jp.go.nict.langrid.commons.cs.binding.Condition;
 import jp.go.nict.langrid.commons.cs.binding.DynamicBindingUtil;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
+import jp.go.nict.langrid.commons.util.MapUtil;
+import jp.go.nict.langrid.commons.util.function.Supplier;
 
 /**
  * 
@@ -51,7 +54,12 @@ public class TreeBindings{
 			String value = he.getValue();
 			if(value == null) continue;
 			for(BindingNode node : DynamicBindingUtil.decodeTree(value)){
-				bindings.put(node.getInvocationName(), node);
+				MapUtil.addValueToCollection(bindings, node.getInvocationName(), node, new Supplier<List<BindingNode>>(){
+					@Override
+					public List<BindingNode> get() {
+						return new ArrayList<BindingNode>();
+					}
+				});
 			}
 		}
 	}
@@ -64,30 +72,38 @@ public class TreeBindings{
 		bindings.putAll(other.bindings);
 	}
 
-	public BindingNode getBindingNodeFor(String invocationName){
-		return bindings.get(invocationName);
+	public BindingNode getBindingNodeFor(String invocationName, String methodName, String[] paramNames, Object[] args){
+		List<BindingNode> nodes = bindings.get(invocationName);
+		if(nodes != null) for(BindingNode node : nodes){
+			Condition[] conds = node.getConditions();
+			if(conds != null && conds.length > 0){
+				boolean matched = false;
+				for(Condition c : conds){
+					String p = c.getParam();
+					String op = c.getOp();
+					String val = c.getValue();
+					matched = false;
+					for(int i = 0; i < paramNames.length; i++){
+						if(paramNames[i].equals(p)){
+							if(op.equals("eq")){
+								matched = val.equals(args[i].toString());
+								break;
+							} else if(op.equals("ne")){
+								matched = !val.equals(args[i].toString());
+								break;
+							}
+						}
+					}
+					if(!matched) break;
+				}
+				if(matched) return node;
+			} else{
+				return node;
+			}
+		}
+		throw new NoBindingFoundException(invocationName);
 	}
 
-	/**
-	 * 
-	 * 
-	 */
-	public String getBindingFor(String invocationName){
-		BindingNode node = bindings.get(invocationName);
-		if(node == null) return null;
-		else return node.getServiceId();
-	}
-
-	/**
-	 * 
-	 * 
-	 */
-	public Collection<BindingNode> getChildrenNodes(String invocationName){
-		BindingNode node = bindings.get(invocationName);
-		if(node == null) return null;
-		else return node.getChildren();
-	}
-
-	private Map<String, BindingNode> bindings =
-		new HashMap<String, BindingNode>(); 
+	private Map<String, List<BindingNode>> bindings =
+		new HashMap<String, List<BindingNode>>(); 
 }

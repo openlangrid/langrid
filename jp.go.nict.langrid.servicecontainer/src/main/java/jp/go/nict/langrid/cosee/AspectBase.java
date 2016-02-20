@@ -110,18 +110,22 @@ public class AspectBase{
 	protected Endpoint rewriteEndpoint(
 			long processId, URI processUri
 			, long invocationId, String partnerLinkName
-			, URI serviceNamespace, Endpoint original
+			, URI serviceNamespace, Endpoint original,
+			String methodName, String[] paramNames, Object[] args
 			){
 		return rewriteEndpoint(processId, processUri
 				, invocationId, partnerLinkName
-				, serviceNamespace, original, rewriters);
+				, serviceNamespace, original,
+				methodName, paramNames, args,
+				rewriters);
 	}
 
 	protected Endpoint rewriteEndpoint(
 			long processId, URI processUri
 			, long invocationId, String partnerLinkName
-			, URI serviceNamespace, Endpoint original
-			, EndpointRewriter[] rewriters)
+			, URI serviceNamespace, Endpoint original,
+			String methodName, String[] paramNames, Object[] args, 
+			EndpointRewriter[] rewriters)
 	{
 		Map<String, Object> properties = idToProperties.get(processId);
 		Endpoint ep = original;
@@ -143,7 +147,8 @@ public class AspectBase{
 
 			for(EndpointRewriter r : rewriters){
 				ep = r.rewrite(ep, properties, processUri
-						, partnerLinkName, serviceNamespace);
+						, partnerLinkName, serviceNamespace,
+						methodName, paramNames, args);
 			}
 			if(ep.getServiceId() != null){
 				properties.put("invocation#" + invocationId, ep.getServiceId());
@@ -156,7 +161,8 @@ public class AspectBase{
 
 	protected void appendInvocationHeaders(
 			long processId, long invocationId
-			, String partnerLinkName
+			, String partnerLinkName,
+			String methodName, String[] paramNames, Object[] args
 			, Map<String, Object> mimeHeaders
 			, Collection<RpcHeader> rpcHeaders)
 	{
@@ -171,7 +177,7 @@ public class AspectBase{
 					properties
 					);
 			for(EndpointRewriter r : rewriters){
-				r.adjustProperties(tempProperties, partnerLinkName);
+				r.adjustProperties(tempProperties, partnerLinkName, methodName, paramNames, args);
 			}
 
 			// HTTPヘッダ情報をコピー

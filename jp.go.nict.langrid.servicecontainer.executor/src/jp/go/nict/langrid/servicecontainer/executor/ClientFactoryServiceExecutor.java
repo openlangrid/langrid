@@ -32,8 +32,6 @@ import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.commons.ws.util.MimeHeadersUtil;
 import jp.go.nict.langrid.cosee.Endpoint;
-import jp.go.nict.langrid.servicecontainer.executor.StreamingNotifier;
-import jp.go.nict.langrid.servicecontainer.executor.StreamingReceiver;
 import jp.go.nict.langrid.servicecontainer.service.component.AbstractServiceExecutor;
 
 /**
@@ -63,7 +61,7 @@ implements InvocationHandler{
 		}
 		Map<String, Object> httpHeaders = new Hashtable<String, Object>();
 		List<RpcHeader> headers = new ArrayList<RpcHeader>();
-		Pair<Endpoint, Long> r = preprocess(httpHeaders, headers);
+		Pair<Endpoint, Long> r = preprocess(httpHeaders, headers, method, args);
 
 		Endpoint endpoint = r.getFirst();
 		long iid = r.getSecond();

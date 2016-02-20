@@ -112,7 +112,7 @@ public abstract class AbstractEndpointRewriter implements EndpointRewriter{
 
 	public void adjustProperties(
 			Map<String, Object> properties
-			, String partnerLinkName){
+			, String partnerLinkName, String methodName, String[] paramNames, Object[] args){
 	}
 
 	protected Endpoint makeEndpoint(
