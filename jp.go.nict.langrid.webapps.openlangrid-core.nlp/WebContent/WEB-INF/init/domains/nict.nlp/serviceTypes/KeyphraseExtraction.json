@@ -1,0 +1,14 @@
+{
+	"createdDateTime": "2012/07/11 06:08:46.523 JST",
+	"description": "This service extracts key phrases.\nSee also http://langrid.org/developer/en/apidocs/jp/go/nict/langrid/service_1_2/keyphraseextract/KeyphraseExtractService.html",
+	"interfaceDefinitions": [{
+		"definition": "KeyphraseExtraction.wsdl",
+		"protocolId": "SOAP_RPC_ENCODED",
+	}],
+	"metaAttributes": [{
+		"attributeId": "supportedLanguages",
+	}],
+	"serviceTypeId": "KeyphraseExtraction",
+	"serviceTypeName": "KeyphraseExtraction",
+	"updatedDateTime": "2012/07/11 06:27:00.626 JST"
+}

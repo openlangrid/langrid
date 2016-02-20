@@ -1,0 +1,10 @@
+{
+	"createdDateTime": "2012/07/18 05:13:54.411 JST",
+	"description": "Named Entity Tagger",
+	"metaAttributes": [{
+		"attributeId": "supportedLanguages"
+	}],
+	"resourceTypeId": "NamedEntityTagger",
+	"resourceTypeName": "NamedEntityTagger",
+	"updatedDateTime": "2012/07/11 06:52:44.510 JST"
+}
