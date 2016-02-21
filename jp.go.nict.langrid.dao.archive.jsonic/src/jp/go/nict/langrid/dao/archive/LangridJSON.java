@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.sql.Blob;
@@ -15,6 +16,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import jp.go.nict.langrid.commons.io.StreamUtil;
@@ -62,13 +64,30 @@ public class LangridJSON extends JSON{
 		} else if(value instanceof Blob){
 			if(baseDir == null || prefix == null) throw new RuntimeException();
 			String fname = prefix + getKeys(context) + ".bin";
-			FileOutputStream os = new FileOutputStream(new File(baseDir, fname));
+			OutputStream os = new FileOutputStream(new File(baseDir, fname));
 			try{
 				StreamUtil.transfer(((Blob)value).getBinaryStream(), os); 
-				return fname;
 			} finally{
 				os.close();
 			}
+			try{
+				ZipInputStream zis = new ZipInputStream(new FileInputStream(new File(baseDir, fname)));
+				try{
+					ZipEntry ze = null;
+					int i = 1;
+					while((ze = zis.getNextEntry()) != null){
+						OutputStream eos = new FileOutputStream(new File(baseDir, fname + "." + (i++) + "." + ze.getName()));
+						try{
+							StreamUtil.transfer(zis, eos);
+						} finally{
+							eos.close();
+						}
+					}
+				} finally{
+					zis.close();
+				}
+			} catch(Exception e){}
+			return fname;
 		} else if(value instanceof InputStream){
 			if(baseDir == null || prefix == null) throw new RuntimeException();
 			String fname = prefix + getKeys(context) + ".bin";
