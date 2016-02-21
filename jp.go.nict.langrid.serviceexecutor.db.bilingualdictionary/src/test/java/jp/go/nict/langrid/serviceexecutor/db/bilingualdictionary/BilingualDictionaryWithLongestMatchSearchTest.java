@@ -2,14 +2,14 @@ package jp.go.nict.langrid.serviceexecutor.db.bilingualdictionary;
 
 import java.io.InputStream;
 
-import org.junit.Test;
-
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
 import jp.go.nict.langrid.serviceexecutor.db.ConnectionParameters;
 
+import org.junit.Test;
+
 public class BilingualDictionaryWithLongestMatchSearchTest {
 	@Test
-	public void test_search() throws Throwable{
+	public void test_xlel_21_dict_search() throws Throwable{
 		BilingualDictionaryWithLongestMatchSearch s = new BilingualDictionaryWithLongestMatchSearch();
 		InputStream is = BilingualDictionaryWithLongestMatchSearchTest.class.getResourceAsStream("ConnectionParameters.json");
 		try{
@@ -18,6 +18,6 @@ public class BilingualDictionaryWithLongestMatchSearchTest {
 			is.close();
 		}
 		s.setTableName("xlel_21_dict");
-		System.out.println(JSON.encode(s.search("en", "zh", "bank", "PARTIAL"), true));
+		System.out.println(JSON.encode(s.search("en", "es", "bank", "PARTIAL"), true));
 	}
 }
