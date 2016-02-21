@@ -19,8 +19,6 @@ package jp.go.nict.langrid.servlet.initialize;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
@@ -28,16 +26,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
 import jp.go.nict.langrid.commons.parameter.ParameterContext;
-import jp.go.nict.langrid.commons.transformer.TransformationException;
-import jp.go.nict.langrid.commons.transformer.Transformer;
-import jp.go.nict.langrid.commons.util.CollectionUtil;
-import jp.go.nict.langrid.commons.ws.Protocols;
 import jp.go.nict.langrid.commons.ws.param.ServletConfigParameterContext;
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.DaoFactory;
-import jp.go.nict.langrid.dao.ProtocolDao;
-import jp.go.nict.langrid.dao.entity.Protocol;
 
 /**
  * 
@@ -63,25 +55,6 @@ public class DomainInitializer extends HttpServlet{
 			jp.go.nict.langrid.dao.initializer.DomainInitializer.init(f, dc, gridId
 						, c.getBoolean("dropAndCreate", false)
 						, config.getServletContext().getRealPath("/WEB-INF/init"));
-			ProtocolDao dao = f.createProtocolDao();
-			Set<String> protos = new HashSet<String>(CollectionUtil.collect(
-					dao.listAllProtocols(),
-					new Transformer<Protocol, String>() {
-						@Override
-						public String transform(Protocol value)
-								throws TransformationException {
-							return value.getProtocolId();
-						}
-					}));
-			if(!protos.contains(Protocols.SOAP_RPCENCODED)){
-				dao.addProtocol(new Protocol(Protocols.SOAP_RPCENCODED));
-			}
-			if(!protos.contains(Protocols.PROTOBUF_RPC)){
-				dao.addProtocol(new Protocol(Protocols.PROTOBUF_RPC));
-			}
-			if(!protos.contains(Protocols.JSON_RPC)){
-				dao.addProtocol(new Protocol(Protocols.JSON_RPC));
-			}
 		} catch(DaoException e) {
 			throw new ServletException(e);
 		} catch(IOException e) {
