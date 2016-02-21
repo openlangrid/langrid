@@ -30,9 +30,6 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
-import jp.go.nict.langrid.commons.io.StreamUtil;
-import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.intragrid.HttpClientUtil;
-
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
@@ -42,6 +39,9 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+
+import jp.go.nict.langrid.commons.io.StreamUtil;
+import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.intragrid.HttpClientUtil;
 
 /**
  * 
