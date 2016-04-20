@@ -243,11 +243,6 @@ implements Filter{
 							request, new ByteArrayInputStream(res), -1
 							, expResponse.getStatus(), res.length, protocol
 					);
-					String olg = serviceContext.getInitParameter(InitParam.openLangrid.getParameterName());
-					if(olg != null && olg.equals("true")){
-						li.setRemoteHost("");
-						li.setRemoteAddress("");
-					}
 					fe.logProcess(c
 							, li
 							, "Server.serverException"

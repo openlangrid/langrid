@@ -293,11 +293,6 @@ implements Filter{
 						wrequest, new ByteArrayInputStream(responseBytes)
 						, millis, code, len, protocol
 						);
-				String olg = serviceContext.getInitParameter(InitParam.openLangrid.getParameterName());
-				if(olg != null && olg.equals("true")){
-					li.setRemoteHost("");
-					li.setRemoteAddress("");
-				}
 				fe.logProcess(c, li, soapFault.getFirst(), soapFault.getSecond(), true);
 			} catch(SystemErrorException e){
 				logger.log(Level.SEVERE
