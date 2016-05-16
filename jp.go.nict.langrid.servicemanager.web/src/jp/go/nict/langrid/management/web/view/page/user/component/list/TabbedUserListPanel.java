@@ -1,6 +1,7 @@
 package jp.go.nict.langrid.management.web.view.page.user.component.list;
 
 import jp.go.nict.langrid.dao.MatchingCondition;
+import jp.go.nict.langrid.dao.MatchingMethod;
 import jp.go.nict.langrid.dao.Order;
 import jp.go.nict.langrid.dao.OrderDirection;
 import jp.go.nict.langrid.management.logic.Scope;
@@ -17,7 +18,8 @@ public class TabbedUserListPanel extends Panel {
 		super(panelId);
 		UserSortableDataProvider provider = new UserSortableDataProvider(gridId, userId);
 		provider.setConditions(
-			new MatchingCondition[]{}
+			new MatchingCondition[]{new MatchingCondition(
+					"roles.roleName", "langriduser langridserviceprovider", MatchingMethod.CONTAINS)}
 			, new Order[]{new Order("organization", OrderDirection.ASCENDANT)}
 			, Scope.ALL);
 		add(new LanguageUserListPanel(gridId, "userList", provider));
