@@ -25,10 +25,15 @@ import java.sql.Clob;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
+
+import org.hibernate.Hibernate;
+import org.hibernate.Query;
+import org.hibernate.Session;
 
 import jp.go.nict.langrid.commons.beanutils.ConversionException;
 import jp.go.nict.langrid.commons.beanutils.Converter;
@@ -43,10 +48,6 @@ import jp.go.nict.langrid.dao.entity.Node;
 import jp.go.nict.langrid.dao.entity.Service;
 import jp.go.nict.langrid.dao.entity.User;
 import jp.go.nict.langrid.dao.hibernate.searchsupport.SearchSupport;
-
-import org.hibernate.Hibernate;
-import org.hibernate.Query;
-import org.hibernate.Session;
 
 /**
  * 
@@ -544,57 +545,83 @@ public class QueryUtil {
 				case LE:
 					operator = "<=";
 					break;
+				case CONTAINS:
+					operator = "in";
+					break;
 			}
-			Class<?> fieldClass = fields.get(name);
-			if(fieldClass != null){
-				if(Clob.class.isAssignableFrom(fieldClass)){
-					if(!(value instanceof Clob)){
-						value = Hibernate.createClob(value.toString());
+			int p = name.indexOf('.');
+			if(p != -1 && isFieldCollectionAttribute(entityClass, name.substring(0, p))){
+				String colName = name.substring(0, p);
+				String fName = name.substring(p + 1);
+				hql.append(String.format(" and (select count(*) from this_.%1$s %1$s where", colName));
+				boolean first = true;
+				for(String v : value.toString().split(" ")){
+					v = v.trim();
+					if(v.length() == 0) continue;
+					if(!first){
+						hql.append(" or");
+					} else{
+						first = false;
 					}
-				} else if(Blob.class.isAssignableFrom(fieldClass)){
-					if(!(value instanceof Blob)){
-						if(value instanceof byte[]){
-							value = Hibernate.createBlob((byte[])value);
-						} else{
-							value = Hibernate.createBlob(
-									StringUtil.toUTF8Bytes(value.toString())
-									);
+					hql.append(String.format(
+							" (:cpValue%4$d %3$s %1$s.%2$s)",
+							colName, fName, operator, index));
+					parameters.put("cpValue" + index, v);
+					index++;
+				}
+				hql.append(")=1");
+			} else{
+				Class<?> fieldClass = fields.get(name);
+				if(fieldClass != null){
+					if(Clob.class.isAssignableFrom(fieldClass)){
+						if(!(value instanceof Clob)){
+							value = Hibernate.createClob(value.toString());
+						}
+					} else if(Blob.class.isAssignableFrom(fieldClass)){
+						if(!(value instanceof Blob)){
+							if(value instanceof byte[]){
+								value = Hibernate.createBlob((byte[])value);
+							} else{
+								value = Hibernate.createBlob(
+										StringUtil.toUTF8Bytes(value.toString())
+										);
+							}
 						}
 					}
-				}
-
-				String attr = getFieldAttribute(entityClass, name);
-				if(attr != null){
-					name += "." + attr;
-					hql.append(String.format(
-							propQueryFormat, name, operator, index
-							));
-					parameters.put("propValue" + index, value);
-				} else{
-					try{
-						Object propValue = converter.convert(value, fieldClass);
+	
+					String attr = getFieldAttribute(entityClass, name);
+					if(attr != null){
+						name += "." + attr;
 						hql.append(String.format(
 								propQueryFormat, name, operator, index
 								));
-						parameters.put(
-								"propValue" + index
-								, propValue
-								);
-					} catch(ConversionException e){
-						logger.warning(String.format(
-								"condition %s is ignored"
-								+ " because failed to convert approprite type."
-								, c));
+						parameters.put("propValue" + index, value);
+					} else{
+						try{
+							Object propValue = converter.convert(value, fieldClass);
+							hql.append(String.format(
+									propQueryFormat, name, operator, index
+									));
+							parameters.put(
+									"propValue" + index
+									, propValue
+									);
+						} catch(ConversionException e){
+							logger.warning(String.format(
+									"condition %s is ignored"
+									+ " because failed to convert approprite type."
+									, c));
+						}
 					}
+				} else{
+					hql.append(String.format(
+							attrQueryFormat, index, operator
+							));
+					parameters.put("attrName" + index, name);
+					parameters.put("attrValue" + index, value);
 				}
-			} else{
-				hql.append(String.format(
-						attrQueryFormat, index, operator
-						));
-				parameters.put("attrName" + index, name);
-				parameters.put("attrValue" + index, value);
+				index++;
 			}
-			index++;
 		}
 		return hql.toString();
 	}
@@ -629,6 +656,12 @@ public class QueryUtil {
 				);
 	}
 
+	private static boolean isFieldCollectionAttribute(Class<?> entityClass, String fieldName){
+		return fieldCollectionAttributes.contains(
+				entityClass.getName() + "#" + fieldName
+				);
+	}
+
 	private static Boolean isString(Class<?> entityClass, String fieldName){
 		String fqname = entityClass.getName() + "#" + fieldName;
 		Boolean isString = fieldIsString.get(fqname);
@@ -651,6 +684,8 @@ public class QueryUtil {
 
 	private static Map<String, String> fieldAttributes
 			= new HashMap<String, String>();
+	private static Set<String> fieldCollectionAttributes
+			= new HashSet<String>();
 	private static Map<String, Boolean> fieldIsString
 			= new ConcurrentHashMap<String, Boolean>();
 	private static Converter converter = new Converter();
@@ -670,6 +705,7 @@ public class QueryUtil {
 		}
 		// for User
 		fieldAttributes.put(User.class.getName() + "#homepageUrl", "stringValue");
+		fieldCollectionAttributes.add(User.class.getName() + "#roles");
 		// for Node
 		fieldAttributes.put(Node.class.getName() + "#url", "stringValue");
 		fieldAttributes = Collections.unmodifiableMap(fieldAttributes);

@@ -90,6 +90,7 @@ public enum MatchingMethod {
 	 * 
 	 * 
 	 */
-	, LE
+	, LE,
+	CONTAINS,
 	;
 }
