@@ -39,6 +39,15 @@ public class ServiceInvocationHandler implements InvocationHandler{
 		this.invocationLog = invocationLog;
 	}
 
+	public ServiceInvocationHandler(
+			ServiceContext context, String serviceId
+			, DecoratorChain decoratorChain, Object service){
+		this.context = context;
+		this.serviceId = serviceId;
+		this.decoratorChain = decoratorChain;
+		this.service = service;
+	}
+
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args)
 	throws Throwable {
