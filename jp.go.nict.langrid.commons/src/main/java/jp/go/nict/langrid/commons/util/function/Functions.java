@@ -17,6 +17,8 @@
  */
 package jp.go.nict.langrid.commons.util.function;
 
+import jp.go.nict.langrid.commons.transformer.Transformer;
+
 public class Functions {
 	public static <T> Consumer<T> nullComsumer(){
 		return new Consumer<T>() {
@@ -31,6 +33,74 @@ public class Functions {
 			@Override
 			public boolean test(T value) {
 				return true;
+			}
+		};
+	}
+
+	public static interface RunnableWithException<E extends Throwable>{
+		void run() throws E;
+	}
+	public static <E extends Throwable> Runnable soften(
+			final RunnableWithException<E> r){
+		return new Runnable(){
+			@Override
+			public void run() {
+				try{
+					r.run();
+				} catch(Throwable e){
+					throw new RuntimeException(e);
+				}
+			}
+		};
+	}
+
+	public static interface ConsumerWithException<T, E extends Throwable>{
+		void accept(T value) throws E;
+	}
+	public static <T, E extends Throwable> Consumer<T> soften(
+			final ConsumerWithException<T, E> c){
+		return new Consumer<T>(){
+			@Override
+			public void accept(T value) {
+				try{
+					c.accept(value);
+				} catch(Throwable e){
+					throw new RuntimeException(e);
+				}
+			}
+		};
+	}
+
+	public static interface FunctionWithException<T, R, E extends Throwable>{
+		R apply(T value) throws E;
+	}
+	public static <T, R, E extends Throwable> Function<T, R> soften(
+			final FunctionWithException<T, R, E> f){
+		return new Function<T, R>(){
+			@Override
+			public R apply(T value) {
+				try{
+					return f.apply(value);
+				} catch(Throwable e){
+					throw new RuntimeException(e);
+				}
+			}
+		};
+	}
+
+	public static interface TransformerWithException<T, R, E extends Throwable>{
+		R transform(T value) throws E;
+	}
+	public static <T, R, E extends Throwable> Transformer<T, R> soften(
+			final TransformerWithException<T, R, E> f){
+		return new Transformer<T, R>(){
+			@Override
+			public R transform(T value) {
+				try{
+					return f.transform(value);
+				} catch(Throwable e){
+					throw new RuntimeException(e);
+				}
 			}
 		};
 	}
