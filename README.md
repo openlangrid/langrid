@@ -5,7 +5,7 @@ See http://langrid.org/ for the details of Language Grid and Service Grid Server
 --
 
 [![ServiceManager](https://github.com/openlangrid/langrid/raw/images/screenshots/language-grid-servicemanager_s2.jpg "Service manager")](https://github.com/openlangrid/langrid/raw/images/screenshots/language-grid-servicemanager.jpg)
-[![Toolbox](https://github.com/openlangrid/langrid/raw/images/screenshots/language-grid-toolbox_s2.jpg "Toolbox")](https://github.com/openlangrid/langrid/raw/images/screenshots/language-grid-toolbox.jpg)
+[![Toolbox](https://github.com/openlangrid/langrid/raw/images/screenshots/language-grid-toolbox_s3.jpg "Toolbox")](https://github.com/openlangrid/langrid/raw/images/screenshots/language-grid-toolbox.jpg)
 
 --
 
