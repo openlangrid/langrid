@@ -141,6 +141,26 @@
     <filter-name>FastestServiceSelector</filter-name>
     <url-pattern>/invoker/*</url-pattern>
   </filter-mapping>
+
+<!--
+  <filter>
+    <filter-name>RequestMonitor</filter-name>
+    <filter-class>org.langrid.filter.monitor.RequestMonitor</filter-class>
+    <init-param>
+      <param-name>userId</param-name>
+      <param-value>user.id</param-value>
+    </init-param>
+    <init-param>
+      <param-name>logFileDir</param-name>
+      <param-value>/Users/tomcat/tomcatlog/</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>RequestMonitor</filter-name>
+    <url-pattern>/invoker/*</url-pattern>
+  </filter-mapping>
+-->
+
   <filter>
     <filter-name>InvocationProcessor</filter-name>
     <filter-class>jp.go.nict.langrid.servicesupervisor.StreamingServiceSupervisor</filter-class>
