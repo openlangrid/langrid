@@ -1,4 +1,4 @@
 /Servers/
-/*/bin
-/*/bin.test
-/*/target
+/modules/*/bin
+/modules/*/bin.test
+/modules/*/target
