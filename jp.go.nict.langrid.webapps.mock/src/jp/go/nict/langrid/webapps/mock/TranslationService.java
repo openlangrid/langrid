@@ -60,6 +60,8 @@ implements jp.go.nict.langrid.service_1_2.translation.TranslationService{
 				throw new InvalidParameterException("sourceLang", "must be null.");
 			}
 		}
+		String result = pc.getValue("result");
+		if(result != null) return result;
 		return source;
 	}
 	
