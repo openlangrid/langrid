@@ -25,13 +25,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -306,10 +306,22 @@ public class Converter{
 				}
 			} else if(target.equals(String.class)){
 				return (T)value.toString();
+			} else if(target.equals(Date.class)){
+				if(value instanceof Number){
+					return (T)new Date(((Number)value).longValue());
+				} else if(value instanceof String){
+					try{
+						return (T)new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS Z").parse((String)value);
+					} catch(ParseException e){
+						throw new ConversionException(e);
+					}
+				} else{
+					throw new ConversionException(value + " can't be converted to Date");
+				}
 			} else if(target.equals(Calendar.class)){
 				Calendar cal = Calendar.getInstance();
 				if(value instanceof Number){
-					cal.setTimeInMillis(((BigDecimal)value).longValue());
+					cal.setTimeInMillis(((Number)value).longValue());
 				} else if(value instanceof String){
 					try{
 						cal.setTime(
