@@ -65,6 +65,12 @@ public class RpcAnnotationUtil {
 		}
 		return first;
 	}
+	
+	public static int getMethodMaxReturnObjectDepth(java.lang.reflect.Method method){
+		Method ma = method.getAnnotation(Method.class);
+		if(ma == null) return 4;
+		return ma.maxReturnObjectDepth();
+	}
 
 	public static Trio<String, String, String>[] getParameterInfo(
 			java.lang.reflect.Method intfMethod, java.lang.reflect.Method implMethod

@@ -37,6 +37,7 @@ import jp.go.nict.langrid.commons.beanutils.ConverterForJsonRpc;
 import jp.go.nict.langrid.commons.lang.ClassUtil;
 import jp.go.nict.langrid.commons.lang.StringUtil;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
+import jp.go.nict.langrid.commons.rpc.intf.RpcAnnotationUtil;
 import jp.go.nict.langrid.commons.rpc.json.JsonRpcRequest;
 import jp.go.nict.langrid.commons.rpc.json.JsonRpcResponse;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
@@ -79,9 +80,9 @@ public class JsonRpcDynamicHandler extends AbstractJsonRpcHandler implements Jso
 					return;
 				}
 				RIProcessor.start(sc);
+				Method method = null;
 				try{
 					Collection<Class<?>> interfaceClasses = f.getInterfaces();
-					Method method = null;
 					int paramLength = req.getParams() == null ? 0 : req.getParams().length;
 					for(Class<?> clz : interfaceClasses){
 						method = ClassUtil.findMethod(clz, req.getMethod(), paramLength);
@@ -135,7 +136,8 @@ public class JsonRpcDynamicHandler extends AbstractJsonRpcHandler implements Jso
 						}
 					}
 					w.flush();
-					JSON.encode(res, w);
+					int depth = RpcAnnotationUtil.getMethodMaxReturnObjectDepth(method);
+					new JSON(depth).format(res, w);
 					if(cb != null){
 						w.write(")");
 					}
