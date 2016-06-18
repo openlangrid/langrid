@@ -137,7 +137,7 @@ public class JsonRpcDynamicHandler extends AbstractJsonRpcHandler implements Jso
 					}
 					w.flush();
 					int depth = RpcAnnotationUtil.getMethodMaxReturnObjectDepth(method);
-					new JSON(depth).format(res, w);
+					new JSON(depth + 1).format(res, w);
 					if(cb != null){
 						w.write(")");
 					}
