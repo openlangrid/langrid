@@ -17,6 +17,8 @@
  */
 package jp.go.nict.langrid.commons.util.function;
 
+import java.util.function.Consumer;
+
 import jp.go.nict.langrid.commons.transformer.Transformer;
 
 public class Functions {
@@ -37,6 +39,14 @@ public class Functions {
 		};
 	}
 
+	@SuppressWarnings("unchecked")
+	public static <E extends Throwable> void unsoft(SoftenedException e) throws E{
+		Throwable t = e.getCause();
+		if(t instanceof RuntimeException) throw (RuntimeException)t;
+		if(t instanceof Error) throw (Error)t;
+		throw (E)t;
+	}
+
 	public static interface RunnableWithException<E extends Throwable>{
 		void run() throws E;
 	}
@@ -48,7 +58,7 @@ public class Functions {
 				try{
 					r.run();
 				} catch(Throwable e){
-					throw new RuntimeException(e);
+					throw new SoftenedException(e);
 				}
 			}
 		};
@@ -65,7 +75,7 @@ public class Functions {
 				try{
 					c.accept(value);
 				} catch(Throwable e){
-					throw new RuntimeException(e);
+					throw new SoftenedException(e);
 				}
 			}
 		};
@@ -82,7 +92,7 @@ public class Functions {
 				try{
 					return f.apply(value);
 				} catch(Throwable e){
-					throw new RuntimeException(e);
+					throw new SoftenedException(e);
 				}
 			}
 		};
@@ -99,7 +109,7 @@ public class Functions {
 				try{
 					return f.transform(value);
 				} catch(Throwable e){
-					throw new RuntimeException(e);
+					throw new SoftenedException(e);
 				}
 			}
 		};
