@@ -17,8 +17,6 @@
  */
 package jp.go.nict.langrid.commons.util.function;
 
-import java.util.function.Consumer;
-
 import jp.go.nict.langrid.commons.transformer.Transformer;
 
 public class Functions {
