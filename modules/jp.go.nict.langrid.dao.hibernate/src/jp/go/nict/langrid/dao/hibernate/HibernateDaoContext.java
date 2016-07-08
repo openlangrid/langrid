@@ -30,6 +30,27 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.dialect.Dialect;
+import org.hibernate.engine.EntityKey;
+import org.hibernate.event.EventListeners;
+import org.hibernate.event.PostCollectionRecreateEvent;
+import org.hibernate.event.PostCollectionRecreateEventListener;
+import org.hibernate.event.PostCollectionRemoveEvent;
+import org.hibernate.event.PostCollectionRemoveEventListener;
+import org.hibernate.event.PostCollectionUpdateEvent;
+import org.hibernate.event.PostCollectionUpdateEventListener;
+import org.hibernate.event.PostDeleteEvent;
+import org.hibernate.event.PostDeleteEventListener;
+import org.hibernate.event.PostInsertEvent;
+import org.hibernate.event.PostInsertEventListener;
+import org.hibernate.event.PostUpdateEvent;
+import org.hibernate.event.PostUpdateEventListener;
+
+import jp.go.nict.langrid.dao.AbstractDaoContext;
 import jp.go.nict.langrid.dao.ConnectException;
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
@@ -82,32 +103,14 @@ import jp.go.nict.langrid.dao.hibernate.queuedevent.QueuedEvent;
 import jp.go.nict.langrid.dao.hibernate.queuedevent.QueuedInsertEvent;
 import jp.go.nict.langrid.dao.hibernate.queuedevent.QueuedUpdateEvent;
 
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.AnnotationConfiguration;
-import org.hibernate.dialect.Dialect;
-import org.hibernate.engine.EntityKey;
-import org.hibernate.event.EventListeners;
-import org.hibernate.event.PostCollectionRecreateEvent;
-import org.hibernate.event.PostCollectionRecreateEventListener;
-import org.hibernate.event.PostCollectionRemoveEvent;
-import org.hibernate.event.PostCollectionRemoveEventListener;
-import org.hibernate.event.PostCollectionUpdateEvent;
-import org.hibernate.event.PostCollectionUpdateEventListener;
-import org.hibernate.event.PostDeleteEvent;
-import org.hibernate.event.PostDeleteEventListener;
-import org.hibernate.event.PostInsertEvent;
-import org.hibernate.event.PostInsertEventListener;
-import org.hibernate.event.PostUpdateEvent;
-import org.hibernate.event.PostUpdateEventListener;
-
 /**
  * 
  * 
  * @author Takao Nakaguchi
  */
-public class HibernateDaoContext implements DaoContext{
+public class HibernateDaoContext
+extends AbstractDaoContext
+implements DaoContext{
 	public <T> void addEntityListener(Class<T> clazz, EntityListener<T> listener){
 		listeners.add(clazz, listener);
 	}

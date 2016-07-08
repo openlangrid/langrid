@@ -27,6 +27,7 @@ import java.util.Properties;
 
 import jp.go.nict.langrid.commons.io.RegexFileNameFilter;
 import jp.go.nict.langrid.commons.util.function.Consumer;
+import jp.go.nict.langrid.dao.AbstractDaoContext;
 import jp.go.nict.langrid.dao.ConnectException;
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
@@ -37,7 +38,9 @@ import jp.go.nict.langrid.dao.TransactionListener;
  * 
  * @author Takao Nakaguchi
  */
-public class JsonicDaoContext implements DaoContext{
+public class JsonicDaoContext
+extends AbstractDaoContext
+implements DaoContext{
 	public File getBaseDir(){
 		return baseDir;
 	}
