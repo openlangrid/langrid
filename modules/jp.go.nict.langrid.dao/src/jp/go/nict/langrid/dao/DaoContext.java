@@ -21,7 +21,7 @@ package jp.go.nict.langrid.dao;
 
 import java.io.Serializable;
 
-import jp.go.nict.langrid.commons.util.function.Functions.ConsumerWithException;
+import jp.go.nict.langrid.commons.util.function.Functions.RunnableWithException;
 
 /**
  * 
@@ -114,6 +114,6 @@ public interface DaoContext {
 	 */
 //	Clob createClob(String text) throws IOException;
 
-	void transact(ConsumerWithException<DaoContext, DaoException> c)
+	void transact(RunnableWithException<DaoException> c)
 	throws DaoException;
 }
