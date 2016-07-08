@@ -32,12 +32,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import jp.go.nict.langrid.commons.transformer.TransformationException;
 import jp.go.nict.langrid.commons.transformer.Transformer;
-import jp.go.nict.langrid.commons.util.function.Predicate;
-import jp.go.nict.langrid.commons.util.stream.IteratorProvider;
-import jp.go.nict.langrid.commons.util.stream.Stream;
 
 /**
  * 
@@ -121,6 +119,7 @@ public class CollectionUtil {
 	 * 
 	 * 
 	 */
+	@SafeVarargs
 	public static <T, U> Map<T, U> asMap(Pair<T, U>... elements){
 		Map<T, U> map = new HashMap<T, U>();
 		for(Pair<T, U> p : elements){
@@ -133,6 +132,7 @@ public class CollectionUtil {
 	 * 
 	 * 
 	 */
+	@SafeVarargs
 	public static <T, U> Map<T, U> asMap(Map.Entry<T, U>... elements){
 		Map<T, U> map = new HashMap<T, U>();
 		for(Map.Entry<T, U> p : elements){
@@ -227,9 +227,5 @@ public class CollectionUtil {
 			if(pred.test(v)) ret.add(v);
 		}
 		return ret;
-	}
-
-	public static <T> Stream<T> stream(Iterable<T> collection){
-		return new Stream<T>(new IteratorProvider<T>(collection.iterator()));
 	}
 }

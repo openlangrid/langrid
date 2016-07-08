@@ -18,6 +18,7 @@
  */
 package jp.go.nict.langrid.commons.lang.block;
 
+@Deprecated
 public interface BlockP<P1> {
 	void execute(P1 p1);
 }

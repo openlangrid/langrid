@@ -18,9 +18,9 @@
 package jp.go.nict.langrid.commons.lang;
 
 import java.lang.reflect.Method;
+import java.util.function.LongConsumer;
 
 import jp.go.nict.langrid.commons.util.LapTimer;
-import jp.go.nict.langrid.commons.util.function.Consumer;
 
 public class GetMethodPerformance {
 	public class Test{
@@ -47,9 +47,9 @@ public class GetMethodPerformance {
 	}
 	@org.junit.Test
 	public void test() throws Exception{
-		Consumer<Long> print = new Consumer<Long>(){
+		LongConsumer print = new LongConsumer(){
 			@Override
-			public void accept(Long value) {
+			public void accept(long value) {
 				System.out.println("getMethod: " + value);
 			}
 		};

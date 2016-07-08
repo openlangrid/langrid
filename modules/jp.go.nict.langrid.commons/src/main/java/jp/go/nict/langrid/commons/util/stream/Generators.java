@@ -17,15 +17,10 @@
  */
 package jp.go.nict.langrid.commons.util.stream;
 
+import java.util.stream.IntStream;
+
 public class Generators {
-	public static Stream<Integer> intRange(final int begin, final int end){
-		return new Stream<Integer>(new Provider<Integer>() {
-			@Override
-			public Integer next() {
-				if(i == end) return null;
-				else return i++;
-			}
-			private int i = begin;
-		});
+	public static IntStream intRange(final int begin, final int end){
+		return IntStream.iterate(begin, v -> v + 1).limit(end);
 	}
 }

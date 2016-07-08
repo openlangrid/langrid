@@ -108,42 +108,43 @@ public class PacUtil {
 		ArrayList<Proxy> proxies = new ArrayList<Proxy>();
 
 		Proxy.Type previousProxyType = null;
-		Scanner s = new Scanner(result);
-		while(s.hasNext()){
-			if(s.findInLine(proxySettingPattern) == null){
-				throw new ProxyFormatException(result);
-			}
-
-			MatchResult m = s.match();
-/*
-			for(int i = 0; i <= m.groupCount(); i++){
-				System.out.println("(" + i + "): " + m.group(i));
-			}
-//*/
-			if(m.group(5) != null){
-				proxies.add(Proxy.NO_PROXY);
-			} else{
-				String pt = m.group(1).toUpperCase();
-				String host = m.group(2);
-				int port = Integer.parseInt(m.group(4));
-
-				Proxy.Type proxyType;
-				if(pt.length() > 0){
-					proxyType = proxyTypes.get(pt);
-					previousProxyType = proxyType;
-				} else{
-					proxyType = previousProxyType;
+		try(Scanner s = new Scanner(result)){
+			while(s.hasNext()){
+				if(s.findInLine(proxySettingPattern) == null){
+					throw new ProxyFormatException(result);
 				}
 
-				InetSocketAddress addr = resolveAddress ?
-						new InetSocketAddress(host, port)
-						: InetSocketAddress.createUnresolved(host, port);
+				MatchResult m = s.match();
+/*
+				for(int i = 0; i <= m.groupCount(); i++){
+					System.out.println("(" + i + "): " + m.group(i));
+				}
+//*/
+				if(m.group(5) != null){
+					proxies.add(Proxy.NO_PROXY);
+				} else{
+					String pt = m.group(1).toUpperCase();
+					String host = m.group(2);
+					int port = Integer.parseInt(m.group(4));
 
-				proxies.add(new Proxy(proxyType, addr));
+					Proxy.Type proxyType;
+					if(pt.length() > 0){
+						proxyType = proxyTypes.get(pt);
+						previousProxyType = proxyType;
+					} else{
+						proxyType = previousProxyType;
+					}
+
+					InetSocketAddress addr = resolveAddress ?
+							new InetSocketAddress(host, port)
+							: InetSocketAddress.createUnresolved(host, port);
+
+					proxies.add(new Proxy(proxyType, addr));
+				}
 			}
-		}
 
-		return proxies;
+			return proxies;
+		}
 	}
 
 	static final Pattern proxySettingPattern;

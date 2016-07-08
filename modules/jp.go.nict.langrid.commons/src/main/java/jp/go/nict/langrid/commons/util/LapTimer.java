@@ -1,5 +1,7 @@
 package jp.go.nict.langrid.commons.util;
 
+import java.util.function.LongConsumer;
+
 /*
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
  * Copyright (C) 2014 Language Grid Project.
@@ -17,7 +19,6 @@ package jp.go.nict.langrid.commons.util;
  * You should have received a copy of the GNU Lesser General Public License 
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-import jp.go.nict.langrid.commons.util.function.Consumer;
 
 public class LapTimer {
 	public LapTimer(){
@@ -30,7 +31,7 @@ public class LapTimer {
 		return d;
 	}
 
-	public void lapNanos(Consumer<Long> consumer){
+	public void lapNanos(LongConsumer consumer){
 		consumer.accept(lapNanos());
 		lap = System.nanoTime();
 	}
@@ -39,7 +40,7 @@ public class LapTimer {
 		return lapNanos() / 1000000;
 	}
 
-	public void lapMillis(Consumer<Long> consumer){
+	public void lapMillis(LongConsumer consumer){
 		consumer.accept(lapMillis());
 		lap = System.nanoTime();
 	}

@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class AssertUtil {
 	public static <T> void assertArrayEquals(T[] expected, T[] actual){

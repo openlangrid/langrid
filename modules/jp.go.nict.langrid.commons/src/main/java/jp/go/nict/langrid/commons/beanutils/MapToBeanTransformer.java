@@ -20,12 +20,12 @@ package jp.go.nict.langrid.commons.beanutils;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import jp.go.nict.langrid.commons.transformer.TransformationException;
 import jp.go.nict.langrid.commons.transformer.Transformer;
 import jp.go.nict.langrid.commons.util.FilteredIterator;
 import jp.go.nict.langrid.commons.util.Pair;
-import jp.go.nict.langrid.commons.util.function.Supplier;
 
 public class MapToBeanTransformer<U> extends ToBeanTransformer<Map<String, Object>, U> implements Transformer<Map<String, Object>, U>{
 	@SuppressWarnings("unchecked")

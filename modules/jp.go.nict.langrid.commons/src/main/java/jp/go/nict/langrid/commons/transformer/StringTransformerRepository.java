@@ -88,6 +88,7 @@ public class StringTransformerRepository {
 		if(ret != null) return (Transformer<String, T>)ret;
 
 		if(target.isEnum()){
+			@SuppressWarnings("rawtypes")
 			StringToEnumTransformer<? extends Enum<?>> t = 
 					new StringToEnumTransformer(target);
 			if(autoAppendEnumTransformers){

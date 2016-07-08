@@ -46,28 +46,29 @@ public class Example2 {
 				);
 
 		// プロキシセレクタを介さないよう、直接接続を行うソケットを作成。
-		Socket sock = new Socket(Proxy.NO_PROXY);
-		if((proxies.size() == 0) || ProxyUtil.DIRECT.equals(proxies)){
-			// プロキシ情報が無い場合、直接接続しに行く。
-			sock.connect(new InetSocketAddress("www.google.co.jp", 80));
-		} else{
-			// 見つかったプロキシの最初の要素を使用する。
-			InetSocketAddress addr = (InetSocketAddress)proxies.get(0).address();
-			if(addr.isUnresolved()){
-				// 解決されていない場合はconnectにそのまま渡すとUnknownHostException
-				// が発生するため、解決させる。
-				addr = new InetSocketAddress(addr.getHostName(), addr.getPort());
+		try(Socket sock = new Socket(Proxy.NO_PROXY)){
+			if((proxies.size() == 0) || ProxyUtil.DIRECT.equals(proxies)){
+				// プロキシ情報が無い場合、直接接続しに行く。
+				sock.connect(new InetSocketAddress("www.google.co.jp", 80));
+			} else{
+				// 見つかったプロキシの最初の要素を使用する。
+				InetSocketAddress addr = (InetSocketAddress)proxies.get(0).address();
+				if(addr.isUnresolved()){
+					// 解決されていない場合はconnectにそのまま渡すとUnknownHostException
+					// が発生するため、解決させる。
+					addr = new InetSocketAddress(addr.getHostName(), addr.getPort());
+				}
+				sock.connect(addr);
 			}
-			sock.connect(addr);
+	
+			// GETリクエストを送信。
+			sock.getOutputStream().write("GET http://www.google.co.jp/ HTTP/1.0\n\n".getBytes());
+	
+			// 結果を出力。
+			StreamUtil.transfer(
+					sock.getInputStream()
+					, System.out
+					);
 		}
-
-		// GETリクエストを送信。
-		sock.getOutputStream().write("GET http://www.google.co.jp/ HTTP/1.0\n\n".getBytes());
-
-		// 結果を出力。
-		StreamUtil.transfer(
-				sock.getInputStream()
-				, System.out
-				);
 	}
 }

@@ -21,7 +21,7 @@ package jp.go.nict.langrid.commons.net.proxy;
 
 import java.net.InetAddress;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 

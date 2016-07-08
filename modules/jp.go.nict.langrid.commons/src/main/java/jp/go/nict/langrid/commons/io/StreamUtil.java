@@ -37,11 +37,11 @@ import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 
 import jp.go.nict.langrid.commons.lang.block.BlockPE;
 import jp.go.nict.langrid.commons.nio.charset.CharsetUtil;
 import jp.go.nict.langrid.commons.util.function.Filters;
-import jp.go.nict.langrid.commons.util.function.Predicate;
 
 /**
  * 

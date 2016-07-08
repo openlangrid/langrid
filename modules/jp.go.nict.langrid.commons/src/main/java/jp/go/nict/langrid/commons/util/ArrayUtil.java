@@ -26,14 +26,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import jp.go.nict.langrid.commons.lang.ClassUtil;
 import jp.go.nict.langrid.commons.lang.reflect.GenericsUtil;
 import jp.go.nict.langrid.commons.transformer.TransformationException;
 import jp.go.nict.langrid.commons.transformer.Transformer;
-import jp.go.nict.langrid.commons.util.function.Predicate;
-import jp.go.nict.langrid.commons.util.stream.IteratorProvider;
-import jp.go.nict.langrid.commons.util.stream.Stream;
 
 /**
  * 
@@ -45,6 +44,7 @@ public class ArrayUtil {
 	 * 
 	 * 
 	 */
+	@SafeVarargs
 	public static <T> T[] array(T... elements){
 		return elements;
 	}
@@ -182,6 +182,7 @@ public class ArrayUtil {
 	 * 
 	 * 
 	 */
+	@SafeVarargs
 	public static <T> T[] append(T[] elements, T... elements2){
 		List<T> list = new ArrayList<T>(Arrays.asList(elements));
 		for(T e : elements2){
@@ -340,7 +341,7 @@ public class ArrayUtil {
 	}
 
 	public static <T> Stream<T> stream(T[] array){
-		return new Stream<T>(new IteratorProvider<T>(Arrays.asList(array).iterator()));
+		return Arrays.stream(array);
 	}
 
 	private static String[] emptyStrings_ = new String[]{};

@@ -22,13 +22,13 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import jp.go.nict.langrid.commons.lang.ClassUtil;
 import jp.go.nict.langrid.commons.transformer.TransformationException;
 import jp.go.nict.langrid.commons.transformer.Transformer;
 import jp.go.nict.langrid.commons.util.FilteredIterator;
 import jp.go.nict.langrid.commons.util.Pair;
-import jp.go.nict.langrid.commons.util.function.Supplier;
 
 public class BeanToBeanTransformer<T, U> extends ToBeanTransformer<T, U> implements Transformer<T, U>{
 	@SuppressWarnings("unchecked")
