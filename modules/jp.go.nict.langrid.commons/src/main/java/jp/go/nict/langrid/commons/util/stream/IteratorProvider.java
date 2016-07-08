@@ -19,6 +19,7 @@ package jp.go.nict.langrid.commons.util.stream;
 
 import java.util.Iterator;
 
+@Deprecated
 public class IteratorProvider<T> implements Provider<T>{
 	public IteratorProvider(Iterator<T> iterator){
 		this.iterator = iterator;

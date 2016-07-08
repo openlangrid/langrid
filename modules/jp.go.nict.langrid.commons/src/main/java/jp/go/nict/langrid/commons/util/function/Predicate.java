@@ -17,6 +17,7 @@
  */
 package jp.go.nict.langrid.commons.util.function;
 
+@Deprecated
 public interface Predicate<T> {
 	boolean test(T value);
 }

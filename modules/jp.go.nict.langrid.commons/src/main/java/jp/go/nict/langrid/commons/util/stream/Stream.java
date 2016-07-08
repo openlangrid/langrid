@@ -27,6 +27,7 @@ import jp.go.nict.langrid.commons.util.function.Consumer;
 import jp.go.nict.langrid.commons.util.function.Function;
 import jp.go.nict.langrid.commons.util.function.Predicate;
 
+@Deprecated
 public class Stream<T> {
 	public Stream(Provider<T> provider){
 		this.provider = provider;
