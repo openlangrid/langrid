@@ -88,7 +88,7 @@ public class ObjectUtilTest {
 	}
 	@Test
 	public void test_getProperty() throws Exception{
-		Assert.assertEquals(100, ObjectUtil.getProperty(new C4(100), "v"));
+		Assert.assertEquals(100, ((Integer)ObjectUtil.getProperty(new C4(100), "v")).intValue());
 	}
 	@Test
 	public void test_setProperty() throws Exception{
