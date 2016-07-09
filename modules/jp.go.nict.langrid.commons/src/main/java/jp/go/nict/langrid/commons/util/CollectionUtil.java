@@ -32,10 +32,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
-
-import jp.go.nict.langrid.commons.transformer.TransformationException;
-import jp.go.nict.langrid.commons.transformer.Transformer;
 
 /**
  * 
@@ -146,11 +144,9 @@ public class CollectionUtil {
 	 * 
 	 */
 	public static <T, U> List<U> collect(
-			Iterator<T> iterator, Transformer<T, U> transformer)
-		throws TransformationException
-	{
+			Iterator<T> iterator, Function<T, U> mapper){
 		List<U> r = new ArrayList<U>();
-		collect(iterator, r, transformer);
+		collect(iterator, r, mapper);
 		return r;
 	}
 
@@ -158,12 +154,9 @@ public class CollectionUtil {
 	 * 
 	 * 
 	 */
-	public static <T, U> List<U> collect(
-			Iterable<T> elements, Transformer<T, U> transformer)
-		throws TransformationException
-	{
+	public static <T, U> List<U> collect(Iterable<T> elements, Function<T, U> mapper){
 		List<U> r = new ArrayList<U>();
-		collect(elements.iterator(), r, transformer);
+		collect(elements.iterator(), r, mapper);
 		return r;
 	}
 
@@ -172,11 +165,9 @@ public class CollectionUtil {
 	 * 
 	 */
 	public static <T, U> void collect(
-			Iterator<T> iterator, Collection<U> target, Transformer<T, U> transformer)
-		throws TransformationException
-	{
+			Iterator<T> iterator, Collection<U> target, Function<T, U> mapper){
 		while(iterator.hasNext()){
-			target.add(transformer.transform(iterator.next()));
+			target.add(mapper.apply(iterator.next()));
 		}
 	}
 
