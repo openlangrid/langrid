@@ -59,6 +59,10 @@ public class ClassReader extends ByteArrayInputStream {
     private static final int CONSTANT_Double = 6;
     private static final int CONSTANT_NameAndType = 12;
     private static final int CONSTANT_Utf8 = 1;
+    private static final int CONSTANT_MethodHandle = 15;
+    private static final int CONSTANT_MethodType = 16;
+    private static final int CONSTANT_InvokeDynamic = 18;
+    
     /**
      * the constant pool.  constant pool indices in the class file
      * directly index into this array.  The value stored in this array
@@ -316,12 +320,14 @@ public class ClassReader extends ByteArrayInputStream {
                 case CONSTANT_Methodref:
                 case CONSTANT_InterfaceMethodref:
                 case CONSTANT_NameAndType:
+                case CONSTANT_InvokeDynamic:
 
                     readShort(); // class index or (12) name index
                     // fall through
 
                 case CONSTANT_Class:
                 case CONSTANT_String:
+                case CONSTANT_MethodType:
 
                     readShort(); // string index or class index
                     break;
@@ -348,6 +354,10 @@ public class ClassReader extends ByteArrayInputStream {
                     skipFully(len);
                     break;
 
+                case CONSTANT_MethodHandle:
+                    readShort();
+                    read();
+                    break;
                 default:
                     // corrupt class file
                     throw new IllegalStateException(
