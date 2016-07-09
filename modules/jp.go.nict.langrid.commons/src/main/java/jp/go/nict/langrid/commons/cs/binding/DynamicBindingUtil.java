@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Function;
 
 import jp.go.nict.langrid.commons.codec.URLCodec;
 import jp.go.nict.langrid.commons.lang.StringUtil;
@@ -150,6 +151,7 @@ public class DynamicBindingUtil {
 	 */
 	private static <T, U> Map<T, U> decodeMappings(String value
 			, Transformer<String, Pair<T, U>> transformer, Map<T, U> map)
+	throws TransformationException
 	{
 		for(String line : value.split(",")){
 			Pair<T, U> v = transformer.transform(line);
@@ -161,17 +163,10 @@ public class DynamicBindingUtil {
 	}
 
 	private static Transformer<Map.Entry<String, String>, String> defaultBindingToString =
-		new Transformer<Map.Entry<String, String>, String>(){
-			public String transform(Entry<String, String> value)
-					throws TransformationException {
-				return value.getKey() + ":" + URLCodec.encode(value.getValue());
-			}
-		};
+		value -> value.getKey() + ":" + URLCodec.encode(value.getValue());
 
 	private static Transformer<String, Pair<String, String>> stringToDefaultBinding =
-		new Transformer<String, Pair<String, String>>(){
-			public Pair<String, String> transform(String value)
-					throws TransformationException {
+		value -> {
 				String[] values = value.split(":");
 				if(values.length != 2){
 					throw new TransformationException(
@@ -180,22 +175,17 @@ public class DynamicBindingUtil {
 				}
 				return Pair.create(values[0], URLCodec.decode(values[1]));
 			}
-		};
+		;
 
 	private static Transformer<Map.Entry<String, Map<String, String>>, String> bindingOverrideToString =
-		new Transformer<Map.Entry<String, Map<String, String>>, String>(){
-			public String transform(Map.Entry<String, Map<String, String>> value)
-					throws TransformationException {
-				return StringUtil.join(
+		value -> StringUtil.join(
 						CollectionUtil.collect(value.getValue().entrySet()
 								, new BindingOverrideEntryToString(value.getKey())
 						).toArray(new String[]{})
 						, ","
 						);
-			}
-		};
 	private static class BindingOverrideEntryToString
-	implements Transformer<Map.Entry<String, String>, String>{
+	implements Function<Map.Entry<String, String>, String>{
 		/**
 		 * 
 		 * 
@@ -203,8 +193,7 @@ public class DynamicBindingUtil {
 		public BindingOverrideEntryToString(String serviceId){
 			this.serviceId = serviceId;
 		}
-		public String transform(Entry<String, String> value)
-				throws TransformationException {
+		public String apply(Entry<String, String> value){
 			return value.getKey()
 			+ ":" + URLCodec.encode(value.getValue())
 			+ "@" + serviceId;

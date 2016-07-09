@@ -23,8 +23,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-
-import jp.go.nict.langrid.commons.transformer.Transformer;
+import java.util.function.Function;
 
 /**
  * 
@@ -179,7 +178,7 @@ public final class StringUtil {
 	 * 
 	 */
 	public static <T> String join(
-			T[] elements, Transformer<T, String> textizer, String separator)
+			T[] elements, Function<T, String> textizer, String separator)
 	{
 		return join(elements, textizer, separator, 0, elements.length);
 	}
@@ -189,7 +188,7 @@ public final class StringUtil {
 	 * 
 	 */
 	public static <T> String join(
-			T[] elements, Transformer<T, String> textizer, String separator
+			T[] elements, Function<T, String> textizer, String separator
 			, int begin, int end)
 	{
 		if (begin < 0) {
@@ -203,10 +202,10 @@ public final class StringUtil {
 		}
 		if(elements.length == 0) return "";
 		if(begin == end) return "";
-		StringBuilder b = new StringBuilder(textizer.transform(elements[0]));
+		StringBuilder b = new StringBuilder(textizer.apply(elements[0]));
 		for(int i = (begin + 1); i < end; i++){
 			b.append(separator);
-			b.append(textizer.transform(elements[i]));
+			b.append(textizer.apply(elements[i]));
 		}
 		return b.toString();
 	}

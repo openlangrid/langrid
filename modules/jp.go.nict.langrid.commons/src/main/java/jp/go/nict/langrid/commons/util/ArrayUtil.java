@@ -32,7 +32,6 @@ import java.util.stream.Stream;
 
 import jp.go.nict.langrid.commons.lang.ClassUtil;
 import jp.go.nict.langrid.commons.lang.reflect.GenericsUtil;
-import jp.go.nict.langrid.commons.transformer.Transformer;
 
 /**
  * 
@@ -266,7 +265,7 @@ public class ArrayUtil {
 			T[] elements, Function<T, U> mapper)
 	{
 		Class<?>[] types = GenericsUtil.getTypeArgumentClasses(
-				mapper.getClass(), Transformer.class);
+				mapper.getClass(), Function.class);
 		if(types == null || types[1] == null){
 			throw new IllegalArgumentException(
 					"failed to resolve target class"
