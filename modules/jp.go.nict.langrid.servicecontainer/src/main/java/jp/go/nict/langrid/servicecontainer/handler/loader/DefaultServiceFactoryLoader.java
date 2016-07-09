@@ -2,8 +2,8 @@ package jp.go.nict.langrid.servicecontainer.handler.loader;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Consumer;
 
-import jp.go.nict.langrid.commons.util.function.Consumer;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.servicecontainer.handler.ServiceFactory;
 import jp.go.nict.langrid.servicecontainer.handler.TargetServiceFactory;
