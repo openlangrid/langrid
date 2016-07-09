@@ -26,6 +26,8 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import jp.go.nict.langrid.service_1_2.foundation.usermanagement.UserEntry;
+
 /**
  * 
  * 
@@ -35,40 +37,18 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class GridEntry
 implements Serializable
 {
-	/**
-	 * 
-	 * Constructor.
-	 * 
-	 */
 	public GridEntry(){
 	}
 
-	/**
-	 * 
-	 * Constructor.
-	 * @param userId User ID
-	 * @param organization Organization name
-	 * @param representative Agent
-	 * @param emailAddress E-mail address
-	 * @param homepageUrl Homepage URL
-	 * @param address Address
-	 * @param registeredDate Date of registration
-	 * @param updatedDate Date of update
-	 * 
-	 */
-	public GridEntry(String gridId, String organization, String representative
-			, String emailAddress, String homepageUrl, String address
-			, Calendar registeredDate, Calendar updatedDate) {
+	public GridEntry(String gridId, String gridName, String url, UserEntry operator, Calendar registeredDate,
+			Calendar updatedDate) {
 		this.gridId = gridId;
-		this.organization = organization;
-		this.representative = representative;
-		this.emailAddress = emailAddress;
-		this.homepageUrl = homepageUrl;
-		this.address = address;
+		this.gridName = gridName;
+		this.url = url;
+		this.operator = operator;
 		this.registeredDate = registeredDate;
 		this.updatedDate = updatedDate;
 	}
-
 	@Override
 	public boolean equals(Object value){
 		return EqualsBuilder.reflectionEquals(this, value);
@@ -84,168 +64,59 @@ implements Serializable
 		return ToStringBuilder.reflectionToString(this);
 	}
 
-	/**
-	 * 
-	 * 
-	 */
 	public String getGridId() {
 		return gridId;
 	}
 
-	/**
-	 * 
-	 * 
-	 */
-	public void setGridId(String gridId){
+	public void setGridId(String gridId) {
 		this.gridId = gridId;
 	}
 
-	/**
-	 * 
-	 * Gets organization.
-	 * @return Organization
-	 * 
-	 */
-	public String getOrganization() {
-		return organization;
+	public String getGridName() {
+		return gridName;
 	}
 
-	/**
-	 * 
-	 * Sets organization.
-	 * @param organization Attribute organization
-	 * 
-	 */
-	public void setOrganization(String organization) {
-		this.organization = organization;
+	public void setGridName(String gridName) {
+		this.gridName = gridName;
 	}
 
-	/**
-	 * 
-	 * Gets the representative's name.
-	 * @return Agent name
-	 * 
-	 */
-	public String getRepresentative(){
-		return representative;
+	public String getUrl() {
+		return url;
 	}
 
-	/**
-	 * 
-	 * Sets the representative's name.
-	 * @param representative Agent name
-	 * 
-	 */
-	public void setRepresentative(String representative){
-		this.representative = representative;
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
-	/**
-	 * 
-	 * Gets e-mail address.
-	 * @return E-mail address
-	 * 
-	 */
-	public String getEmailAddress() {
-		return emailAddress;
+	public UserEntry getOperator() {
+		return operator;
 	}
 
-	/**
-	 * 
-	 * Sets e-mail address.
-	 * @param emailAddress E-mail address
-	 * 
-	 */
-	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
+	public void setOperator(UserEntry operator) {
+		this.operator = operator;
 	}
 
-	/**
-	 * 
-	 * Gets homepage URL.
-	 * @return Homepage URL
-	 * 
-	 */
-	public String getHomepageUrl() {
-		return homepageUrl;
-	}
-
-	/**
-	 * 
-	 * Sets homepage URL.
-	 * @param homepageUrl Homepage URL
-	 * 
-	 */
-	public void setHomepageUrl(String homepageUrl) {
-		this.homepageUrl = homepageUrl;
-	}
-
-	/**
-	 * 
-	 * Gets address.
-	 * @return Address
-	 * 
-	 */
-	public String getAddress() {
-		return address;
-	}
-
-	/**
-	 * 
-	 * Sets address.
-	 * @param address Address
-	 * 
-	 */
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	/**
-	 * 
-	 * Gets the date of registration.
-	 * @return Date of registration
-	 * 
-	 */
 	public Calendar getRegisteredDate() {
 		return registeredDate;
 	}
 
-	/**
-	 * 
-	 * Sets the date of registration.
-	 * @param registeredDate Date of registration
-	 * 
-	 */
 	public void setRegisteredDate(Calendar registeredDate) {
 		this.registeredDate = registeredDate;
 	}
 
-	/**
-	 * 
-	 * Gets date and time of change.
-	 * @return Date of change
-	 * 
-	 */
 	public Calendar getUpdatedDate() {
 		return updatedDate;
 	}
 
-	/**
-	 * 
-	 * Sets date and time of change.
-	 * @param updatedDate Date of update
-	 * 
-	 */
 	public void setUpdatedDate(Calendar updatedDate) {
 		this.updatedDate = updatedDate;
 	}
 
+
 	private String gridId;
-	private String organization;
-	private String representative;
-	private String emailAddress;
-	private String homepageUrl;
-	private String address;
+	private String gridName;
+	private String url;
+	private UserEntry operator;
 	private Calendar registeredDate;
 	private Calendar updatedDate;
 
