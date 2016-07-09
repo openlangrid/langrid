@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -65,11 +64,9 @@ import jp.go.nict.langrid.commons.rpc.json.JsonRpcRequest;
 import jp.go.nict.langrid.commons.rpc.json.JsonRpcResponse;
 import jp.go.nict.langrid.commons.transformer.UTF8ByteArrayToStringTransformer;
 import jp.go.nict.langrid.commons.util.ArrayUtil;
-import jp.go.nict.langrid.commons.util.CollectionUtil;
 import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.commons.util.Trio;
-import jp.go.nict.langrid.commons.util.function.Function;
-import jp.go.nict.langrid.commons.util.function.Predicate;
+import jp.go.nict.langrid.commons.util.function.Functions;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.commons.ws.ServletConfigServiceContext;
 import jp.go.nict.langrid.commons.ws.ServletServiceContext;
@@ -100,27 +97,19 @@ public class JsonRpcServlet extends HttpServlet {
 		this.dumpRequests = ct.getBoolean("dumpRequests", false);
 		this.displayProcessTime = ct.getBoolean("displayProcessTime", false);
 		this.getMethodEnabled = ct.getBoolean("getMethodEnabled", true);
-		this.additionalResponseHeaders = CollectionUtil.stream(Arrays.asList(
+		this.additionalResponseHeaders = Arrays.stream(
 				ct.getStrings("additionalResponseHeaders", new String[]{})
-				))
-				.map(new Function<String, String[]>(){
-					public String[] apply(String value) {
-						try {
-							return URLDecoder.decode(value, "UTF-8").split(":", 2);
-						} catch (UnsupportedEncodingException e) {
-							throw new RuntimeException(e);
-						}
+				)
+				.map(Functions.soften(value -> {
+					return URLDecoder.decode(value, "UTF-8").split(":", 2);
+				}))
+				.filter(value -> {
+					if(value.length != 2){
+						logger.warning("invalid additional response header: " + value[0]);
+						return false;
 					}
-				})
-				.filter(new Predicate<String[]>() {
-					public boolean test(String[] value) {
-						if(value.length != 2){
-							logger.warning("invalid additional response header: " + value[0]);
-							return false;
-						}
-						return true;
-					}
-				}).asList().toArray(new String[][]{});
+					return true;
+				}).toArray(n -> new String[n][]);
 		this.defaultLoaders = ServicesUtil.getServiceFactoryLoaders(getClass());
 		String mapping = ct.getString("mapping", "");
 		for(String s : mapping.split(",")){

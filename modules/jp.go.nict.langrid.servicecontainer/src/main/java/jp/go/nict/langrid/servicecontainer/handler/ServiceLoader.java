@@ -33,7 +33,6 @@ import jp.go.nict.langrid.commons.io.FileNameUtil;
 import jp.go.nict.langrid.commons.parameter.ParameterContext;
 import jp.go.nict.langrid.commons.transformer.ClassToInstanceTransformer;
 import jp.go.nict.langrid.commons.transformer.StringToClassTransformer;
-import jp.go.nict.langrid.commons.util.ArrayUtil;
 import jp.go.nict.langrid.commons.util.function.Filters;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.commons.ws.io.ServiceContextFileResolver;
@@ -56,11 +55,11 @@ public class ServiceLoader {
 		this.serviceContext = serviceContext;
 		this.serviceFactoryLoaders = new ArrayList<ServiceFactoryLoader>(Arrays.asList(loaders));
 		ParameterContext pc = new ServiceContextParameterContext(serviceContext);
-		ArrayUtil.stream(pc.getStrings("serviceFactoryLoaders", new String[]{}))
+		Arrays.stream(pc.getStrings("serviceFactoryLoaders", new String[]{}))
 			.map(new StringToClassTransformer<ServiceFactoryLoader>(true))
 			.filter(Filters.<Class<ServiceFactoryLoader>>nonNull())
 			.map(new ClassToInstanceTransformer<ServiceFactoryLoader>())
-			.into(serviceFactoryLoaders)
+			.forEach(v -> serviceFactoryLoaders.add(v));
 			;
 		this.servicesPath = new ServiceContextFileResolver(serviceContext).resolve(
 			pc.getString("servicesPath", "WEB-INF/services"));
