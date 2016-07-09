@@ -5,9 +5,6 @@
        <dependent-module archiveName="activation.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/axis/activation.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="axis.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/axis/axis.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module archiveName="mail.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/axis/mail.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
@@ -59,12 +56,6 @@
         <dependent-module archiveName="wsdl4j-1.5.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/ws/wsdl4j-1.5.1.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="jp.go.nict.langrid.client.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.client/jp.go.nict.langrid.client">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="jp.go.nict.langrid.client.axis.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.client.axis/jp.go.nict.langrid.client.axis">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.client.soap.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.client.soap/jp.go.nict.langrid.client.soap">
             <dependency-type>uses</dependency-type>
         </dependent-module>
@@ -108,6 +99,15 @@
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.commons.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.commons/jp.go.nict.langrid.commons">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.client.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.client/jp.go.nict.langrid.client">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.client.axis.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.client.axis/jp.go.nict.langrid.client.axis">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="axis-java8-1.4.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/axis/axis-java8-1.4.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="context-root" value="jp.go.nict.langrid.webapps.mock"/>

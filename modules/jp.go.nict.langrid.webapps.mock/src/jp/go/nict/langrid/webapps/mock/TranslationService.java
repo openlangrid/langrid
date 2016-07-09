@@ -19,6 +19,8 @@
  */
 package jp.go.nict.langrid.webapps.mock;
 
+import java.util.function.Supplier;
+
 import jp.go.nict.langrid.commons.parameter.ParameterContext;
 import jp.go.nict.langrid.commons.rpc.intf.Description;
 import jp.go.nict.langrid.commons.rpc.intf.Service;
@@ -41,7 +43,7 @@ import jp.go.nict.langrid.servicecontainer.handler.RIProcessor;
  * @author $Author: nakaguchi $
  * @version $Revision: 29679 $
  */
-@Service(descriptions=@Description(lang="en", value="A mock implementation of TranslationService."))
+@Service(descriptions=@Description(lang="en", value="A mock implementation of TranslationService using Java8 features."))
 public class TranslationService
 implements jp.go.nict.langrid.service_1_2.translation.TranslationService{
 	@Override
@@ -60,7 +62,7 @@ implements jp.go.nict.langrid.service_1_2.translation.TranslationService{
 				throw new InvalidParameterException("sourceLang", "must be null.");
 			}
 		}
-		String result = pc.getValue("result");
+		String result = ((Supplier<String>)(() -> pc.getValue("result"))).get();
 		if(result != null) return result;
 		return source;
 	}

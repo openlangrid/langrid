@@ -45,8 +45,8 @@
   		<version>1.5.2</version>
   	</dependency>
   	<dependency>
-  		<groupId>org.apache.axis</groupId>
-  		<artifactId>axis</artifactId>
+  		<groupId>org.langrid</groupId>
+  		<artifactId>axis-java8</artifactId>
   		<version>1.4</version>
   	</dependency>
   	<dependency>
