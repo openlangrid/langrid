@@ -24,9 +24,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.function.Consumer;
 
 import jp.go.nict.langrid.commons.io.RegexFileNameFilter;
-import jp.go.nict.langrid.commons.util.function.Consumer;
 import jp.go.nict.langrid.dao.AbstractDaoContext;
 import jp.go.nict.langrid.dao.ConnectException;
 import jp.go.nict.langrid.dao.DaoContext;

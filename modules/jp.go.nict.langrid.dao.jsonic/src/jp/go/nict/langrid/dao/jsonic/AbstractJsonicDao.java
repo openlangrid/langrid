@@ -21,11 +21,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import jp.go.nict.langrid.commons.io.RegexFileNameFilter;
-import jp.go.nict.langrid.commons.util.function.Consumer;
 import jp.go.nict.langrid.commons.util.function.Functions;
-import jp.go.nict.langrid.commons.util.function.Predicate;
 import jp.go.nict.langrid.dao.DaoException;
 
 public abstract class AbstractJsonicDao {

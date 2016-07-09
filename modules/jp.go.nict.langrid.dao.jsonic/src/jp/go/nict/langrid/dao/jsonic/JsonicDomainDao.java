@@ -21,9 +21,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Predicate;
 
 import jp.go.nict.langrid.commons.util.function.Functions;
-import jp.go.nict.langrid.commons.util.function.Predicate;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.DomainAlreadyExistsException;
 import jp.go.nict.langrid.dao.DomainDao;
