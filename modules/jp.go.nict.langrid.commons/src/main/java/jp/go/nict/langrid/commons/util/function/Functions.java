@@ -21,8 +21,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import jp.go.nict.langrid.commons.transformer.Transformer;
-
 public class Functions {
 	public static <T> Consumer<T> nullComsumer(){
 		return new Consumer<T>() {
@@ -93,23 +91,6 @@ public class Functions {
 			public R apply(T value) {
 				try{
 					return f.apply(value);
-				} catch(Throwable e){
-					throw new SoftenedException(e);
-				}
-			}
-		};
-	}
-
-	public static interface TransformerWithException<T, R, E extends Throwable>{
-		R transform(T value) throws E;
-	}
-	public static <T, R, E extends Throwable> Transformer<T, R> soften(
-			final TransformerWithException<T, R, E> f){
-		return new Transformer<T, R>(){
-			@Override
-			public R transform(T value) {
-				try{
-					return f.transform(value);
 				} catch(Throwable e){
 					throw new SoftenedException(e);
 				}
