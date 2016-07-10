@@ -16,9 +16,9 @@ If you release your software by using the software of this project, please inclu
 * This software uses the [SOFTWARE] by the Language Grid project (http://langrid.org/ ).
 
 [SOFTWARE] is one of:
-* Service Grid Server Software (http://servicegrid.net/oss-project/en/service_grid.html )
-* Language Service Development Libraries (http://servicegrid.net/oss-project/en/language_service.html )
-* Language Grid Toolbox (http://servicegrid.net/oss-project/en/toolbox.html )
+* Service Grid Server Software (http://langrid.org/oss-project/en/service_grid.html )
+* Language Service Development Libraries (http://langrid.org/oss-project/en/language_service.html )
+* Language Grid Toolbox (http://langrid.org/oss-project/en/toolbox.html )
 
 If you publish a paper by using the software of this project, please cite the following book.
 
