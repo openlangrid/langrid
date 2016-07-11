@@ -21,6 +21,7 @@ package jp.go.nict.langrid.commons.beanutils;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -48,6 +49,7 @@ import jp.go.nict.langrid.commons.transformer.Transformer;
 import jp.go.nict.langrid.commons.transformer.Transformers;
 import jp.go.nict.langrid.commons.util.MapUtil;
 import jp.go.nict.langrid.commons.util.Pair;
+import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSONHint;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.util.Base64;
 
 /**
@@ -212,6 +214,14 @@ public class Converter{
 				String name = prop.getKey();
 				Method m = ClassUtil.findSetter(targetClass, name);
 				if(m == null) continue;
+				JSONHint h = m.getAnnotation(JSONHint.class);
+				if(h != null && h.ignore()) continue;
+				try{
+					Field f = targetClass.getField(name);
+					JSONHint fh = f.getAnnotation(JSONHint.class);
+					if(fh != null && fh.ignore()) continue;
+				} catch(NoSuchFieldException e){
+				}
 				Object v = value.get(name);
 				if(v == null) continue;
 				Class<?> setterPropClass = m.getParameterTypes()[0];
