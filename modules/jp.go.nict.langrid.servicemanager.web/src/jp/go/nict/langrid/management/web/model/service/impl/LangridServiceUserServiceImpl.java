@@ -22,9 +22,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
-import jp.go.nict.langrid.commons.lang.block.BlockP;
-import jp.go.nict.langrid.commons.lang.block.BlockPR;
-import jp.go.nict.langrid.commons.lang.block.BlockR;
 import jp.go.nict.langrid.commons.security.MessageDigestUtil;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.MatchingCondition;
@@ -42,7 +39,6 @@ import jp.go.nict.langrid.management.web.model.UserModel;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 import jp.go.nict.langrid.management.web.model.service.LangridList;
 import jp.go.nict.langrid.management.web.model.service.LangridServiceUserService;
-import jp.go.nict.langrid.management.web.model.service.UserService;
 import jp.go.nict.langrid.management.web.utility.resource.MessageUtil;
 
 /**
@@ -134,12 +130,7 @@ public class LangridServiceUserServiceImpl implements LangridServiceUserService 
 	public void edit(final UserModel obj) throws ServiceManagerException {
 		try {
 			new UserLogic().transactUpdate(userGridId, obj.getUserId(),
-					new BlockP<User>() {
-						@Override
-						public void execute(User user) {
-							setProperty(user, obj);
-						}
-					});
+					user -> setProperty(user, obj));
 		} catch (Exception e) {
 			throw new ServiceManagerException(e, this.getClass(),
 					"ServiceManager cannot update user.");
@@ -176,19 +167,10 @@ public class LangridServiceUserServiceImpl implements LangridServiceUserService 
 	throws ServiceManagerException {
 		try {
 			UserLogic logic = new UserLogic();
-			return logic.transactRead(userGridId, userId
-					, new BlockPR<User, Boolean>() {
-						@Override
-						public Boolean execute(User entity) {
-							return entity.getPassword().equals(
-									MessageDigestUtil.digestBySHA512(password));
-						}
-					}, new BlockR<Boolean>(){
-						@Override
-						public Boolean execute() {
-							return false;
-						}
-					});
+			return logic.transactRead(userGridId, userId,
+					user -> user.getPassword().equals(
+									MessageDigestUtil.digestBySHA512(password)),
+					() -> false);
 		} catch (DaoException e) {
 			throw new ServiceManagerException(e, this.getClass());
 		}
@@ -205,11 +187,7 @@ public class LangridServiceUserServiceImpl implements LangridServiceUserService 
 			throws ServiceManagerException {
 		try {
 			new UserLogic().transactUpdate(userGridId, userId,
-					new BlockP<User>() {
-						public void execute(User user) {
-							user.setAbleToCallServices(isPermit);
-						}
-					});
+					user -> user.setAbleToCallServices(isPermit));
 		} catch (DaoException e) {
 			throw new ServiceManagerException(e, this.getClass());
 		}
@@ -219,18 +197,15 @@ public class LangridServiceUserServiceImpl implements LangridServiceUserService 
 	public boolean isAdministrator(String userId)
 			throws ServiceManagerException {
 		try {
-			return new UserLogic().transactRead(userGridId, userId,
-					new BlockPR<User, Boolean>() {
-						public Boolean execute(User user) {
-							for (UserRole ur : user.getRoles()) {
-								if (ur.getRoleName()
-										.equals(UserRole.ADMIN_ROLE)) {
-									return true;
-								}
-							}
-							return false;
+			return new UserLogic().transactRead(userGridId, userId, user -> {
+					for (UserRole ur : user.getRoles()) {
+						if (ur.getRoleName()
+								.equals(UserRole.ADMIN_ROLE)) {
+							return true;
 						}
-					});
+					}
+					return false;
+			});
 		} catch (DaoException e) {
 			throw new ServiceManagerException(e, this.getClass());
 		}
@@ -240,18 +215,15 @@ public class LangridServiceUserServiceImpl implements LangridServiceUserService 
 	public boolean isShouldChangePassword(String userId, final int day)
 			throws ServiceManagerException {
 		try {
-			return new UserLogic().transactRead(userGridId, userId,
-					new BlockPR<User, Boolean>() {
-						public Boolean execute(User user) {
-							Calendar changed = user.getPasswordChangedDate();
-							if (changed == null) {
-								changed = user.getCreatedDateTime();
-							}
-							Calendar basingPoint = Calendar.getInstance();
-							basingPoint.add(Calendar.DAY_OF_MONTH, -day);
-							return changed.getTimeInMillis() < basingPoint
-									.getTimeInMillis();
-						}
+			return new UserLogic().transactRead(userGridId, userId, user -> {
+					Calendar changed = user.getPasswordChangedDate();
+					if (changed == null) {
+						changed = user.getCreatedDateTime();
+					}
+					Calendar basingPoint = Calendar.getInstance();
+					basingPoint.add(Calendar.DAY_OF_MONTH, -day);
+					return changed.getTimeInMillis() < basingPoint
+							.getTimeInMillis();
 					});
 		} catch (DaoException e) {
 			throw new ServiceManagerException(e, this.getClass());
