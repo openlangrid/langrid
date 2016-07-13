@@ -24,9 +24,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import jp.go.nict.langrid.commons.lang.block.BlockP;
-import jp.go.nict.langrid.commons.lang.block.BlockPR;
-import jp.go.nict.langrid.commons.lang.block.BlockR;
 import jp.go.nict.langrid.commons.security.MessageDigestUtil;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.MatchingCondition;
@@ -133,12 +130,7 @@ public class UserServiceImpl implements UserService {
 	public void edit(final UserModel obj) throws ServiceManagerException {
 		try {
 			new UserLogic().transactUpdate(userGridId, obj.getUserId(),
-					new BlockP<User>() {
-						@Override
-						public void execute(User user) {
-							setProperty(user, obj);
-						}
-					});
+					user -> setProperty(user, obj));
 		} catch (Exception e) {
 			throw new ServiceManagerException(e, this.getClass(),
 					"ServiceManager cannot update user.");
@@ -149,26 +141,22 @@ public class UserServiceImpl implements UserService {
 	public void updateUserRoles(final String userId, final Collection<jp.go.nict.langrid.management.web.model.enumeration.UserRole> roles)
 	throws ServiceManagerException {
 		try {
-			new UserLogic().transactUpdate(userGridId, userId,
-					new BlockP<User>() {
-						@Override
-						public void execute(User user) {
-							Set<UserRole> currentRoles = user.getRoles();
-							currentRoles.remove(new UserRole(user.getGridId(), user.getUserId(), UserRole.USER_ROLE));
-							UserRole p = new UserRole(user.getGridId(), user.getUserId(), UserRole.SERVICE_PROVIDER_ROLE);
-							if(!roles.contains(jp.go.nict.langrid.management.web.model.enumeration.UserRole.SERVICEPROVIDER)){
-								currentRoles.remove(p);
-							} else{
-								currentRoles.add(p);
-							}
-							UserRole u = new UserRole(user.getGridId(), user.getUserId(), UserRole.SERVICE_USER_ROLE);
-							if(!roles.contains(jp.go.nict.langrid.management.web.model.enumeration.UserRole.SERVICEUSER)){
-								currentRoles.remove(u);
-							} else{
-								currentRoles.add(u);
-							}
-						}
-					});
+			new UserLogic().transactUpdate(userGridId, userId, user -> {
+					Set<UserRole> currentRoles = user.getRoles();
+					currentRoles.remove(new UserRole(user.getGridId(), user.getUserId(), UserRole.USER_ROLE));
+					UserRole p = new UserRole(user.getGridId(), user.getUserId(), UserRole.SERVICE_PROVIDER_ROLE);
+					if(!roles.contains(jp.go.nict.langrid.management.web.model.enumeration.UserRole.SERVICEPROVIDER)){
+						currentRoles.remove(p);
+					} else{
+						currentRoles.add(p);
+					}
+					UserRole u = new UserRole(user.getGridId(), user.getUserId(), UserRole.SERVICE_USER_ROLE);
+					if(!roles.contains(jp.go.nict.langrid.management.web.model.enumeration.UserRole.SERVICEUSER)){
+						currentRoles.remove(u);
+					} else{
+						currentRoles.add(u);
+					}
+			});
 		} catch (Exception e) {
 			throw new ServiceManagerException(e, this.getClass(),
 					"ServiceManager cannot update user.");
@@ -204,20 +192,10 @@ public class UserServiceImpl implements UserService {
 	public boolean authenticate(String userId, final String password)
 	throws ServiceManagerException {
 		try {
-			UserLogic logic = new UserLogic();
-			return logic.transactRead(userGridId, userId
-					, new BlockPR<User, Boolean>() {
-						@Override
-						public Boolean execute(User entity) {
-							return entity.getPassword().equals(
-									MessageDigestUtil.digestBySHA512(password));
-						}
-					}, new BlockR<Boolean>(){
-						@Override
-						public Boolean execute() {
-							return false;
-						}
-					});
+			return new UserLogic().transactRead(userGridId, userId,
+					user -> user.getPassword().equals(
+									MessageDigestUtil.digestBySHA512(password))
+					, () -> false);
 		} catch (DaoException e) {
 			throw new ServiceManagerException(e, this.getClass());
 		}
@@ -234,11 +212,7 @@ public class UserServiceImpl implements UserService {
 			throws ServiceManagerException {
 		try {
 			new UserLogic().transactUpdate(userGridId, userId,
-					new BlockP<User>() {
-						public void execute(User user) {
-							user.setAbleToCallServices(isPermit);
-						}
-					});
+					user -> user.setAbleToCallServices(isPermit));
 		} catch (DaoException e) {
 			throw new ServiceManagerException(e, this.getClass());
 		}
@@ -273,19 +247,16 @@ public class UserServiceImpl implements UserService {
 	public boolean isShouldChangePassword(String userId, final int day)
 			throws ServiceManagerException {
 		try {
-			return new UserLogic().transactRead(userGridId, userId,
-					new BlockPR<User, Boolean>() {
-						public Boolean execute(User user) {
-							Calendar changed = user.getPasswordChangedDate();
-							if (changed == null) {
-								changed = user.getCreatedDateTime();
-							}
-							Calendar basingPoint = Calendar.getInstance();
-							basingPoint.add(Calendar.DAY_OF_MONTH, -day);
-							return changed.getTimeInMillis() < basingPoint
-									.getTimeInMillis();
-						}
-					});
+			return new UserLogic().transactRead(userGridId, userId, user -> {
+					Calendar changed = user.getPasswordChangedDate();
+					if (changed == null) {
+						changed = user.getCreatedDateTime();
+					}
+					Calendar basingPoint = Calendar.getInstance();
+					basingPoint.add(Calendar.DAY_OF_MONTH, -day);
+					return changed.getTimeInMillis() < basingPoint
+							.getTimeInMillis();
+			});
 		} catch (DaoException e) {
 			throw new ServiceManagerException(e, this.getClass());
 		}
