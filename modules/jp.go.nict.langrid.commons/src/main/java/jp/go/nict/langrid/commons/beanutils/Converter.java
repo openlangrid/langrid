@@ -34,8 +34,10 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import jp.go.nict.langrid.commons.lang.ClassUtil;
 import jp.go.nict.langrid.commons.lang.reflect.GenericsUtil;
@@ -292,6 +294,8 @@ public class Converter{
 			return convert(value, target);
 		} else if(value instanceof Collection<?> && target.isArray()){
 			return (T)convertCollectionToArray((Collection<?>)value, target.getComponentType());
+		} else if(value instanceof Collection<?> && Set.class.isAssignableFrom(target)){
+			return (T)new HashSet((Collection)value);
 		} else if(value instanceof Map<?, ?> && !target.isArray()){
 			return (T)convertMapToBean((Map<String, Object>)value, target);
 		} else if(target.isEnum()){
