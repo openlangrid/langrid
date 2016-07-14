@@ -22,6 +22,7 @@ package jp.go.nict.langrid.dao;
 import java.util.Calendar;
 import java.util.List;
 
+import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.dao.entity.User;
 
 /**
@@ -116,5 +117,8 @@ public interface UserDao{
 	UserSearchResult searchUsersShouldChangePassword(
 			int startIndex, int maxCount
 			, String userGridId, Calendar dateTime, Order[] orders)
+	throws DaoException;
+
+	List<Pair<String, Calendar>> listAllUserIdAndUpdates(String userGridId)
 	throws DaoException;
 }

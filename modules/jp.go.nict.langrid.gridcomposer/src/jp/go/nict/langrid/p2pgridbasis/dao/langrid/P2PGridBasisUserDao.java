@@ -25,6 +25,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
+import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.GenericHandler;
@@ -223,6 +224,11 @@ public class P2PGridBasisUserDao implements DataDao, UserDao {
 			int maxCount, String userGridId, Calendar dateTime, Order[] orders)
 			throws DaoException {
 		return dao.searchUsersShouldChangePassword(startIndex, maxCount, userGridId, dateTime, orders);
+	}
+	
+	@Override
+	public List<Pair<String, Calendar>> listAllUserIdAndUpdates(String userGridId) throws DaoException {
+		return dao.listAllUserIdAndUpdates(userGridId);
 	}
 
 	static private Logger logger = Logger.getLogger(P2PGridBasisUserDao.class);

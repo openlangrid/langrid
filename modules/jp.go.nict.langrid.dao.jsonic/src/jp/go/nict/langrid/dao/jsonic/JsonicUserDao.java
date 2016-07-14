@@ -25,6 +25,7 @@ import java.util.List;
 
 import jp.go.nict.langrid.commons.io.RegexFileNameFilter;
 import jp.go.nict.langrid.commons.security.MessageDigestUtil;
+import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.MatchingCondition;
 import jp.go.nict.langrid.dao.Order;
@@ -145,6 +146,11 @@ public class JsonicUserDao implements UserDao {
 	public UserSearchResult searchUsersShouldChangePassword(int startIndex,
 			int maxCount, String userGridId, Calendar dateTime, Order[] orders)
 			throws DaoException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<Pair<String, Calendar>> listAllUserIdAndUpdates(String userGridId) throws DaoException {
 		throw new UnsupportedOperationException();
 	}
 

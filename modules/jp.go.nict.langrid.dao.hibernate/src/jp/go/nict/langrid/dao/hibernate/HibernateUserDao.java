@@ -20,6 +20,7 @@
 package jp.go.nict.langrid.dao.hibernate;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,8 +28,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
+
 import jp.go.nict.langrid.commons.util.ArrayUtil;
 import jp.go.nict.langrid.commons.util.CalendarUtil;
+import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.MatchingCondition;
 import jp.go.nict.langrid.dao.Order;
@@ -40,12 +48,6 @@ import jp.go.nict.langrid.dao.UserSearchResult;
 import jp.go.nict.langrid.dao.entity.User;
 import jp.go.nict.langrid.dao.entity.UserPK;
 import jp.go.nict.langrid.dao.entity.UserRole;
-
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
 
 /**
  * 
@@ -288,6 +290,34 @@ implements UserDao
 						);
 			}
 		});
+	}
+
+	@Override
+	public List<Pair<String, Calendar>> listAllUserIdAndUpdates(String userGridId) throws DaoException {
+		Session session = getSession();
+		getContext().beginTransaction();
+		try{
+			@SuppressWarnings("unchecked")
+			List<Object[]> list = session
+					.createCriteria(User.class)
+					.setProjection(Projections.projectionList().add(
+							Projections.property("userId")).add(
+							Projections.property("updatedDateTime")))
+					.add(Property.forName("gridId").eq(userGridId))
+					.add(Property.forName("visible").eq(true))
+					.addOrder(Property.forName("updatedDateTime").asc())
+					.list();
+			getContext().commitTransaction();
+			List<Pair<String, Calendar>> ret = new ArrayList<>();
+			for(Object[] r : list){
+				ret.add(Pair.create((String)r[0], (Calendar)r[1]));
+			}
+			return ret;
+		} catch(HibernateException e){
+			logAdditionalInfo(e);
+			getContext().rollbackTransaction();
+			throw new DaoException(e);
+		}
 	}
 
 	private User findUser(Session session, String userGridId, String userId){
