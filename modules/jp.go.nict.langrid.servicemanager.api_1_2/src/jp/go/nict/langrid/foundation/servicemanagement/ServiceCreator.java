@@ -28,6 +28,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.xml.sax.SAXException;
+
 import jp.go.nict.langrid.commons.beanutils.Converter;
 import jp.go.nict.langrid.commons.jxpath.WSDLUtil;
 import jp.go.nict.langrid.commons.parameter.ParameterContext;
@@ -49,8 +51,6 @@ import jp.go.nict.langrid.service_1_2.foundation.servicemanagement.typed.Default
 import jp.go.nict.langrid.service_1_2.foundation.servicemanagement.typed.ExternalServiceAddTimeOnlyAttribute;
 import jp.go.nict.langrid.service_1_2.foundation.servicemanagement.typed.ServiceAddTimeOnlyAttribute;
 import jp.go.nict.langrid.service_1_2.typed.InstanceType;
-
-import org.xml.sax.SAXException;
 
 /**
  * 

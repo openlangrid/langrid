@@ -29,8 +29,8 @@ import java.util.Map;
 import java.util.Set;
 
 import jp.go.nict.langrid.commons.beanutils.ConversionException;
-import jp.go.nict.langrid.commons.lang.block.BlockP;
-import jp.go.nict.langrid.commons.lang.block.BlockPR;
+import jp.go.nict.langrid.commons.beanutils.Converter;
+import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.commons.validator.annotation.EachElement;
 import jp.go.nict.langrid.commons.validator.annotation.IntInRange;
 import jp.go.nict.langrid.commons.validator.annotation.IntNotNegative;
@@ -41,6 +41,7 @@ import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.UserUtil;
 import jp.go.nict.langrid.dao.entity.User;
+import jp.go.nict.langrid.dao.entity.UserRole;
 import jp.go.nict.langrid.foundation.AbstractLangridService;
 import jp.go.nict.langrid.foundation.AttributedElementUpdater;
 import jp.go.nict.langrid.foundation.annotation.AccessRightValidatedMethod;
@@ -64,11 +65,13 @@ import jp.go.nict.langrid.service_1_2.foundation.Order;
 import jp.go.nict.langrid.service_1_2.foundation.usermanagement.InvalidUserIdException;
 import jp.go.nict.langrid.service_1_2.foundation.usermanagement.UserAlreadyExistsException;
 import jp.go.nict.langrid.service_1_2.foundation.usermanagement.UserEntrySearchResult;
-import jp.go.nict.langrid.service_1_2.foundation.usermanagement.UserManagementService;
 import jp.go.nict.langrid.service_1_2.foundation.usermanagement.UserNotFoundException;
 import jp.go.nict.langrid.service_1_2.foundation.usermanagement.UserProfile;
 import jp.go.nict.langrid.service_1_2.util.ExceptionConverter;
 import jp.go.nict.langrid.service_1_2.util.ParameterValidator;
+import jp.go.nict.langrid.service_1_3.foundation.NewerAndOlderUserIds;
+import jp.go.nict.langrid.service_1_3.foundation.UserEntry;
+import jp.go.nict.langrid.service_1_3.foundation.UserManagementService;
 
 /**
  * 
@@ -289,11 +292,7 @@ implements UserManagementService{
 			userId = ids[0];
 		}
 		try{
-			return getUserLogic().transactRead(gridId, userId, new BlockPR<User, UserProfile>(){
-				public UserProfile execute(User user){
-					return convert(user, UserProfile.class);
-				}
-			});
+			return getUserLogic().transactRead(gridId, userId, user -> convert(user, UserProfile.class));
 		} catch(jp.go.nict.langrid.dao.UserNotFoundException e){
 			throw convertException(e);
 		} catch(DaoException e){
@@ -315,11 +314,7 @@ implements UserManagementService{
 			, UnknownException, UserNotFoundException
 	{
 		try{
-			getUserLogic().transactUpdate(getGridId(), userId, new BlockP<User>(){
-				public void execute(User user){
-					copyProperties(user, profile);
-				}
-			});
+			getUserLogic().transactUpdate(getGridId(), userId, user -> copyProperties(user, profile));
 		} catch(jp.go.nict.langrid.dao.UserNotFoundException e){
 			throw convertException(e);
 		} catch(DaoException e){
@@ -351,8 +346,7 @@ implements UserManagementService{
 			names.add(n);
 		}
 		try{
-			return getUserLogic().transactRead(getGridId(), userId, new BlockPR<User, Attribute[]>(){
-				public Attribute[] execute(User user){
+			return getUserLogic().transactRead(getGridId(), userId, user -> {
 					List<Attribute> attrs = new ArrayList<Attribute>();
 					if(names.size() == 0){
 						for(jp.go.nict.langrid.dao.entity.Attribute a : user.getAttributes()){
@@ -366,7 +360,6 @@ implements UserManagementService{
 						}
 					}
 					return attrs.toArray(new Attribute[]{});
-				}
 			});
 		} catch(jp.go.nict.langrid.dao.UserNotFoundException e){
 			throw convertException(e);
@@ -397,13 +390,11 @@ implements UserManagementService{
 	{
 		validateInputAttribute("attributes", attributes);
 		try{
-			getUserLogic().transactUpdate(getGridId(), userId, new BlockP<User>(){
-				public void execute(User user){
+			getUserLogic().transactUpdate(getGridId(), userId, user ->
 					AttributedElementUpdater.updateAttributes(
 							user, attributes, UserUtil.getUserProperties()
-							);
-				}
-			});
+							)
+			);
 		} catch(jp.go.nict.langrid.dao.UserNotFoundException e){
 			throw convertException(e);
 		} catch(jp.go.nict.langrid.dao.DaoException e){
@@ -446,11 +437,9 @@ implements UserManagementService{
 			NoAccessPermissionException, ServiceConfigurationException,
 			UnknownException, UserNotFoundException {
 		try{
-			return getUserLogic().transactRead(getGridId(), userId, new BlockPR<User, Calendar>(){
-				public Calendar execute(User user){
-					return user.getPasswordChangedDate();
-				}
-			});
+			return getUserLogic().transactRead(getGridId(), userId,
+					user -> user.getPasswordChangedDate()
+			);
 		} catch(jp.go.nict.langrid.dao.UserNotFoundException e){
 			throw new UserNotFoundException(userId);
 		} catch(DaoException e){
@@ -480,11 +469,8 @@ implements UserManagementService{
 				gridId = getGridId();
 				userId = ids[0];
 			}
-			return getUserLogic().transactRead(gridId, userId, new BlockPR<User, String>(){
-				public String execute(User user){
-					return user.getPassword();
-				}
-			});
+			return getUserLogic().transactRead(gridId, userId,
+					user -> user.getPassword());
 		} catch(jp.go.nict.langrid.dao.UserNotFoundException e){
 			throw new UserNotFoundException(userId);
 		} catch(DaoException e){
@@ -505,11 +491,8 @@ implements UserManagementService{
 			ServiceConfigurationException, UnknownException,
 			UserNotFoundException {
 		try{
-			return getUserLogic().transactRead(getGridId(), userId, new BlockPR<User, String>(){
-				public String execute(User user){
-					return user.getPassword();
-				}
-			});
+			return getUserLogic().transactRead(getGridId(), userId,
+					user -> user.getPassword());
 		} catch(jp.go.nict.langrid.dao.UserNotFoundException e){
 			throw new UserNotFoundException(userId);
 		} catch(DaoException e){
@@ -536,11 +519,8 @@ implements UserManagementService{
 	NoAccessPermissionException, ServiceConfigurationException,
 	UnknownException, UserNotFoundException {
 		try{
-			return getUserLogic().transactRead(getGridId(), userId, new BlockPR<User, Boolean>(){
-				public Boolean execute(User user){
-					return user.isAbleToCallServices();
-				}
-			});
+			return getUserLogic().transactRead(getGridId(), userId,
+					user -> user.isAbleToCallServices());
 		} catch(jp.go.nict.langrid.dao.UserNotFoundException e){
 			throw new UserNotFoundException(userId);
 		} catch(DaoException e){
@@ -570,11 +550,8 @@ implements UserManagementService{
 	UnknownException, UserNotFoundException
 	{
 		try{
-			getUserLogic().transactUpdate(getGridId(), userId, new BlockP<User>(){
-				public void execute(User user){
-					user.setCanCallServices(canCallServices);
-				}
-			});
+			getUserLogic().transactUpdate(getGridId(), userId,
+					user -> user.setCanCallServices(canCallServices));
 		} catch(jp.go.nict.langrid.dao.UserNotFoundException e){
 			throw new UserNotFoundException(userId);
 		} catch(DaoException e){
@@ -584,15 +561,37 @@ implements UserManagementService{
 		}
 	}
 
-/*
-	private IdAndAttributes[] getUsersAttributes(String[] userIds,
-			String[] attributeNames) throws AccessLimitExceededException,
-			InvalidParameterException, NoAccessPermissionException,
-			ServiceConfigurationException, UnknownException,
-			UserNotFoundException {
-		return null;
+	@Override
+	public NewerAndOlderUserIds getNewerAndOlderUserIds(Calendar standardDateTime)
+	throws ServiceConfigurationException, UnknownException{
+		try{
+			Pair<String[], String[]> ret = getUserLogic().getNewerAndOlderUserIds(
+					getGridId(), standardDateTime);
+			return new NewerAndOlderUserIds(ret.getFirst(), ret.getSecond());
+		} catch(DaoException e){
+			throw ExceptionConverter.convertToServiceConfigurationException(e);
+		} catch(Throwable e){
+			throw ExceptionConverter.convertException(e);
+		}
 	}
-*/
+
+	@Override
+	@TransactionMethod
+	public UserEntry getUserEntry(String userId) throws ServiceConfigurationException, UnknownException {
+		try{
+			User u = getUserLogic().getUser(getGridId(), userId);
+			UserEntry ret = new Converter().convert(u, UserEntry.class);
+			ret.setRoles(new HashSet<>());
+			for(UserRole ur : u.getRoles()){
+				ret.getRoles().add(ur.getRoleName());
+			}
+			return ret;
+		} catch(DaoException e){
+			throw ExceptionConverter.convertToServiceConfigurationException(e);
+		} catch(Throwable e){
+			throw ExceptionConverter.convertException(e);
+		}
+	}
 
 	private static void validateInputAttribute(
 			String parameterName, Attribute[] attributes)

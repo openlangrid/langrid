@@ -1,5 +1,5 @@
 /*
- * $Id: JoinResult.java 225 2010-10-03 00:23:14Z t-nakaguchi $
+ * $Id: FederationManagement.java 225 2010-10-03 00:23:14Z t-nakaguchi $
  *
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
  * Copyright (C) 2009 NICT Language Grid Project.
@@ -17,11 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package jp.go.nict.langrid.service_1_3.foundation.federation;
-
-import java.io.Serializable;
-
-import jp.go.nict.langrid.service_1_2.foundation.usermanagement.UserProfile;
+package jp.go.nict.langrid.service_1_3.foundation;
 
 /**
  * 
@@ -30,57 +26,22 @@ import jp.go.nict.langrid.service_1_2.foundation.usermanagement.UserProfile;
  * @author $Author: t-nakaguchi $
  * @version $Revision: 225 $
  */
-public class JoinResult implements Serializable{
+public interface FederationManagement {
 	/**
 	 * 
-	 * 
+ 	 * 
 	 */
-	public JoinResult(){
-	}
-
-	/**
-	 * 
-	 * 
-	 */
-	public JoinResult(String gridId, UserProfile operatorProfile) {
-		this.gridId = gridId;
-		this.operatorProfile = operatorProfile;
-	}
+	void requestToJoinFederation(String gridUrl, String userId, String password);
 
 	/**
 	 * 
-	 * 
+ 	 * 
 	 */
-	public String getGridId() {
-		return gridId;
-	}
+	JoinResult joinFederation(String sourceGridUrl, String sourceGridId);
 
 	/**
 	 * 
-	 * 
+ 	 * 
 	 */
-	public void setGridId(String gridId) {
-		this.gridId = gridId;
-	}
-
-	/**
-	 * 
-	 * 
-	 */
-	public UserProfile getOperatorProfile() {
-		return operatorProfile;
-	}
-
-	/**
-	 * 
-	 * 
-	 */
-	public void setOperatorProfile(UserProfile operatorProfile) {
-		this.operatorProfile = operatorProfile;
-	}
-
-	private String gridId;
-	private UserProfile operatorProfile;
-
-	private static final long serialVersionUID = -541557816736785424L;
+	GridEntrySearchResult listFederatedGrids();
 }

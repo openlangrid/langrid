@@ -41,12 +41,13 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.servicesupervisor.frontend.accesslimitcheck"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.servicesupervisor.frontend.processors"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.testresource"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.servicecontainer.handler.axis"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v7.0"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.servicecontainer"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.servicecontainer.handler.axis"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

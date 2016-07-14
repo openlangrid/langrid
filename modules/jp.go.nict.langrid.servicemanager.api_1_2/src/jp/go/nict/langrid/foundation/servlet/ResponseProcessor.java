@@ -19,9 +19,6 @@
  */
 package jp.go.nict.langrid.foundation.servlet;
 
-import groovy.text.SimpleTemplateEngine;
-import groovy.text.Template;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -35,11 +32,13 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import jp.go.nict.langrid.service_1_2.LangridException;
-import jp.go.nict.langrid.service_1_2.foundation.Attribute;
-
 import org.apache.commons.io.output.CountingOutputStream;
 import org.apache.commons.lang.StringEscapeUtils;
+
+import groovy.text.SimpleTemplateEngine;
+import groovy.text.Template;
+import jp.go.nict.langrid.service_1_2.LangridException;
+import jp.go.nict.langrid.service_1_2.foundation.Attribute;
 
 /**
  * 

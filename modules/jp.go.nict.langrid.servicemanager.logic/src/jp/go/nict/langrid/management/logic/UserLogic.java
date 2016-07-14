@@ -19,15 +19,17 @@
  */
 package jp.go.nict.langrid.management.logic;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
-import jp.go.nict.langrid.commons.lang.block.BlockP;
-import jp.go.nict.langrid.commons.lang.block.BlockPR;
-import jp.go.nict.langrid.commons.lang.block.BlockR;
 import jp.go.nict.langrid.commons.security.MessageDigestUtil;
 import jp.go.nict.langrid.commons.util.CalendarUtil;
+import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.dao.AccessLimitDao;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.MatchingCondition;
@@ -160,28 +162,28 @@ extends AbstractLogic{
 	}
 
 	@DaoTransaction
-	public <T> T transactRead(String userGridId, String userId, BlockPR<User, T> userBlock)
+	public <T> T transactRead(String userGridId, String userId, Function<User, T> userBlock)
 	throws UserNotFoundException, DaoException{
-		return userBlock.execute(getUserDao().getUser(userGridId, userId));
+		return userBlock.apply(getUserDao().getUser(userGridId, userId));
 	}
 
 	@DaoTransaction
 	public <T> T transactRead(String userGridId, String userId
-			, BlockPR<User, T> userBlock, BlockR<T> userNotExistBlock)
+			, Function<User, T> userBlock, Supplier<T> userNotExistBlock)
 	throws UserNotFoundException, DaoException{
 		UserDao dao = getUserDao();
 		if(dao.isUserExist(userGridId, userId)){
-			return userBlock.execute(getUserDao().getUser(userGridId, userId));
+			return userBlock.apply(getUserDao().getUser(userGridId, userId));
 		} else{
-			return userNotExistBlock.execute();
+			return userNotExistBlock.get();
 		}
 	}
 
 	@DaoTransaction
-	public void transactUpdate(String userGridId, String userId, BlockP<User> userBlock)
+	public void transactUpdate(String userGridId, String userId, Consumer<User> userBlock)
 	throws UserNotFoundException, DaoException{
 		User u = getUserDao().getUser(userGridId, userId);
-		userBlock.execute(u);
+		userBlock.accept(u);
 		u.touchUpdatedDateTime();
 	}
 
@@ -193,5 +195,20 @@ extends AbstractLogic{
 		Calendar c = Calendar.getInstance();
 		u.setPasswordChangedDate(c);
 		u.setUpdatedDateTime(c);
+	}
+	
+	@DaoTransaction
+	public Pair<String[], String[]> getNewerAndOlderUserIds(String userGridId, Calendar standardDateTime)
+	throws DaoException{
+		List<String> newer = new ArrayList<>();
+		List<String> older = new ArrayList<>();
+		for(Pair<String, Calendar> entry : getUserDao().listAllUserIdAndUpdates(userGridId)){
+			if(entry.getSecond().after(standardDateTime)){
+				newer.add(entry.getFirst());
+			} else{
+				older.add(entry.getFirst());
+			}
+		}
+		return Pair.create(newer.toArray(new String[]{}), older.toArray(new String[]{}));
 	}
 }

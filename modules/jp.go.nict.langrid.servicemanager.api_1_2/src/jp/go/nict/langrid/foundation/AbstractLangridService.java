@@ -30,6 +30,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.xml.sax.SAXException;
+
 import jp.go.nict.langrid.commons.beanutils.BeanToBeanTransformer;
 import jp.go.nict.langrid.commons.beanutils.ConversionException;
 import jp.go.nict.langrid.commons.beanutils.Converter;
@@ -94,8 +96,7 @@ import jp.go.nict.langrid.service_1_2.foundation.usermanagement.UserEntry;
 import jp.go.nict.langrid.service_1_2.foundation.usermanagement.UserNotFoundException;
 import jp.go.nict.langrid.service_1_2.transformer.LanguagePath_LanguageToWITransformer;
 import jp.go.nict.langrid.service_1_2.transformer.LanguagePath_WIToLanguageTransformer;
-
-import org.xml.sax.SAXException;
+import jp.go.nict.langrid.servicecontainer.handler.RIProcessor;
 
 /**
  * 
@@ -110,7 +111,6 @@ public class AbstractLangridService {
 	 * 
 	 */
 	public AbstractLangridService(){
-		this.serviceContext = new WebserviceServiceContext();
 		init();
 	}
 
@@ -157,7 +157,7 @@ public class AbstractLangridService {
 	}
 
 	protected String getDefaultGridId(){
-		return serviceContext.getSelfGridId();
+		return getServiceContext().getSelfGridId();
 	}
 
 	/**
@@ -173,7 +173,9 @@ public class AbstractLangridService {
 	 * 
 	 */
 	protected ServiceContext getServiceContext(){
-		return serviceContext;
+		ServiceContext sc = RIProcessor.getCurrentServiceContext();
+		if(sc != null) return sc;
+		else return new WebserviceServiceContext();
 	}
 
 	/**

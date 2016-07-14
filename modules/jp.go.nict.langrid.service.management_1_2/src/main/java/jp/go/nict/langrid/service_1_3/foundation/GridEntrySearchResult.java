@@ -1,4 +1,4 @@
-package jp.go.nict.langrid.service_1_3.foundation.federation;
+package jp.go.nict.langrid.service_1_3.foundation;
 
 import java.io.Serializable;
 

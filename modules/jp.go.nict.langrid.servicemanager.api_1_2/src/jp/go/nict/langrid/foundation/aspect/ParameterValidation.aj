@@ -21,12 +21,12 @@ package jp.go.nict.langrid.foundation.aspect;
 
 import java.lang.reflect.Method;
 
+import org.aspectj.lang.reflect.CodeSignature;
+
 import jp.go.nict.langrid.commons.validator.annotation.ValidatedMethod;
 import jp.go.nict.langrid.foundation.AbstractLangridService;
 import jp.go.nict.langrid.service_1_2.InvalidParameterException;
 import jp.go.nict.langrid.service_1_2.foundation.util.validator.annotation.AnnotationParameterValidator;
-
-import org.aspectj.lang.reflect.CodeSignature;
 
 /**
  * メソッドの引数が有効かどうかを、アノテーションに基づき検証するアスペクトの基底アスペクト。
