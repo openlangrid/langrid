@@ -29,14 +29,13 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-
-import jp.go.nict.langrid.commons.util.CalendarUtil;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.hibernate.annotations.Type;
+
+import jp.go.nict.langrid.commons.util.CalendarUtil;
 
 /**
  * 

@@ -19,7 +19,6 @@
  */
 package jp.go.nict.langrid.dao.entity;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
