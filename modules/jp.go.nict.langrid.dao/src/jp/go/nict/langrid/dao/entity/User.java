@@ -48,6 +48,8 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.Cascade;
 
+import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSONHint;
+
 /**
  * 
  * 
@@ -422,6 +424,7 @@ implements AttributedElement<UserAttribute>, Serializable{
 	private String gridId;
 	@Id
 	private String userId;
+	@JSONHint(ignore=true)
 	private String password;
 	private String organization;
 	private String representative;
