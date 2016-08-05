@@ -21,19 +21,27 @@ import static jp.go.nict.langrid.commons.util.ArrayUtil.append;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.JDBCException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.EntityKey;
 import org.hibernate.event.EventListeners;
@@ -50,6 +58,7 @@ import org.hibernate.event.PostInsertEventListener;
 import org.hibernate.event.PostUpdateEvent;
 import org.hibernate.event.PostUpdateEventListener;
 
+import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.dao.AbstractDaoContext;
 import jp.go.nict.langrid.dao.ConnectException;
 import jp.go.nict.langrid.dao.DaoContext;
@@ -102,6 +111,7 @@ import jp.go.nict.langrid.dao.hibernate.queuedevent.QueuedDeleteEvent;
 import jp.go.nict.langrid.dao.hibernate.queuedevent.QueuedEvent;
 import jp.go.nict.langrid.dao.hibernate.queuedevent.QueuedInsertEvent;
 import jp.go.nict.langrid.dao.hibernate.queuedevent.QueuedUpdateEvent;
+import jp.go.nict.langrid.dao.hibernate.util.EntityUtil;
 
 /**
  * 
@@ -326,6 +336,54 @@ implements DaoContext{
 				}
 			}
 			return factory.getCurrentSession();
+		}
+	}
+
+	@Override
+	public List<Pair<Object, Calendar>> listAllIdAndUpdates(
+			Class<?> entityClass,
+			@SuppressWarnings("unchecked") Pair<String, String>... conditions)
+	throws DaoException {
+		Session session = getSession();
+		beginTransaction();
+		try{
+			Criteria criteria = session
+				.createCriteria(entityClass)
+				.setProjection(
+					EntityUtil.addIdColumnNames(entityClass, Projections.projectionList())
+					.add(Projections.property("updatedDateTime")));
+			for(Pair<String, String> c : conditions){
+				criteria.add(Property.forName(c.getFirst()).eq(c.getSecond()));
+			}
+			criteria.addOrder(Property.forName("updatedDateTime").asc());
+			@SuppressWarnings("unchecked")
+			List<Object[]> list = criteria.list();
+			commitTransaction();
+			List<Pair<Object, Calendar>> ret = new ArrayList<>();
+			for(Object[] r : list){
+				try {
+					ret.add(Pair.create(
+							jp.go.nict.langrid.dao.util.EntityUtil.getId(entityClass, r), (Calendar)r[r.length - 1]));
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			return ret;
+		} catch(HibernateException e){
+			logAdditionalInfo(e);
+			rollbackTransaction();
+			throw new DaoException(e);
+		}
+	}
+
+	private static void logAdditionalInfo(RuntimeException exception){
+		if(exception instanceof JDBCException){
+			SQLException e = ((JDBCException)exception).getSQLException();
+			while(e != null){
+				logger.log(Level.WARNING, "Next SQLException", e);
+				e = e.getNextException();
+			}
 		}
 	}
 

@@ -20,7 +20,10 @@
 package jp.go.nict.langrid.dao;
 
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.List;
 
+import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.commons.util.function.Functions.RunnableWithException;
 
 /**
@@ -77,6 +80,18 @@ public interface DaoContext {
 	 * 
 	 */
 	int getTransactionNestCount();
+
+	/**
+	 * List key and updated datetime of elements that meets conditions and are ordered by date.
+	 * @param entityClass
+	 * @param conditions
+	 * @return
+	 * @throws DaoException
+	 */
+	List<Pair<Object, Calendar>> listAllIdAndUpdates(
+			Class<?> entityClass,
+			@SuppressWarnings("unchecked") Pair<String, String>... conditions)
+	throws DaoException;
 
 	/**
 	 * 
