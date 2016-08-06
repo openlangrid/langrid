@@ -35,20 +35,21 @@ import jp.go.nict.langrid.service_1_2.foundation.usermanagement.UserEntry;
  * @version $Revision: 225 $
  */
 public class GridEntry
+extends UpdateManagedEntry
 implements Serializable
 {
 	public GridEntry(){
 	}
 
-	public GridEntry(String gridId, String gridName, String url, UserEntry operator, Calendar registeredDate,
-			Calendar updatedDate) {
+	public GridEntry(String gridId, String gridName, String url, UserEntry operator,
+			Calendar createdDateTime, Calendar updatedDateTime) {
+		super(createdDateTime, updatedDateTime);
 		this.gridId = gridId;
 		this.gridName = gridName;
 		this.url = url;
 		this.operator = operator;
-		this.registeredDate = registeredDate;
-		this.updatedDate = updatedDate;
 	}
+
 	@Override
 	public boolean equals(Object value){
 		return EqualsBuilder.reflectionEquals(this, value);
@@ -96,29 +97,11 @@ implements Serializable
 		this.operator = operator;
 	}
 
-	public Calendar getRegisteredDate() {
-		return registeredDate;
-	}
-
-	public void setRegisteredDate(Calendar registeredDate) {
-		this.registeredDate = registeredDate;
-	}
-
-	public Calendar getUpdatedDate() {
-		return updatedDate;
-	}
-
-	public void setUpdatedDate(Calendar updatedDate) {
-		this.updatedDate = updatedDate;
-	}
-
 
 	private String gridId;
 	private String gridName;
 	private String url;
 	private UserEntry operator;
-	private Calendar registeredDate;
-	private Calendar updatedDate;
 
 	private static final long serialVersionUID = -2279766886877060280L;
 }

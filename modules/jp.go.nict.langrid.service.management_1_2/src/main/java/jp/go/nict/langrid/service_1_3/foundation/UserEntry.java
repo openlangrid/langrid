@@ -36,7 +36,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  * @author $Author: t-nakaguchi $
  * @version $Revision: 225 $
  */
-public class UserEntry
+public class UserEntry extends UpdateManagedEntry
 implements Serializable{
 	public UserEntry(){
 	}
@@ -168,22 +168,6 @@ implements Serializable{
 		this.defaultAppProvisionType = defaultAppProvisionType;
 	}
 
-	public Calendar getCreatedDateTime() {
-		return createdDateTime;
-	}
-
-	public void setCreatedDateTime(Calendar createdDateTime) {
-		this.createdDateTime = createdDateTime;
-	}
-
-	public Calendar getUpdatedDateTime() {
-		return updatedDateTime;
-	}
-
-	public void setUpdatedDateTime(Calendar updatedDateTime) {
-		this.updatedDateTime = updatedDateTime;
-	}
-
 	private String gridId;
 	private String userId;
 	private String organization;
@@ -200,9 +184,6 @@ implements Serializable{
 	private boolean ableToCallServices;
 	private String defaultUseType;
 	private String defaultAppProvisionType;
-
-	private Calendar createdDateTime;
-	private Calendar updatedDateTime;
 
 	private static final long serialVersionUID = -4382466942028959119L;
 }

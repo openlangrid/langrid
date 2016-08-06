@@ -55,14 +55,17 @@ import jp.go.nict.langrid.dao.AccessStatDao;
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.DaoFactory;
+import jp.go.nict.langrid.dao.DomainDao;
 import jp.go.nict.langrid.dao.FederationDao;
 import jp.go.nict.langrid.dao.GridDao;
 import jp.go.nict.langrid.dao.NodeDao;
 import jp.go.nict.langrid.dao.OverUseLimitDao;
 import jp.go.nict.langrid.dao.OverUseStateDao;
 import jp.go.nict.langrid.dao.ResourceDao;
+import jp.go.nict.langrid.dao.ResourceTypeDao;
 import jp.go.nict.langrid.dao.ServiceDao;
 import jp.go.nict.langrid.dao.ServiceDeploymentDao;
+import jp.go.nict.langrid.dao.ServiceTypeDao;
 import jp.go.nict.langrid.dao.SystemPropertyDao;
 import jp.go.nict.langrid.dao.TemporaryUserDao;
 import jp.go.nict.langrid.dao.UserDao;
@@ -104,7 +107,7 @@ import jp.go.nict.langrid.servicecontainer.handler.RIProcessor;
  * @author $Author: t-nakaguchi $
  * @version $Revision: 1161 $
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class AbstractLangridService {
 	/**
 	 * 
@@ -189,10 +192,18 @@ public class AbstractLangridService {
 		return systemPropertyDao.get();
 	}
 
-	/**
-	 * 
-	 * 
-	 */
+	protected DomainDao getDomainDao() throws DaoException{
+		return getDaoFactory().createDomainDao();
+	}
+
+	protected ResourceTypeDao getResourceTypeDao() throws DaoException{
+		return getDaoFactory().createResourceTypeDao();
+	}
+
+	protected ServiceTypeDao getServiceTypeDao() throws DaoException{
+		return getDaoFactory().createServiceTypeDao();
+	}
+
 	protected GridDao getGridDao() throws DaoException{
 		if(gridDao.get() == null){
 			gridDao.set(getDaoFactory().createGridDao());

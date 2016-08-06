@@ -35,8 +35,6 @@ implements GridManagementService{
 			ue.setRegisteredDate(u.getCreatedDateTime());
 			ue.setUpdatedDate(u.getUpdatedDateTime());
 			GridEntry ge = c.convert(g, GridEntry.class);
-			ge.setRegisteredDate(g.getCreatedDateTime());
-			ge.setUpdatedDate(g.getUpdatedDateTime());
 			ge.setOperator(ue);
 			return ge;
 		} catch(DaoException e){
