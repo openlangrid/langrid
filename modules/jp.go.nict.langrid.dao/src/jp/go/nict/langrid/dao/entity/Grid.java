@@ -222,6 +222,22 @@ implements AttributedElement<GridAttribute>, Serializable{
 		this.autoApproveEnabled = autoApproveEnabled;
 	}
 
+	public boolean isSymmetricRelationEnabled() {
+		return symmetricRelationEnabled;
+	}
+
+	public void setSymmetricRelationEnabled(boolean symmetricRelationEnabled) {
+		this.symmetricRelationEnabled = symmetricRelationEnabled;
+	}
+
+	public boolean isTranstiveRelationEnabled() {
+		return transtiveRelationEnabled;
+	}
+
+	public void setTranstiveRelationEnabled(boolean transtiveRelationEnabled) {
+		this.transtiveRelationEnabled = transtiveRelationEnabled;
+	}
+
 	protected EqualsBuilder appendSpecialEquals(
 			EqualsBuilder builder, Object value
 			, Collection<String> appendedFields, boolean ignoreDates){
@@ -269,6 +285,8 @@ implements AttributedElement<GridAttribute>, Serializable{
 	private boolean hosted;
 	private boolean commercialUseAllowed;
 	private boolean autoApproveEnabled;
+	private boolean symmetricRelationEnabled;
+	private boolean transtiveRelationEnabled;
 
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="gridId")
 	@MapKey(name="name")
