@@ -40,6 +40,21 @@ public class EntityUtil {
 		}
 	}
 
+	public static Class<?> getIdClass(Class<?> entityClass){
+		IdClass idc = entityClass.getAnnotation(IdClass.class);
+		if(idc != null) return idc.value();
+		while(!entityClass.equals(Object.class) && entityClass.getAnnotation(Entity.class) != null){
+			for(Field f : entityClass.getDeclaredFields()){
+				if(!f.isAccessible()) f.setAccessible(true);
+				Id id = f.getAnnotation(Id.class);
+				if(id == null) continue;
+				return f.getType();
+			}
+			entityClass = entityClass.getSuperclass();
+		}
+		return null;
+		
+	}
 
 	static String getIdFieldName(Class<?> clazz){
 		while(!clazz.equals(Object.class) && clazz.getAnnotation(Entity.class) != null){
