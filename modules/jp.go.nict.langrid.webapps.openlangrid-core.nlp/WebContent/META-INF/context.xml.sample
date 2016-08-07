@@ -21,6 +21,9 @@
 	<Parameter name="langrid.node.cpu" value="${NODE_CPU}" />
 	<Parameter name="langrid.node.memory" value="${NODE_MEMORY}" />
 	<Parameter name="langrid.node.specialNotes" value="${NODE_SPECIALNOTES}" />
+	<Parameter name="langrid.node.autoApproveEnabled" value="true" />
+	<Parameter name="langrid.node.symmetricRelationEnabled" value="true" />
+	<Parameter name="langrid.node.transitiveRelationEnabled" value="true" />
 
 	<Parameter name="langrid.operator.userId" value="${OPERATOR_USERID}" />
 	<Parameter name="langrid.operator.initialPassword" value="${OPERATOR_INITIALPASSWORD}" />

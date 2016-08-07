@@ -7,6 +7,17 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.SimpleHttpConnectionManager;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.wicket.Page;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
+
 import jp.go.nict.langrid.commons.ws.LangridConstants;
 import jp.go.nict.langrid.dao.entity.OperationType;
 import jp.go.nict.langrid.management.logic.service.HttpClientUtil;
@@ -28,17 +39,6 @@ import jp.go.nict.langrid.management.web.view.page.admin.federation.AllOperators
 import jp.go.nict.langrid.management.web.view.page.user.component.link.ExternalHomePageLink;
 import jp.go.nict.langrid.management.web.view.page.user.component.link.UserProfileLink;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.SimpleHttpConnectionManager;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.wicket.Page;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.Link;
 
 /**
  * 
@@ -140,20 +140,13 @@ public class OperationOfConnectionRequestPage extends ServiceManagerPage {
 							FederationResponse jo = JSON.decode(pm.getResponseBodyAsString(), FederationResponse.class);
 
 							GridService gService = ServiceFactory.getInstance().getGridService();
-							if(gService.get(jo.getGridId()) == null) {
-								GridModel newGrid = new GridModel();
-								newGrid.setAutoApproveEnabled(jo.isAutoApproveEnabled());
-								newGrid.setCommercialUseAllowed(jo.isCommercialUseAllowed());
-								newGrid.setGridId(jo.getGridId());
-								newGrid.setGridName(jo.getGridName());
-								newGrid.setHosted(false);
-								newGrid.setOperatorUserId(jo.getOperatorId());
-								newGrid.setUrl(jo.getGridUrl());
-								gService.add(newGrid);
+							if(gService.get(jo.getTargetGrid().getGridId()) == null) {
+								jo.getTargetGrid().setHosted(false);
+								gService.add(jo.getTargetGrid());
 								// log for grid
 								LogWriter.writeInfo("Operator", MessageManager.getMessage(
 									"LanguageGridOperator.federation.log.connect.registration.Grid"
-									, Locale.ENGLISH, newGrid.getGridId())
+									, Locale.ENGLISH, jo.getTargetGrid().getGridId())
 									, getPageClass());
 							}
 							// add news
@@ -233,12 +226,7 @@ public class OperationOfConnectionRequestPage extends ServiceManagerPage {
 		GridModel grid = ServiceFactory.getInstance().getGridService().get(selfGridId);
 		FederationResponse response = new FederationResponse();
 		response.setApproved(accept);
-		response.setGridId(selfGridId);
-		response.setGridName(grid.getGridName());
-		response.setAutoApproveEnabled(grid.isAutoApproveEnabled());
-		response.setCommercialUseAllowed(grid.isCommercialUseAllowed());
-		response.setOperatorId(grid.getOperatorUserId());
-		response.setGridUrl(grid.getUrl());
+		response.setTargetGrid(grid);
 		// add news
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("gridId", getSelfGridId());

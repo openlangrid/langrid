@@ -17,21 +17,21 @@
  */
 package jp.go.nict.langrid.management.web.servlet;
 
+import jp.go.nict.langrid.management.web.model.GridModel;
+
 /**
  * 
- * 
- * @author Masaaki Kamiya
  * @author Masaaki Kamiya
  */
 public class FederationRequest {
-	public String getGridId() {
-		return gridId;
+	public GridModel getSourceGrid() {
+		return sourceGrid;
 	}
 
-	public void setGridId(String gridId) {
-		this.gridId = gridId;
+	public void setSourceGrid(GridModel sourceGrid) {
+		this.sourceGrid = sourceGrid;
 	}
-	
+
 	public String getToken() {
 		return token;
 	}
@@ -56,62 +56,8 @@ public class FederationRequest {
 		this.sourceUrl = sourceUrl;
 	}
 
-	public String getOperatorId() {
-		return operatorId;
-	}
-
-	public void setOperatorId(String operatorId) {
-		this.operatorId = operatorId;
-	}
-
-	public String getGridUrl() {
-		return gridUrl;
-	}
-
-	public void setGridUrl(String gridUrl) {
-		this.gridUrl = gridUrl;
-	}
-
-	public boolean isHosted() {
-		return hosted;
-	}
-
-	public void setHosted(boolean hosted) {
-		this.hosted = hosted;
-	}
-
-	public boolean isCommercialUseAllowed() {
-		return commercialUseAllowed;
-	}
-
-	public void setCommercialUseAllowed(boolean commercialUseAllowed) {
-		this.commercialUseAllowed = commercialUseAllowed;
-	}
-
-	public boolean isAutoApproveEnabled() {
-		return autoApproveEnabled;
-	}
-
-	public void setAutoApproveEnabled(boolean autoApproveEnabled) {
-		this.autoApproveEnabled = autoApproveEnabled;
-	}
-	public String getGridName() {
-		return gridName;
-	}
-	public void setGridName(String gridName) {
-		this.gridName = gridName;
-	}
-
 	private String token;
 	private String requestUserId;
 	private String sourceUrl;
-	
-	// Grid daata from grid table;
-	private String gridId;
-	private String gridName;
-	private String operatorId;
-	private String gridUrl;
-	private boolean hosted;
-	private boolean commercialUseAllowed;
-	private boolean autoApproveEnabled;
+	private GridModel sourceGrid;
 }
