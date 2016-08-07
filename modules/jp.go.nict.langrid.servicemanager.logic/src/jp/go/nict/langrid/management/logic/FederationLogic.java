@@ -99,4 +99,12 @@ public class FederationLogic extends AbstractLogic{
 		
 		return true;
 	}
+
+	public Federation getNearestFederation(String sourceGridId, String targetGridId)
+	throws DaoException{
+		FederationDao fdao = getFederationDao();
+		Federation f = fdao.getFederation(sourceGridId, targetGridId);
+		if(f.isConnected() && !f.isRequesting()) return f;
+		return null;
+	}
 }
