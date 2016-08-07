@@ -223,7 +223,7 @@ implements AttributedElement<GridAttribute>, Serializable{
 	}
 
 	public boolean isSymmetricRelationEnabled() {
-		return symmetricRelationEnabled;
+		return symmetricRelationEnabled != null ? symmetricRelationEnabled : false;
 	}
 
 	public void setSymmetricRelationEnabled(boolean symmetricRelationEnabled) {
@@ -231,7 +231,7 @@ implements AttributedElement<GridAttribute>, Serializable{
 	}
 
 	public boolean isTranstiveRelationEnabled() {
-		return transtiveRelationEnabled;
+		return transtiveRelationEnabled != null ? transtiveRelationEnabled : false;
 	}
 
 	public void setTranstiveRelationEnabled(boolean transtiveRelationEnabled) {
@@ -285,8 +285,8 @@ implements AttributedElement<GridAttribute>, Serializable{
 	private boolean hosted;
 	private boolean commercialUseAllowed;
 	private boolean autoApproveEnabled = false;
-	private boolean symmetricRelationEnabled = false;
-	private boolean transtiveRelationEnabled = false;
+	private Boolean symmetricRelationEnabled = false;
+	private Boolean transtiveRelationEnabled = false;
 
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="gridId")
 	@MapKey(name="name")
