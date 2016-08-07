@@ -284,9 +284,9 @@ implements AttributedElement<GridAttribute>, Serializable{
 	private String url;
 	private boolean hosted;
 	private boolean commercialUseAllowed;
-	private boolean autoApproveEnabled;
-	private boolean symmetricRelationEnabled;
-	private boolean transtiveRelationEnabled;
+	private boolean autoApproveEnabled = false;
+	private boolean symmetricRelationEnabled = false;
+	private boolean transtiveRelationEnabled = false;
 
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="gridId")
 	@MapKey(name="name")
