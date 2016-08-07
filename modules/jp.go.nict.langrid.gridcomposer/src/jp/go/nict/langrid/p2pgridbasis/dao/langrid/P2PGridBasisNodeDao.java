@@ -23,6 +23,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.GenericHandler;
@@ -46,15 +48,15 @@ import jp.go.nict.langrid.p2pgridbasis.data.Data;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.DataConvertException;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.NodeData;
 
-import org.apache.log4j.Logger;
-
 /**
  * 
  * 
  * @author $Author: t-nakaguchi $
  * @version $Revision: 401 $
  */
-public class P2PGridBasisNodeDao implements DataDao, NodeDao {
+public class P2PGridBasisNodeDao
+extends AbstractP2PGridBasisDao
+implements DataDao, NodeDao {
 	/**
 	 * 
 	 * 
@@ -101,12 +103,23 @@ public class P2PGridBasisNodeDao implements DataDao, NodeDao {
 			throw new UnmatchedDataTypeException(NodeData.class.toString(), data.getClass().toString());
 		}
 
+		NodeData nodeData = (NodeData) data;
+		try{
+			if(!isReachable(
+					this.getController().getSelfGridId(), nodeData.getGridId())){
+				return false;
+			}
+		} catch (ControllerException e) {
+			throw new DataDaoException(e);
+		} catch (DaoException e) {
+			throw new DataDaoException(e);
+		}
+
 		if(data.getAttributes().getKeys().contains("IsDeleted") &&
 				data.getAttributes().getValue("IsDeleted").equals("true")) {
  			boolean updated = false;
 			try {
 				logger.info("Delete");
-				NodeData nodeData = (NodeData) data;
 				Node node = nodeData.getNode();
 				removeEntityListener();
 				dao.deleteNode(node.getGridId(), node.getNodeId());
@@ -133,7 +146,6 @@ public class P2PGridBasisNodeDao implements DataDao, NodeDao {
 
 		Node node = null;
 		try {
-			NodeData nodeData = (NodeData)data;
 			node = nodeData.getNode();
 
 			logger.debug("New or UpDate");

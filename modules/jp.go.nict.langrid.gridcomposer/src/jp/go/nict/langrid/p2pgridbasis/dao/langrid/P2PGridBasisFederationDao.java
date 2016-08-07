@@ -24,8 +24,11 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
@@ -46,8 +49,6 @@ import jp.go.nict.langrid.p2pgridbasis.dao.UnmatchedDataTypeException;
 import jp.go.nict.langrid.p2pgridbasis.data.Data;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.DataConvertException;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.FederationData;
-
-import org.apache.log4j.Logger;
 
 /**
  * 
@@ -97,9 +98,6 @@ public class P2PGridBasisFederationDao implements DataDao, FederationDao {
 	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateData(jp.go.nict.langrid.p2pgridbasis.data.Data)
 	 */
 	synchronized public boolean updateDataTarget(Data data) throws DataDaoException, UnmatchedDataTypeException {
-		// ignore federation sharing message
-		return true;
-/*
 		logger.debug("[Federation] : " + data.getId());
 		if(data.getClass().equals(FederationData.class) == false) {
 			throw new UnmatchedDataTypeException(FederationData.class.toString(), data.getClass().toString());
@@ -109,7 +107,7 @@ public class P2PGridBasisFederationDao implements DataDao, FederationDao {
 		Federation federation = null;
 		try{
 			federation = ((FederationData)data).getFederation();
-			selfGridId = getController().getSerlfGridId();
+			selfGridId = getController().getSelfGridId();
 		} catch (ParseException e) {
 			throw new DataDaoException(e);
 		} catch (DataConvertException e) {
@@ -167,7 +165,7 @@ public class P2PGridBasisFederationDao implements DataDao, FederationDao {
 		} catch (ControllerException e) {
 			throw new DataDaoException(e);
 		}
-*/	}
+	}
 
 	@Override
 	public void clear() throws DaoException {

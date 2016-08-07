@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.List;
 
 import jp.go.nict.langrid.dao.DaoException;
+import jp.go.nict.langrid.dao.FederationDao;
 import jp.go.nict.langrid.dao.FederationNotFoundException;
 import jp.go.nict.langrid.dao.entity.Federation;
 
@@ -88,5 +89,14 @@ public class FederationLogic extends AbstractLogic{
 	public void setConnection(String sourceGridId, String targetGridId, boolean isConnected)
 	throws DaoException{
 		getFederationDao().setConnected(sourceGridId, targetGridId, isConnected);
+	}
+
+	public boolean isReachable(String sourceGridId, String targetGridId)
+	throws DaoException{
+		FederationDao fdao = getFederationDao();
+		Federation f = fdao.getFederation(sourceGridId, targetGridId);
+		if(f.isConnected() && !f.isRequesting()) return true;
+		
+		return true;
 	}
 }

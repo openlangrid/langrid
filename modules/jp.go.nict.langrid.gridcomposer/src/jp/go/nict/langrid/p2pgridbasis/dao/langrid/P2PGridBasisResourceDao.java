@@ -23,14 +23,16 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
+import jp.go.nict.langrid.dao.DaoContext;
+import jp.go.nict.langrid.dao.DaoException;
+import jp.go.nict.langrid.dao.GenericHandler;
 import jp.go.nict.langrid.dao.MatchingCondition;
 import jp.go.nict.langrid.dao.Order;
 import jp.go.nict.langrid.dao.ResourceAlreadyExistsException;
 import jp.go.nict.langrid.dao.ResourceDao;
-import jp.go.nict.langrid.dao.DaoContext;
-import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.ResourceNotFoundException;
-import jp.go.nict.langrid.dao.GenericHandler;
 import jp.go.nict.langrid.dao.ResourceSearchResult;
 import jp.go.nict.langrid.dao.entity.Resource;
 import jp.go.nict.langrid.dao.entity.ResourcePK;
@@ -42,10 +44,8 @@ import jp.go.nict.langrid.p2pgridbasis.dao.DataDaoException;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataNotFoundException;
 import jp.go.nict.langrid.p2pgridbasis.dao.UnmatchedDataTypeException;
 import jp.go.nict.langrid.p2pgridbasis.data.Data;
-import jp.go.nict.langrid.p2pgridbasis.data.langrid.ResourceData;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.DataConvertException;
-
-import org.apache.log4j.Logger;
+import jp.go.nict.langrid.p2pgridbasis.data.langrid.ResourceData;
 
 /**
  * 
@@ -53,7 +53,9 @@ import org.apache.log4j.Logger;
  * @author $Author: t-nakaguchi $
  * @version $Revision: 401 $
  */
-public class P2PGridBasisResourceDao implements DataDao, ResourceDao {
+public class P2PGridBasisResourceDao
+extends AbstractP2PGridBasisDao
+implements DataDao, ResourceDao {
 	/**
 	 * The constructor.
 	 * @param dao
@@ -100,12 +102,23 @@ public class P2PGridBasisResourceDao implements DataDao, ResourceDao {
 			throw new UnmatchedDataTypeException(ResourceData.class.toString(), data.getClass().toString());
 		}
 
+		ResourceData resourceData = (ResourceData) data;
+		try{
+			if(!isReachable(
+					this.getController().getSelfGridId(), resourceData.getGridId())){
+				return false;
+			}
+		} catch (ControllerException e) {
+			throw new DataDaoException(e);
+		} catch (DaoException e) {
+			throw new DataDaoException(e);
+		}
+
 		if(data.getAttributes().getKeys().contains("IsDeleted") &&
 				data.getAttributes().getValue("IsDeleted").equals("true")) {
  			boolean updated = false;
 			try {
 				logger.debug("Delete");
-				ResourceData resourceData = (ResourceData)data;
 				Resource resource = resourceData.getResource();
 				removeEntityListener();
 				dao.deleteResource(resource.getGridId(), resource.getResourceId());
@@ -132,7 +145,6 @@ public class P2PGridBasisResourceDao implements DataDao, ResourceDao {
 
 		Resource resource= null;
 		try {
-			ResourceData resourceData = (ResourceData)data;
 			resource = resourceData.getResource();
 			logger.debug("New or UpDate");
 			removeEntityListener();

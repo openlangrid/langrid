@@ -28,6 +28,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.axis.encoding.Base64;
+import org.apache.log4j.Logger;
+
 import jp.go.nict.langrid.commons.io.StreamUtil;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.commons.ws.axis.AxisServiceContext;
@@ -60,16 +63,15 @@ import jp.go.nict.langrid.p2pgridbasis.data.Data;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.DataConvertException;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.ServiceData;
 
-import org.apache.axis.encoding.Base64;
-import org.apache.log4j.Logger;
-
 /**
  * 
  * 
  * @author $Author: t-nakaguchi $
  * @version $Revision: 487 $
  */
-public class P2PGridBasisServiceDao implements DataDao, ServiceDao {
+public class P2PGridBasisServiceDao
+extends AbstractP2PGridBasisDao
+implements DataDao, ServiceDao {
 	/**
 	 * 
 	 * 
@@ -128,9 +130,20 @@ public class P2PGridBasisServiceDao implements DataDao, ServiceDao {
 			throw new UnmatchedDataTypeException(ServiceData.class.toString(), data.getClass().toString());
 		}
 
+		ServiceData serviceData = (ServiceData) data;
+		try{
+			if(!isReachable(
+					this.getController().getSelfGridId(), serviceData.getGridId())){
+				return false;
+			}
+		} catch (ControllerException e) {
+			throw new DataDaoException(e);
+		} catch (DaoException e) {
+			throw new DataDaoException(e);
+		}
+
 		Service service = null;
 		try {
-			ServiceData serviceData = (ServiceData)data;
 			if(data.getAttributes().getValue("instanceType").equals("BPEL")){
 				service = serviceData.getBPELService();
 			}else if(data.getAttributes().getValue("instanceType").equals("EXTERNAL")){
