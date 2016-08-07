@@ -139,11 +139,9 @@ public class FederationLogic extends AbstractLogic{
 	private int getHops(String sgid, String tgid,
 			Map<String, List<Federation>> federations,
 			Map<String, Integer> cache){
-		System.out.println(sgid);
 		if(sgid.equals(tgid)) return 0;
 		Integer r = cache.get(sgid);
 		if(r != null){
-			System.out.println("hit for " + sgid);
 			return r;
 		}
 		int curValue = Integer.MAX_VALUE;

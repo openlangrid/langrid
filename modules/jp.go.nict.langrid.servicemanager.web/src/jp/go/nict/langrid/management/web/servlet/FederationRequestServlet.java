@@ -241,8 +241,8 @@ public class FederationRequestServlet extends HttpServlet{
 					FederationModel fm = fs.get(selfGridId, requestedGridId);
 					if(fm == null){
 						fm = new FederationModel();
-						fm.setConnected(false);
-						fm.setRequesting(true);
+						fm.setConnected(true);
+						fm.setRequesting(false);
 						fm.setSourceGridId(selfGridId);
 						fm.setSourceGridName(gm.getGridName());
 						fm.setTargetGridAccessToken(revToken);
