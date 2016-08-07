@@ -4,7 +4,7 @@
 	<classpathentry kind="src" output="bin.test" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="/lib/commons/commons-httpclient-3.1.jar" sourcepath="/sources/commons/commons-httpclient-3.1.zip"/>
 	<classpathentry kind="lib" path="/lib/groovy/groovy-all-1.5.6.jar" sourcepath="/sources/groovy/groovy-src-1.5.6.zip"/>
 	<classpathentry kind="lib" path="/lib/hibernate/hibernate3.3.2.patched.jar" sourcepath="/sources/hibernate/hibernate-3.3.2.ga.zip"/>

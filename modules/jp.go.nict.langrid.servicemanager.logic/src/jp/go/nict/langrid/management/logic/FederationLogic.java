@@ -20,7 +20,10 @@
 package jp.go.nict.langrid.management.logic;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.FederationDao;
@@ -94,17 +97,67 @@ public class FederationLogic extends AbstractLogic{
 	public boolean isReachable(String sourceGridId, String targetGridId)
 	throws DaoException{
 		FederationDao fdao = getFederationDao();
-		Federation f = fdao.getFederation(sourceGridId, targetGridId);
-		if(f.isConnected() && !f.isRequesting()) return true;
-		
-		return true;
+		try{
+			Federation f = fdao.getFederation(sourceGridId, targetGridId);
+			if(f.isConnected() && !f.isRequesting()) return true;
+		} catch(FederationNotFoundException e){
+		}
+		return getNearestFederation(sourceGridId, targetGridId) != null;
 	}
 
 	public Federation getNearestFederation(String sourceGridId, String targetGridId)
 	throws DaoException{
 		FederationDao fdao = getFederationDao();
-		Federation f = fdao.getFederation(sourceGridId, targetGridId);
-		if(f.isConnected() && !f.isRequesting()) return f;
-		return null;
+		try{
+			Federation f = fdao.getFederation(sourceGridId, targetGridId);
+			if(f.isConnected() && !f.isRequesting()) return f;
+		} catch(FederationNotFoundException e){
+		}
+
+		Map<String, List<Federation>> federations = new HashMap<>();
+		for(Federation f : fdao.list()){
+			List<Federation> tgts = federations.get(f.getSourceGridId());
+			if(tgts == null){
+				tgts = new ArrayList<>();
+				federations.put(f.getSourceGridId(), tgts);
+			}
+			tgts.add(f);
+		}
+		Map<String, Integer> cache = new HashMap<>();
+		Federation ret = null;
+		int currentHops = Integer.MAX_VALUE;
+		for(Federation f : federations.get(sourceGridId)){
+			int h = getHops(f.getTargetGridId(), targetGridId, federations, cache);
+			if(currentHops > h){
+				ret = f;
+				currentHops = h;
+			}
+		}
+		return ret;
+	}
+
+	private int getHops(String sgid, String tgid,
+			Map<String, List<Federation>> federations,
+			Map<String, Integer> cache){
+		System.out.println(sgid);
+		if(sgid.equals(tgid)) return 0;
+		Integer r = cache.get(sgid);
+		if(r != null){
+			System.out.println("hit for " + sgid);
+			return r;
+		}
+		int curValue = Integer.MAX_VALUE;
+		for(Federation f : federations.get(sgid)){
+			if(f.getTargetGridId().equals(tgid)){
+				cache.put(sgid, 1);
+				return 1;
+			}
+			int v = getHops(f.getTargetGridId(), tgid, federations, cache);
+			if(v < curValue){
+				curValue = v;
+			}
+		}
+		cache.put(sgid, curValue + 1);
+		return curValue + 1;
 	}
 }
