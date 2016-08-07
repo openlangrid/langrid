@@ -79,9 +79,10 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 		daoContext.beginTransaction();
 		try{
 			Federation f = federationLogic.getNearestFederation(serviceContext.getSelfGridId(), serviceGridId);
-//			Federation f = federationDao.getFederation(serviceContext.getSelfGridId(), serviceGridId);
 			Grid g = gridDao.getGrid(f.getTargetGridId());
-			service = serviceDao.getService(serviceGridId, serviceId);
+			if(f.getTargetGridId().equals(serviceGridId)){
+				service = serviceDao.getService(serviceGridId, serviceId);
+			}
 			String gurl = g.getUrl();
 			if(!gurl.endsWith("/")) gurl += "/";
 			url = new URL(gurl + "invoker/" + serviceId
@@ -115,7 +116,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 	}
 
 	protected void adjustHeaders(ServiceContext context, Service service, Map<String, String> headers){
-		super.adjustHeaders(service, headers);
+		if(service != null) super.adjustHeaders(service, headers);
 		headers.put(
 				LangridConstants.HTTPHEADER_FEDERATEDCALL_SOURCEGRIDID
 				, context.getSelfGridId()
