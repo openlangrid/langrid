@@ -154,15 +154,14 @@ public abstract class RequestOfConnectionForm extends AbstractForm<String> {
 									fm.setTargetGridUserId(userId.getModelObject());
 									fm.setTargetGridUserOrganization(fr.getOperatorOrganization());
 									fService.add(fm);
-								} else {
-									fService.setRequesting(gridId, targetGridId, ! fr.isApproved());
-									if(fr.isApproved()){
-										fService.setConnected(gridId, targetGridId, fr.isApproved());
-									}
+								} else if(fr.isApproved()){
+									fService.setRequesting(gridId, targetGridId, false);
+									fService.setConnected(gridId, targetGridId, true);
 								}
 							}
 							if(fr.isApproved() && fr.getTargetGrid().isSymmetricRelationEnabled()
 									&& grid.isSymmetricRelationEnabled()){
+								// reverse connection
 								FederationModel fm = fService.get(targetGridId, gridId);
 								if(fm == null) {
 									fm = new FederationModel();
