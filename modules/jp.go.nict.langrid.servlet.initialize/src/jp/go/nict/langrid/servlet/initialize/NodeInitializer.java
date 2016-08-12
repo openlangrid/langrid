@@ -69,6 +69,8 @@ extends HttpServlet{
 		private int initialPasswordExpirationDate;
 
 		private boolean autoApproveEnabled = true;
+		private boolean symmetricRelationEnabled = false;
+		private boolean transitiveRelationEnabled = false;
 		private URL gridHostUrl;
 		private String accessToken;
 		private String ownerUserId;
@@ -139,6 +141,8 @@ extends HttpServlet{
 				Grid g = new Grid(np.gridId, gridOwnerUserId);
 				g.setAutoApproveEnabled(np.autoApproveEnabled);
 				g.setCommercialUseAllowed(false);
+				g.setSymmetricRelationEnabled(np.symmetricRelationEnabled);
+				g.setTranstiveRelationEnabled(np.transitiveRelationEnabled);
 				if(np.gridHostUrl != null){
 					g.setUrl(np.gridHostUrl.toString());
 					g.setHosted(false);

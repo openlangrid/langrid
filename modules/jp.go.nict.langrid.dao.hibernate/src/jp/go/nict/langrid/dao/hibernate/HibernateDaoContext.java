@@ -34,6 +34,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.JDBCException;
@@ -247,6 +249,21 @@ implements DaoContext{
 			T ret = (T)getSession().load(clazz, id);
 			commitTransaction();
 			return ret;
+		} catch(HibernateException e){
+			rollbackTransaction();
+			throw new DaoException(e);
+		}
+	}
+
+	@Override
+	public <T> boolean removeEntity(Class<T> clazz, Serializable id) throws DaoException {
+		beginTransaction();
+		try{
+			T entity = loadEntity(clazz, id);
+			if(entity == null) return false;
+			getSession().delete(entity);
+			commitTransaction();
+			return true;
 		} catch(HibernateException e){
 			rollbackTransaction();
 			throw new DaoException(e);

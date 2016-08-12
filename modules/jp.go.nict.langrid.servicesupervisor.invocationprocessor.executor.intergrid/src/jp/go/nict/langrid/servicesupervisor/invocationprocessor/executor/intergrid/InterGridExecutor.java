@@ -32,12 +32,12 @@ import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.DaoFactory;
-import jp.go.nict.langrid.dao.FederationDao;
 import jp.go.nict.langrid.dao.GridDao;
 import jp.go.nict.langrid.dao.ServiceDao;
 import jp.go.nict.langrid.dao.entity.Federation;
 import jp.go.nict.langrid.dao.entity.Grid;
 import jp.go.nict.langrid.dao.entity.Service;
+import jp.go.nict.langrid.management.logic.FederationLogic;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.AbstractExecutor;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.Executor;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.ExecutorParams;
@@ -55,7 +55,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 	public InterGridExecutor(DaoFactory daoFactory, ExecutorParams params)
 	throws DaoException{
 		this.gridDao = daoFactory.createGridDao();
-		this.federationDao = daoFactory.createFederationDao();
+		this.federationLogic = new FederationLogic();
 		this.serviceDao = daoFactory.createServiceDao();
 		this.connectionTimeout = params.interGridCallConnectionTimeout;
 		this.readTimeout = params.interGridCallReadTimeout;
@@ -78,9 +78,11 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 		String authPasswd = null;
 		daoContext.beginTransaction();
 		try{
-			Federation f = federationDao.getFederation(serviceContext.getSelfGridId(), serviceGridId);
-			Grid g = gridDao.getGrid(serviceGridId);
-			service = serviceDao.getService(serviceGridId, serviceId);
+			Federation f = federationLogic.getNearestFederation(serviceContext.getSelfGridId(), serviceGridId);
+			Grid g = gridDao.getGrid(f.getTargetGridId());
+			if(f.getTargetGridId().equals(serviceGridId)){
+				service = serviceDao.getService(serviceGridId, serviceId);
+			}
 			String gurl = g.getUrl();
 			if(!gurl.endsWith("/")) gurl += "/";
 			url = new URL(gurl + "invoker/" + serviceId
@@ -114,7 +116,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 	}
 
 	protected void adjustHeaders(ServiceContext context, Service service, Map<String, String> headers){
-		super.adjustHeaders(service, headers);
+		if(service != null) super.adjustHeaders(service, headers);
 		headers.put(
 				LangridConstants.HTTPHEADER_FEDERATEDCALL_SOURCEGRIDID
 				, context.getSelfGridId()
@@ -126,8 +128,8 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 
 	}
 	
+	private FederationLogic federationLogic;
 	private GridDao gridDao;
-	private FederationDao federationDao;
 	private ServiceDao serviceDao;
 	private int connectionTimeout;
 	private int readTimeout;

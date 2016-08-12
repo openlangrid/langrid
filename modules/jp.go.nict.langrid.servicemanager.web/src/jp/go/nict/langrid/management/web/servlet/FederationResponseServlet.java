@@ -51,7 +51,7 @@ public class FederationResponseServlet extends HttpServlet {
 	throws ServletException, IOException {
 		FederationResponse response = JSON.decode(req.getParameter("response"), FederationResponse.class);
 		boolean accepted = response.isApproved();
-		String targetGridId = response.getGridId();
+		String targetGridId = response.getTargetGrid().getGridId();
 
 		try {
 			String selfGridId = getServletContext().getInitParameter("langrid.node.gridId");
@@ -61,16 +61,9 @@ public class FederationResponseServlet extends HttpServlet {
 			GridService gs = f.getGridService();
 			
 			if (accepted) {
-				if(gs.get(response.getGridId()) == null) {
-					GridModel sourceGrid = new GridModel();
-					sourceGrid.setAutoApproveEnabled(response.isAutoApproveEnabled());
-					sourceGrid.setCommercialUseAllowed(response.isCommercialUseAllowed());
-					sourceGrid.setGridId(targetGridId);
-					sourceGrid.setGridName(response.getGridName());
-					sourceGrid.setHosted(false);
-					sourceGrid.setOperatorUserId(response.getOperatorId());
-					sourceGrid.setUrl(response.getGridUrl());
-					gs.add(sourceGrid);
+				if(gs.get(response.getTargetGrid().getGridId()) == null) {
+					response.getTargetGrid().setHosted(false);
+					gs.add(response.getTargetGrid());
 					LogWriter.writeInfo("Operator"
 						, MessageManager.getMessage(
 							"LanguageGridOperator.federation.log.connect.registration.Grid"
@@ -98,16 +91,10 @@ public class FederationResponseServlet extends HttpServlet {
 					GridModel gm = gs.get(selfGridId);
 					
 					FederationResponse fr = new FederationResponse();
-					fr.setGridId(selfGridId);
-					fr.setGridName(gm.getGridName());
+					fr.setTargetGrid(gm);
 					fr.setOperatorOrganization(selfOrganization);
 					fr.setOperatorHomepage(selfHomepage);
 					fr.setApproved(true);
-					fr.setAutoApproveEnabled(gm.isAutoApproveEnabled());
-					fr.setCommercialUseAllowed(gm.isCommercialUseAllowed());
-					fr.setHosted(false);
-					fr.setGridUrl(gm.getUrl());
-					fr.setOperatorId(gm.getOperatorUserId());
 					w.print(JSON.encode(fr));
 				}finally{
 					w.close();

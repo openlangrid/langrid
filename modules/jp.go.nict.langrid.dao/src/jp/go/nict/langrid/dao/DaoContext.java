@@ -99,6 +99,8 @@ public interface DaoContext {
 	 */
 	<T> T loadEntity(Class<T> clazz, Serializable id) throws DaoException;
 
+	<T> boolean removeEntity(Class<T> clazz, Serializable id) throws DaoException;
+
 	/**
 	 * 
 	 * 

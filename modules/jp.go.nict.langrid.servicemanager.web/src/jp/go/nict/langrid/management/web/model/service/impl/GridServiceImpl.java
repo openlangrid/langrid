@@ -159,7 +159,6 @@ public class GridServiceImpl implements GridService {
 		} catch(DaoException e) {
 			throw new ServiceManagerException(e, this.getClass());
 		}
-		this.autoApproveEnabled = autoApproveEnabled;
 	}
 
 	@Override
@@ -211,7 +210,7 @@ public class GridServiceImpl implements GridService {
 	public void setScopeParameter(String serviceGridId, String userGridId, String userId) {
 //		this.serviceGridId = serviceGridId;
 //		this.userGridId = userGridId;
-		this.userId = userId;
+//		this.userId = userId;
 	}
 	
 	@Override
@@ -223,6 +222,8 @@ public class GridServiceImpl implements GridService {
 		GridModel model = new GridModel();
 		model.setAutoApproveEnabled(entity.isAutoApproveEnabled());
 		model.setCommercialUseAllowed(entity.isCommercialUseAllowed());
+		model.setSymmetricRelationEnabled(entity.isSymmetricRelationEnabled());
+		model.setTransitiveRelationEnabled(entity.isTranstiveRelationEnabled());
 		model.setCreatedDateTime(entity.getCreatedDateTime());
 		model.setGridId(entity.getGridId());
 		model.setGridName(entity.getGridName());
@@ -236,6 +237,8 @@ public class GridServiceImpl implements GridService {
 	private Grid setProperty(GridModel model, Grid entity) {
 		entity.setAutoApproveEnabled(model.isAutoApproveEnabled());
 		entity.setCommercialUseAllowed(model.isCommercialUseAllowed());
+		entity.setSymmetricRelationEnabled(model.isSymmetricRelationEnabled());
+		entity.setTranstiveRelationEnabled(model.isTransitiveRelationEnabled());
 		entity.setGridId(model.getGridId());
 		entity.setGridName(model.getGridName());
 		entity.setHosted(model.isHosted());
@@ -247,7 +250,5 @@ public class GridServiceImpl implements GridService {
 	private String selfGridId;
 //	private String serviceGridId;
 //	private String userGridId;
-	private String userId;
-	private boolean autoApproveEnabled;
 	private static final long serialVersionUID = 1L;
 }

@@ -25,6 +25,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
@@ -48,15 +50,15 @@ import jp.go.nict.langrid.p2pgridbasis.data.Data;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.DataConvertException;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.UserData;
 
-import org.apache.log4j.Logger;
-
 /**
  * 
  * 
  * @author $Author: t-nakaguchi $
  * @version $Revision: 401 $
  */
-public class P2PGridBasisUserDao implements DataDao, UserDao {
+public class P2PGridBasisUserDao
+extends AbstractP2PGridBasisDao
+implements DataDao, UserDao {
 	private P2PGridController getController() throws ControllerException{
 		if (controller == null) {
 			controller = JXTAController.getInstance();
@@ -103,12 +105,23 @@ public class P2PGridBasisUserDao implements DataDao, UserDao {
 			throw new UnmatchedDataTypeException(UserData.class.toString(), data.getClass().toString());
 		}
 
+		UserData userData = (UserData) data;
+		try{
+			if(!isReachableForwardOrBackward(
+					this.getController().getSelfGridId(), userData.getGridId())){
+				return false;
+			}
+		} catch (ControllerException e) {
+			throw new DataDaoException(e);
+		} catch (DaoException e) {
+			throw new DataDaoException(e);
+		}
+
 		if(data.getAttributes().getKeys().contains("IsDeleted") &&
 				data.getAttributes().getValue("IsDeleted").equals("true")) {
 			logger.debug("Delete");
  			boolean updated = false;
 			try {
-				UserData userData = (UserData) data;
 				User user = userData.getUser();
 				removeEntityListener();
 				dao.deleteUser(user.getGridId(), user.getUserId());
@@ -135,7 +148,6 @@ public class P2PGridBasisUserDao implements DataDao, UserDao {
 
 		User user = null;
 		try {
-			UserData userData = (UserData)data;
 			user = userData.getUser();
 			removeEntityListener();
 			if(dao.isUserExist(user.getGridId(), user.getUserId())){

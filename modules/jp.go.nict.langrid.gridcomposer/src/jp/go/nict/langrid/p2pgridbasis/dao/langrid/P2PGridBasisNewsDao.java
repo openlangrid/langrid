@@ -23,6 +23,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.GenericHandler;
@@ -38,15 +40,15 @@ import jp.go.nict.langrid.p2pgridbasis.data.Data;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.DataConvertException;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.NewsData;
 
-import org.apache.log4j.Logger;
-
 /**
  * 
  * 
  * @author $Author: t-nakaguchi $
  * @version $Revision: 401 $
  */
-public class P2PGridBasisNewsDao implements DataDao, NewsDao {
+public class P2PGridBasisNewsDao
+extends AbstractP2PGridBasisDao
+implements DataDao, NewsDao {
 	/**
 	 * 
 	 * 
@@ -93,6 +95,18 @@ public class P2PGridBasisNewsDao implements DataDao, NewsDao {
 			throw new UnmatchedDataTypeException(NewsData.class.toString(), data.getClass().toString());
 		}
 
+		NewsData newsData = (NewsData) data;
+		try{
+			if(!isReachableForwardOrBackward(
+					this.getController().getSelfGridId(), newsData.getGridId())){
+				return false;
+			}
+		} catch (ControllerException e) {
+			throw new DataDaoException(e);
+		} catch (DaoException e) {
+			throw new DataDaoException(e);
+		}
+
 		if(data.getAttributes().getKeys().contains("IsDeleted") &&
 				data.getAttributes().getValue("IsDeleted").equals("true")) {
 			// 
@@ -103,7 +117,6 @@ public class P2PGridBasisNewsDao implements DataDao, NewsDao {
 
 		News news = null;
 		try {
-			NewsData newsData = (NewsData)data;
 			news = newsData.getNews();
 
 			logger.debug("New or UpDate");

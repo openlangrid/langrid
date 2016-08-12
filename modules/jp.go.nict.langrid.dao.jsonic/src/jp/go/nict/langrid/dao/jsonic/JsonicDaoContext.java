@@ -133,6 +133,11 @@ implements DaoContext{
 	}
 
 	@Override
+	public <T> boolean removeEntity(Class<T> clazz, Serializable id) throws DaoException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public void mergeEntity(Object entity) throws DaoException {
 		// do nothing
 	}

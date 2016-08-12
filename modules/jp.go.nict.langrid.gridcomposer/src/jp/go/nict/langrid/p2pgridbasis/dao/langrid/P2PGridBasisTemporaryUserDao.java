@@ -25,6 +25,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.GenericHandler;
@@ -47,15 +49,15 @@ import jp.go.nict.langrid.p2pgridbasis.data.Data;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.DataConvertException;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.TemporaryUserData;
 
-import org.apache.log4j.Logger;
-
 /**
  * 
  * 
  * @author $Author: t-nakaguchi $
  * @version $Revision: 401 $
  */
-public class P2PGridBasisTemporaryUserDao implements DataDao, TemporaryUserDao {
+public class P2PGridBasisTemporaryUserDao
+extends AbstractP2PGridBasisDao
+implements DataDao, TemporaryUserDao {
 	private P2PGridController getController() throws ControllerException{
 		if (controller == null) {
 			controller = JXTAController.getInstance();
@@ -104,12 +106,23 @@ public class P2PGridBasisTemporaryUserDao implements DataDao, TemporaryUserDao {
 			throw new UnmatchedDataTypeException(TemporaryUserData.class.toString(), data.getClass().toString());
 		}
 
+		TemporaryUserData userData = (TemporaryUserData) data;
+		try{
+			if(!isReachableForwardOrBackward(
+					this.getController().getSelfGridId(), userData.getGridId())){
+				return false;
+			}
+		} catch (ControllerException e) {
+			throw new DataDaoException(e);
+		} catch (DaoException e) {
+			throw new DataDaoException(e);
+		}
+
 		if(data.getAttributes().getKeys().contains("IsDeleted") &&
 				data.getAttributes().getValue("IsDeleted").equals("true")) {
  			boolean updated = false;
 			logger.info("Delete");
 			try {
-				TemporaryUserData userData = (TemporaryUserData) data;
 				TemporaryUser user = userData.getUser();
 				removeEntityListener();
 				dao.deleteUser(user.getGridId(), user.getUserId());
@@ -136,7 +149,6 @@ public class P2PGridBasisTemporaryUserDao implements DataDao, TemporaryUserDao {
 
 		TemporaryUser user = null;
 		try {
-			TemporaryUserData userData = (TemporaryUserData)data;
 			user = userData.getUser();
 			logger.debug("New or UpDate");
 			removeEntityListener();

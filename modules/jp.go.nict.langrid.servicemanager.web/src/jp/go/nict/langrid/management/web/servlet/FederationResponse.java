@@ -17,6 +17,8 @@
  */
 package jp.go.nict.langrid.management.web.servlet;
 
+import jp.go.nict.langrid.management.web.model.GridModel;
+
 /**
  * 
  * 
@@ -24,14 +26,6 @@ package jp.go.nict.langrid.management.web.servlet;
  * @author Takao Nakaguchi
  */
 public class FederationResponse {
-	public String getGridId() {
-		return gridId;
-	}
-
-	public void setGridId(String gridId) {
-		this.gridId = gridId;
-	}
-
 	public String getOperatorOrganization() {
 		return operatorOrganization;
 	}
@@ -59,46 +53,6 @@ public class FederationResponse {
 	public void setApproved(boolean approved) {
 		this.approved = approved;
 	}
-	
-	public String getOperatorId() {
-		return operatorId;
-	}
-
-	public void setOperatorId(String operatorId) {
-		this.operatorId = operatorId;
-	}
-
-	public String getGridUrl() {
-		return gridUrl;
-	}
-
-	public void setGridUrl(String gridUrl) {
-		this.gridUrl = gridUrl;
-	}
-
-	public boolean isHosted() {
-		return hosted;
-	}
-
-	public void setHosted(boolean hosted) {
-		this.hosted = hosted;
-	}
-
-	public boolean isCommercialUseAllowed() {
-		return commercialUseAllowed;
-	}
-
-	public void setCommercialUseAllowed(boolean commercialUseAllowed) {
-		this.commercialUseAllowed = commercialUseAllowed;
-	}
-
-	public boolean isAutoApproveEnabled() {
-		return autoApproveEnabled;
-	}
-
-	public void setAutoApproveEnabled(boolean autoApproveEnabled) {
-		this.autoApproveEnabled = autoApproveEnabled;
-	}
 
 	public String getNewsMessage() {
 		return newsMessage;
@@ -107,27 +61,29 @@ public class FederationResponse {
 	public void setNewsMessage(String newsMessage) {
 		this.newsMessage = newsMessage;
 	}
-	
-	public String getGridName() {
-		return gridName;
+
+	public GridModel getTargetGrid() {
+		return targetGrid;
 	}
 	
-	public void setGridName(String gridName) {
-		this.gridName = gridName;
+	public void setTargetGrid(GridModel targetGrid) {
+		this.targetGrid = targetGrid;
+	}
+
+	public String getReverseConnectionToken() {
+		return reverseConnectionToken;
+	}
+
+	public void setReverseConnectionToken(String reverseConnectionToken) {
+		this.reverseConnectionToken = reverseConnectionToken;
 	}
 
 	private boolean approved;
-	
+
 	private String operatorOrganization;
 	private String operatorHomepage;
 	private String newsMessage;
-	
-	// Grid daata from grid table;
-	private String gridId;
-	private String gridName;
-	private String operatorId;
-	private String gridUrl;
-	private boolean hosted;
-	private boolean commercialUseAllowed;
-	private boolean autoApproveEnabled;
+	private String reverseConnectionToken;
+
+	private GridModel targetGrid;
 }
