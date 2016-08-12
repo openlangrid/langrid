@@ -111,7 +111,7 @@ public class ClassUtil {
 	public static Method findGetter(Class<?> clazz, String name)
 	throws SecurityException, NoSuchMethodException{
 		{
-			String getterName = "get" + name.substring(0).toUpperCase() +
+			String getterName = "get" + name.substring(0, 1).toUpperCase() +
 					((name.length() > 1) ? name.substring(1) : "");
 			Method m = clazz.getMethod(getterName);
 			if(m != null){
