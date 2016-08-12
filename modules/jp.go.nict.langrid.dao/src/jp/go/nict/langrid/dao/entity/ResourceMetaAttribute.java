@@ -35,6 +35,7 @@ import javax.persistence.IdClass;
 @Entity
 @IdClass(ResourceMetaAttributePK.class)
 public class ResourceMetaAttribute
+extends UpdateManagedEntity
 implements Serializable{
 	/**
 	 * 
