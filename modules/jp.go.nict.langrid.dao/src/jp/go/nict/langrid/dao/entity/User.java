@@ -123,6 +123,7 @@ implements AttributedElement<UserAttribute>, Serializable{
 	 * 
 	 * 
 	 */
+	@JSONHint(ignore=true)
 	public String getPassword(){
 		return password;
 	}
