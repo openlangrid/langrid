@@ -19,7 +19,6 @@
  */
 package jp.go.nict.langrid.dao;
 
-import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
 
@@ -97,9 +96,11 @@ public interface DaoContext {
 	 * 
 	 * 
 	 */
-	<T> T loadEntity(Class<T> clazz, Serializable id) throws DaoException;
+	<T> T loadEntity(Class<T> clazz, Object id) throws DaoException;
 
-	<T> boolean removeEntity(Class<T> clazz, Serializable id) throws DaoException;
+	void saveEntity(Object value) throws DaoException;
+
+	<T> boolean removeEntity(Class<T> clazz, Object id) throws DaoException;
 
 	/**
 	 * 

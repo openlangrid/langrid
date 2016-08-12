@@ -20,7 +20,6 @@ package jp.go.nict.langrid.dao.jsonic;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -127,13 +126,18 @@ implements DaoContext{
 	}
 
 	@Override
-	public <T> T loadEntity(Class<T> clazz, Serializable id)
+	public <T> T loadEntity(Class<T> clazz, Object id)
 			throws DaoException {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public <T> boolean removeEntity(Class<T> clazz, Serializable id) throws DaoException {
+	public void saveEntity(Object value) throws DaoException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <T> boolean removeEntity(Class<T> clazz, Object id) throws DaoException {
 		throw new UnsupportedOperationException();
 	}
 

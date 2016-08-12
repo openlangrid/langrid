@@ -34,8 +34,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.JDBCException;
@@ -243,10 +241,10 @@ implements DaoContext{
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T loadEntity(Class<T> clazz, Serializable id) throws DaoException{
+	public <T> T loadEntity(Class<T> clazz, Object id) throws DaoException{
 		beginTransaction();
 		try{
-			T ret = (T)getSession().load(clazz, id);
+			T ret = (T)getSession().get(clazz, (Serializable)id);
 			commitTransaction();
 			return ret;
 		} catch(HibernateException e){
@@ -254,9 +252,21 @@ implements DaoContext{
 			throw new DaoException(e);
 		}
 	}
+	
+	@Override
+	public void saveEntity(Object value) throws DaoException {
+		beginTransaction();
+		try{
+			getSession().save(value);
+			commitTransaction();
+		} catch(HibernateException e){
+			rollbackTransaction();
+			throw new DaoException(e);
+		}
+	}
 
 	@Override
-	public <T> boolean removeEntity(Class<T> clazz, Serializable id) throws DaoException {
+	public <T> boolean removeEntity(Class<T> clazz, Object id) throws DaoException {
 		beginTransaction();
 		try{
 			T entity = loadEntity(clazz, id);
