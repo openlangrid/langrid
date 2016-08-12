@@ -2,6 +2,7 @@ package jp.go.nict.langrid.dao.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -77,6 +78,8 @@ public class EntityUtil {
 
 	static void getFieldNames(Class<?> clazz, Collection<String> ret){
 		for(Field f : clazz.getDeclaredFields()){
+			if((f.getModifiers() & Modifier.TRANSIENT) != 0) continue;
+			if((f.getModifiers() & Modifier.STATIC) != 0) continue;
 			if(!f.isAccessible()) f.setAccessible(true);
 			ret.add(f.getName());
 		}
