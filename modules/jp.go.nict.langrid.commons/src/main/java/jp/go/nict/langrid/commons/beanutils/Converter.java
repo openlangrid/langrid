@@ -35,6 +35,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -177,9 +178,14 @@ public class Converter{
 	}
 
 	@SuppressWarnings({"unchecked","rawtypes"})
-	public <T> Collection<T> convertCollection(Collection<?> value, Class<T> componentType)
+	public <T> Collection<T> convertCollection(Collection<?> value, Class<?> compositeType, Class<T> componentType)
 	throws ConversionException{
-		List ret = new ArrayList();
+		Collection ret = null;
+		if(compositeType.isAssignableFrom(LinkedHashSet.class)){
+			ret = new LinkedHashSet<>();
+		} else{
+			ret = new ArrayList();
+		}
 		for(Object element : (Collection)value){
 			ret.add(convert(element, componentType));
 		}
@@ -228,7 +234,10 @@ public class Converter{
 				if(v == null) continue;
 				Class<?> setterPropClass = m.getParameterTypes()[0];
 				if(!setterPropClass.isAssignableFrom(v.getClass())){
-					v = convert(v, setterPropClass);
+					if(!setterPropClass.isPrimitive()){
+						v = convert(v, m.getGenericParameterTypes()[0]);
+					}
+					else v = convert(v, setterPropClass);
 					if(v == null) continue;
 				}
 				m.invoke(o, v);
@@ -252,7 +261,7 @@ public class Converter{
 			if(type instanceof ParameterizedType){
 				ParameterizedType pt = (ParameterizedType)type;
 				if(Collection.class.isAssignableFrom((Class)pt.getRawType())){
-					return (T)convertCollection((Collection)value, (Class)pt.getActualTypeArguments()[0]);
+					return (T)convertCollection((Collection)value, (Class)pt.getRawType(), (Class)pt.getActualTypeArguments()[0]);
 				}
 			}
 		}
