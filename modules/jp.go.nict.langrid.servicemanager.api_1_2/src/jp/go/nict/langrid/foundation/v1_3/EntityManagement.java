@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import org.hibernate.proxy.pojo.javassist.JavassistLazyInitializer;
-
 import jp.go.nict.langrid.commons.beanutils.Converter;
 import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.dao.DaoException;
@@ -26,9 +24,9 @@ import jp.go.nict.langrid.dao.entity.ServiceMetaAttribute;
 import jp.go.nict.langrid.dao.entity.ServiceType;
 import jp.go.nict.langrid.dao.entity.User;
 import jp.go.nict.langrid.dao.util.EntityUtil;
+import jp.go.nict.langrid.dao.util.JSON;
 import jp.go.nict.langrid.foundation.AbstractLangridService;
 import jp.go.nict.langrid.foundation.annotation.TransactionMethod;
-import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
 import jp.go.nict.langrid.service_1_2.ServiceConfigurationException;
 import jp.go.nict.langrid.service_1_2.UnknownException;
 import jp.go.nict.langrid.service_1_2.foundation.MatchingCondition;
@@ -41,9 +39,10 @@ extends AbstractLangridService
 implements EntityManagementService{
 	@Override
 	@TransactionMethod
-	public NewerAndOlderKeys getNewerAndOlderKeys(String entityType, Calendar standardDateTime,
+	public NewerAndOlderKeys getNewerAndOlderKeys(
+			String entityType, Calendar standardDateTime,
 			MatchingCondition... conditions)
-			throws ServiceConfigurationException, UnknownException {
+	throws ServiceConfigurationException, UnknownException {
 		Class<?> entityClass = getEntityClass(entityType);
 		try{
 			List<Object> newer = new ArrayList<>();
@@ -71,17 +70,11 @@ implements EntityManagementService{
 	@TransactionMethod
 	public Object getEntity(String entityType, Object entityId) 
 	throws ServiceConfigurationException, UnknownException {
-		JSON j = new JSON(){
-			@Override
-			protected Object preformat(Context context, Object value) throws Exception {
-				if(value instanceof JavassistLazyInitializer) return null;
-				return super.preformat(context, value);
-			}
-		};
+		JSON j = new JSON();
 		try {
 			Class<?> entityClass = getEntityClass(entityType);
 			String s = j.format(getDaoContext().loadEntity(
-					entityClass, (Serializable)new Converter().convert(entityId, EntityUtil.getIdClass(entityClass))
+					entityClass, new Converter().convert(entityId, EntityUtil.getIdClass(entityClass))
 					));
 			return j.parse(s);
 		} catch(DomainNotFoundException e){
@@ -95,7 +88,6 @@ implements EntityManagementService{
 
 	@Override
 	public Object getGridEntity() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -117,13 +109,6 @@ implements EntityManagementService{
 			case "AccessLimit": return AccessLimit.class;
 			default: return null;
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private Pair<String, String>[] getConditions(String entityType, String gridId){
-		return new Pair[]{
-			new Pair<String, String>("gridId", gridId)
-		};
 	}
 
 	@SuppressWarnings("unchecked")
