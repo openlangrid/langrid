@@ -40,6 +40,28 @@ public class EntityUtil {
 			return idValues[0];
 		}
 	}
+	
+	public static Object getId(Object entity)
+	throws IllegalArgumentException, SecurityException, IllegalAccessException,
+	InvocationTargetException, NoSuchMethodException, InstantiationException{
+		Class<?> clazz = entity.getClass();
+		IdClass idc = null;
+		Class<?> c = clazz;
+		while(!c.equals(Object.class)){
+			idc = c.getAnnotation(IdClass.class);
+			if(idc != null) break;
+			c = c.getSuperclass();
+		}
+		if(idc != null){
+			Object ret = idc.value().newInstance();
+			for(String name : getFieldNames(idc.value())){
+				ObjectUtil.setProperty(ret, name, ObjectUtil.getProperty(entity, name));
+			}
+			return ret;
+		} else{
+			return ObjectUtil.getProperty(entity, getIdFieldName(clazz));
+		}
+	}
 
 	public static Class<?> getIdClass(Class<?> entityClass){
 		IdClass idc = entityClass.getAnnotation(IdClass.class);
