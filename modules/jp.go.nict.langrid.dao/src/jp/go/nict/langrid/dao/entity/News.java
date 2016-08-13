@@ -24,6 +24,7 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 
 import org.hibernate.annotations.Type;
 
@@ -34,6 +35,7 @@ import org.hibernate.annotations.Type;
  * @version $Revision: 388 $
  */
 @Entity
+@IdClass(NewsPK.class)
 public class News
 extends UpdateManagedEntity
 implements Serializable
@@ -136,10 +138,12 @@ implements Serializable
 	}
 
 	@Id
+	private String gridId;
+
+	@Id
 	@GeneratedValue
 	private int id;
 
-	private String gridId;
 
 	@Type(type="text")
 	private String contents;
