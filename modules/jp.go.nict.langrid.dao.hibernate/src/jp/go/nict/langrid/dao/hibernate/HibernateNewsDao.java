@@ -19,15 +19,15 @@ package jp.go.nict.langrid.dao.hibernate;
 
 import java.util.List;
 
-import jp.go.nict.langrid.dao.DaoException;
-import jp.go.nict.langrid.dao.NewsDao;
-import jp.go.nict.langrid.dao.entity.News;
-
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
+
+import jp.go.nict.langrid.dao.DaoException;
+import jp.go.nict.langrid.dao.NewsDao;
+import jp.go.nict.langrid.dao.entity.News;
 
 /**
  * 
@@ -96,6 +96,7 @@ implements NewsDao
 		Session session = getSession();
 		getContext().beginTransaction();
 		try {
+			news.setId((int)(((HibernateDaoContext)getContext()).nextSeq()));
 			session.save(news);
 			news.setNodeLocalId(news.getId());
 			getContext().commitTransaction();

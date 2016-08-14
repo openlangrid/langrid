@@ -21,8 +21,12 @@ import static jp.go.nict.langrid.commons.util.ArrayUtil.append;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,8 +35,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.IdClass;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -43,6 +51,8 @@ import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.resolver.DialectResolver;
+import org.hibernate.dialect.resolver.StandardDialectResolver;
 import org.hibernate.engine.EntityKey;
 import org.hibernate.event.EventListeners;
 import org.hibernate.event.PostCollectionRecreateEvent;
@@ -57,7 +67,9 @@ import org.hibernate.event.PostInsertEvent;
 import org.hibernate.event.PostInsertEventListener;
 import org.hibernate.event.PostUpdateEvent;
 import org.hibernate.event.PostUpdateEventListener;
+import org.hibernate.jdbc.Work;
 
+import jp.go.nict.langrid.commons.lang.ObjectUtil;
 import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.dao.AbstractDaoContext;
 import jp.go.nict.langrid.dao.ConnectException;
@@ -257,11 +269,25 @@ implements DaoContext{
 	public void saveEntity(Object value) throws DaoException {
 		beginTransaction();
 		try{
+			checkAndSetId(value);
 			getSession().save(value);
 			commitTransaction();
 		} catch(HibernateException e){
 			rollbackTransaction();
 			throw new DaoException(e);
+		}
+	}
+
+	void checkAndSetId(Object value){
+		IdClass idca = value.getClass().getAnnotation(IdClass.class);
+		if(idca == null) return;
+		for(Field f : value.getClass().getDeclaredFields()){
+			if(f.getAnnotation(GeneratedValue.class) != null){
+				try {
+					ObjectUtil.setProperty(value, f.getName(), (int)nextSeq());
+				} catch (Exception e) {
+				}
+			}
 		}
 	}
 
@@ -402,6 +428,34 @@ implements DaoContext{
 			rollbackTransaction();
 			throw new DaoException(e);
 		}
+	}
+	
+	long nextSeq(){
+		LongAdder ld = new LongAdder();
+		getSession().doWork(new Work() {
+			public void execute(Connection connection) throws SQLException {
+				DialectResolver dialectResolver = new StandardDialectResolver();
+				Dialect dialect =  dialectResolver.resolveDialect(connection.getMetaData());
+				PreparedStatement preparedStatement = null;
+				ResultSet resultSet = null;
+				try {
+					preparedStatement = connection.prepareStatement(
+							dialect.getSequenceNextValString("hibernate_sequence"));
+					resultSet = preparedStatement.executeQuery();
+					resultSet.next();
+					ld.add(resultSet.getLong(1));
+				}catch (SQLException e) {
+					throw e;
+				} finally {
+					if(preparedStatement != null) {
+						preparedStatement.close();
+					}
+					if(resultSet != null) {
+						resultSet.close();
+					}
+				}
+			}});
+		return ld.longValue();
 	}
 
 	private static void logAdditionalInfo(RuntimeException exception){
