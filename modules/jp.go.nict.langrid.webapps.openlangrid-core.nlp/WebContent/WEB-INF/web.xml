@@ -47,6 +47,7 @@
     <filter-name>FederationAuthenticator</filter-name>
     <url-pattern>/invoker/*</url-pattern>
     <url-pattern>/federation/*</url-pattern>
+    <url-pattern>/jsManagementServices/*</url-pattern>
     <url-pattern>/HttpMessageServlet</url-pattern>
   </filter-mapping>
 

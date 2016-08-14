@@ -35,6 +35,7 @@
 		<project>jp.go.nict.langrid.servlet.initialize</project>
 		<project>jp.go.nict.langrid.commons.protobufrpc</project>
 		<project>jp.go.nict.langrid.commons</project>
+		<project>jp.go.nict.langrid.servicecontainer</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

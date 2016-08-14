@@ -275,6 +275,12 @@
         <dependent-module archiveName="jp.go.nict.langrid.commons.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.commons/jp.go.nict.langrid.commons">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.servicecontainer.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicecontainer/jp.go.nict.langrid.servicecontainer">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="guava-15.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/google/guava-15.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="java-output-path" value="/jp.go.nict.langrid.webapps.langrid-core.nlp/build/classes"/>
         <property name="context-root" value="jp.go.nict.langrid.webapps.openlangrid-core.nlp"/>
     </wb-module>
