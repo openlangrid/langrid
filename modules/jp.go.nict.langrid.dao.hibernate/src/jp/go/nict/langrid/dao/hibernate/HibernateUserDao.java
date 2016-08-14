@@ -180,12 +180,10 @@ implements UserDao
 				if(findUser(session, gid, uid) != null){
 					throw new UserAlreadyExistsException(gid, uid);
 				} else{
-					Set<UserRole> roles = new HashSet<>(user.getRoles());
-					user.getRoles().clear();
-					session.save(user);
-					for(UserRole r : roles){
-						session.save(new UserRole(r.getGridId(), r.getUserId(), r.getRoleName()));
+					for(String r : userRoles){
+						user.getRoles().add(new UserRole(user.getGridId(), user.getUserId(), r));
 					}
+					session.save(user);
 				}
 			}
 		});
