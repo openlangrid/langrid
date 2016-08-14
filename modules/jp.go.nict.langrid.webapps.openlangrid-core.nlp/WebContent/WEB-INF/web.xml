@@ -118,6 +118,7 @@
     <url-pattern>/services</url-pattern>
     <url-pattern>/services/*</url-pattern>
     <url-pattern>/federation/*</url-pattern>
+    <url-pattern>/jsManagementServices/*</url-pattern>
     <url-pattern>/HttpMessageServlet</url-pattern>
   </filter-mapping>
 
@@ -309,6 +310,19 @@
   <servlet-mapping>
     <servlet-name>FederationResponseServlet</servlet-name>
     <url-pattern>/federation/response</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>JsManagementServlet</servlet-name>
+    <servlet-class>jp.go.nict.langrid.servicecontainer.handler.jsonrpc.servlet.JsonRpcServlet</servlet-class>
+    <init-param>
+      <param-name>servicesPath</param-name>
+      <param-value>WEB-INF/jsManagementServices</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>JsManagementServlet</servlet-name>
+    <url-pattern>/jsManagementServices/*</url-pattern>
   </servlet-mapping>
 
   <session-config>
