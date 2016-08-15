@@ -18,6 +18,7 @@ import jp.go.nict.langrid.dao.entity.ExternalService;
 import jp.go.nict.langrid.dao.entity.Grid;
 import jp.go.nict.langrid.dao.entity.Protocol;
 import jp.go.nict.langrid.dao.entity.Resource;
+import jp.go.nict.langrid.dao.entity.Service;
 import jp.go.nict.langrid.dao.entity.ResourceMetaAttribute;
 import jp.go.nict.langrid.dao.entity.ResourceType;
 import jp.go.nict.langrid.dao.entity.ServiceMetaAttribute;
@@ -73,9 +74,11 @@ implements EntityManagementService{
 		JSON j = new JSON();
 		try {
 			Class<?> entityClass = getEntityClass(entityType);
-			String s = j.format(getDaoContext().loadEntity(
+			Object entity = getDaoContext().loadEntity(
 					entityClass, new Converter().convert(entityId, EntityUtil.getIdClass(entityClass))
-					));
+					);
+			if(entity == null) return null;
+			String s = j.format(entity);
 			return j.parse(s);
 		} catch(DomainNotFoundException e){
 			throw ExceptionConverter.convertToUnknownException(e);
@@ -102,6 +105,7 @@ implements EntityManagementService{
 			case "ServiceMetaAttribute": return ServiceMetaAttribute.class;
 			case "Protocol": return Protocol.class;
 			case "Resource": return Resource.class;
+			case "Service": return Service.class;
 			case "ExternalService": return ExternalService.class;
 			case "BPELService": return BPELService.class;
 			case "AccessRight": return AccessRight.class;
