@@ -75,7 +75,7 @@ public class NewsPK implements Serializable{
 		hashCode = new HashCodeBuilder()
 			.append(gridId)
 			.append(id)
-			.hashCode();
+			.toHashCode();
 	}
 
 	/**

@@ -128,7 +128,7 @@ public class ServiceAttributePK implements Serializable{
 			.append(gridId)
 			.append(serviceId)
 			.append(name)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private String gridId;

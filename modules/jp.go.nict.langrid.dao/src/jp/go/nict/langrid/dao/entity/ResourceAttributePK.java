@@ -126,7 +126,7 @@ public class ResourceAttributePK implements Serializable{
 			.append(gridId)
 			.append(resourceId)
 			.append(name)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private transient int hashCode;

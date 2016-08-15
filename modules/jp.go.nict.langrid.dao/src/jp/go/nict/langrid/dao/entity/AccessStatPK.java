@@ -206,7 +206,7 @@ public class AccessStatPK implements Serializable{
 			.append(nodeId)
 			.append(baseDateTime)
 			.append(period)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private String userGridId;

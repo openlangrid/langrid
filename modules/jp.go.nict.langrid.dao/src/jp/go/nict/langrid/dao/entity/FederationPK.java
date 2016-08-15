@@ -107,7 +107,7 @@ public class FederationPK implements Serializable{
 		hashCode = new HashCodeBuilder()
 			.append(sourceGridId)
 			.append(targetGridId)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private String sourceGridId;

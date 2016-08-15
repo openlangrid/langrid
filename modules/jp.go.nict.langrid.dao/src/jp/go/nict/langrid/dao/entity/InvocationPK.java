@@ -126,7 +126,7 @@ public class InvocationPK implements Serializable{
 			.append(ownerServiceGridId)
 			.append(ownerServiceId)
 			.append(invocationName)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private String ownerServiceGridId;

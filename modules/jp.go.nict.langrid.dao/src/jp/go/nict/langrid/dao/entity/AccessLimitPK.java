@@ -185,7 +185,7 @@ public class AccessLimitPK implements Serializable{
 			.append(serviceId)
 			.append(period)
 			.append(limitType)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private String userGridId;

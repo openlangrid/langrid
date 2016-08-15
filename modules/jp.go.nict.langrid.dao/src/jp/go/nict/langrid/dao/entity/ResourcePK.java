@@ -104,7 +104,7 @@ public class ResourcePK implements Serializable{
 		hashCode = new HashCodeBuilder()
 			.append(gridId)
 			.append(resourceId)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private String gridId;

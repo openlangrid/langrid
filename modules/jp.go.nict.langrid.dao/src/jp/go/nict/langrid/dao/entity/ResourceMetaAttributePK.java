@@ -104,7 +104,7 @@ public class ResourceMetaAttributePK implements Serializable{
 		hashCode = new HashCodeBuilder()
 			.append(domainId)
 			.append(attributeId)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private String domainId;

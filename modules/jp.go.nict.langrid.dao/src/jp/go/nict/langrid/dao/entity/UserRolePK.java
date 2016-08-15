@@ -128,7 +128,7 @@ public class UserRolePK implements Serializable{
 			.append(gridId)
 			.append(userId)
 			.append(roleName)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private String gridId;

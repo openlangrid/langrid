@@ -104,7 +104,7 @@ public class ResourceTypePK implements Serializable{
 		hashCode = new HashCodeBuilder()
 			.append(domainId)
 			.append(resourceTypeId)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private String domainId;

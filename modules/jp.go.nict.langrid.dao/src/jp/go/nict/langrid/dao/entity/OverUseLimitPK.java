@@ -128,7 +128,7 @@ implements Serializable
 			.append(gridId)
 			.append(period)
 			.append(limitType)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private String gridId;

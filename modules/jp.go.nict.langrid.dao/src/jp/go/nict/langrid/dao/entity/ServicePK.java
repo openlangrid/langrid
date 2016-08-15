@@ -104,7 +104,7 @@ public class ServicePK implements Serializable{
 		hashCode = new HashCodeBuilder()
 			.append(gridId)
 			.append(serviceId)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private String gridId;

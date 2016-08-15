@@ -104,7 +104,7 @@ public class ServiceTypePK implements Serializable{
 		hashCode = new HashCodeBuilder()
 			.append(domainId)
 			.append(serviceTypeId)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private String domainId;

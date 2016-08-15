@@ -128,7 +128,7 @@ public class NodeAttributePK implements Serializable{
 			.append(gridId)
 			.append(nodeId)
 			.append(name)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private String gridId;

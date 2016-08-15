@@ -128,7 +128,7 @@ public class ServiceDeploymentPK implements Serializable{
 			.append(gridId)
 			.append(serviceId)
 			.append(nodeId)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private String gridId;

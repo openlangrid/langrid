@@ -126,7 +126,7 @@ public class UserAttributePK implements Serializable{
 			.append(gridId)
 			.append(userId)
 			.append(name)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private String gridId;

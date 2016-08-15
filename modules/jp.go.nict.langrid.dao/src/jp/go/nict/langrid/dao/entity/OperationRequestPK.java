@@ -110,7 +110,7 @@ public class OperationRequestPK implements Serializable{
 		hashCode = new HashCodeBuilder()
 			.append(gridId)
 			.append(id)
-			.hashCode();
+			.toHashCode();
 	}
 
 	@Id

@@ -104,7 +104,7 @@ public class UserPK implements Serializable{
 		hashCode = new HashCodeBuilder()
 			.append(gridId)
 			.append(userId)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private String gridId;

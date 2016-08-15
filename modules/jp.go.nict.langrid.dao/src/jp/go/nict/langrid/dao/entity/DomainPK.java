@@ -85,7 +85,7 @@ public class DomainPK implements Serializable{
 	private void recalcHashCode(){
 		hashCode = new HashCodeBuilder()
 			.append(domainId)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private String domainId;

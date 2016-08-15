@@ -146,7 +146,7 @@ public class AccessRightPK implements Serializable{
 			.append(userId)
 			.append(serviceGridId)
 			.append(serviceId)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private String userGridId;

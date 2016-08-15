@@ -100,7 +100,7 @@ public class SystemPropertyPK implements Serializable{
 		hashCode = new HashCodeBuilder()
 			.append(gridId)
 			.append(name)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private String gridId;

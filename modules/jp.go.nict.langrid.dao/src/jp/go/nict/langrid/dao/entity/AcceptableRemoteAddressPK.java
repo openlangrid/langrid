@@ -108,7 +108,7 @@ public class AcceptableRemoteAddressPK implements Serializable{
 		hashCode = new HashCodeBuilder()
 			.append(gridId)
 			.append(remoteAddress)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private String gridId;

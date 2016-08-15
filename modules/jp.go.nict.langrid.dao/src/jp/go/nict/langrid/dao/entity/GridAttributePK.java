@@ -109,7 +109,7 @@ public class GridAttributePK implements Serializable{
 		hashCode = new HashCodeBuilder()
 			.append(gridId)
 			.append(name)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private String gridId;

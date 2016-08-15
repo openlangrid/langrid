@@ -72,7 +72,7 @@ public class ServiceActionSchedulePK implements Serializable{
 	private void recalHashCode(){
 		hashCode = new HashCodeBuilder()
 			.append(id)
-			.hashCode();
+			.toHashCode();
 	}
 
 	/**

@@ -104,7 +104,7 @@ public class NodePK implements Serializable{
 		hashCode = new HashCodeBuilder()
 			.append(gridId)
 			.append(nodeId)
-			.hashCode();
+			.toHashCode();
 	}
 
 	private String gridId;
