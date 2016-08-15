@@ -8,27 +8,27 @@ import java.util.Set;
 public class NewerAndOlderKeys {
 	public NewerAndOlderKeys() {
 	}
-	public NewerAndOlderKeys(Set<Serializable> newerKeys, Set<Serializable> olderKeys) {
+	public NewerAndOlderKeys(Set<Object> newerKeys, Set<Object> olderKeys) {
 		this.newerKeys = newerKeys;
 		this.olderKeys = olderKeys;
 	}
-	public NewerAndOlderKeys(Serializable[] newerIds, Serializable[] olderIds) {
+	public NewerAndOlderKeys(Object[] newerIds, Object[] olderIds) {
 		this.newerKeys = new HashSet<>(Arrays.asList(newerIds));
 		this.olderKeys = new HashSet<>(Arrays.asList(olderIds));
 	}
-	public Set<Serializable> getNewerKeys() {
+	public Set<Object> getNewerKeys() {
 		return newerKeys;
 	}
-	public void setNewerKeys(Set<Serializable> newerKeys) {
+	public void setNewerKeys(Set<Object> newerKeys) {
 		this.newerKeys = newerKeys;
 	}
-	public Set<Serializable> getOlderKeys() {
+	public Set<Object> getOlderKeys() {
 		return olderKeys;
 	}
-	public void setOlderKeys(Set<Serializable> olderKeys) {
+	public void setOlderKeys(Set<Object> olderKeys) {
 		this.olderKeys = olderKeys;
 	}
 
-	private Set<Serializable> newerKeys;;
-	private Set<Serializable> olderKeys;
+	private Set<Object> newerKeys;;
+	private Set<Object> olderKeys;
 }
