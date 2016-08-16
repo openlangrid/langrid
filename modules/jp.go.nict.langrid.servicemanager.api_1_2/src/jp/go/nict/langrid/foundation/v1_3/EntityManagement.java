@@ -16,6 +16,7 @@ import jp.go.nict.langrid.dao.entity.BPELService;
 import jp.go.nict.langrid.dao.entity.Domain;
 import jp.go.nict.langrid.dao.entity.ExternalService;
 import jp.go.nict.langrid.dao.entity.Grid;
+import jp.go.nict.langrid.dao.entity.News;
 import jp.go.nict.langrid.dao.entity.Protocol;
 import jp.go.nict.langrid.dao.entity.Resource;
 import jp.go.nict.langrid.dao.entity.Service;
@@ -45,6 +46,7 @@ implements EntityManagementService{
 			MatchingCondition... conditions)
 	throws ServiceConfigurationException, UnknownException {
 		Class<?> entityClass = getEntityClass(entityType);
+		if(entityClass == null) throw new UnknownException("unknown entity type: " + entityType);
 		try{
 			List<Object> newer = new ArrayList<>();
 			List<Object> older = new ArrayList<>();
@@ -97,6 +99,7 @@ implements EntityManagementService{
 	private Class<?> getEntityClass(String entityType){
 		switch(entityType){
 			case "Grid": return Grid.class;
+			case "News": return News.class;
 			case "User": return User.class;
 			case "Domain": return Domain.class;
 			case "ResourceType": return ResourceType.class;
