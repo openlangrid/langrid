@@ -53,6 +53,8 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.Type;
 
+import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSONHint;
+
 /**
  * 
  * 
@@ -764,8 +766,10 @@ implements AttributedElement<ServiceAttribute>, Serializable{
 
 	@Enumerated(EnumType.STRING)
 	private ServiceContainerType containerType = ServiceContainerType.ATOMIC;
+	@JSONHint(ignore=true)
 	private String appAuthKey;
 
+	@JSONHint(ignore=true)
 	@OneToMany(
 			cascade={CascadeType.ALL}
 			, mappedBy="serviceId"
@@ -777,6 +781,7 @@ implements AttributedElement<ServiceAttribute>, Serializable{
 	@Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
 	private List<ServiceEndpoint> endpoints = new ArrayList<ServiceEndpoint>();
 
+	@JSONHint(ignore=true)
 	@OneToMany(
 			cascade={CascadeType.ALL}
 			, mappedBy="serviceId"
@@ -790,10 +795,15 @@ implements AttributedElement<ServiceAttribute>, Serializable{
 
 	@Column(length=100000)
 	private Blob wsdl;
+	@JSONHint(ignore=true)
 	private boolean visible = true;
+	@JSONHint(ignore=true)
 	private int timeoutMillis = 0;
+	@JSONHint(ignore=true)
 	private String alternateServiceId;
+	@JSONHint(ignore=true)
 	private boolean useAlternateService = false;
+	@JSONHint(ignore=true)
 	private boolean approved = false;
 	@CollectionOfElements
 	private Set<String> allowedUse = new HashSet<String>();
@@ -814,6 +824,7 @@ implements AttributedElement<ServiceAttribute>, Serializable{
 	})
 	private EmbeddableStringValueClass<URL> wrapperSourceCodeUrl;
 
+	@JSONHint(ignore=true)
 	@CollectionOfElements
 	@OneToMany(
 			cascade={CascadeType.ALL}
