@@ -48,7 +48,7 @@ public class EntityManagementTest {
 	}
 
 	@Test
-	public void test_service() throws Throwable{
+	public void test_listservice() throws Throwable{
 		System.out.println(JSON.encode(
 				new EntityManagement().getNewerAndOlderKeys("Service", Calendar.getInstance())
 				, true));
@@ -60,4 +60,12 @@ public class EntityManagementTest {
 				new EntityManagement().getEntity("Service", new ServicePK("grid1", "service1"))
 				, true));
 	}
+
+	@Test
+	public void test_listresourcemetaattr() throws Throwable{
+		System.out.println(JSON.encode(
+				new EntityManagement().getNewerAndOlderKeys("ResourceMetaAttribute", Calendar.getInstance())
+				, true));
+	}
+
 }
