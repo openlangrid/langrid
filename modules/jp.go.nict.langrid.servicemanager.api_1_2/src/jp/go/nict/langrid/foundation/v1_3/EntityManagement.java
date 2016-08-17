@@ -131,7 +131,7 @@ implements EntityManagementService{
 				.getHeader(LangridConstants.HTTPHEADER_FEDERATEDCALL_SOURCEGRIDID)[0];
 		JSON j = new JSON();
 		User u = j.parse(j.format(entity), User.class);
-		if(!u.getUserId().equals(sgid)){
+		if(!u.getGridId().equals(sgid)){
 			throw new ProcessFailedException("only set request from source grid is accepted.");
 		}
 		try{
@@ -141,7 +141,7 @@ implements EntityManagementService{
 			try{
 				User existing = dc.loadEntity(User.class, id);
 				if(existing != null){
-					new Converter().copyProperties(existing, u);
+					dc.mergeEntity(u);
 				} else{
 					dc.saveEntity(u);
 				}

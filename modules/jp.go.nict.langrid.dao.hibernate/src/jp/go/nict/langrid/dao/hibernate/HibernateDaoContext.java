@@ -312,7 +312,8 @@ implements DaoContext{
 		}
 		beginTransaction();
 		try{
-			getSession().saveOrUpdate(entity);
+			getSession().merge(entity);
+//			getSession().saveOrUpdate(entity);
 			commitTransaction();
 		} catch(HibernateException e){
 			rollbackTransaction();
