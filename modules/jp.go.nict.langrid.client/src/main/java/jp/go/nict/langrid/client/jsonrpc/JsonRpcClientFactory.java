@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
@@ -89,7 +90,7 @@ public class JsonRpcClientFactory implements ClientFactory{
 					writeRequest(con, method, args);
 					int sts = con.getResponseCode();
 					if(sts == 404) throw new FileNotFoundException(url.toString());
-					return readResponse(con, method.getReturnType());
+					return readResponse(con, method.getGenericReturnType());
 				} finally{
 					closeConnection(con);
 				}
@@ -143,7 +144,7 @@ public class JsonRpcClientFactory implements ClientFactory{
 					});
 			os.flush();
 		}
-		protected Object readResponse(HttpURLConnection con, Class<?> returnType)
+		protected Object readResponse(HttpURLConnection con, Type returnType)
 		throws IOException, ParseException, Exception{
 			InputStream is = HttpURLConnectionUtil.openResponseStream(con);
 			if(is == null){
