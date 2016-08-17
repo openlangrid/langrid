@@ -257,9 +257,9 @@ public class Converter{
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	public <T> T convert(Object value, Type type)
 	throws ConversionException{
-		if(value instanceof Collection){
-			if(type instanceof ParameterizedType){
-				ParameterizedType pt = (ParameterizedType)type;
+		if(type instanceof ParameterizedType){
+			ParameterizedType pt = (ParameterizedType)type;
+			if(value instanceof Collection){
 				if(Collection.class.isAssignableFrom((Class)pt.getRawType())){
 					return (T)convertCollection((Collection)value, (Class)pt.getRawType(), (Class)pt.getActualTypeArguments()[0]);
 				}
