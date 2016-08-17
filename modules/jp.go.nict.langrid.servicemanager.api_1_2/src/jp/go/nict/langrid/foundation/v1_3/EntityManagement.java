@@ -3,10 +3,13 @@ package jp.go.nict.langrid.foundation.v1_3;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 
 import jp.go.nict.langrid.commons.beanutils.Converter;
 import jp.go.nict.langrid.commons.util.Pair;
+import jp.go.nict.langrid.commons.ws.LangridConstants;
+import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.DomainNotFoundException;
 import jp.go.nict.langrid.dao.entity.AccessLimit;
@@ -19,9 +22,9 @@ import jp.go.nict.langrid.dao.entity.Grid;
 import jp.go.nict.langrid.dao.entity.News;
 import jp.go.nict.langrid.dao.entity.Protocol;
 import jp.go.nict.langrid.dao.entity.Resource;
-import jp.go.nict.langrid.dao.entity.Service;
 import jp.go.nict.langrid.dao.entity.ResourceMetaAttribute;
 import jp.go.nict.langrid.dao.entity.ResourceType;
+import jp.go.nict.langrid.dao.entity.Service;
 import jp.go.nict.langrid.dao.entity.ServiceMetaAttribute;
 import jp.go.nict.langrid.dao.entity.ServiceType;
 import jp.go.nict.langrid.dao.entity.User;
@@ -29,12 +32,14 @@ import jp.go.nict.langrid.dao.util.EntityUtil;
 import jp.go.nict.langrid.dao.util.JSON;
 import jp.go.nict.langrid.foundation.AbstractLangridService;
 import jp.go.nict.langrid.foundation.annotation.TransactionMethod;
+import jp.go.nict.langrid.service_1_2.ProcessFailedException;
 import jp.go.nict.langrid.service_1_2.ServiceConfigurationException;
-import jp.go.nict.langrid.service_1_2.UnknownException;
 import jp.go.nict.langrid.service_1_2.foundation.MatchingCondition;
 import jp.go.nict.langrid.service_1_2.util.ExceptionConverter;
 import jp.go.nict.langrid.service_1_3.foundation.EntityManagementService;
+import jp.go.nict.langrid.service_1_3.foundation.KeyAndUpdate;
 import jp.go.nict.langrid.service_1_3.foundation.NewerAndOlderKeys;
+import jp.go.nict.langrid.servicecontainer.handler.RIProcessor;
 
 public class EntityManagement
 extends AbstractLangridService
@@ -44,9 +49,9 @@ implements EntityManagementService{
 	public NewerAndOlderKeys getNewerAndOlderKeys(
 			String entityType, Calendar standardDateTime,
 			MatchingCondition... conditions)
-	throws ServiceConfigurationException, UnknownException {
+	throws ProcessFailedException, ServiceConfigurationException {
 		Class<?> entityClass = getEntityClass(entityType);
-		if(entityClass == null) throw new UnknownException("unknown entity type: " + entityType);
+		if(entityClass == null) throw new ProcessFailedException("unknown entity type: " + entityType);
 		try{
 			List<Object> newer = new ArrayList<>();
 			List<Object> older = new ArrayList<>();
@@ -65,14 +70,14 @@ implements EntityManagementService{
 		} catch(DaoException e){
 			throw ExceptionConverter.convertToServiceConfigurationException(e);
 		} catch(Throwable e){
-			throw ExceptionConverter.convertException(e);
+			throw new ProcessFailedException(e);
 		}
 	}
 
 	@Override
 	@TransactionMethod
 	public Object getEntity(String entityType, Object entityId) 
-	throws ServiceConfigurationException, UnknownException {
+	throws ProcessFailedException, ServiceConfigurationException {
 		JSON j = new JSON();
 		try {
 			Class<?> entityClass = getEntityClass(entityType);
@@ -83,17 +88,69 @@ implements EntityManagementService{
 			String s = j.format(entity);
 			return j.parse(s);
 		} catch(DomainNotFoundException e){
-			throw ExceptionConverter.convertToUnknownException(e);
+			throw new ProcessFailedException(e);
 		} catch(DaoException e){
 			throw ExceptionConverter.convertToServiceConfigurationException(e);
 		} catch(Throwable e){
-			throw ExceptionConverter.convertException(e);
+			throw new ProcessFailedException(e);
 		}
 	}
 
 	@Override
-	public Object getGridEntity() {
-		return null;
+	@TransactionMethod
+	public Collection<KeyAndUpdate> getKeysAndUpdates(
+			String entityType, MatchingCondition... conditions)
+	throws ProcessFailedException ,ServiceConfigurationException {
+		List<KeyAndUpdate> ret = new ArrayList<>();
+		Class<?> entityClass = getEntityClass(entityType);
+		if(entityClass == null) throw new ProcessFailedException("unknown entity type: " + entityType);
+		try{
+			for(Pair<Object, Calendar> entry : 
+				getDaoContext().listAllIdAndUpdates(
+						entityClass,
+						getConditions(conditions))){
+				ret.add(new KeyAndUpdate(entry.getFirst(), entry.getSecond()));
+			}
+			return ret;
+		} catch(DaoException e){
+			throw ExceptionConverter.convertToServiceConfigurationException(e);
+		} catch(Throwable e){
+			throw new ProcessFailedException(e);
+		}
+	}
+
+	@Override
+	@TransactionMethod
+	public void setEntity(String entityType, Object entity)
+	throws ProcessFailedException, ServiceConfigurationException {
+		if(!entityType.equals("User")){
+			throw new ProcessFailedException("setEntity only supports User.");
+		}
+		String sgid = RIProcessor.getCurrentServiceContext()
+				.getRequestMimeHeaders()
+				.getHeader(LangridConstants.HTTPHEADER_FEDERATEDCALL_SOURCEGRIDID)[0];
+		JSON j = new JSON();
+		User u = j.parse(j.format(entity), User.class);
+		if(!u.getUserId().equals(sgid)){
+			throw new ProcessFailedException("only set request from source grid is accepted.");
+		}
+		try{
+			Object id = EntityUtil.getId(u);
+			DaoContext dc = getDaoContext();
+			dc.beginTransaction();
+			try{
+				User existing = dc.loadEntity(User.class, id);
+				if(existing != null){
+					new Converter().copyProperties(existing, u);
+				} else{
+					dc.saveEntity(u);
+				}
+				dc.commitTransaction();
+			} finally{
+			}
+		} catch (Exception e) {
+			throw new ProcessFailedException(e);
+		}
 	}
 
 	private Class<?> getEntityClass(String entityType){

@@ -1,6 +1,5 @@
 package jp.go.nict.langrid.service_1_3.foundation;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
