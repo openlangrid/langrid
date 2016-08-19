@@ -113,7 +113,7 @@ final class HttpClientMessenger extends BlockingMessenger {
      *  of time between our finishing sending a message or beginning a poll and 
      *  the beginning of receipt of a response.
      */
-    private final static int RESPONSE_TIMEOUT = (int) (2 * TimeUtils.AMINUTE);
+    private final static int RESPONSE_TIMEOUT = (int) (2 * TimeUtils.AMINUTE) * 10; // extend by nakaguchi
     
     /**
      *  Amount of time we are willing to accept for additional responses. This 
@@ -721,7 +721,7 @@ final class HttpClientMessenger extends BlockingMessenger {
                         conn.setAllowUserInteraction(false);
                         conn.setUseCaches(false);
                         conn.setConnectTimeout(CONNECT_TIMEOUT);
-                        conn.setReadTimeout(RESPONSE_TIMEOUT * 10);
+                        conn.setReadTimeout(RESPONSE_TIMEOUT);
                         if(senderBasicAuthHeaderValue != null){
                         	conn.setRequestProperty("Authorization", senderBasicAuthHeaderValue);
                         }

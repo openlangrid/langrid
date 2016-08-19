@@ -104,7 +104,7 @@ public class HttpMessageServlet extends HttpServlet {
 	 *  The maximum duration in milliseconds we will keep a connection alive
 	 *  while generating a response.
 	 */
-	private final static long MAXIMUM_RESPONSE_DURATION = 2 * TimeUtils.AMINUTE;
+	private final static long MAXIMUM_RESPONSE_DURATION = 2 * TimeUtils.AMINUTE * 10; // extended by nakaguchi
 
 	/**
 	 *  Owner of this servlet.
