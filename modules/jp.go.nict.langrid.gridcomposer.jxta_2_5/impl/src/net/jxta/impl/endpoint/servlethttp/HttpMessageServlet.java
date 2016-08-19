@@ -141,6 +141,16 @@ public class HttpMessageServlet extends HttpServlet {
 		super.init(config);
 	}
 
+	@Override
+	protected void service(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException {
+		try{
+			super.service(arg0, arg1);
+		} catch(RuntimeException e){
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
 	/**
 	 *  {@inheritDoc}
 	 */
@@ -212,7 +222,8 @@ public class HttpMessageServlet extends HttpServlet {
 					pingResponseBytes = peerId.getBytes("UTF-8");
 				} catch (java.io.UnsupportedEncodingException never) {
 					// UTF-8 is always available.
-				}			if (owner == null) {
+				}
+				if (owner == null) {
 					throw new IOException("Servlet Context did not contain 'HttpMessageReceiver'");
 				}
 			} catch (ClassCastException e) {
