@@ -187,7 +187,10 @@ class HttpMessageSender implements MessageSender {
             if (Logging.SHOW_WARNING && LOG.isLoggable(Level.WARNING)) {
                 LOG.warning("Cannot make messenger for protocol :" + destAddr.getProtocolName());
             }
-
+            return null;
+        }
+        if(destAddr.getContext().contains(":uuid-")){
+            LOG.warning("Cannot make messenger for url context :" + destAddr.getContext());
             return null;
         }
 
