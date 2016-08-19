@@ -37,8 +37,6 @@ import jp.go.nict.langrid.dao.ResourceSearchResult;
 import jp.go.nict.langrid.dao.entity.Resource;
 import jp.go.nict.langrid.dao.entity.ResourcePK;
 import jp.go.nict.langrid.p2pgridbasis.controller.ControllerException;
-import jp.go.nict.langrid.p2pgridbasis.controller.P2PGridController;
-import jp.go.nict.langrid.p2pgridbasis.controller.jxta.JXTAController;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDao;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDaoException;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataNotFoundException;
@@ -54,117 +52,34 @@ import jp.go.nict.langrid.p2pgridbasis.data.langrid.ResourceData;
  * @version $Revision: 401 $
  */
 public class P2PGridBasisResourceDao
-extends AbstractP2PGridBasisDao
+extends AbstractP2PGridBasisDao<Resource>
 implements DataDao, ResourceDao {
 	/**
 	 * The constructor.
 	 * @param dao
 	 */
 	public P2PGridBasisResourceDao(ResourceDao dao, DaoContext context) {
+		super(context);
 		this.dao = dao;
-		this.daoContext = context;
+		setHandler(handler);
 	}
 
-	private P2PGridController getController() throws ControllerException{
-		if (controller == null) {
-			controller = JXTAController.getInstance();
-		}
-
-		return controller;
-	}
-
-	public void setEntityListener() {
-		logger.debug("### Resource : setEntityListener ###");
-		daoContext.addEntityListener(Resource.class, handler);
-		daoContext.addTransactionListener(handler);
-	}
-
-	public void removeEntityListener() {
-		logger.debug("### Resource : removeEntityListener ###");
-		daoContext.removeTransactionListener(handler);
-		daoContext.removeEntityListener(Resource.class, handler);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateDataSource(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataSource(Data data) throws DataDaoException, UnmatchedDataTypeException {
-		return updateDataTarget(data);
-	}
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateData(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataTarget(Data data) throws DataDaoException, UnmatchedDataTypeException {
+	@Override
+	synchronized public boolean updateData(Data data) throws DataDaoException, UnmatchedDataTypeException {
 		logger.debug("[Resource] " + data.getGridId() + ":" + data.getId() + " updated");
 		if(data.getClass().equals(ResourceData.class) == false) {
 			throw new UnmatchedDataTypeException(ResourceData.class.toString(), data.getClass().toString());
 		}
 
-		ResourceData resourceData = (ResourceData) data;
-		try{
-			if(!isReachable(
-					this.getController().getSelfGridId(), resourceData.getGridId())){
-				return false;
-			}
-		} catch (ControllerException e) {
-			throw new DataDaoException(e);
-		} catch (DaoException e) {
-			throw new DataDaoException(e);
-		}
-
-		if(data.getAttributes().getKeys().contains("IsDeleted") &&
-				data.getAttributes().getValue("IsDeleted").equals("true")) {
- 			boolean updated = false;
-			try {
-				logger.debug("Delete");
-				Resource resource = resourceData.getResource();
-				removeEntityListener();
-				dao.deleteResource(resource.getGridId(), resource.getResourceId());
-				updated = true;
-				setEntityListener();
-				getController().baseSummaryAdd(data);
-			} catch (DataConvertException e) {
-				throw new DataDaoException(e);
-			} catch (ResourceNotFoundException e) {
-				// 
-				// 
-				try {
-					getController().baseSummaryAdd(data);
-				} catch (ControllerException e1) {
-					e1.printStackTrace();
-				}
-			} catch (DaoException e) {
-				throw new DataDaoException(e);
-			} catch (ControllerException e) {
-				throw new DataDaoException(e);
-			}
-			return updated;
-		}
-
-		Resource resource= null;
+		Resource entity = null;
 		try {
-			resource = resourceData.getResource();
-			logger.debug("New or UpDate");
-			removeEntityListener();
-			if(dao.isResourceExist(resource.getGridId(), resource.getResourceId())){
-				logger.debug("UpDate");
-				daoContext.updateEntity(resource);
-			}else{
-				logger.debug("New");
-				dao.addResource(resource);
-			}
-			setEntityListener();
-			getController().baseSummaryAdd(data);
-			return true;
-		} catch (DaoException e) {
-			throw new DataDaoException(e);
-		} catch (DataConvertException e) {
-			throw new DataDaoException(e);
-		} catch (ControllerException e) {
+			entity = ((ResourceData)data).getResource();
+			if(entity.getGridId().equals(getSelfGridId())) return false;
+			if(!isReachableTo(entity.getGridId())) return false;
+		} catch(Exception e){
 			throw new DataDaoException(e);
 		}
+		return handleData(data, entity);
 	}
 
 	@Override
@@ -229,12 +144,10 @@ implements DataDao, ResourceDao {
 	static private Logger logger = Logger.getLogger(P2PGridBasisResourceDao.class);
 
 	private ResourceDao dao;
-	private DaoContext daoContext;
-	private P2PGridController controller;
 	private GenericHandler<Resource> handler = new GenericHandler<Resource>(){
 		protected boolean onNotificationStart() {
 			try{
-				daoContext.beginTransaction();
+				getDaoContext().beginTransaction();
 				return true;
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
@@ -245,7 +158,7 @@ implements DataDao, ResourceDao {
 		protected void doUpdate(Serializable id, Set<String> modifiedProperties){
 			try{
 				getController().publish(new ResourceData(
-						daoContext.loadEntity(Resource.class, id)
+						getDaoContext().loadEntity(Resource.class, id)
 						));
 				logger.debug("published[Resource(id=" + id + ")]");
 			} catch(ControllerException e){
@@ -271,7 +184,7 @@ implements DataDao, ResourceDao {
 
 		protected void onNotificationEnd(){
 			try{
-				daoContext.commitTransaction();
+				getDaoContext().commitTransaction();
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
 			}

@@ -20,9 +20,10 @@
 package jp.go.nict.langrid.p2pgridbasis.dao.langrid;
 
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import jp.go.nict.langrid.dao.AccessLimitDao;
 import jp.go.nict.langrid.dao.AccessLimitNotFoundException;
@@ -31,15 +32,11 @@ import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.GenericHandler;
 import jp.go.nict.langrid.dao.Order;
-import jp.go.nict.langrid.dao.ServiceNotFoundException;
 import jp.go.nict.langrid.dao.entity.AccessLimit;
 import jp.go.nict.langrid.dao.entity.AccessLimitPK;
 import jp.go.nict.langrid.dao.entity.LimitType;
 import jp.go.nict.langrid.dao.entity.Period;
 import jp.go.nict.langrid.p2pgridbasis.controller.ControllerException;
-import jp.go.nict.langrid.p2pgridbasis.controller.P2PGridController;
-import jp.go.nict.langrid.p2pgridbasis.controller.jxta.JXTAController;
-import jp.go.nict.langrid.p2pgridbasis.dao.DataDao;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDaoException;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataNotFoundException;
 import jp.go.nict.langrid.p2pgridbasis.dao.UnmatchedDataTypeException;
@@ -47,120 +44,42 @@ import jp.go.nict.langrid.p2pgridbasis.data.Data;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.AccessLimitData;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.DataConvertException;
 
-import org.apache.log4j.Logger;
-
 /**
  * 
  * 
  * @author $Author: t-nakaguchi $
  * @version $Revision: 401 $
  */
-public class P2PGridBasisAccessLimitDao implements DataDao, AccessLimitDao {
+public class P2PGridBasisAccessLimitDao
+extends AbstractP2PGridBasisDao<AccessLimit>
+implements AccessLimitDao {
 	/**
 	 * The constructor.
 	 * @param dao
 	 */
 	public P2PGridBasisAccessLimitDao(AccessLimitDao dao, DaoContext context) {
+		super(context);
+		setHandler(handler);
 		this.dao = dao;
-		this.daoContext = context;
 	}
 
-	private P2PGridController getController() throws ControllerException{
-		if (controller == null) {
-			controller = JXTAController.getInstance();
-		}
-
-		return controller;
-	}
-
-	public void setEntityListener() {
-		logger.debug("### AccessLimit : setEntityListener ###");
-		daoContext.addEntityListener(AccessLimit.class, handler);
-		daoContext.addTransactionListener(handler);
-	}
-
-	public void removeEntityListener() {
-		logger.debug("### AccessLimit : removeEntityListener ###");
-		daoContext.removeTransactionListener(handler);
-		daoContext.removeEntityListener(AccessLimit.class, handler);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateDataSource(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataSource(Data data) throws DataDaoException, UnmatchedDataTypeException {
-		return updateDataTarget(data);
-	}
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateData(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataTarget(Data data) throws DataDaoException, UnmatchedDataTypeException {
+	@Override
+	synchronized public boolean updateData(Data data) throws DataDaoException, UnmatchedDataTypeException {
 		logger.debug("[AccessLimit] : " + data.getId());
 		if(data.getClass().equals(AccessLimitData.class) == false) {
 			throw new UnmatchedDataTypeException(AccessLimitData.class.toString(), data.getClass().toString());
 		}
 
-		boolean updated = false;
-		if(data.getAttributes().getKeys().contains("IsDeleted") &&
-				data.getAttributes().getValue("IsDeleted").equals("true")) {
-			try {
-				logger.debug("Delete");
-				AccessLimitData accessLimitData = (AccessLimitData)data;
-				AccessLimit limit = accessLimitData.getAccessLimit();
-				removeEntityListener();
-				dao.deleteAccessLimit(limit.getUserGridId()
-									, limit.getUserId()
-									, limit.getServiceGridId()
-									, limit.getServiceId()
-									, limit.getPeriod()
-									, limit.getLimitType());
-				updated = true;
-				setEntityListener();
-				getController().baseSummaryAdd(data);
-			} catch (DataConvertException e) {
-				throw new DataDaoException(e);
-			} catch (ServiceNotFoundException e) {
-				// 
-				// 
-				try {
-					getController().baseSummaryAdd(data);
-				} catch (ControllerException e1) {
-					e1.printStackTrace();
-				}
-			} catch (DaoException e) {
-				throw new DataDaoException(e);
-			} catch (ParseException e) {
-				throw new DataDaoException(e);
-			} catch (ControllerException e) {
-				throw new DataDaoException(e);
-			}
-			return updated;
-		}
-
-		AccessLimit limit= null;
-		try {
-			AccessLimitData accessLimitData = (AccessLimitData)data;
-			limit = accessLimitData.getAccessLimit();
-			logger.debug("New or UpDate");
-			removeEntityListener();
-			daoContext.beginTransaction();
-			daoContext.mergeEntity(limit);
-			daoContext.commitTransaction();
-			setEntityListener();
-			getController().baseSummaryAdd(data);
-			updated = true;
-		} catch (ParseException e) {
-			throw new DataDaoException(e);
-		} catch (DaoException e) {
-			throw new DataDaoException(e);
-		} catch (DataConvertException e) {
-			throw new DataDaoException(e);
-		} catch (ControllerException e) {
+		AccessLimit entity = null;
+		try{
+			entity = ((AccessLimitData)data).getAccessLimit();
+			if(entity.getServiceGridId().equals(getSelfGridId())) return false;
+			if(!entity.getUserGridId().equals(getSelfGridId())) return false;
+			if(!isReachableTo(entity.getServiceGridId())) return false;
+		} catch(Exception e){
 			throw new DataDaoException(e);
 		}
-		return updated;
+		return handleData(data, entity);
 	}
 
 	/*
@@ -266,12 +185,11 @@ public class P2PGridBasisAccessLimitDao implements DataDao, AccessLimitDao {
 	static private Logger logger = Logger.getLogger(P2PGridBasisAccessLimitDao.class);
 
 	private AccessLimitDao dao;
-	private DaoContext daoContext;
-	private P2PGridController controller;
+
 	private GenericHandler<AccessLimit> handler = new GenericHandler<AccessLimit>(){
 		protected boolean onNotificationStart() {
 			try{
-				daoContext.beginTransaction();
+				getDaoContext().beginTransaction();
 				return true;
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
@@ -282,7 +200,7 @@ public class P2PGridBasisAccessLimitDao implements DataDao, AccessLimitDao {
 		protected void doUpdate(Serializable id, Set<String> modifiedProperties){
 			try{
 				getController().publish(new AccessLimitData(
-						daoContext.loadEntity(AccessLimit.class, id)
+						getDaoContext().loadEntity(AccessLimit.class, id)
 						));
 				logger.info("published[AccessLimit(id=" + id + ")]");
 			} catch(ControllerException e){
@@ -308,7 +226,7 @@ public class P2PGridBasisAccessLimitDao implements DataDao, AccessLimitDao {
 
 		protected void onNotificationEnd(){
 			try{
-				daoContext.commitTransaction();
+				getDaoContext().commitTransaction();
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
 			}

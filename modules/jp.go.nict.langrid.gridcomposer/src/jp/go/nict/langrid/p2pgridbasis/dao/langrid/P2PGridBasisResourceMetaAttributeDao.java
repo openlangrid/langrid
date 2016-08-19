@@ -30,15 +30,12 @@ import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.DomainDao;
 import jp.go.nict.langrid.dao.DomainNotFoundException;
 import jp.go.nict.langrid.dao.GenericHandler;
-import jp.go.nict.langrid.dao.ResourceMetaAttributeNotFoundException;
 import jp.go.nict.langrid.dao.ResourceTypeDao;
 import jp.go.nict.langrid.dao.entity.Domain;
 import jp.go.nict.langrid.dao.entity.ResourceMetaAttribute;
 import jp.go.nict.langrid.dao.entity.ResourceMetaAttributePK;
 import jp.go.nict.langrid.dao.entity.ResourceType;
 import jp.go.nict.langrid.p2pgridbasis.controller.ControllerException;
-import jp.go.nict.langrid.p2pgridbasis.controller.P2PGridController;
-import jp.go.nict.langrid.p2pgridbasis.controller.jxta.JXTAController;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDao;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDaoException;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataNotFoundException;
@@ -53,114 +50,38 @@ import jp.go.nict.langrid.p2pgridbasis.data.langrid.ResourceMetaAttributeData;
  * @author $Author: t-nakaguchi $
  * @version $Revision: 401 $
  */
-public class P2PGridBasisResourceMetaAttributeDao implements DataDao, ResourceTypeDao {
+public class P2PGridBasisResourceMetaAttributeDao
+extends AbstractP2PGridBasisDao<ResourceMetaAttribute>
+implements DataDao, ResourceTypeDao {
 	/**
 	 * 
 	 * 
 	 */
 	public P2PGridBasisResourceMetaAttributeDao(DomainDao domainDao, ResourceTypeDao dao, DaoContext context) {
+		super(context);
 		this.domainDao = domainDao;
 		this.dao = dao;
-		this.daoContext = context;
+		setHandler(handler);
 	}
 
-	private P2PGridController getController() throws ControllerException{
-		if (controller == null) {
-			controller = JXTAController.getInstance();
-		}
-
-		return controller;
-	}
-
-	public void setEntityListener() {
-		logger.debug("### ResourceMetaAttribute : setEntityListener ###");
-		daoContext.addEntityListener(ResourceMetaAttribute.class, handler);
-		daoContext.addTransactionListener(handler);
-	}
-
-	public void removeEntityListener() {
-		logger.debug("### ResourceMetaAttribute : removeEntityListener ###");
-		daoContext.removeTransactionListener(handler);
-		daoContext.removeEntityListener(ResourceMetaAttribute.class, handler);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateDataSource(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataSource(Data data) throws DataDaoException, UnmatchedDataTypeException {
-		return updateDataTarget(data);
-	}
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateData(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataTarget(Data data) throws UnmatchedDataTypeException, DataDaoException {
+	@Override
+	synchronized public boolean updateData(Data data) throws UnmatchedDataTypeException, DataDaoException {
 		logger.debug("[ResourceMetaAttribute] : " + data.getId());
 		if(data.getClass().equals(ResourceMetaAttributeData.class) == false) {
 			throw new UnmatchedDataTypeException(ResourceMetaAttributeData.class.toString(), data.getClass().toString());
 		}
 
-		ResourceMetaAttributeData resourceMetaAttributeData = (ResourceMetaAttributeData) data;
-		ResourceMetaAttribute resourceMetaAttribute = null;
+		ResourceMetaAttribute entity = null;
 		try {
-			resourceMetaAttribute = resourceMetaAttributeData.getResourceMetaAttribute();
-		} catch (DataConvertException e) {
-			throw new DataDaoException(e);
-		}
-		try {
-			Domain domainInDb = domainDao.getDomain(resourceMetaAttribute.getDomainId());
-			if(domainInDb.getOwnerUserGridId().equals(getController().getSelfGridId())){
-				return false;
-			}
-		} catch(ControllerException e){
-			return false;
+			entity = ((ResourceMetaAttributeData)data).getResourceMetaAttribute();
+			Domain domainInDb = domainDao.getDomain(entity.getDomainId());
+			if(domainInDb.getOwnerUserGridId().equals(getSelfGridId())) return false;
+			if(!isReachableTo(domainInDb.getOwnerUserGridId())) return false;
 		} catch (DomainNotFoundException e) {
-		} catch (DaoException e) {
-			e.printStackTrace();
-			return false;
-		}
-
-		if(data.getAttributes().getKeys().contains("IsDeleted") &&
-				data.getAttributes().getValue("IsDeleted").equals("true")) {
- 			boolean updated = false;
-			try {
-				logger.info("Delete");
-				removeEntityListener();
-				dao.deleteResourceMetaAttribute(resourceMetaAttribute.getDomainId(), resourceMetaAttribute.getAttributeId());
-				updated = true;
-				setEntityListener();
-				getController().baseSummaryAdd(data);
-			} catch (ResourceMetaAttributeNotFoundException e) {
-				// 
-				// 
-				try {
-					getController().baseSummaryAdd(data);
-				} catch (ControllerException e1) {
-					e1.printStackTrace();
-				}
-			} catch (DaoException e) {
-				throw new DataDaoException(e);
-			} catch (ControllerException e) {
-				throw new DataDaoException(e);
-			}
-			return updated;
-		}
-
-		try {
-			logger.debug("New or UpDate");
-			removeEntityListener();
-			daoContext.beginTransaction();
-			daoContext.mergeEntity(resourceMetaAttribute);
-			daoContext.commitTransaction();
-			setEntityListener();
-			getController().baseSummaryAdd(data);
-			return true;
-		} catch (DaoException e) {
-			throw new DataDaoException(e);
-		} catch (ControllerException e) {
+		} catch(Exception e) {
 			throw new DataDaoException(e);
 		}
+		return handleData(data, entity);
 	}
 
 
@@ -251,12 +172,10 @@ public class P2PGridBasisResourceMetaAttributeDao implements DataDao, ResourceTy
 
 	private DomainDao domainDao;
 	private ResourceTypeDao dao;
-	private DaoContext daoContext;
-	private P2PGridController controller;
 	private GenericHandler<ResourceMetaAttribute> handler = new GenericHandler<ResourceMetaAttribute>(){
 		protected boolean onNotificationStart() {
 			try{
-				daoContext.beginTransaction();
+				getDaoContext().beginTransaction();
 				return true;
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
@@ -267,7 +186,7 @@ public class P2PGridBasisResourceMetaAttributeDao implements DataDao, ResourceTy
 		protected void doUpdate(Serializable id, Set<String> modifiedProperties){
 			try{
 				getController().publish(new ResourceMetaAttributeData(
-						daoContext.loadEntity(ResourceMetaAttribute.class, id)
+						getDaoContext().loadEntity(ResourceMetaAttribute.class, id)
 						));
 				logger.info("published[ResourceType(id=" + id + ")]");
 			} catch(ControllerException e){
@@ -293,7 +212,7 @@ public class P2PGridBasisResourceMetaAttributeDao implements DataDao, ResourceTy
 
 		protected void onNotificationEnd(){
 			try{
-				daoContext.commitTransaction();
+				getDaoContext().commitTransaction();
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
 			}

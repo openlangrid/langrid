@@ -23,6 +23,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.EntityAlreadyExistsException;
@@ -31,8 +33,6 @@ import jp.go.nict.langrid.dao.GridDao;
 import jp.go.nict.langrid.dao.GridNotFoundException;
 import jp.go.nict.langrid.dao.entity.Grid;
 import jp.go.nict.langrid.p2pgridbasis.controller.ControllerException;
-import jp.go.nict.langrid.p2pgridbasis.controller.P2PGridController;
-import jp.go.nict.langrid.p2pgridbasis.controller.jxta.JXTAController;
 import jp.go.nict.langrid.p2pgridbasis.controller.jxta.adv.PeerSummaryAdvertisement;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDao;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDaoException;
@@ -42,56 +42,27 @@ import jp.go.nict.langrid.p2pgridbasis.data.Data;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.DataConvertException;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.GridData;
 
-import org.apache.log4j.Logger;
-
 /**
  * 
  * 
  * @author $Author: t-nakaguchi $
  * @version $Revision: 401 $
  */
-public class P2PGridBasisGridDao implements DataDao, GridDao {
+public class P2PGridBasisGridDao
+extends AbstractP2PGridBasisDao<Grid>
+implements DataDao, GridDao {
 	/**
 	 * 
 	 * 
 	 */
 	public P2PGridBasisGridDao(GridDao dao, DaoContext context) {
+		super(context);
+		setHandler(handler);
 		this.dao = dao;
-		this.daoContext = context;
 	}
 
-	private P2PGridController getController() throws ControllerException{
-		if (controller == null) {
-			controller = JXTAController.getInstance();
-		}
-
-		return controller;
-	}
-
-	public void setEntityListener() {
-		logger.debug("### Grid : setEntityListener ###");
-		daoContext.addEntityListener(Grid.class, handler);
-		daoContext.addTransactionListener(handler);
-	}
-
-	public void removeEntityListener() {
-		logger.debug("### Grid : removeEntityListener ###");
-		daoContext.removeTransactionListener(handler);
-		daoContext.removeEntityListener(Grid.class, handler);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateDataSource(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataSource(Data data) throws DataDaoException, UnmatchedDataTypeException {
-		return updateDataTarget(data);
-	}
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateData(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataTarget(Data data) throws UnmatchedDataTypeException, DataDaoException {
+	@Override
+	synchronized public boolean updateData(Data data) throws UnmatchedDataTypeException, DataDaoException {
 		logger.debug("[Grid] : " + data.getId());
 		if(data.getClass().equals(GridData.class) == false) {
 			throw new UnmatchedDataTypeException(GridData.class.toString(), data.getClass().toString());
@@ -100,47 +71,36 @@ public class P2PGridBasisGridDao implements DataDao, GridDao {
 		Grid grid = null;
 		try{
 			grid = ((GridData)data).getGrid();
-			if(getController().getSelfGridId().equals(grid.getGridId())) return false;
-		} catch (ControllerException e) {
-			throw new DataDaoException(e);
-		} catch (DataConvertException e) {
+			if(getSelfGridId().equals(grid.getGridId())) return false;
+		} catch(Exception e) {
 			throw new DataDaoException(e);
 		}
 
 		if(data.getAttributes().getKeys().contains("IsDeleted") &&
 				data.getAttributes().getValue("IsDeleted").equals("true")) {
- 			boolean updated = false;
 			try {
 				logger.info("Delete");
 				removeEntityListener();
-				dao.deleteGrid(grid.getGridId());
-				updated = true;
-				setEntityListener();
-				getController().baseSummaryAdd(data);
-			} catch (GridNotFoundException e) {
-				// 
-				// 
-				try {
+				try{
+					dao.deleteGrid(grid.getGridId());
+					return true;
+				} finally{
+					setEntityListener();
 					getController().baseSummaryAdd(data);
-				} catch (ControllerException e1) {
-					e1.printStackTrace();
 				}
-			} catch (DaoException e) {
-				throw new DataDaoException(e);
-			} catch (ControllerException e) {
+			} catch(Exception e) {
 				throw new DataDaoException(e);
 			}
-			return updated;
 		}
 
 		try {
-			daoContext.beginTransaction();
+			getDaoContext().beginTransaction();
 			removeEntityListener();
 			DaoException exp = null;
 			try{
-				if(!getController().getSelfGridId().equals(grid.getGridId())){
+				if(dao.isGridExist(grid.getGridId())){
 					grid.setHosted(false);
-					daoContext.mergeEntity(grid);
+					getDaoContext().mergeEntity(grid);
 				}
 			} catch(DaoException ex){
 				exp = ex;
@@ -148,9 +108,9 @@ public class P2PGridBasisGridDao implements DataDao, GridDao {
 				setEntityListener();
 			}
 			if(exp != null){
-				daoContext.commitTransaction();
+				getDaoContext().commitTransaction();
 			} else{
-				daoContext.rollbackTransaction();
+				getDaoContext().rollbackTransaction();
 			}
 			getController().baseSummaryAdd(data);
 			return true;
@@ -195,12 +155,10 @@ public class P2PGridBasisGridDao implements DataDao, GridDao {
 	}
 
 	private GridDao dao;
-	private DaoContext daoContext;
-	private P2PGridController controller;
 	private GenericHandler<Grid> handler = new GenericHandler<Grid>(){
 		protected boolean onNotificationStart() {
 			try{
-				daoContext.beginTransaction();
+				getDaoContext().beginTransaction();
 				return true;
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
@@ -211,7 +169,7 @@ public class P2PGridBasisGridDao implements DataDao, GridDao {
 		protected void doUpdate(Serializable id, Set<String> modifiedProperties){
 			try{
 				getController().publish(new GridData(
-						daoContext.loadEntity(Grid.class, id)
+						getDaoContext().loadEntity(Grid.class, id)
 						));
 
 				if(modifiedProperties.contains("hosted")){
@@ -248,7 +206,7 @@ public class P2PGridBasisGridDao implements DataDao, GridDao {
 
 		protected void onNotificationEnd(){
 			try{
-				daoContext.commitTransaction();
+				getDaoContext().commitTransaction();
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
 			}

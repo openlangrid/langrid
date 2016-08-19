@@ -23,20 +23,22 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
+import jp.go.nict.langrid.commons.util.CalendarUtil;
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.DomainDao;
 import jp.go.nict.langrid.dao.DomainNotFoundException;
 import jp.go.nict.langrid.dao.GenericHandler;
 import jp.go.nict.langrid.dao.ServiceTypeDao;
-import jp.go.nict.langrid.dao.ServiceTypeNotFoundException;
 import jp.go.nict.langrid.dao.entity.Domain;
 import jp.go.nict.langrid.dao.entity.ServiceMetaAttribute;
 import jp.go.nict.langrid.dao.entity.ServiceType;
 import jp.go.nict.langrid.dao.entity.ServiceTypePK;
+import jp.go.nict.langrid.dao.entity.UpdateManagedEntity;
+import jp.go.nict.langrid.dao.util.EntityUtil;
 import jp.go.nict.langrid.p2pgridbasis.controller.ControllerException;
-import jp.go.nict.langrid.p2pgridbasis.controller.P2PGridController;
-import jp.go.nict.langrid.p2pgridbasis.controller.jxta.JXTAController;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDao;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDaoException;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataNotFoundException;
@@ -45,133 +47,76 @@ import jp.go.nict.langrid.p2pgridbasis.data.Data;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.DataConvertException;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.ServiceTypeData;
 
-import org.apache.log4j.Logger;
-
 /**
  * 
  * 
  * @author $Author: t-nakaguchi $
  * @version $Revision: 1522 $
  */
-public class P2PGridBasisServiceTypeDao implements DataDao, ServiceTypeDao {
+public class P2PGridBasisServiceTypeDao
+extends AbstractP2PGridBasisDao<ServiceType>
+implements DataDao, ServiceTypeDao {
 	/**
 	 * 
 	 * 
 	 */
 	public P2PGridBasisServiceTypeDao(DomainDao domainDao, ServiceTypeDao dao, DaoContext context) {
+		super(context);
 		this.domainDao = domainDao;
 		this.dao = dao;
-		this.daoContext = context;
+		setHandler(handler);
 	}
 
-	private P2PGridController getController() throws ControllerException{
-		if (controller == null) {
-			controller = JXTAController.getInstance();
-		}
-
-		return controller;
-	}
-
-	public void setEntityListener() {
-		logger.debug("### ServiceType : setEntityListener ###");
-		daoContext.addEntityListener(ServiceType.class, handler);
-		daoContext.addTransactionListener(handler);
-	}
-
-	public void removeEntityListener() {
-		logger.debug("### ServiceType : removeEntityListener ###");
-		daoContext.removeTransactionListener(handler);
-		daoContext.removeEntityListener(ServiceType.class, handler);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateDataSource(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataSource(Data data) throws DataDaoException, UnmatchedDataTypeException {
-		return updateDataTarget(data);
-	}
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateData(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataTarget(Data data) throws UnmatchedDataTypeException, DataDaoException {
+	@Override
+	synchronized public boolean updateData(Data data) throws UnmatchedDataTypeException, DataDaoException {
 		logger.debug("[ServiceType] : " + data.getId());
 		if(data.getClass().equals(ServiceTypeData.class) == false) {
 			throw new UnmatchedDataTypeException(ServiceTypeData.class.toString(), data.getClass().toString());
 		}
 
-		ServiceTypeData serviceTypeData = (ServiceTypeData) data;
-		ServiceType serviceType = null;
-		try{
-			serviceType = serviceTypeData.getServiceType();
-		} catch (DataConvertException e) {
+		ServiceType entity = null;
+		try {
+			entity = ((ServiceTypeData)data).getServiceType();
+			Domain domainInDb = domainDao.getDomain(entity.getDomainId());
+			if(domainInDb.getOwnerUserGridId().equals(getSelfGridId())) return false;
+			if(!isReachableTo(domainInDb.getOwnerUserGridId())) return false;
+		} catch (DomainNotFoundException e) {
+		} catch(Exception e) {
 			throw new DataDaoException(e);
 		}
-		try{
-			String did = serviceType.getDomainId();
-			Domain d = domainDao.getDomain(did);
-			if(d == null || d.getOwnerUserGridId().equals(getController().getSelfGridId())){
-				return false;
-			}
-		} catch(ControllerException e){
-			return false;
-		} catch(DomainNotFoundException e){
-			return false;
-		} catch (DaoException e) {
-			throw new DataDaoException(e);
-		}
+		if(handleDataDeletion(data, entity)) return true;
 
-		if(data.getAttributes().getKeys().contains("IsDeleted") &&
-				data.getAttributes().getValue("IsDeleted").equals("true")) {
- 			boolean updated = false;
-			try {
-				logger.info("Delete");
-				removeEntityListener();
-				dao.deleteServiceType(serviceType.getDomainId(), serviceType.getServiceTypeId());
-				updated = true;
-				setEntityListener();
-				getController().baseSummaryAdd(data);
-			} catch (ServiceTypeNotFoundException e) {
-				// 
-				// 
-				try {
-					getController().baseSummaryAdd(data);
-				} catch (ControllerException e1) {
-					e1.printStackTrace();
-				}
-			} catch (DaoException e) {
-				throw new DataDaoException(e);
-			} catch (ControllerException e) {
-				throw new DataDaoException(e);
-			}
-			return updated;
-		} else{
-			try {
-				logger.debug("New or UpDate");
-				daoContext.beginTransaction();
-				removeEntityListener();
-				try{
-					for(ServiceMetaAttribute a : serviceType.getMetaAttributes().values()){
-						if(!dao.isServiceMetaAttributeExist(a.getDomainId(), a.getAttributeId())){
-							dao.addServiceMetaAttribute(a);
-						}
+		removeEntityListener();
+		try {
+			getDaoContext().beginTransaction();
+			try{
+				for(ServiceMetaAttribute a : entity.getMetaAttributes().values()){
+					if(!dao.isServiceMetaAttributeExist(a.getDomainId(), a.getAttributeId())){
+						a.setCreatedDateTime(CalendarUtil.MIN_VALUE_IN_EPOC);
+						a.setUpdatedDateTime(CalendarUtil.MIN_VALUE_IN_EPOC);
+						dao.addServiceMetaAttribute(a);
 					}
-					dao.mergeServiceType(serviceType);
-					daoContext.commitTransaction();
-				} catch(DaoException e){
-					daoContext.rollbackTransaction();
-					throw e;
-				} finally{
-					setEntityListener();
 				}
-				getController().baseSummaryAdd(data);
-				return true;
-			} catch (DaoException e) {
-				throw new DataDaoException(e);
-			} catch (ControllerException e) {
-				throw new DataDaoException(e);
+				UpdateManagedEntity existing = getDaoContext().loadEntity(
+						entity.getClass(), EntityUtil.getId(entity));
+				if(existing != null){
+					if(entity.getUpdatedDateTime().after(existing.getUpdatedDateTime())){
+						getDaoContext().mergeEntity(entity);
+					}
+				} else{
+					getDaoContext().saveEntity(entity);
+				}
+				getDaoContext().commitTransaction();
+			} catch(DaoException e){
+				getDaoContext().rollbackTransaction();
+				throw e;
 			}
+			getController().baseSummaryAdd(data);
+			return true;
+		} catch(Exception e) {
+			throw new DataDaoException(e);
+		} finally{
+			setEntityListener();
 		}
 	}
 
@@ -262,12 +207,10 @@ public class P2PGridBasisServiceTypeDao implements DataDao, ServiceTypeDao {
 
 	private DomainDao domainDao;
 	private ServiceTypeDao dao;
-	private DaoContext daoContext;
-	private P2PGridController controller;
 	private GenericHandler<ServiceType> handler = new GenericHandler<ServiceType>(){
 		protected boolean onNotificationStart() {
 			try{
-				daoContext.beginTransaction();
+				getDaoContext().beginTransaction();
 				return true;
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
@@ -278,7 +221,7 @@ public class P2PGridBasisServiceTypeDao implements DataDao, ServiceTypeDao {
 		protected void doUpdate(Serializable id, Set<String> modifiedProperties){
 			try{
 				getController().publish(new ServiceTypeData(
-						daoContext.loadEntity(ServiceType.class, id)
+						getDaoContext().loadEntity(ServiceType.class, id)
 						));
 				logger.info("published[ServiceType(id=" + id + ")]");
 			} catch(ControllerException e){
@@ -304,7 +247,7 @@ public class P2PGridBasisServiceTypeDao implements DataDao, ServiceTypeDao {
 
 		protected void onNotificationEnd(){
 			try{
-				daoContext.commitTransaction();
+				getDaoContext().commitTransaction();
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
 			}

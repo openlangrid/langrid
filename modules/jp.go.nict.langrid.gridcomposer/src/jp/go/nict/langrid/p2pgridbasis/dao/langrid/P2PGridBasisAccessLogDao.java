@@ -20,13 +20,14 @@
 package jp.go.nict.langrid.p2pgridbasis.dao.langrid;
 
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
-import jp.go.nict.langrid.dao.AccessLogSearchResult;
+import org.apache.log4j.Logger;
+
 import jp.go.nict.langrid.dao.AccessLogDao;
+import jp.go.nict.langrid.dao.AccessLogSearchResult;
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.GenericHandler;
@@ -34,16 +35,10 @@ import jp.go.nict.langrid.dao.MatchingCondition;
 import jp.go.nict.langrid.dao.Order;
 import jp.go.nict.langrid.dao.entity.AccessLog;
 import jp.go.nict.langrid.p2pgridbasis.controller.ControllerException;
-import jp.go.nict.langrid.p2pgridbasis.controller.P2PGridController;
-import jp.go.nict.langrid.p2pgridbasis.controller.jxta.JXTAController;
-import jp.go.nict.langrid.p2pgridbasis.dao.DataDao;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDaoException;
 import jp.go.nict.langrid.p2pgridbasis.dao.UnmatchedDataTypeException;
 import jp.go.nict.langrid.p2pgridbasis.data.Data;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.AccessLogData;
-import jp.go.nict.langrid.p2pgridbasis.data.langrid.DataConvertException;
-
-import org.apache.log4j.Logger;
 
 /**
  * 
@@ -51,53 +46,41 @@ import org.apache.log4j.Logger;
  * @author $Author: t-nakaguchi $
  * @version $Revision: 401 $
  */
-public class P2PGridBasisAccessLogDao implements DataDao, AccessLogDao {
+public class P2PGridBasisAccessLogDao
+extends AbstractP2PGridBasisDao<AccessLog>
+implements AccessLogDao {
 	/**
 	 * The constructor.
 	 * @param dao
 	 * @param context
 	 */
 	public P2PGridBasisAccessLogDao(AccessLogDao dao, DaoContext context) {
+		super(context);
+		setHandler(handler);
 		this.dao = dao;
-		this.daoContext = context;
 	}
 
-	private P2PGridController getController() throws ControllerException{
-		if (controller == null) {
-			controller = JXTAController.getInstance();
-		}
-
-		return controller;
-	}
-
-	public void setEntityListener() {
-		logger.debug("### AccessLog : setEntityListener ###");
-		daoContext.addEntityListener(AccessLog.class, handler);
-		daoContext.addTransactionListener(handler);
-	}
-
-	public void removeEntityListener() {
-		logger.debug("### AccessLog : removeEntityListener ###");
-		daoContext.removeTransactionListener(handler);
-		daoContext.removeEntityListener(AccessLog.class, handler);
-	}
-
-	synchronized public boolean updateDataSource(Data data) throws DataDaoException, UnmatchedDataTypeException {
-		return updateDataTarget(data);
-	}
-
-	synchronized public boolean updateDataTarget(Data data) throws DataDaoException, UnmatchedDataTypeException {
+	@Override
+	synchronized public boolean updateData(Data data) throws DataDaoException, UnmatchedDataTypeException {
 		logger.debug("[Log] : " + data.getId());
 		if(data.getClass().equals(AccessLogData.class) == false) {
 			throw new UnmatchedDataTypeException(AccessLogData.class.toString(), data.getClass().toString());
 		}
 
- 		if(data.getAttributes().getKeys().contains("IsDeleted") &&
+		AccessLog entity = null;
+		try {
+			entity = ((AccessLogData)data).getAccessLog();
+			if(entity.getServiceAndNodeGridId().equals(getSelfGridId())) return false;
+			if(!entity.getUserGridId().equals(getSelfGridId())) return false;
+			if(!isReachableTo(entity.getServiceAndNodeGridId())) return false;
+		} catch(Exception e){
+			throw new DataDaoException(e);
+		}
+
+		if(data.getAttributes().getKeys().contains("IsDeleted") &&
 				data.getAttributes().getValue("IsDeleted").equals("true")) {
 			logger.error("Delete");
 /*
- * 
- * 
 			try {
 				logger.debug("delete data");
 				AccessLogData accessLogData = (AccessLogData)data;
@@ -126,40 +109,34 @@ public class P2PGridBasisAccessLogDao implements DataDao, AccessLogDao {
 			return;
  */
 		}
-		AccessLog log= null;
 		try {
-			AccessLogData accessLogData = (AccessLogData)data;
-			log = accessLogData.getAccessLog();
-			if(registCheck(log) == false){
+			if(registCheck(entity) == false){
 				logger.debug("DateTime of 24 Hours ago");
-				return false;
-			}
-			if(!log.getServiceAndNodeGridId().equals(getController().getSelfGridId())){
 				return false;
 			}
 			logger.debug("New");
 			removeEntityListener();
-			daoContext.beginTransaction();
 			try{
-				if(dao.isLogExistByNodeIds(log.getServiceAndNodeGridId(), log.getNodeId(), log.getNodeLocalId())){
-					dao.updateAccessLogByNodeIds(log);
-				} else{
-					int nlid = log.getNodeLocalId();
-					dao.addAccessLog(log);
-					log.setNodeLocalId(nlid);
+				getDaoContext().beginTransaction();
+				try{
+					if(dao.isLogExistByNodeIds(
+							entity.getServiceAndNodeGridId(),
+							entity.getNodeId(), entity.getNodeLocalId())){
+						dao.updateAccessLogByNodeIds(entity);
+					} else{
+						int nlid = entity.getNodeLocalId();
+						dao.addAccessLog(entity);
+						entity.setNodeLocalId(nlid);
+					}
+				} finally{
+					getDaoContext().commitTransaction();
 				}
 			} finally{
-				daoContext.commitTransaction();
+				setEntityListener();
 			}
-			setEntityListener();
-
 			getController().logSummaryAdd(data);
 			return true;
-		} catch (ParseException e) {
-			throw new DataDaoException(e);
 		} catch (DaoException e) {
-			throw new DataDaoException(e);
-		} catch (DataConvertException e) {
 			throw new DataDaoException(e);
 		} catch (ControllerException e) {
 			throw new DataDaoException(e);
@@ -255,12 +232,10 @@ public class P2PGridBasisAccessLogDao implements DataDao, AccessLogDao {
 	}
 
 	private AccessLogDao dao;
-	private DaoContext daoContext;
-	private P2PGridController controller;
 	private GenericHandler<AccessLog> handler = new GenericHandler<AccessLog>(){
 		protected boolean onNotificationStart() {
 			try{
-				daoContext.beginTransaction();
+				getDaoContext().beginTransaction();
 				return true;
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
@@ -306,7 +281,7 @@ public class P2PGridBasisAccessLogDao implements DataDao, AccessLogDao {
 
 		protected void onNotificationEnd(){
 			try{
-				daoContext.commitTransaction();
+				getDaoContext().commitTransaction();
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
 			}

@@ -20,12 +20,13 @@
 package jp.go.nict.langrid.p2pgridbasis.dao.langrid;
 
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import org.apache.log4j.Logger;
 
 import jp.go.nict.langrid.dao.AccessRankingEntrySearchResult;
 import jp.go.nict.langrid.dao.AccessStatDao;
@@ -33,13 +34,11 @@ import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.GenericHandler;
 import jp.go.nict.langrid.dao.Order;
-import jp.go.nict.langrid.dao.ServiceNotFoundException;
 import jp.go.nict.langrid.dao.entity.AccessStat;
 import jp.go.nict.langrid.dao.entity.AccessStatPK;
 import jp.go.nict.langrid.dao.entity.Period;
+import jp.go.nict.langrid.dao.util.EntityUtil;
 import jp.go.nict.langrid.p2pgridbasis.controller.ControllerException;
-import jp.go.nict.langrid.p2pgridbasis.controller.P2PGridController;
-import jp.go.nict.langrid.p2pgridbasis.controller.jxta.JXTAController;
 import jp.go.nict.langrid.p2pgridbasis.controller.jxta.adv.PeerSummaryAdv;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDao;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDaoException;
@@ -49,116 +48,76 @@ import jp.go.nict.langrid.p2pgridbasis.data.Data;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.AccessStateData;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.DataConvertException;
 
-import org.apache.log4j.Logger;
-
 /**
  * 
  * 
  * @author $Author: t-nakaguchi $
  * @version $Revision: 401 $
  */
-public class P2PGridBasisAccessStateDao implements DataDao, AccessStatDao {
+public class P2PGridBasisAccessStateDao
+extends AbstractP2PGridBasisDao<AccessStat>
+implements DataDao, AccessStatDao {
 	/**
 	 * The constructor.
 	 * @param dao
 	 * @param context
 	 */
 	public P2PGridBasisAccessStateDao(AccessStatDao dao, DaoContext context) {
+		super(context);
+		setHandler(handler);
 		this.dao = dao;
-		this.daoContext = context;
 	}
 
-	private P2PGridController getController() throws ControllerException{
-		if (controller == null) {
-			controller = JXTAController.getInstance();
-		}
-
-		return controller;
-	}
-
-	public void setEntityListener() {
-		logger.debug("### AccessState : setEntityListener ###");
-		daoContext.addEntityListener(AccessStat.class, handler);
-		daoContext.addTransactionListener(handler);
-	}
-
-	public void removeEntityListener() {
-		logger.debug("### AccessState : removeEntityListener ###");
-		daoContext.removeTransactionListener(handler);
-		daoContext.removeEntityListener(AccessStat.class, handler);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateDataSource(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataSource(Data data) throws DataDaoException, UnmatchedDataTypeException {
-		return updateDataTarget(data);
-	}
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateData(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataTarget(Data data) throws DataDaoException, UnmatchedDataTypeException {
+	@Override
+	synchronized public boolean updateData(Data data) throws DataDaoException, UnmatchedDataTypeException {
 		logger.debug("[AccessState] : " + data.getId());
 		if(data.getClass().equals(AccessStateData.class) == false) {
 			throw new UnmatchedDataTypeException(AccessStateData.class.toString(), data.getClass().toString());
 		}
 
- 		if(data.getAttributes().getKeys().contains("IsDeleted") &&
-				data.getAttributes().getValue("IsDeleted").equals("true")) {
- 			boolean updated = false;
-			try {
-				logger.debug("Delete");
-				AccessStateData accessStateData = (AccessStateData)data;
-				AccessStat state = accessStateData.getAccessState();
-				removeEntityListener();
-				dao.deleteAccessStat(state.getUserGridId()
-									, state.getUserId()
-									, state.getServiceAndNodeGridId()
-									, state.getServiceId()
-									, state.getBaseDateTime()
-									, state.getPeriod());
-				updated = true;
-				setEntityListener();
-				getController().baseSummaryAdd(data);
-			} catch (DataConvertException e) {
-				throw new DataDaoException(e);
-			} catch (ServiceNotFoundException e) {
-				// 
-				// 
-				try {
-					getController().baseSummaryAdd(data);
-				} catch (ControllerException e1) {
-					e1.printStackTrace();
-				}
-			} catch (DaoException e) {
-				throw new DataDaoException(e);
-			} catch (ParseException e) {
-				throw new DataDaoException(e);
-			} catch (ControllerException e) {
-				throw new DataDaoException(e);
-			}
-			return updated;
+		AccessStat entity = null;
+		try {
+			entity = ((AccessStateData)data).getAccessState();
+			if(entity.getServiceAndNodeGridId().equals(getSelfGridId())) return false;
+			if(!entity.getUserGridId().equals(getSelfGridId())) return false;
+			if(!isReachableTo(entity.getServiceAndNodeGridId())) return false;
+		} catch(Exception e){
+			throw new DataDaoException(e);
 		}
 
- 		AccessStat state= null;
+		if(data.getAttributes().getKeys().contains("IsDeleted") &&
+				data.getAttributes().getValue("IsDeleted").equals("true")) {
+			try {
+				logger.debug("Delete");
+				removeEntityListener();
+				try{
+					return getDaoContext().removeEntity(
+							entity.getClass(), EntityUtil.getId(entity));
+				} finally{
+					setEntityListener();
+					getController().baseSummaryAdd(data);
+				}
+			} catch (Exception e) {
+				throw new DataDaoException(e);
+			}
+		}
+
 		try {
-			AccessStateData accessStateData = (AccessStateData)data;
-			state = accessStateData.getAccessState();
 			logger.debug("New or UpDate");
 			removeEntityListener();
-			daoContext.beginTransaction();
-			daoContext.mergeEntity(state);
-			daoContext.commitTransaction();
-			setEntityListener();
-			getController().baseSummaryAdd(data);
-			return true;
-		} catch (ParseException e) {
-			throw new DataDaoException(e);
+			try{
+				getDaoContext().beginTransaction();
+				try{
+					getDaoContext().mergeEntity(entity);
+				} finally{
+					getDaoContext().commitTransaction();
+				}
+				return true;
+			} finally{
+				setEntityListener();
+				getController().baseSummaryAdd(data);
+			}
 		} catch (DaoException e) {
-			throw new DataDaoException(e);
-		} catch (DataConvertException e) {
 			throw new DataDaoException(e);
 		} catch (ControllerException e) {
 			throw new DataDaoException(e);
@@ -250,12 +209,12 @@ public class P2PGridBasisAccessStateDao implements DataDao, AccessStatDao {
 	public void updateCountCheck(Serializable id){
 		if(updateCount == 0){
 			try {
-				firstAccessTime = daoContext.loadEntity(AccessStat.class, id).getLastAccessDateTime();
-				gridID = daoContext.loadEntity(AccessStat.class, id).getServiceAndNodeGridId();
+				firstAccessTime = getDaoContext().loadEntity(AccessStat.class, id).getLastAccessDateTime();
+				gridID = getDaoContext().loadEntity(AccessStat.class, id).getServiceAndNodeGridId();
 			} catch (DaoException e) {
 				e.printStackTrace();
 			}
-			task  = new minuteTimerTask(dao, daoContext);
+			task  = new minuteTimerTask(dao, getDaoContext());
 			timer = new Timer(true);
 			timer.schedule(task, 1000 * 60);
 		}
@@ -273,7 +232,7 @@ public class P2PGridBasisAccessStateDao implements DataDao, AccessStatDao {
 		updateCount = 0;
 
 		try {
-			daoContext.beginTransaction();
+			getDaoContext().beginTransaction();
 			for (AccessStat state : listAccessStatsNewerThanOrEqualsTo(gridID, firstAccessTime)) {
 				AccessStateData data = new AccessStateData(state);
 				getController().stateDataPublish(data);
@@ -287,7 +246,7 @@ public class P2PGridBasisAccessStateDao implements DataDao, AccessStatDao {
 			e.printStackTrace();
 		}finally{
 			try {
-				daoContext.commitTransaction();
+				getDaoContext().commitTransaction();
 			} catch (DaoException e) {
 				e.printStackTrace();
 			}
@@ -295,8 +254,6 @@ public class P2PGridBasisAccessStateDao implements DataDao, AccessStatDao {
 	}
 
 	private AccessStatDao dao;
-	private DaoContext daoContext;
-	private P2PGridController controller;
 	private static Timer timer;
 	private static TimerTask task;
 	private static Calendar firstAccessTime;
@@ -305,7 +262,7 @@ public class P2PGridBasisAccessStateDao implements DataDao, AccessStatDao {
 	private GenericHandler<AccessStat> handler = new GenericHandler<AccessStat>(){
 		protected boolean onNotificationStart() {
 			try{
-				daoContext.beginTransaction();
+				getDaoContext().beginTransaction();
 				return true;
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
@@ -332,7 +289,7 @@ public class P2PGridBasisAccessStateDao implements DataDao, AccessStatDao {
 
 		protected void onNotificationEnd(){
 			try{
-				daoContext.commitTransaction();
+				getDaoContext().commitTransaction();
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
 			}

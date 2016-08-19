@@ -39,7 +39,6 @@ import jp.go.nict.langrid.p2pgridbasis.dao.DataTypeNotFoundException;
 import jp.go.nict.langrid.p2pgridbasis.dao.P2PGridDaoFactory;
 import jp.go.nict.langrid.p2pgridbasis.dao.UnmatchedDataTypeException;
 import jp.go.nict.langrid.p2pgridbasis.data.Data;
-import jp.go.nict.langrid.p2pgridbasis.federation.P2PGridbasisFederationType;
 import net.jxta.discovery.DiscoveryEvent;
 import net.jxta.discovery.DiscoveryListener;
 import net.jxta.document.Advertisement;
@@ -76,7 +75,6 @@ public class DataDiscoveryListener implements DiscoveryListener {
 				try {
 					data = parseResponse((String)responses.nextElement());
 					if(data == null) return;
-					int type = ctrl.getFederationType(data.getGridId());
 					Pair<AtomicLong, AtomicLong> c = counter.get(data.getType());
 					if(c == null){
 						synchronized(counter){
@@ -90,31 +88,8 @@ public class DataDiscoveryListener implements DiscoveryListener {
 						}
 					}
 					c.getFirst().incrementAndGet();
-					boolean updated = false;
 					DataDao dao = P2PGridDaoFactory.getDataDao(data.getType());
-					switch(type){
-					case P2PGridbasisFederationType.OFF:
-//						logger.info("FederationType : OFF");
-						updated = dao.updateDataSource(data);
-						break;
-					case P2PGridbasisFederationType.SOURCE:
-//						logger.info("FederationType : SOURCE");
-						updated = dao.updateDataSource(data);
-						break;
-					case P2PGridbasisFederationType.TARGET:
-//						logger.info("FederationType : TARGET");
-						updated = dao.updateDataTarget(data);
-						break;
-					case P2PGridbasisFederationType.MULTI:
-//						logger.info("FederationType : MULTI");
-						updated = dao.updateDataSource(data);
-						break;
-					case P2PGridbasisFederationType.NONE:
-					default:
-//						logger.info("FederationType : NONE[" + type + "]");
-						break;
-					}
-					if(updated){
+					if(dao.updateData(data)){
 						c.getSecond().incrementAndGet();
 					}
 				} catch (InvalidDiscoveryResponseException e) {

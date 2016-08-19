@@ -23,6 +23,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.DomainAlreadyExistsException;
@@ -32,8 +34,6 @@ import jp.go.nict.langrid.dao.GenericHandler;
 import jp.go.nict.langrid.dao.entity.Domain;
 import jp.go.nict.langrid.dao.entity.DomainPK;
 import jp.go.nict.langrid.p2pgridbasis.controller.ControllerException;
-import jp.go.nict.langrid.p2pgridbasis.controller.P2PGridController;
-import jp.go.nict.langrid.p2pgridbasis.controller.jxta.JXTAController;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDao;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDaoException;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataNotFoundException;
@@ -42,125 +42,47 @@ import jp.go.nict.langrid.p2pgridbasis.data.Data;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.DataConvertException;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.DomainData;
 
-import org.apache.log4j.Logger;
-
 /**
  * 
  * 
  * @author $Author: t-nakaguchi $
  * @version $Revision: 1522 $
  */
-public class P2PGridBasisDomainDao implements DataDao, DomainDao {
+public class P2PGridBasisDomainDao
+extends AbstractP2PGridBasisDao<Domain>
+implements DataDao, DomainDao {
 	/**
 	 * 
 	 * 
 	 */
 	public P2PGridBasisDomainDao(DomainDao dao, DaoContext context) {
+		super(context);
+		setHandler(handler);
 		this.dao = dao;
-		this.daoContext = context;
 	}
 
-	private P2PGridController getController() throws ControllerException{
-		if (controller == null) {
-			controller = JXTAController.getInstance();
-		}
-
-		return controller;
-	}
-
-	public void setEntityListener() {
-		logger.debug("### Domain : setEntityListener ###");
-		daoContext.addEntityListener(Domain.class, handler);
-		daoContext.addTransactionListener(handler);
-	}
-
-	public void removeEntityListener() {
-		logger.debug("### Domain : removeEntityListener ###");
-		daoContext.removeTransactionListener(handler);
-		daoContext.removeEntityListener(Domain.class, handler);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateDataSource(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataSource(Data data) throws DataDaoException, UnmatchedDataTypeException {
-		return updateDataTarget(data);
-	}
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateData(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataTarget(Data data) throws UnmatchedDataTypeException, DataDaoException {
+	@Override
+	synchronized public boolean updateData(Data data) throws UnmatchedDataTypeException, DataDaoException {
 		logger.debug("[Domain] : " + data.getId());
 		if(data.getClass().equals(DomainData.class) == false) {
 			throw new UnmatchedDataTypeException(DomainData.class.toString(), data.getClass().toString());
 		}
-		DomainData domainData = (DomainData) data;
-		Domain domain = null;
+		Domain entity = null;
 		try {
-			domain = domainData.getDomain();
-		} catch (DataConvertException e) {
-			throw new DataDaoException(e);
-		}
-		try{
-			if(domain.getOwnerUserGridId().equals(getController().getSelfGridId())){
-				return false;
-			}
+			entity = ((DomainData)data).getDomain();
+			if(entity.getOwnerUserGridId().equals(getSelfGridId())) return false;
+			if(!isReachableTo(entity.getOwnerUserGridId())) return false;
 			try {
-				Domain domainInDb = getDomain(domain.getDomainId());
-				if(domainInDb.getOwnerUserGridId().equals(getController().getSelfGridId())){
+				Domain domainInDb = dao.getDomain(entity.getDomainId());
+				if(domainInDb.getOwnerUserGridId().equals(getSelfGridId())){
 					return false;
 				}
 			} catch (DomainNotFoundException e) {
-			} catch (DaoException e) {
-				e.printStackTrace();
-				return false;
 			}
-		} catch(ControllerException e){
-			return false;
+		} catch(Exception e) {
+			throw new DataDaoException(e);
 		}
-
-		if(data.getAttributes().getKeys().contains("IsDeleted") &&
-				data.getAttributes().getValue("IsDeleted").equals("true")) {
- 			boolean updated = false;
- 			try{
-				logger.info("Delete");
-				removeEntityListener();
-				dao.deleteDomain(domain.getDomainId());
-				updated = true;
-				setEntityListener();
-				getController().baseSummaryAdd(data);
-			} catch (DomainNotFoundException e) {
-				// 
-				// 
-				try {
-					getController().baseSummaryAdd(data);
-				} catch (ControllerException e1) {
-					e1.printStackTrace();
-				}
-			} catch (DaoException e) {
-				throw new DataDaoException(e);
-			} catch (ControllerException e) {
-				throw new DataDaoException(e);
-			}
-			return updated;
-		} else{
-			try {
-				logger.debug("New or UpDate");
-				removeEntityListener();
-				daoContext.beginTransaction();
-				daoContext.mergeEntity(domain);
-				daoContext.commitTransaction();
-				setEntityListener();
-				getController().baseSummaryAdd(data);
-				return true;
-			} catch (DaoException e) {
-				throw new DataDaoException(e);
-			} catch (ControllerException e) {
-				throw new DataDaoException(e);
-			}
-		}
+		return handleData(data, entity);
 	}
 
 
@@ -203,12 +125,10 @@ public class P2PGridBasisDomainDao implements DataDao, DomainDao {
 	}
 
 	private DomainDao dao;
-	private DaoContext daoContext;
-	private P2PGridController controller;
 	private GenericHandler<Domain> handler = new GenericHandler<Domain>(){
 		protected boolean onNotificationStart() {
 			try{
-				daoContext.beginTransaction();
+				getDaoContext().beginTransaction();
 				return true;
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
@@ -219,7 +139,7 @@ public class P2PGridBasisDomainDao implements DataDao, DomainDao {
 		protected void doUpdate(Serializable id, Set<String> modifiedProperties){
 			try{
 				getController().publish(new DomainData(
-						daoContext.loadEntity(Domain.class, id)
+						getDaoContext().loadEntity(Domain.class, id)
 						));
 				logger.info("published[Domain(id=" + id + ")]");
 			} catch(ControllerException e){
@@ -245,7 +165,7 @@ public class P2PGridBasisDomainDao implements DataDao, DomainDao {
 
 		protected void onNotificationEnd(){
 			try{
-				daoContext.commitTransaction();
+				getDaoContext().commitTransaction();
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
 			}

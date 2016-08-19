@@ -115,12 +115,6 @@ public interface P2PGridController {
 	 * 
 	 * 
 	 */
-	public void createFederation();
-
-	/**
-	 * 
-	 * 
-	 */
 	public boolean hostSummaryCreate(String gridId) throws ControllerException;
 
 	/**

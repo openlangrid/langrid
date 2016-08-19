@@ -23,16 +23,18 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
+import jp.go.nict.langrid.dao.DomainNotFoundException;
 import jp.go.nict.langrid.dao.GenericHandler;
 import jp.go.nict.langrid.dao.ProtocolAlreadyExistsException;
 import jp.go.nict.langrid.dao.ProtocolDao;
 import jp.go.nict.langrid.dao.ProtocolNotFoundException;
 import jp.go.nict.langrid.dao.entity.Protocol;
+import jp.go.nict.langrid.dao.util.EntityUtil;
 import jp.go.nict.langrid.p2pgridbasis.controller.ControllerException;
-import jp.go.nict.langrid.p2pgridbasis.controller.P2PGridController;
-import jp.go.nict.langrid.p2pgridbasis.controller.jxta.JXTAController;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDao;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDaoException;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataNotFoundException;
@@ -41,116 +43,48 @@ import jp.go.nict.langrid.p2pgridbasis.data.Data;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.DataConvertException;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.ProtocolData;
 
-import org.apache.log4j.Logger;
-
 /**
  * 
  * 
  * @author $Author: t-nakaguchi $
  * @version $Revision: 1043 $
  */
-public class P2PGridBasisProtocolDao implements DataDao, ProtocolDao {
+public class P2PGridBasisProtocolDao
+extends AbstractP2PGridBasisDao<Protocol>
+implements DataDao, ProtocolDao {
 	/**
 	 * 
 	 * 
 	 */
 	public P2PGridBasisProtocolDao(ProtocolDao dao, DaoContext context) {
+		super(context);
 		this.dao = dao;
-		this.daoContext = context;
+		setHandler(handler);
 	}
 
-	private P2PGridController getController() throws ControllerException{
-		if (controller == null) {
-			controller = JXTAController.getInstance();
-		}
-
-		return controller;
-	}
-
-	public void setEntityListener() {
-		logger.debug("### Protocol : setEntityListener ###");
-		daoContext.addEntityListener(Protocol.class, handler);
-		daoContext.addTransactionListener(handler);
-	}
-
-	public void removeEntityListener() {
-		logger.debug("### Protocol : removeEntityListener ###");
-		daoContext.removeTransactionListener(handler);
-		daoContext.removeEntityListener(Protocol.class, handler);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateDataSource(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataSource(Data data) throws DataDaoException, UnmatchedDataTypeException {
-		return updateDataTarget(data);
-	}
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateData(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataTarget(Data data) throws UnmatchedDataTypeException, DataDaoException {
+	@Override
+	synchronized public boolean updateData(Data data) throws UnmatchedDataTypeException, DataDaoException {
 		logger.debug("[Protocol] : " + data.getId());
 		if(data.getClass().equals(ProtocolData.class) == false) {
 			throw new UnmatchedDataTypeException(ProtocolData.class.toString(), data.getClass().toString());
 		}
 
-		ProtocolData protocolData = (ProtocolData) data;
-		Protocol protocol = null;
-		try{
-			protocol = protocolData.getProtocol();
-			if(protocol.getOwnerUserGridId().equals(getController().getSelfGridId())){
-				return false;
-			}
-		} catch(ControllerException e){
-			return false;
-		} catch (DataConvertException e) {
-			throw new DataDaoException(e);
-		}
-
-		if(data.getAttributes().getKeys().contains("IsDeleted") &&
-				data.getAttributes().getValue("IsDeleted").equals("true")) {
- 			boolean updated = false;
-			try {
-				logger.info("Delete");
-				removeEntityListener();
-				dao.deleteProtocol(protocol.getProtocolId());
-				updated = true;
-				setEntityListener();
-				getController().baseSummaryAdd(data);
-			} catch (ProtocolNotFoundException e) {
-				// 
-				// 
-				try {
-					getController().baseSummaryAdd(data);
-				} catch (ControllerException e1) {
-					e1.printStackTrace();
-				}
-			} catch (DaoException e) {
-				throw new DataDaoException(e);
-			} catch (ControllerException e) {
-				throw new DataDaoException(e);
-			}
-			return updated;
-		}
-
+		Protocol entity = null;
 		try {
-			logger.debug("New or UpDate");
-			removeEntityListener();
-			daoContext.beginTransaction();
-			daoContext.mergeEntity(protocol);
-			daoContext.commitTransaction();
-			setEntityListener();
-			getController().baseSummaryAdd(data);
-			return true;
-		} catch (DaoException e) {
-			throw new DataDaoException(e);
-		} catch (ControllerException e) {
+			entity = ((ProtocolData)data).getProtocol();
+			if(entity.getOwnerUserGridId().equals(getSelfGridId())) return false;
+			if(!isReachableTo(entity.getOwnerUserGridId())) return false;
+			try {
+				Protocol entityInDb = getDaoContext().loadEntity(
+						Protocol.class, EntityUtil.getId(entity));
+				if(entityInDb.getOwnerUserGridId().equals(getSelfGridId())) return false;
+			} catch (DomainNotFoundException e) {
+			}
+		} catch(Exception e) {
 			throw new DataDaoException(e);
 		}
+		return handleData(data, entity);
 	}
-
 
 	@Override
 	public void clear() throws DaoException {
@@ -191,12 +125,10 @@ public class P2PGridBasisProtocolDao implements DataDao, ProtocolDao {
 	}
 
 	private ProtocolDao dao;
-	private DaoContext daoContext;
-	private P2PGridController controller;
 	private GenericHandler<Protocol> handler = new GenericHandler<Protocol>(){
 		protected boolean onNotificationStart() {
 			try{
-				daoContext.beginTransaction();
+				getDaoContext().beginTransaction();
 				return true;
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
@@ -207,7 +139,7 @@ public class P2PGridBasisProtocolDao implements DataDao, ProtocolDao {
 		protected void doUpdate(Serializable id, Set<String> modifiedProperties){
 			try{
 				getController().publish(new ProtocolData(
-						daoContext.loadEntity(Protocol.class, id)
+						getDaoContext().loadEntity(Protocol.class, id)
 						));
 				logger.info("published[Protocol(id=" + id + ")]");
 			} catch(ControllerException e){
@@ -232,7 +164,7 @@ public class P2PGridBasisProtocolDao implements DataDao, ProtocolDao {
 
 		protected void onNotificationEnd(){
 			try{
-				daoContext.commitTransaction();
+				getDaoContext().commitTransaction();
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
 			}

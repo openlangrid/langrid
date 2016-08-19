@@ -53,8 +53,6 @@ import jp.go.nict.langrid.management.logic.ServiceNotActivatableException;
 import jp.go.nict.langrid.management.logic.service.ProcessDeployer;
 import jp.go.nict.langrid.management.logic.service.ServiceActivator;
 import jp.go.nict.langrid.p2pgridbasis.controller.ControllerException;
-import jp.go.nict.langrid.p2pgridbasis.controller.P2PGridController;
-import jp.go.nict.langrid.p2pgridbasis.controller.jxta.JXTAController;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDao;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDaoException;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataNotFoundException;
@@ -70,7 +68,7 @@ import jp.go.nict.langrid.p2pgridbasis.data.langrid.ServiceData;
  * @version $Revision: 487 $
  */
 public class P2PGridBasisServiceDao
-extends AbstractP2PGridBasisDao
+extends AbstractP2PGridBasisDao<Service>
 implements DataDao, ServiceDao {
 	/**
 	 * 
@@ -79,67 +77,42 @@ implements DataDao, ServiceDao {
 	public P2PGridBasisServiceDao(
 			ServiceDao dao, DaoContext context
 			, String activeBpelServicesUrl, String activeBpelDeployBinding) {
+		super(context);
 		this.dao = dao;
-		this.daoContext = context;
 		this.activeBpelServicesUrl = activeBpelServicesUrl;
 		this.activeBpelDeployBinding = activeBpelDeployBinding;
 	}
 
-	private P2PGridController getController() throws ControllerException{
-		if (controller == null) {
-			controller = JXTAController.getInstance();
-		}
-
-		return controller;
-	}
-
 	public void setEntityListener() {
 		logger.debug("### Service : setEntityListener ###");
-		daoContext.addEntityListener(ExternalService.class, esHandler);
-		daoContext.addTransactionListener(esHandler);
-		daoContext.addEntityListener(BPELService.class, bsHandler);
-		daoContext.addTransactionListener(bsHandler);
-		daoContext.addEntityListener(WebappService.class, wsHandler);
-		daoContext.addTransactionListener(wsHandler);
+		getDaoContext().addEntityListener(ExternalService.class, esHandler);
+		getDaoContext().addTransactionListener(esHandler);
+		getDaoContext().addEntityListener(BPELService.class, bsHandler);
+		getDaoContext().addTransactionListener(bsHandler);
+		getDaoContext().addEntityListener(WebappService.class, wsHandler);
+		getDaoContext().addTransactionListener(wsHandler);
 	}
 
 	public void removeEntityListener() {
 		logger.debug("### Service : removeEntityListener ###");
-		daoContext.removeTransactionListener(esHandler);
-		daoContext.removeEntityListener(ExternalService.class, esHandler);
-		daoContext.removeTransactionListener(bsHandler);
-		daoContext.removeEntityListener(BPELService.class, bsHandler);
-		daoContext.removeTransactionListener(wsHandler);
-		daoContext.removeEntityListener(WebappService.class, wsHandler);
+		getDaoContext().removeTransactionListener(esHandler);
+		getDaoContext().removeEntityListener(ExternalService.class, esHandler);
+		getDaoContext().removeTransactionListener(bsHandler);
+		getDaoContext().removeEntityListener(BPELService.class, bsHandler);
+		getDaoContext().removeTransactionListener(wsHandler);
+		getDaoContext().removeEntityListener(WebappService.class, wsHandler);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateDataSource(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataSource(Data data) throws DataDaoException, UnmatchedDataTypeException {
-		return updateDataTarget(data);
-	}
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateData(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataTarget(Data data) throws UnmatchedDataTypeException, DataDaoException {
+	@Override
+	synchronized public boolean updateData(Data data) throws UnmatchedDataTypeException, DataDaoException {
 		logger.debug("[Service] : " + data.getId());
 		if(data.getClass().equals(ServiceData.class) == false) {
 			throw new UnmatchedDataTypeException(ServiceData.class.toString(), data.getClass().toString());
 		}
 
 		ServiceData serviceData = (ServiceData) data;
-		try{
-			if(!isReachable(
-					this.getController().getSelfGridId(), serviceData.getGridId())){
-				return false;
-			}
-		} catch (ControllerException e) {
-			throw new DataDaoException(e);
-		} catch (DaoException e) {
-			throw new DataDaoException(e);
+		if(!isReachableTo(serviceData.getGridId())){
+			return false;
 		}
 
 		Service service = null;
@@ -208,7 +181,7 @@ implements DataDao, ServiceDao {
 			try{
 				if(dao.isServiceExist(service.getGridId(), service.getServiceId())){
 					logger.debug("UpDate");
-					daoContext.updateEntity(service);
+					getDaoContext().updateEntity(service);
 				}else{
 					logger.debug("New");
 					dao.addService(service);
@@ -220,7 +193,7 @@ implements DataDao, ServiceDao {
 			}
 
 			if(service.getGridId().equals(getController().getSelfGridId())){
-				daoContext.beginTransaction();
+				getDaoContext().beginTransaction();
 				removeEntityListener();
 				try{
 					if(service.isActive()){
@@ -243,15 +216,15 @@ implements DataDao, ServiceDao {
 							logger.fatal("failed to activate service", e);
 						}
 					}
-					daoContext.commitTransaction();
+					getDaoContext().commitTransaction();
 				} catch(DaoException e){
-					daoContext.rollbackTransaction();
+					getDaoContext().rollbackTransaction();
 					throw new DataDaoException(e);
 				} finally{
 					setEntityListener();
 				}
 	
-				daoContext.beginTransaction();
+				getDaoContext().beginTransaction();
 				removeEntityListener();
 				try{
 					if(service instanceof ExternalService){
@@ -269,9 +242,9 @@ implements DataDao, ServiceDao {
 								dao, service.getGridId(), service.getServiceId()
 								, deployer, activeBpelDeployBinding);
 					}
-					daoContext.commitTransaction();
+					getDaoContext().commitTransaction();
 				} catch(DaoException e){
-					daoContext.rollbackTransaction();
+					getDaoContext().rollbackTransaction();
 					throw new DataDaoException(e);
 				} finally{
 					setEntityListener();
@@ -379,8 +352,6 @@ implements DataDao, ServiceDao {
 	}
 
 	private ServiceDao dao;
-	private DaoContext daoContext;
-	private P2PGridController controller;
 	private class ServiceHandler<T extends Service> extends GenericHandler<T>{
 		public ServiceHandler(Class<T> clazz){
 			this.clazz = clazz;
@@ -389,7 +360,7 @@ implements DataDao, ServiceDao {
 
 		protected boolean onNotificationStart() {
 			try{
-				daoContext.beginTransaction();
+				getDaoContext().beginTransaction();
 				return true;
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
@@ -399,7 +370,7 @@ implements DataDao, ServiceDao {
 
 		protected void doUpdate(Serializable id, Set<String> modifiedProperties){
 			try{
-				Service service = daoContext.loadEntity(clazz, id);
+				Service service = getDaoContext().loadEntity(clazz, id);
 				ServiceData data = new ServiceData(service);
 				Blob blob = null;
 
@@ -449,7 +420,7 @@ implements DataDao, ServiceDao {
 
 		protected void onNotificationEnd(){
 			try{
-				daoContext.commitTransaction();
+				getDaoContext().commitTransaction();
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
 			}

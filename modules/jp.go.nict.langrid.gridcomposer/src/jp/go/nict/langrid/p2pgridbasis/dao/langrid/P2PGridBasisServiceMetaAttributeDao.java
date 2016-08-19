@@ -30,15 +30,12 @@ import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.DomainDao;
 import jp.go.nict.langrid.dao.DomainNotFoundException;
 import jp.go.nict.langrid.dao.GenericHandler;
-import jp.go.nict.langrid.dao.ServiceMetaAttributeNotFoundException;
 import jp.go.nict.langrid.dao.ServiceTypeDao;
 import jp.go.nict.langrid.dao.entity.Domain;
 import jp.go.nict.langrid.dao.entity.ServiceMetaAttribute;
 import jp.go.nict.langrid.dao.entity.ServiceMetaAttributePK;
 import jp.go.nict.langrid.dao.entity.ServiceType;
 import jp.go.nict.langrid.p2pgridbasis.controller.ControllerException;
-import jp.go.nict.langrid.p2pgridbasis.controller.P2PGridController;
-import jp.go.nict.langrid.p2pgridbasis.controller.jxta.JXTAController;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDao;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDaoException;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataNotFoundException;
@@ -53,112 +50,38 @@ import jp.go.nict.langrid.p2pgridbasis.data.langrid.ServiceMetaAttributeData;
  * @author $Author: t-nakaguchi $
  * @version $Revision: 1514 $
  */
-public class P2PGridBasisServiceMetaAttributeDao implements DataDao, ServiceTypeDao {
+public class P2PGridBasisServiceMetaAttributeDao
+extends AbstractP2PGridBasisDao<ServiceMetaAttribute>
+implements DataDao, ServiceTypeDao {
 	/**
 	 * 
 	 * 
 	 */
 	public P2PGridBasisServiceMetaAttributeDao(DomainDao domainDao, ServiceTypeDao dao, DaoContext context) {
+		super(context);
 		this.domainDao = domainDao;
 		this.dao = dao;
-		this.daoContext = context;
+		setHandler(handler);
 	}
 
-	private P2PGridController getController() throws ControllerException{
-		if (controller == null) {
-			controller = JXTAController.getInstance();
-		}
-
-		return controller;
-	}
-
-	public void setEntityListener() {
-		logger.debug("### ServiceMetaAttribute : setEntityListener ###");
-		daoContext.addEntityListener(ServiceMetaAttribute.class, handler);
-		daoContext.addTransactionListener(handler);
-	}
-
-	public void removeEntityListener() {
-		logger.debug("### ServiceMetaAttribute : removeEntityListener ###");
-		daoContext.removeTransactionListener(handler);
-		daoContext.removeEntityListener(ServiceMetaAttribute.class, handler);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateDataSource(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataSource(Data data) throws DataDaoException, UnmatchedDataTypeException {
-		return updateDataTarget(data);
-	}
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateData(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataTarget(Data data) throws UnmatchedDataTypeException, DataDaoException {
+	@Override
+	synchronized public boolean updateData(Data data) throws UnmatchedDataTypeException, DataDaoException {
 		logger.debug("[ServiceMetaAttribute] : " + data.getId());
 		if(data.getClass().equals(ServiceMetaAttributeData.class) == false) {
 			throw new UnmatchedDataTypeException(ServiceMetaAttributeData.class.toString(), data.getClass().toString());
 		}
 
-		ServiceMetaAttributeData serviceMetaAttributeData = (ServiceMetaAttributeData) data;
-		ServiceMetaAttribute serviceMetaAttribute = null;
+		ServiceMetaAttribute entity = null;
 		try {
-			serviceMetaAttribute = serviceMetaAttributeData.getServiceMetaAttribute();
-		} catch (DataConvertException e) {
-			throw new DataDaoException(e);
-		}
-		try {
-			Domain domainInDb = domainDao.getDomain(serviceMetaAttribute.getDomainId());
-			if(domainInDb.getOwnerUserGridId().equals(getController().getSelfGridId())){
-				return false;
-			}
-		} catch(ControllerException e){
-			return false;
+			entity = ((ServiceMetaAttributeData)data).getServiceMetaAttribute();
+			Domain domainInDb = domainDao.getDomain(entity.getDomainId());
+			if(domainInDb.getOwnerUserGridId().equals(getSelfGridId())) return false;
+			if(!isReachableTo(domainInDb.getOwnerUserGridId())) return false;
 		} catch (DomainNotFoundException e) {
-		} catch (DaoException e) {
-			e.printStackTrace();
-			return false;
-		}
-
-		if(data.getAttributes().getKeys().contains("IsDeleted") &&
-				data.getAttributes().getValue("IsDeleted").equals("true")) {
- 			boolean updated = false;
-			try {
-				logger.info("Delete");
-				removeEntityListener();
-				dao.deleteServiceMetaAttribute(serviceMetaAttribute.getDomainId(), serviceMetaAttribute.getAttributeId());
-				updated = true;
-				setEntityListener();
-				getController().baseSummaryAdd(data);
-			} catch (ServiceMetaAttributeNotFoundException e) {
-				try {
-					getController().baseSummaryAdd(data);
-				} catch (ControllerException e1) {
-					e1.printStackTrace();
-				}
-			} catch (DaoException e) {
-				throw new DataDaoException(e);
-			} catch (ControllerException e) {
-				throw new DataDaoException(e);
-			}
-			return updated;
-		}
-
-		try {
-			logger.debug("New or UpDate");
-			removeEntityListener();
-			daoContext.beginTransaction();
-			daoContext.mergeEntity(serviceMetaAttribute);
-			daoContext.commitTransaction();
-			setEntityListener();
-			getController().baseSummaryAdd(data);
-			return true;
-		} catch (DaoException e) {
-			throw new DataDaoException(e);
-		} catch (ControllerException e) {
+		} catch(Exception e) {
 			throw new DataDaoException(e);
 		}
+		return handleData(data, entity);
 	}
 
 
@@ -249,12 +172,10 @@ public class P2PGridBasisServiceMetaAttributeDao implements DataDao, ServiceType
 
 	private DomainDao domainDao;
 	private ServiceTypeDao dao;
-	private DaoContext daoContext;
-	private P2PGridController controller;
 	private GenericHandler<ServiceMetaAttribute> handler = new GenericHandler<ServiceMetaAttribute>(){
 		protected boolean onNotificationStart() {
 			try{
-				daoContext.beginTransaction();
+				getDaoContext().beginTransaction();
 				return true;
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
@@ -265,7 +186,7 @@ public class P2PGridBasisServiceMetaAttributeDao implements DataDao, ServiceType
 		protected void doUpdate(Serializable id, Set<String> modifiedProperties){
 			try{
 				getController().publish(new ServiceMetaAttributeData(
-						daoContext.loadEntity(ServiceMetaAttribute.class, id)
+						getDaoContext().loadEntity(ServiceMetaAttribute.class, id)
 						));
 				logger.info("published[ServiceType(id=" + id + ")]");
 			} catch(ControllerException e){
@@ -291,7 +212,7 @@ public class P2PGridBasisServiceMetaAttributeDao implements DataDao, ServiceType
 
 		protected void onNotificationEnd(){
 			try{
-				daoContext.commitTransaction();
+				getDaoContext().commitTransaction();
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
 			}

@@ -20,9 +20,10 @@
 package jp.go.nict.langrid.p2pgridbasis.dao.langrid;
 
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import jp.go.nict.langrid.dao.AccessRightDao;
 import jp.go.nict.langrid.dao.AccessRightNotFoundException;
@@ -31,14 +32,10 @@ import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.GenericHandler;
 import jp.go.nict.langrid.dao.Order;
-import jp.go.nict.langrid.dao.ServiceNotFoundException;
 import jp.go.nict.langrid.dao.entity.AccessRight;
 import jp.go.nict.langrid.dao.entity.AccessRightPK;
 import jp.go.nict.langrid.dao.entity.ServicePK;
 import jp.go.nict.langrid.p2pgridbasis.controller.ControllerException;
-import jp.go.nict.langrid.p2pgridbasis.controller.P2PGridController;
-import jp.go.nict.langrid.p2pgridbasis.controller.jxta.JXTAController;
-import jp.go.nict.langrid.p2pgridbasis.dao.DataDao;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDaoException;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataNotFoundException;
 import jp.go.nict.langrid.p2pgridbasis.dao.UnmatchedDataTypeException;
@@ -46,117 +43,42 @@ import jp.go.nict.langrid.p2pgridbasis.data.Data;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.AccessRightData;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.DataConvertException;
 
-import org.apache.log4j.Logger;
-
 /**
  * 
  * 
  * @author $Author: t-nakaguchi $
  * @version $Revision: 401 $
  */
-public class P2PGridBasisAccessRightDao implements DataDao, AccessRightDao {
+public class P2PGridBasisAccessRightDao
+extends AbstractP2PGridBasisDao<AccessRight>
+implements AccessRightDao {
 	/**
 	 * The constructor.
 	 * @param dao
 	 */
 	public P2PGridBasisAccessRightDao(AccessRightDao dao, DaoContext context) {
+		super(context);
+		setHandler(handler);
 		this.dao = dao;
-		this.daoContext = context;
 	}
 
-	private P2PGridController getController() throws ControllerException{
-		if (controller == null) {
-			controller = JXTAController.getInstance();
-		}
-
-		return controller;
-	}
-
-	public void setEntityListener() {
-		logger.debug("### AccessRight : setEntityListener ###");
-		daoContext.addEntityListener(AccessRight.class, handler);
-		daoContext.addTransactionListener(handler);
-	}
-
-	public void removeEntityListener() {
-		logger.debug("### AccessRight : removeEntityListener ###");
-		daoContext.removeTransactionListener(handler);
-		daoContext.removeEntityListener(AccessRight.class, handler);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateDataSource(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataSource(Data data) throws DataDaoException, UnmatchedDataTypeException {
-		return updateDataTarget(data);
-	}
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateData(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataTarget(Data data) throws DataDaoException, UnmatchedDataTypeException {
+	@Override
+	synchronized public boolean updateData(Data data) throws DataDaoException, UnmatchedDataTypeException {
 		logger.debug("[AccessRight] : " + data.getId());
 		if(data.getClass().equals(AccessRightData.class) == false) {
 			throw new UnmatchedDataTypeException(AccessRightData.class.toString(), data.getClass().toString());
 		}
 
-		if(data.getAttributes().getKeys().contains("IsDeleted") &&
-				data.getAttributes().getValue("IsDeleted").equals("true")) {
-			boolean updated = false;
-			try {
-				logger.debug("Delete");
-				AccessRightData accessRightData = (AccessRightData)data;
-				AccessRight right = accessRightData.getAccessRight();
-				removeEntityListener();
-				dao.deleteAccessRight(right.getUserGridId()
-									, right.getUserId()
-									, right.getServiceGridId()
-									, right.getServiceId());
-				updated = true;
-				setEntityListener();
-				getController().baseSummaryAdd(data);
-			} catch (DataConvertException e) {
-				throw new DataDaoException(e);
-			} catch (ServiceNotFoundException e) {
-				// 
-				// 
-				try {
-					getController().baseSummaryAdd(data);
-				} catch (ControllerException e1) {
-					e1.printStackTrace();
-				}
-			} catch (DaoException e) {
-				throw new DataDaoException(e);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			} catch (ControllerException e) {
-				e.printStackTrace();
-			}
-			return updated;
-		}
-
-		AccessRight right = null;
+		AccessRight entity = null;
 		try {
-			AccessRightData accessRightData = (AccessRightData)data;
-			right = accessRightData.getAccessRight();
-			logger.debug("New or UpDate");
-			removeEntityListener();
-			daoContext.beginTransaction();
-			daoContext.mergeEntity(right);
-			daoContext.commitTransaction();
-			setEntityListener();
-			getController().baseSummaryAdd(data);
-		} catch (DaoException e) {
+			entity = ((AccessRightData)data).getAccessRight();
+			if(entity.getServiceGridId().equals(getSelfGridId())) return false;
+			if(!entity.getUserGridId().equals(getSelfGridId())) return false;
+			if(!isReachableTo(entity.getServiceGridId())) return false;
+		} catch(Exception e){
 			throw new DataDaoException(e);
-		} catch (ParseException e) {
-			throw new DataDaoException(e);
-		} catch (DataConvertException e) {
-			throw new DataDaoException(e);
-		} catch (ControllerException e) {
-			e.printStackTrace();
 		}
-		return true;
+		return handleData(data, entity);
 	}
 
 	/*
@@ -284,12 +206,10 @@ public class P2PGridBasisAccessRightDao implements DataDao, AccessRightDao {
 	}
 
 	private AccessRightDao dao;
-	private DaoContext daoContext;
-	private P2PGridController controller;
 	private GenericHandler<AccessRight> handler = new GenericHandler<AccessRight>(){
 		protected boolean onNotificationStart() {
 			try{
-				daoContext.beginTransaction();
+				getDaoContext().beginTransaction();
 				return true;
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
@@ -300,7 +220,7 @@ public class P2PGridBasisAccessRightDao implements DataDao, AccessRightDao {
 		protected void doUpdate(Serializable id, Set<String> modifiedProperties){
 			try{
 				getController().publish(new AccessRightData(
-						daoContext.loadEntity(AccessRight.class, id)
+						getDaoContext().loadEntity(AccessRight.class, id)
 						));
 				logger.info("published[AccessRight(id=" + id + ")]");
 			} catch(ControllerException e){
@@ -326,7 +246,7 @@ public class P2PGridBasisAccessRightDao implements DataDao, AccessRightDao {
 
 		protected void onNotificationEnd(){
 			try{
-				daoContext.commitTransaction();
+				getDaoContext().commitTransaction();
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
 			}

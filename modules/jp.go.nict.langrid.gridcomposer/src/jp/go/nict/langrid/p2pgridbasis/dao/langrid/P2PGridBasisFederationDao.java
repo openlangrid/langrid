@@ -24,24 +24,26 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.text.ParseException;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import jp.go.nict.langrid.commons.util.CalendarUtil;
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.FederationAlreadyExistsException;
 import jp.go.nict.langrid.dao.FederationDao;
 import jp.go.nict.langrid.dao.FederationNotFoundException;
 import jp.go.nict.langrid.dao.GenericHandler;
+import jp.go.nict.langrid.dao.GridAlreadyExistsException;
+import jp.go.nict.langrid.dao.GridDao;
 import jp.go.nict.langrid.dao.entity.Federation;
 import jp.go.nict.langrid.dao.entity.FederationPK;
 import jp.go.nict.langrid.dao.entity.Grid;
+import jp.go.nict.langrid.dao.util.EntityUtil;
 import jp.go.nict.langrid.p2pgridbasis.controller.ControllerException;
 import jp.go.nict.langrid.p2pgridbasis.controller.P2PGridController;
-import jp.go.nict.langrid.p2pgridbasis.controller.jxta.JXTAController;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDao;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDaoException;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataNotFoundException;
@@ -56,114 +58,90 @@ import jp.go.nict.langrid.p2pgridbasis.data.langrid.FederationData;
  * @author $Author: t-nakaguchi $
  * @version $Revision: 1043 $
  */
-public class P2PGridBasisFederationDao implements DataDao, FederationDao {
+public class P2PGridBasisFederationDao
+extends AbstractP2PGridBasisDao<Federation>
+implements DataDao, FederationDao {
 	/**
 	 * The constructor.
 	 * @param dao
 	 */
-	public P2PGridBasisFederationDao(FederationDao dao, DaoContext context) {
+	public P2PGridBasisFederationDao(FederationDao dao, GridDao gdao, DaoContext context) {
+		super(context);
 		this.dao = dao;
-		this.daoContext = context;
+		this.gdao = gdao;
+		setHandler(handler);
 	}
 
-	private P2PGridController getController() throws ControllerException{
-		if (controller == null) {
-			controller = JXTAController.getInstance();
-		}
-
-		return controller;
-	}
-
-	public void setEntityListener() {
-		logger.debug("### Federation : setEntityListener ###");
-		daoContext.addEntityListener(Federation.class, handler);
-		daoContext.addTransactionListener(handler);
-	}
-
-	public void removeEntityListener() {
-		logger.debug("### Federation : removeEntityListener ###");
-		daoContext.removeTransactionListener(handler);
-		daoContext.removeEntityListener(Federation.class, handler);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateDataSource(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataSource(Data data) throws DataDaoException, UnmatchedDataTypeException {
-		return updateDataTarget(data);
-	}
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateData(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataTarget(Data data) throws DataDaoException, UnmatchedDataTypeException {
+	@Override
+	synchronized public boolean updateData(Data data) throws DataDaoException, UnmatchedDataTypeException {
 		logger.debug("[Federation] : " + data.getId());
 		if(data.getClass().equals(FederationData.class) == false) {
 			throw new UnmatchedDataTypeException(FederationData.class.toString(), data.getClass().toString());
 		}
 		
-		String selfGridId = null;
-		Federation federation = null;
+		Federation entity = null;
 		try{
-			federation = ((FederationData)data).getFederation();
-			selfGridId = getController().getSelfGridId();
-		} catch (ParseException e) {
+			entity = ((FederationData)data).getFederation();
+			if(entity.getSourceGridId().equals(getSelfGridId())) return false;
+			if(entity.getTargetGridId().equals(getSelfGridId())) return false;
+		} catch(Exception e) {
 			throw new DataDaoException(e);
-		} catch (DataConvertException e) {
-			throw new DataDaoException(e);
-		} catch (ControllerException e) {
-			throw new DataDaoException(e);
-		}
-		if(federation.getSourceGridId().equals(selfGridId)
-				|| federation.getTargetGridId().equals(selfGridId)){
-			return false;
 		}
 
 		if(data.getAttributes().getKeys().contains("IsDeleted") &&
 				data.getAttributes().getValue("IsDeleted").equals("true")) {
- 			boolean updated = false;
 			try {
-				logger.debug("Delete");
 				removeEntityListener();
-				dao.deleteFederation(federation.getSourceGridId()
-									, federation.getTargetGridId());
-				updated = true;
-				setEntityListener();
-				getController().createFederation();
-				getController().baseSummaryAdd(data);
-			} catch (FederationNotFoundException e) {
-				// 
-				// 
-				try {
+				try{
+					return getDaoContext().removeEntity(Federation.class, EntityUtil.getId(entity));
+				} finally{
+					setEntityListener();
 					getController().baseSummaryAdd(data);
-				} catch (ControllerException e1) {
-					e1.printStackTrace();
 				}
-			} catch (DaoException e) {
-				throw new DataDaoException(e);
-			} catch (ControllerException e) {
+			} catch(Exception e) {
 				throw new DataDaoException(e);
 			}
-			return updated;
 		}
 
 		try {
 			logger.debug("New or UpDate");
 			removeEntityListener();
-			if(dao.isFederationExist(federation.getSourceGridId(), federation.getTargetGridId())){
-				daoContext.updateEntity(federation);
-			} else{
-				dao.addFederation(federation);
+			if(dao.isFederationExist(entity.getSourceGridId(), entity.getTargetGridId())){
+				getDaoContext().updateEntity(entity);
+			} else if(
+					dao.listFederationsFrom(entity.getSourceGridId()).size() +
+					dao.listFederationsFrom(entity.getTargetGridId()).size() +
+					dao.listFederationsToward(entity.getSourceGridId()).size() +
+					dao.listFederationsToward(entity.getTargetGridId()).size() > 0){
+				dao.addFederation(entity);
+				if(!gdao.isGridExist(entity.getSourceGridId())){
+					addGrid(entity.getSourceGridId(), entity.getSourceGridName(),
+							null);
+				}
+				if(!gdao.isGridExist(entity.getTargetGridId())){
+					addGrid(entity.getTargetGridId(), entity.getTagetGridName(),
+							entity.getTargetGridUserId());
+				}
 			}
 			setEntityListener();
-			getController().createFederation();
 			getController().baseSummaryAdd(data);
 			return true;
 		} catch (DaoException e) {
 			throw new DataDaoException(e);
 		} catch (ControllerException e) {
 			throw new DataDaoException(e);
+		}
+	}
+
+	private void addGrid(String gridId, String gridName, String gridOperatorUserId)
+	throws DaoException{
+		Grid g = new Grid(gridId, gridOperatorUserId);
+		g.setOperatorUserId(gridOperatorUserId);
+		g.setCreatedDateTime(CalendarUtil.MIN_VALUE_IN_EPOC);
+		g.setUpdatedDateTime(CalendarUtil.MIN_VALUE_IN_EPOC);
+		try{
+			gdao.addGrid(g);
+		} catch(GridAlreadyExistsException e){
 		}
 	}
 
@@ -243,12 +221,11 @@ public class P2PGridBasisFederationDao implements DataDao, FederationDao {
 	static private Logger logger = Logger.getLogger(P2PGridBasisFederationDao.class);
 
 	private FederationDao dao;
-	private DaoContext daoContext;
-	private P2PGridController controller;
+	private GridDao gdao;
 	private GenericHandler<Federation> handler = new GenericHandler<Federation>(){
 		protected boolean onNotificationStart() {
 			try{
-				daoContext.beginTransaction();
+				getDaoContext().beginTransaction();
 				return true;
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
@@ -259,10 +236,9 @@ public class P2PGridBasisFederationDao implements DataDao, FederationDao {
 		protected void doUpdate(Serializable id, Set<String> modifiedProperties){
 			try{
 				P2PGridController c = getController();
-				c.createFederation();
 				String selfGridId = c.getSelfGridId();
-				Federation f = daoContext.loadEntity(Federation.class, id);
-				Grid tg = daoContext.loadEntity(Grid.class, f.getTargetGridId());
+				Federation f = getDaoContext().loadEntity(Federation.class, id);
+				Grid tg = getDaoContext().loadEntity(Grid.class, f.getTargetGridId());
 				c.publish(new FederationData(f));
 				if(f.getSourceGridId().equals(selfGridId)
 						&& !f.isRequesting() && !tg.isHosted()
@@ -300,7 +276,6 @@ public class P2PGridBasisFederationDao implements DataDao, FederationDao {
 		protected void doRemove(Serializable id){
 			try{
 				FederationPK pk = (FederationPK)id;
-				getController().createFederation();
 				getController().revoke(FederationData.getDataID(null, pk));
 				logger.info("revoked[Federation(id=" + pk + ")]");
 			} catch(ControllerException e){
@@ -312,7 +287,7 @@ public class P2PGridBasisFederationDao implements DataDao, FederationDao {
 
 		protected void onNotificationEnd(){
 			try{
-				daoContext.commitTransaction();
+				getDaoContext().commitTransaction();
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
 			}

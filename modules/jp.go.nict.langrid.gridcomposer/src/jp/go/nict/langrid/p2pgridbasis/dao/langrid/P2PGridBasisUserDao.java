@@ -20,7 +20,6 @@
 package jp.go.nict.langrid.p2pgridbasis.dao.langrid;
 
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
@@ -40,8 +39,6 @@ import jp.go.nict.langrid.dao.UserSearchResult;
 import jp.go.nict.langrid.dao.entity.User;
 import jp.go.nict.langrid.dao.entity.UserPK;
 import jp.go.nict.langrid.p2pgridbasis.controller.ControllerException;
-import jp.go.nict.langrid.p2pgridbasis.controller.P2PGridController;
-import jp.go.nict.langrid.p2pgridbasis.controller.jxta.JXTAController;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDao;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDaoException;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataNotFoundException;
@@ -57,116 +54,34 @@ import jp.go.nict.langrid.p2pgridbasis.data.langrid.UserData;
  * @version $Revision: 401 $
  */
 public class P2PGridBasisUserDao
-extends AbstractP2PGridBasisDao
+extends AbstractP2PGridBasisDao<User>
 implements DataDao, UserDao {
-	private P2PGridController getController() throws ControllerException{
-		if (controller == null) {
-			controller = JXTAController.getInstance();
-		}
-
-		return controller;
-	}
-
 	/**
 	 * 
 	 * 
 	 */
 	public P2PGridBasisUserDao(UserDao dao, DaoContext context) {
+		super(context);
 		this.dao = dao;
-		this.daoContext = context;
+		setHandler(handler);
 	}
 
-	public void setEntityListener() {
-		logger.debug("### User : setEntityListener ###");
-		daoContext.addEntityListener(User.class, handler);
-		daoContext.addTransactionListener(handler);
-	}
-
-	public void removeEntityListener() {
-		logger.debug("### User : removeEntityListener ###");
-		daoContext.removeTransactionListener(handler);
-		daoContext.removeEntityListener(User.class, handler);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateDataSource(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataSource(Data data) throws DataDaoException, UnmatchedDataTypeException {
-		return updateDataTarget(data);
-	}
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateData(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataTarget(Data data) throws UnmatchedDataTypeException, DataDaoException {
+	@Override
+	synchronized public boolean updateData(Data data) throws UnmatchedDataTypeException, DataDaoException {
 		logger.debug("[user] :" + data.getId());
 		if(data.getClass().equals(UserData.class) == false) {
 			throw new UnmatchedDataTypeException(UserData.class.toString(), data.getClass().toString());
 		}
 
-		UserData userData = (UserData) data;
-		try{
-			if(!isReachableForwardOrBackward(
-					this.getController().getSelfGridId(), userData.getGridId())){
-				return false;
-			}
-		} catch (ControllerException e) {
-			throw new DataDaoException(e);
-		} catch (DaoException e) {
-			throw new DataDaoException(e);
-		}
-
-		if(data.getAttributes().getKeys().contains("IsDeleted") &&
-				data.getAttributes().getValue("IsDeleted").equals("true")) {
-			logger.debug("Delete");
- 			boolean updated = false;
-			try {
-				User user = userData.getUser();
-				removeEntityListener();
-				dao.deleteUser(user.getGridId(), user.getUserId());
-				updated = true;
-				setEntityListener();
-				getController().baseSummaryAdd(data);
-			} catch (ParseException e) {
-				throw new DataDaoException(e);
-			} catch (UserNotFoundException e) {
-				// 
-				// 
-				try {
-					getController().baseSummaryAdd(data);
-				} catch (ControllerException e1) {
-					e1.printStackTrace();
-				}
-			} catch (DaoException e) {
-				throw new DataDaoException(e);
-			} catch (ControllerException e) {
-				throw new DataDaoException(e);
-			}
-			return updated;
-		}
-
-		User user = null;
+		User entity = null;
 		try {
-			user = userData.getUser();
-			removeEntityListener();
-			if(dao.isUserExist(user.getGridId(), user.getUserId())){
-				logger.debug("UpDate");
-				daoContext.updateEntity(user);
-			}else{
-				logger.debug("New");
-				dao.addUser(user);
-			}
-			setEntityListener();
-			getController().baseSummaryAdd(data);
-			return true;
-		} catch (ParseException e) {
-			throw new DataDaoException(e);
-		} catch (DaoException e) {
-			throw new DataDaoException(e);
-		} catch (ControllerException e) {
+			entity = ((UserData)data).getUser();
+			if(entity.getGridId().equals(getSelfGridId())) return false;
+			if(!isReachableToOrFrom(entity.getGridId())) return false;
+		} catch(Exception e){
 			throw new DataDaoException(e);
 		}
+		return handleData(data, entity);
 	}
 
 	@Override
@@ -246,12 +161,10 @@ implements DataDao, UserDao {
 	static private Logger logger = Logger.getLogger(P2PGridBasisUserDao.class);
 
 	private UserDao dao;
-	private DaoContext daoContext;
-	private P2PGridController controller;
 	private GenericHandler<User> handler = new GenericHandler<User>() {
 		protected boolean onNotificationStart() {
 			try{
-				daoContext.beginTransaction();
+				getDaoContext().beginTransaction();
 				return true;
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
@@ -262,7 +175,7 @@ implements DataDao, UserDao {
 		protected void doUpdate(Serializable id, Set<String> modifiedProperties){
 			try{
 				getController().publish(new UserData(
-						daoContext.loadEntity(User.class, id)
+						getDaoContext().loadEntity(User.class, id)
 						));
 				logger.info("published[User(id=" + id + ")]");
 			} catch(ControllerException e){
@@ -288,7 +201,7 @@ implements DataDao, UserDao {
 
 		protected void onNotificationEnd(){
 			try{
-				daoContext.commitTransaction();
+				getDaoContext().commitTransaction();
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
 			}

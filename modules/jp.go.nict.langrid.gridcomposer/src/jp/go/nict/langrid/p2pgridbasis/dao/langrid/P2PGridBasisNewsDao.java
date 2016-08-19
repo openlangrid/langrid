@@ -31,8 +31,6 @@ import jp.go.nict.langrid.dao.GenericHandler;
 import jp.go.nict.langrid.dao.NewsDao;
 import jp.go.nict.langrid.dao.entity.News;
 import jp.go.nict.langrid.p2pgridbasis.controller.ControllerException;
-import jp.go.nict.langrid.p2pgridbasis.controller.P2PGridController;
-import jp.go.nict.langrid.p2pgridbasis.controller.jxta.JXTAController;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDao;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDaoException;
 import jp.go.nict.langrid.p2pgridbasis.dao.UnmatchedDataTypeException;
@@ -47,102 +45,34 @@ import jp.go.nict.langrid.p2pgridbasis.data.langrid.NewsData;
  * @version $Revision: 401 $
  */
 public class P2PGridBasisNewsDao
-extends AbstractP2PGridBasisDao
+extends AbstractP2PGridBasisDao<News>
 implements DataDao, NewsDao {
 	/**
 	 * 
 	 * 
 	 */
 	public P2PGridBasisNewsDao(NewsDao dao, DaoContext context) {
+		super(context);
 		this.dao = dao;
-		this.daoContext = context;
+		setHandler(handler);
 	}
 
-	private P2PGridController getController() throws ControllerException{
-		if (controller == null) {
-			controller = JXTAController.getInstance();
-		}
-
-		return controller;
-	}
-
-	public void setEntityListener() {
-		logger.debug("### News : setEntityListener ###");
-		daoContext.addEntityListener(News.class, handler);
-		daoContext.addTransactionListener(handler);
-	}
-
-	public void removeEntityListener() {
-		logger.debug("### News : removeEntityListener ###");
-		daoContext.removeTransactionListener(handler);
-		daoContext.removeEntityListener(News.class, handler);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateDataSource(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataSource(Data data) throws DataDaoException, UnmatchedDataTypeException {
-		return updateDataTarget(data);
-	}
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateData(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataTarget(Data data) throws UnmatchedDataTypeException, DataDaoException {
+	@Override
+	synchronized public boolean updateData(Data data) throws UnmatchedDataTypeException, DataDaoException {
 		logger.debug("[News] : " + data.getId());
 		if(data.getClass().equals(NewsData.class) == false) {
 			throw new UnmatchedDataTypeException(NewsData.class.toString(), data.getClass().toString());
 		}
 
-		NewsData newsData = (NewsData) data;
-		try{
-			if(!isReachableForwardOrBackward(
-					this.getController().getSelfGridId(), newsData.getGridId())){
-				return false;
-			}
-		} catch (ControllerException e) {
-			throw new DataDaoException(e);
-		} catch (DaoException e) {
-			throw new DataDaoException(e);
-		}
-
-		if(data.getAttributes().getKeys().contains("IsDeleted") &&
-				data.getAttributes().getValue("IsDeleted").equals("true")) {
-			// 
-			// 
-			logger.info("Delete");
-			return false;
-		}
-
-		News news = null;
+		News entity = null;
 		try {
-			news = newsData.getNews();
-
-			logger.debug("New or UpDate");
-			removeEntityListener();
-			daoContext.beginTransaction();
-			try{
-				if(dao.isNewsExistByNodeIds(news.getGridId(), news.getNodeId(), news.getNodeLocalId())){
-					dao.updateNewsByNodeIds(news);
-				} else{
-					int nlid = news.getNodeLocalId();
-					dao.addNews(news);
-					news.setNodeLocalId(nlid);
-				}
-			} finally{
-				daoContext.commitTransaction();
-			}
-			setEntityListener();
-			getController().baseSummaryAdd(data);
-			return true;
-		} catch (DataConvertException e) {
-			throw new DataDaoException(e);
-		} catch (DaoException e) {
-			throw new DataDaoException(e);
-		} catch (ControllerException e) {
+			entity = ((NewsData)data).getNews();
+			if(entity.getGridId().equals(getSelfGridId())) return false;
+			if(!isReachableToOrFrom(entity.getGridId())) return false;
+		} catch(Exception e){
 			throw new DataDaoException(e);
 		}
+		return handleData(data, entity);
 	}
 
 	@Override
@@ -182,12 +112,10 @@ implements DataDao, NewsDao {
 	}
 
 	private NewsDao dao;
-	private DaoContext daoContext;
-	private P2PGridController controller;
 	private GenericHandler<News> handler = new GenericHandler<News>(){
 		protected boolean onNotificationStart() {
 			try{
-				daoContext.beginTransaction();
+				getDaoContext().beginTransaction();
 				return true;
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
@@ -198,7 +126,7 @@ implements DataDao, NewsDao {
 		protected void doUpdate(Serializable id, Set<String> modifiedProperties){
 			try{
 				getController().publish(new NewsData(
-						daoContext.loadEntity(News.class, id)
+						getDaoContext().loadEntity(News.class, id)
 						));
 				logger.info("published[News(id=" + id + ")]");
 			} catch(ControllerException e){
@@ -218,7 +146,7 @@ implements DataDao, NewsDao {
 
 		protected void onNotificationEnd(){
 			try{
-				daoContext.commitTransaction();
+				getDaoContext().commitTransaction();
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
 			}

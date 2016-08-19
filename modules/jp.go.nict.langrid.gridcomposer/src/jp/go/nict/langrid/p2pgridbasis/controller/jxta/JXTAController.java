@@ -35,6 +35,8 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.axis.encoding.Base64;
+
 import jp.go.nict.langrid.commons.io.StreamUtil;
 import jp.go.nict.langrid.commons.util.CalendarUtil;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
@@ -105,7 +107,6 @@ import jp.go.nict.langrid.p2pgridbasis.data.langrid.ServiceTypeData;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.TemporaryUserData;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.UserData;
 import jp.go.nict.langrid.p2pgridbasis.federation.P2PGridbasisFederation;
-import jp.go.nict.langrid.p2pgridbasis.federation.P2PGridbasisFederationType;
 import jp.go.nict.langrid.p2pgridbasis.platform.jxta.JXTAPlatform;
 import jp.go.nict.langrid.p2pgridbasis.platform.jxta.JXTAPlatformConfig;
 import jp.go.nict.langrid.p2pgridbasis.platform.jxta.JXTAPlatformException;
@@ -120,8 +121,6 @@ import net.jxta.impl.rendezvous.RendezVousServiceImpl;
 import net.jxta.impl.rendezvous.RendezVousServiceInterface;
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.rendezvous.RendezVousService;
-
-import org.apache.axis.encoding.Base64;
 
 /**
  * 
@@ -497,22 +496,18 @@ public class JXTAController implements P2PGridController {
 	 * 
 	 */
 	private boolean checkHosted(String gid) {
-		boolean ret = false;
-
 		if(gid == null){
 			//To always do publish about "Grid" and "Federation", true is returned.
 			return true;
 		}
 
 		try {
-			ret = DaoFactory.createInstance().createGridDao().getGrid(gid).isHosted();
-			return ret;
+			return DaoFactory.createInstance().createGridDao().getGrid(gid).isHosted();
 		} catch (GridNotFoundException e) {
-			e.printStackTrace();
 		} catch (DaoException e) {
 			e.printStackTrace();
 		}
-		return ret;
+		return false;
 	}
 
 	/**
@@ -526,7 +521,7 @@ public class JXTAController implements P2PGridController {
 			if (adv instanceof DataAdvertisement) {
 				DataAdvertisement dadv = (DataAdvertisement) adv;
 				if (dadv.getPeerID().equals(platform.getPeerID())) {
-					data = dadv.getData();
+					data = (Data)dadv.getData();
 				}
 			}
 		}
@@ -800,25 +795,6 @@ public class JXTAController implements P2PGridController {
 			throw new ControllerException(e);
 		}
 		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.controller.P2PGridController#getFederationType(String)
-	 */
-	public int getFederationType(String gridID){
-		if(federation == null){
-			return P2PGridbasisFederationType.OFF;
-		}
-		return federation.getFederationType(gridID);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.controller.P2PGridController#createFederation()
-	 */
-	public void createFederation(){
-		federation = new P2PGridbasisFederation(selfGridId);
 	}
 
 	/*
@@ -1249,7 +1225,6 @@ public class JXTAController implements P2PGridController {
 			P2PGridDaoFactory.setupDataDaoMap(platform.getPeerID(), activeBpelServicesUrl, activeBpelDeployBinding);
 
 			baseSummaryCreate();
-			createFederation();
 			setEntityListener();
 
 			this.collector = new PeerSummaryCollector(platform, baseSummaryDao, new FullySynchronizeStrategy(platform));

@@ -33,8 +33,7 @@ public interface DataDao {
 	 * @throws UnmatchedDataTypeException
 	 * @throws DataDaoException
 	 */
-	public boolean updateDataTarget(Data data) throws UnmatchedDataTypeException, DataDaoException;
-	public boolean updateDataSource(Data data) throws UnmatchedDataTypeException, DataDaoException;
+	public boolean updateData(Data data) throws UnmatchedDataTypeException, DataDaoException;
 	public void setEntityListener();
 	public void removeEntityListener();
 }

@@ -20,9 +20,10 @@
 package jp.go.nict.langrid.p2pgridbasis.dao.langrid;
 
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
@@ -30,14 +31,11 @@ import jp.go.nict.langrid.dao.GenericHandler;
 import jp.go.nict.langrid.dao.Order;
 import jp.go.nict.langrid.dao.OverUseLimitDao;
 import jp.go.nict.langrid.dao.OverUseLimitNotFoundException;
-import jp.go.nict.langrid.dao.ServiceNotFoundException;
 import jp.go.nict.langrid.dao.entity.LimitType;
 import jp.go.nict.langrid.dao.entity.OverUseLimit;
 import jp.go.nict.langrid.dao.entity.OverUseLimitPK;
 import jp.go.nict.langrid.dao.entity.Period;
 import jp.go.nict.langrid.p2pgridbasis.controller.ControllerException;
-import jp.go.nict.langrid.p2pgridbasis.controller.P2PGridController;
-import jp.go.nict.langrid.p2pgridbasis.controller.jxta.JXTAController;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDao;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDaoException;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataNotFoundException;
@@ -46,62 +44,33 @@ import jp.go.nict.langrid.p2pgridbasis.data.Data;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.DataConvertException;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.OverUseLimitData;
 
-import org.apache.log4j.Logger;
-
 /**
  * 
  * 
  * @author $Author: t-nakaguchi $
  * @version $Revision: 401 $
  */
-public class P2PGridBasisOverUseLimitDao implements DataDao, OverUseLimitDao {
+public class P2PGridBasisOverUseLimitDao
+extends AbstractP2PGridBasisDao<OverUseLimit>
+implements DataDao, OverUseLimitDao {
 	/**
 	 * The constructor.
 	 * @param dao
 	 */
 	public P2PGridBasisOverUseLimitDao(OverUseLimitDao dao, DaoContext context) {
+		super(context);
 		this.dao = dao;
-		this.daoContext = context;
+		setHandler(handler);
 	}
 
-	private P2PGridController getController() throws ControllerException{
-		if (controller == null) {
-			controller = JXTAController.getInstance();
-		}
-
-		return controller;
-	}
-
-	public void setEntityListener() {
-		logger.debug("### OverUseLimit : setEntityListener ###");
-		daoContext.addEntityListener(OverUseLimit.class, handler);
-		daoContext.addTransactionListener(handler);
-	}
-
-	public void removeEntityListener() {
-		logger.debug("### OverUseLimit : removeEntityListener ###");
-		daoContext.removeTransactionListener(handler);
-		daoContext.removeEntityListener(OverUseLimit.class, handler);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateDataSource(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataSource(Data data) throws DataDaoException, UnmatchedDataTypeException {
-		return updateDataTarget(data);
-	}
-	/*
-	 * (non-Javadoc)
-	 * @see jp.go.nict.langrid.p2pgridbasis.dao#updateData(jp.go.nict.langrid.p2pgridbasis.data.Data)
-	 */
-	synchronized public boolean updateDataTarget(Data data) throws DataDaoException, UnmatchedDataTypeException {
+	@Override
+	synchronized public boolean updateData(Data data) throws DataDaoException, UnmatchedDataTypeException {
 		logger.debug("[OverUseLimit] : " + data.getId());
 		if(data.getClass().equals(OverUseLimitData.class) == false) {
 			throw new UnmatchedDataTypeException(OverUseLimitData.class.toString(), data.getClass().toString());
 		}
-
-		if(data.getAttributes().getKeys().contains("IsDeleted") &&
+		return false;
+/*		if(data.getAttributes().getKeys().contains("IsDeleted") &&
 				data.getAttributes().getValue("IsDeleted").equals("true")) {
  			boolean updated = false;
 			try {
@@ -139,9 +108,9 @@ public class P2PGridBasisOverUseLimitDao implements DataDao, OverUseLimitDao {
 			limit = overUseLimitData.getOverUseLimit();
 			logger.debug("Newor UpDate");
 			removeEntityListener();
-			daoContext.beginTransaction();
-			daoContext.mergeEntity(limit);
-			daoContext.commitTransaction();
+			getDaoContext().beginTransaction();
+			getDaoContext().mergeEntity(limit);
+			getDaoContext().commitTransaction();
 			setEntityListener();
 			getController().baseSummaryAdd(data);
 			return true;
@@ -153,7 +122,7 @@ public class P2PGridBasisOverUseLimitDao implements DataDao, OverUseLimitDao {
 			throw new DataDaoException(e);
 		} catch (ControllerException e) {
 			throw new DataDaoException(e);
-		}
+		}*/
 	}
 
 	@Override
@@ -194,12 +163,10 @@ public class P2PGridBasisOverUseLimitDao implements DataDao, OverUseLimitDao {
 	}
 
 	private OverUseLimitDao dao;
-	private DaoContext daoContext;
-	private P2PGridController controller;
 	private GenericHandler<OverUseLimit> handler = new GenericHandler<OverUseLimit>(){
 		protected boolean onNotificationStart() {
 			try{
-				daoContext.beginTransaction();
+				getDaoContext().beginTransaction();
 				return true;
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
@@ -210,7 +177,7 @@ public class P2PGridBasisOverUseLimitDao implements DataDao, OverUseLimitDao {
 		protected void doUpdate(Serializable id, Set<String> modifiedProperties){
 			try{
 				getController().publish(new OverUseLimitData(
-						daoContext.loadEntity(OverUseLimit.class, id)
+						getDaoContext().loadEntity(OverUseLimit.class, id)
 						));
 				logger.info("published[OverUseLimit(id=" + id + ")]");
 			} catch(ControllerException e){
@@ -236,7 +203,7 @@ public class P2PGridBasisOverUseLimitDao implements DataDao, OverUseLimitDao {
 
 		protected void onNotificationEnd(){
 			try{
-				daoContext.commitTransaction();
+				getDaoContext().commitTransaction();
 			} catch (DaoException e) {
 				logger.error("failed to access dao.", e);
 			}
