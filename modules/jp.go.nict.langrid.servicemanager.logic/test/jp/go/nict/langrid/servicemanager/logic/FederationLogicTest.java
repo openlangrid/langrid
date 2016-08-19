@@ -128,6 +128,34 @@ public class FederationLogicTest {
 		Assert.assertEquals("grid7", f.getTargetGridId());
 	}
 
+	@Test
+	public void test_getNearestFederation_unreachable() throws Throwable{
+		fdao.addFederation(newFederation("grid1", "grid2"));
+		fdao.addFederation(newFederation("grid2", "grid1"));
+		fdao.addFederation(newFederation("grid3", "grid4"));
+		for(int i = 1; i <= 4; i++){
+			gdao.addGrid(newGridSymm("grid" + i));
+		}
+		FederationLogic fl = new FederationLogic();
+		Federation f = fl.getNearestFederation("grid1", "grid5");
+		Assert.assertNull(f);
+	}
+
+	@Test
+	public void test_getNearestFederation_unreachable_2() throws Throwable{
+		fdao.addFederation(newFederation("grid1", "grid2"));
+		fdao.addFederation(newFederation("grid2", "grid1"));
+		fdao.addFederation(newFederation("grid2", "grid3"));
+		fdao.addFederation(newFederation("grid3", "grid2"));
+		fdao.addFederation(newFederation("grid3", "grid4"));
+		for(int i = 1; i <= 4; i++){
+			gdao.addGrid(newGridSymm("grid" + i));
+		}
+		FederationLogic fl = new FederationLogic();
+		Federation f = fl.getNearestFederation("grid1", "grid5");
+		Assert.assertNull(f);
+	}
+
 	private Grid newGridSymm(String gridId){
 		Grid g = new Grid(gridId, "operator");
 		g.setSymmetricRelationEnabled(true);
