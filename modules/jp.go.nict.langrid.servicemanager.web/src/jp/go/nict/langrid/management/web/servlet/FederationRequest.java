@@ -48,10 +48,12 @@ public class FederationRequest {
 		this.requestUserId = requestUserId;
 	}
 
+	@Deprecated
 	public String getSourceUrl() {
 		return sourceUrl;
 	}
 
+	@Deprecated
 	public void setSourceUrl(String sourceUrl) {
 		this.sourceUrl = sourceUrl;
 	}

@@ -96,6 +96,7 @@ public abstract class RequestOfConnectionForm extends AbstractForm<String> {
 					request.setToken(token);
 					request.setRequestUserId(userId.getModelObject());
 					request.setSourceGrid(grid);
+					request.setSourceUrl(grid.getUrl());
 					PostMethod pm = new PostMethod(requestUrl);
 					pm.setParameter("request", JSON.encode(request));
 					pm.setParameter("requestType", RequestType.CONNECT.name());

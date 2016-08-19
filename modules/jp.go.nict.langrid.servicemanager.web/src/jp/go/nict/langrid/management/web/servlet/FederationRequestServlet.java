@@ -180,7 +180,7 @@ public class FederationRequestServlet extends HttpServlet{
 		FederationRequest request = JSON.decode(requestString, FederationRequest.class);
 		String requestedGridId = request.getSourceGrid().getGridId();
 		String requestedUserId = request.getRequestUserId();
-		String sourceUrl = request.getSourceUrl();
+		String sourceUrl = request.getSourceGrid().getUrl();
 
 		String selfGridId = getServletContext().getInitParameter("langrid.node.gridId");
 		String selfNodeId = getServletContext().getInitParameter("langrid.node.nodeId");
