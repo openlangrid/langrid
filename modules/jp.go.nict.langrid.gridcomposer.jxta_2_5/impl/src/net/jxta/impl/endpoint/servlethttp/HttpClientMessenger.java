@@ -721,7 +721,7 @@ final class HttpClientMessenger extends BlockingMessenger {
                         conn.setAllowUserInteraction(false);
                         conn.setUseCaches(false);
                         conn.setConnectTimeout(CONNECT_TIMEOUT);
-                        conn.setReadTimeout(RESPONSE_TIMEOUT);
+                        conn.setReadTimeout(RESPONSE_TIMEOUT * 10);
                         if(senderBasicAuthHeaderValue != null){
                         	conn.setRequestProperty("Authorization", senderBasicAuthHeaderValue);
                         }
