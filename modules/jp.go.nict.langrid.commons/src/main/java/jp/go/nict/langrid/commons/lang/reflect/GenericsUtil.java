@@ -40,13 +40,22 @@ public class GenericsUtil {
 	 * 
 	 */
 	public static Type[] getActualTypeArgumentTypes(
-			Class<?> clazz, Class<?> parameterizedInterface)
+			Class<?> clazz, Class<?> parameterizedSuperOrInterface)
 	{
 		do{
+			{
+				Type sp = clazz.getGenericSuperclass();
+				if(sp instanceof ParameterizedType){
+					ParameterizedType pt = (ParameterizedType)sp;
+					if(pt.getRawType().equals(parameterizedSuperOrInterface)){
+						return pt.getActualTypeArguments();
+					}
+				}
+			}
 			for(Type intf : clazz.getGenericInterfaces()){
 				if(intf instanceof ParameterizedType){
 					ParameterizedType pt = (ParameterizedType)intf;
-					if(pt.getRawType().equals(parameterizedInterface)){
+					if(pt.getRawType().equals(parameterizedSuperOrInterface)){
 						return pt.getActualTypeArguments();
 					}
 				}
