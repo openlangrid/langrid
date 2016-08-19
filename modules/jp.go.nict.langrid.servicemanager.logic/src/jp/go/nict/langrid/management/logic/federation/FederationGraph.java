@@ -3,7 +3,6 @@ package jp.go.nict.langrid.management.logic.federation;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import jp.go.nict.langrid.dao.entity.Federation;
 import jp.go.nict.langrid.dao.entity.Grid;
@@ -48,7 +47,6 @@ public class FederationGraph {
 		if(feds == null) return null;
 		for(Federation f : feds.values()){
 			if(!isSymmGrid(f.getTargetGridId())) continue;
-			logger.info("calc hops from " + f.getTargetGridId() + " to " + targetGridId);
 			int h = getHops(f.getTargetGridId(), targetGridId, federations, cache);
 			if(currentHops > h){
 				ret = f;
@@ -96,5 +94,5 @@ public class FederationGraph {
 
 	private Map<String, Grid> grids = new HashMap<>();
 	private Map<String, Map<String, Federation>> federations = new HashMap<>();
-	private static Logger logger = Logger.getLogger(FederationGraph.class.getName());
+//	private static Logger logger = Logger.getLogger(FederationGraph.class.getName());
 }
