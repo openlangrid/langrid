@@ -55,17 +55,14 @@
  */
 package net.jxta.impl.endpoint.servlethttp;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 // import java.util.Enumeration;
-
-import java.io.IOException;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
-
-import java.util.logging.Logger;
 import java.util.logging.Level;
-import net.jxta.logging.Logging;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -82,11 +79,11 @@ import net.jxta.endpoint.Message;
 import net.jxta.endpoint.Messenger;
 import net.jxta.endpoint.WireFormatMessage;
 import net.jxta.endpoint.WireFormatMessageFactory;
-
 import net.jxta.impl.endpoint.EndpointServiceImpl;
 import net.jxta.impl.endpoint.transportMeter.TransportBindingMeter;
 import net.jxta.impl.endpoint.transportMeter.TransportMeterBuildSettings;
 import net.jxta.impl.util.TimeUtils;
+import net.jxta.logging.Logging;
 
 /**
  *  This is a simple servlet that accepts JXTA Messages from clients using HTTP
@@ -143,11 +140,17 @@ public class HttpMessageServlet extends HttpServlet {
 
 	@Override
 	protected void service(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException {
+		long start = System.currentTimeMillis();
 		try{
 			super.service(arg0, arg1);
 		} catch(RuntimeException e){
 			e.printStackTrace();
 			throw e;
+		} finally{
+			long d = System.currentTimeMillis() - start;
+			if(d > 1000 * 60 * 2){
+				LOG.info(getClass().getSimpleName() + " took " + (d / 1000 / 60) + " minutes to handle request.");
+			}
 		}
 	}
 
