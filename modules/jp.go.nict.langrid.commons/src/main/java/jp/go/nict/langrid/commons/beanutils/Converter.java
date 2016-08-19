@@ -268,6 +268,9 @@ public class Converter{
 		if(type instanceof Class){
 			return (T)convert(value, (Class)type);
 		}
+		if(type instanceof ParameterizedType){
+			return (T)convert(value, ((ParameterizedType)type).getRawType());
+		}
 		throw new ConversionException("unsupported conversion from " + value.getClass().getName() + " to " + type);
 	}
 
