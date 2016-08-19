@@ -189,8 +189,9 @@ class HttpMessageSender implements MessageSender {
             }
             return null;
         }
-        if(destAddr.getContext().contains(":uuid-")){
-            LOG.warning("Cannot make messenger for url context :" + destAddr.getContext());
+        String context = destAddr.getContext();
+        if(context == null || context.contains(":uuid-") || context.contains("urn:jxta:")){
+//            LOG.warning("Cannot make messenger for url context: " + context);
             return null;
         }
 
