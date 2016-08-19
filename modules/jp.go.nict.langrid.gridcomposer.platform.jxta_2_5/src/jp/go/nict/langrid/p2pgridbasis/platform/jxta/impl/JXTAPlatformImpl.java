@@ -30,6 +30,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import jp.go.nict.langrid.p2pgridbasis.platform.jxta.JXTAPlatform;
 import jp.go.nict.langrid.p2pgridbasis.platform.jxta.JXTAPlatformConfig;
@@ -64,8 +66,6 @@ import net.jxta.rendezvous.RendezVousService;
 import net.jxta.rendezvous.RendezvousEvent;
 import net.jxta.rendezvous.RendezvousListener;
 
-import org.apache.log4j.Logger;
-
 /**
  * 
  * 
@@ -75,7 +75,7 @@ import org.apache.log4j.Logger;
  */
 public class JXTAPlatformImpl implements JXTAPlatform {
 	private static final String JXTA_DIR = "jxta";
-	private static Logger logger = Logger.getLogger(JXTAPlatformImpl.class);
+	private static Logger logger = Logger.getLogger(JXTAPlatformImpl.class.getName());
 	private static final int _wait_group_discovery_millsec = 20000;
 
 	protected static final String INITNODESDIR = "initnodes";
@@ -144,25 +144,18 @@ public class JXTAPlatformImpl implements JXTAPlatform {
 	 * 
 	 */
 	protected PeerGroup discoverPeerGroup(PeerGroup peerGroup, PeerGroupID pid) throws JXTAPlatformException {
-		logger.debug("search peer group:");
 		try {
 			for(int i = 0; i < TRIAL_NUM; i++) {
 				peerGroup.getDiscoveryService().getRemoteAdvertisements(null, DiscoveryService.PEER, null, null, 10);
 				peerGroup.getDiscoveryService().getRemoteAdvertisements(null, DiscoveryService.GROUP, null, null, 10);
 				peerGroup.getDiscoveryService().getRemoteAdvertisements(null, DiscoveryService.ADV, null, null, 10);
-				logger.info("searching a peer group advertisement.");
 				Thread.sleep(_wait_group_discovery_millsec);
 				rdvstatus(true);
 				Enumeration<Advertisement> enu = peerGroup.getDiscoveryService().getLocalAdvertisements(DiscoveryService.GROUP, null, null);
 				while (enu.hasMoreElements()) {
 					PeerGroupAdvertisement pga = (PeerGroupAdvertisement) enu.nextElement();
-					logger.info("peer group advertisement found: " + pga.getName());
 					if(pga.getPeerGroupID().equals(pid)) {
-						logger.info(pga);
 						return peerGroup.newGroup(pga);
-					}else{
-						logger.info(pga.getPeerGroupID());
-						logger.info(pid.toString());
 					}
 				}
 			}
@@ -201,9 +194,6 @@ public class JXTAPlatformImpl implements JXTAPlatform {
 			});
 			pg.getRendezVousService().startRendezVous();
 
-			logger.debug(pg.getPeerGroupAdvertisement());
-			logger.debug(pg.getMembershipService());
-
 			return pg;
 		} catch (Exception e) {
 			throw new JXTAPlatformException(e);
@@ -220,13 +210,8 @@ public class JXTAPlatformImpl implements JXTAPlatform {
 			AuthenticationCredential authCred = new AuthenticationCredential(grp, null, null);
 			Authenticator auth = membership.apply(authCred);
 
-			logger.debug(auth.getClass());
 			if (auth.isReadyForJoin()) {
-				logger.info("join group:" + grp.getPeerGroupName());
-				logger.debug(membership.getClass());
 				membership.join(auth);
-			} else {
-				logger.info("auth is not ready for join");
 			}
 		} catch (ProtocolNotSupportedException e) {
 			throw new JXTAPlatformException(e);
@@ -246,11 +231,9 @@ public class JXTAPlatformImpl implements JXTAPlatform {
 	 * @see jp.go.nict.langrid.p2pgridbasis.platform.jxta.JXTAPlatformInterface#publish(net.jxta.document.Advertisement)
 	 */
 	public void publish(Advertisement advertisement, long lifetimeMillis, long expirationMillis) throws JXTAPlatformException {
-		logger.debug(advertisement);
 		checkPlatformRunning();
 		long start = System.currentTimeMillis();
 		try{
-			logger.debug(workingPeerGroup.getPeerGroupName());
 			workingPeerGroup.getDiscoveryService().publish(advertisement, lifetimeMillis, expirationMillis);
 			workingPeerGroup.getDiscoveryService().remotePublish(advertisement, expirationMillis);
 		} catch (IOException e) {
@@ -286,10 +269,6 @@ public class JXTAPlatformImpl implements JXTAPlatform {
 	 */
 	public void searchAdvertisements(JXTAPlatformSearchCondition cond) throws JXTAPlatformException{
 		checkPlatformRunning();
-		Enumeration<ID> enu = workingPeerGroup.getRendezVousService().getConnectedPeers();
-		while(enu.hasMoreElements()) {
-			logger.debug(enu.nextElement());
-		}
 		if(cond.getPeerID() == null) {
 			workingPeerGroup.getDiscoveryService().getRemoteAdvertisements(null,
 					DiscoveryService.ADV, cond.getName(), cond.getValue(), cond.getNum());
@@ -367,7 +346,7 @@ public class JXTAPlatformImpl implements JXTAPlatform {
 						Thread.sleep(_wait_group_discovery_millsec);
 					}
 				} catch (InterruptedException e) {
-					logger.warn(e.getMessage());
+					logger.warning(e.getMessage());
 				}
 			}
 		};
@@ -379,10 +358,8 @@ public class JXTAPlatformImpl implements JXTAPlatform {
 	 * @see jp.go.nict.langrid.p2pgridbasis.platform.jxta.JXTAPlatform#rdvstatus(boolean)
 	 */
 	public void rdvstatus(boolean verbose) {
-		if(logger.isDebugEnabled()) {
-			this.rdvstatus(System.err, verbose, netPeerGroup);
-			this.rdvstatus(System.err, verbose, workingPeerGroup);
-		}
+		this.rdvstatus(System.err, verbose, netPeerGroup);
+		this.rdvstatus(System.err, verbose, workingPeerGroup);
 	}
 
 	/*
@@ -502,7 +479,7 @@ public class JXTAPlatformImpl implements JXTAPlatform {
 						String peerName = connection.toString();
 						stream.println( "\t" + peerName );
 					} catch ( Exception e ) {
-						logger.debug( "failed", e );
+						logger.log(Level.INFO, "failed", e );
 					}
 				}
 
@@ -598,13 +575,14 @@ public class JXTAPlatformImpl implements JXTAPlatform {
 			workingPeerGroup = netPeerGroup;
 			JXTAPlatformUtil.setPeerGroup(workingPeerGroup);
 
-			logger.info(netPeerGroup.getPeerAdvertisement());
-			logger.debug(""+ netPeerGroup.getPeerID());
-			logger.debug(""+ netPeerGroup.getPeerName());
-			logger.debug(""+ netPeerGroup.getPeerGroupName());
+			logger.info(netPeerGroup.getPeerAdvertisement().toString());
+			logger.info(""+ netPeerGroup.getPeerID());
+			logger.info(""+ netPeerGroup.getPeerName());
+			logger.info(""+ netPeerGroup.getPeerGroupName());
 
 			configurator.save();
 		} catch (IOException e) {
+			logger.log(Level.SEVERE, "failed to start jxta.", e);
 			throw new PeerGroupException(e);
 		} catch (URISyntaxException e) {
 			throw new PeerGroupException(e);
