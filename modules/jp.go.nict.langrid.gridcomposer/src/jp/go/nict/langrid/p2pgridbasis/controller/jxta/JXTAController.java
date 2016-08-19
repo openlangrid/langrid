@@ -812,8 +812,7 @@ public class JXTAController implements P2PGridController {
 			int c = 0;
 			for(Grid grid : gridList){
 				String gridId = grid.getGridId();
-				if(platform.isRdv()
-				&& grid.isHosted()){
+				if(platform.isRdv() && grid.isHosted()){
 					hostSummaryCreate(gridId);
 				}else{
 					//User
@@ -983,7 +982,7 @@ public class JXTAController implements P2PGridController {
 				logger.info("--- " + c + " entities done.");
 
 				//Federation
-/*				logger.info("--- publishing rdv Federations.");
+				logger.info("--- publishing rdv Federations.");
 				c = 0;
 				for (Federation federation : factory.createFederationDao().list()) {
 					FederationData data = new FederationData(federation);
@@ -993,7 +992,7 @@ public class JXTAController implements P2PGridController {
 					c++;
 				}
 				logger.info("--- " + c + " entities done.");
-*//*
+
 				//Protocol
 				logger.info("--- publishing rdv Protocols.");
 				c = 0;
@@ -1005,7 +1004,7 @@ public class JXTAController implements P2PGridController {
 					c++;
 				}
 				logger.info("--- " + c + " entities done.");
-*/
+
 				//ResourceMetaAttribute
 				logger.info("--- publishing rdv ResourceMetaAttribute.");
 				c = 0;
