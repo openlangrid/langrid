@@ -60,7 +60,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 // import java.util.Enumeration;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -72,6 +76,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import jp.go.nict.langrid.commons.util.Pair;
+import jp.go.nict.langrid.commons.ws.LangridConstants;
 import net.jxta.document.MimeMediaType;
 import net.jxta.endpoint.EndpointAddress;
 import net.jxta.endpoint.EndpointService;
@@ -139,10 +145,17 @@ public class HttpMessageServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void service(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException {
+	protected void service(HttpServletRequest req, HttpServletResponse arg1) throws ServletException, IOException {
+		String sourceGridId = req.getHeader(
+				LangridConstants.HTTPHEADER_FEDERATEDCALL_SOURCEGRIDID
+				);
+		String userGridIdAndId = req.getHeader(
+				LangridConstants.HTTPHEADER_FEDERATEDCALL_CALLERUSER
+				);
+		coutup(sourceGridId, userGridIdAndId);
 		long start = System.currentTimeMillis();
 		try{
-			super.service(arg0, arg1);
+			super.service(req, arg1);
 		} catch(RuntimeException e){
 			e.printStackTrace();
 			throw e;
@@ -152,6 +165,35 @@ public class HttpMessageServlet extends HttpServlet {
 				LOG.info(getClass().getSimpleName() + " took " + (d / 1000 / 60) + " minutes to handle request.");
 			}
 		}
+	}
+	private static synchronized void coutup(String gid, String uid){
+		Pair<String, String> key = Pair.create(gid, uid);
+		Integer c = count.get(key);
+		if(c == null){
+			c = 0;
+		}
+		count.put(key, c + 1);
+	}
+	private static synchronized void printCount(){
+		StringBuilder b = new StringBuilder("access count in this 10 minutes.\n");
+		for(Map.Entry<Pair<String, String>, Integer> entry : count.entrySet()){
+			String gid = entry.getKey().getFirst();
+			String uid = entry.getKey().getSecond();
+			b.append(String.format("[%s,%s] %d\n", gid, uid, entry.getValue()));
+		}
+		logger.info(b.toString());
+		count.clear();
+	}
+	private static Map<Pair<String, String>, Integer> count = new TreeMap<Pair<String, String>, Integer>();
+	private static Timer timer = new Timer(true);
+	private static Logger logger = Logger.getLogger(HttpMessageServlet.class.getName());
+	static{
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				printCount();
+			}
+		}, 10 * 60 * 1000, 10 * 60 * 1000);
 	}
 
 	/**
