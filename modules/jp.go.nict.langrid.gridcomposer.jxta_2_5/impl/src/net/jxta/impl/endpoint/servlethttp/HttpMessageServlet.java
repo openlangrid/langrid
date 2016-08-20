@@ -79,6 +79,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.commons.ws.LangridConstants;
+import jp.go.nict.langrid.commons.ws.ServletConfigServiceContext;
 import net.jxta.document.MimeMediaType;
 import net.jxta.endpoint.EndpointAddress;
 import net.jxta.endpoint.EndpointService;
@@ -143,6 +144,7 @@ public class HttpMessageServlet extends HttpServlet {
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
+		selfGridId = new ServletConfigServiceContext(config).getSelfGridId();
 	}
 
 	@Override
@@ -163,7 +165,8 @@ public class HttpMessageServlet extends HttpServlet {
 		} finally{
 			long d = System.currentTimeMillis() - start;
 			if(d > 1000 * 60 * 2){
-				LOG.info(getClass().getSimpleName() + " took " + (d / 1000 / 60) + " minutes to handle request.");
+				LOG.info(String.format("It took %d minutes to handle request from [%s,%s].",
+						(d / 1000 / 60), sourceGridId, userGridIdAndId));
 			}
 		}
 	}
@@ -176,7 +179,7 @@ public class HttpMessageServlet extends HttpServlet {
 		count.put(key, (Integer)(c.intValue() + 1));
 	}
 	private static synchronized void printCount(){
-		StringBuilder b = new StringBuilder("access count in this 10 minutes.\n");
+		StringBuilder b = new StringBuilder("access count for grid:" + selfGridId + " in this 10 minutes.\n");
 		for(Map.Entry<Pair<String, String>, Integer> entry : count.entrySet()){
 			String gid = entry.getKey().getFirst();
 			String uid = entry.getKey().getSecond();
@@ -185,6 +188,7 @@ public class HttpMessageServlet extends HttpServlet {
 		LOG.info(b.toString());
 		count.clear();
 	}
+	private static String selfGridId;
 	private static Map<Pair<String, String>, Integer> count = new TreeMap<Pair<String, String>, Integer>(new Comparator<Pair<String, String>>() {
 		@Override
 		public int compare(Pair<String, String> o1, Pair<String, String> o2) {
