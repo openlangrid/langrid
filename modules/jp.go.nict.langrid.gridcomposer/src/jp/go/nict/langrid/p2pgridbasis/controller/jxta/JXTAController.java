@@ -1029,6 +1029,7 @@ public class JXTAController implements P2PGridController {
 					c++;
 				}
 				b.append("ServiceType: " + c + "\n");
+				logger.info(b.toString());
 
 				//RdvNodeのみ既存データのSummaryを送出
 				logger.info("--- publishing summeries of hosted elements.");
