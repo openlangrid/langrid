@@ -106,7 +106,6 @@ import jp.go.nict.langrid.p2pgridbasis.data.langrid.ServiceMetaAttributeData;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.ServiceTypeData;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.TemporaryUserData;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.UserData;
-import jp.go.nict.langrid.p2pgridbasis.federation.P2PGridbasisFederation;
 import jp.go.nict.langrid.p2pgridbasis.platform.jxta.JXTAPlatform;
 import jp.go.nict.langrid.p2pgridbasis.platform.jxta.JXTAPlatformConfig;
 import jp.go.nict.langrid.p2pgridbasis.platform.jxta.JXTAPlatformException;
@@ -618,13 +617,12 @@ public class JXTAController implements P2PGridController {
 		if(!platform.isRdv()){
 			return false;
 		}
-		try
-		{
+		StringBuilder b = new StringBuilder("--- publishing host entities of " + gridId + " ---\n");
+		try{
 			DaoFactory factory = DaoFactory.createInstance();
 			factory.getDaoContext().beginTransaction();
 			int c = 0;
 			//User
-			logger.info("--- publishing host Users.");
 			c = 0;
 			for (User user : factory.createUserDao().dumpAllUsers(gridId)) {
 				UserData data = new UserData(user);
@@ -633,10 +631,9 @@ public class JXTAController implements P2PGridController {
 				platform.publish(new DataAdv(data, platform.getPeerID()));
 				c++;
 			}
-			logger.info("--- " + c + " entities done.");
+			b.append("User: " + c + "\n");
 
 			//TemporaryUser
-			logger.info("--- publishing host TemporaryUsers.");
 			c = 0;
 			for (TemporaryUser tempUser : factory.createTemporaryUserDao().listAllUsers(gridId)) {
 				TemporaryUserData data = new TemporaryUserData(tempUser);
@@ -645,10 +642,9 @@ public class JXTAController implements P2PGridController {
 				platform.publish(new DataAdv(data, platform.getPeerID()));
 				c++;
 			}
-			logger.info("--- " + c + " entities done.");
+			b.append("TemporaryUser: " + c + "\n");
 
 			//AccessRight
-			logger.info("--- publishing host AccessRights.");
 			c = 0;
 			for (AccessRight accessRight : factory.createAccessRightDao().listAccessRights(gridId)) {
 				AccessRightData data = new AccessRightData(accessRight);
@@ -657,10 +653,9 @@ public class JXTAController implements P2PGridController {
 				platform.publish(new DataAdv(data, platform.getPeerID()));
 				c++;
 			}
-			logger.info("--- " + c + " entities done.");
+			b.append("AccessRight: " + c + "\n");
 
 			//Service
-			logger.info("--- publishing host Services.");
 			c = 0;
 			for (Service service : factory.createServiceDao().listAllServices(gridId)) {
 				ServiceData data = new ServiceData(service);
@@ -695,10 +690,9 @@ public class JXTAController implements P2PGridController {
 				platform.publish(new DataAdv(data, platform.getPeerID()));
 				c++;
 			}
-			logger.info("--- " + c + " entities done.");
+			b.append("Service: " + c + "\n");
 
 			//News
-			logger.info("--- publishing host Newss.");
 			c = 0;
 			for (News news : factory.createNewsDao().listNews(gridId)) {
 				NewsData data = new NewsData(news);
@@ -707,10 +701,9 @@ public class JXTAController implements P2PGridController {
 				platform.publish(new DataAdv(data, platform.getPeerID()));
 				c++;
 			}
-			logger.info("--- " + c + " entities done.");
+			b.append("News: " + c + "\n");
 
 			//Node
-			logger.info("--- publishing host Nodes.");
 			c = 0;
 			for (Node node : factory.createNodeDao().listAllNodes(gridId)) {
 				NodeData data = new NodeData(node);
@@ -719,10 +712,9 @@ public class JXTAController implements P2PGridController {
 				platform.publish(new DataAdv(data, platform.getPeerID()));
 				c++;
 			}
-			logger.info("--- " + c + " entities done.");
+			b.append("Node: " + c + "\n");
 
 			//AccessLimit
-			logger.info("--- publishing host AccessLimits.");
 			c = 0;
 			for (AccessLimit limit : factory.createAccessLimitDao().listAccessLimits(gridId)) {
 				AccessLimitData data = new AccessLimitData(limit);
@@ -731,10 +723,9 @@ public class JXTAController implements P2PGridController {
 				platform.publish(new DataAdv(data, platform.getPeerID()));
 				c++;
 			}
-			logger.info("--- " + c + " entities done.");
+			b.append("AccessLimit: " + c + "\n");
 
 			//OverUseLimit
-			logger.info("--- publishing host OverUseLimits.");
 			c = 0;
 			for (OverUseLimit limit : factory.createOverUseLimitDao().listOverUseLimits(gridId, new Order[]{})) {
 				OverUseLimitData data = new OverUseLimitData(limit);
@@ -743,10 +734,9 @@ public class JXTAController implements P2PGridController {
 				platform.publish(new DataAdv(data, platform.getPeerID()));
 				c++;
 			}
-			logger.info("--- " + c + " entities done.");
+			b.append("OverUseLimit: " + c + "\n");
 
 			//Resource
-			logger.info("--- publishing host Resources.");
 			c = 0;
 			for (Resource resource : factory.createResourceDao().listAllResources(gridId)) {
 				ResourceData data = new ResourceData(resource);
@@ -755,10 +745,9 @@ public class JXTAController implements P2PGridController {
 				platform.publish(new DataAdv(data, platform.getPeerID()));
 				c++;
 			}
-			logger.info("--- " + c + " entities done.");
+			b.append("Resource: " + c + "\n");
 
 			//AccessState
-			logger.info("--- publishing host AccessStates.");
 			c = 0;
 			for (AccessStat state : factory.createAccessStateDao().listAccessStatsNewerThanOrEqualsTo(gridId, CalendarUtil.createBeginningOfDay(Calendar.getInstance()))) {
 				AccessStateData data = new AccessStateData(state);
@@ -767,7 +756,7 @@ public class JXTAController implements P2PGridController {
 				platform.publish(new DataAdv(data, platform.getPeerID()));
 				c++;
 			}
-			logger.info("--- " + c + " entities done.");
+			b.append("AccessStat: " + c + "\n");
 
 			//AccessLog
 /*			Calendar cal = Calendar.getInstance();
@@ -794,6 +783,7 @@ public class JXTAController implements P2PGridController {
 		} catch (ControllerException e) {
 			throw new ControllerException(e);
 		}
+		logger.info(b.toString());
 		return true;
 	}
 
@@ -815,38 +805,36 @@ public class JXTAController implements P2PGridController {
 				if(platform.isRdv() && grid.isHosted()){
 					hostSummaryCreate(gridId);
 				}else{
+					StringBuilder b = new StringBuilder(
+							"--- publishing non-hosted entities of " + gridId + ". ---\n");
 					//User
-					logger.info("--- publishing non-hosted Users.");
 					c = 0;
 					for (User user : factory.createUserDao().dumpAllUsers(gridId)) {
 						UserData data = new UserData(user);
 						baseSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
 						c++;
 					}
-					logger.info("--- " + c + " entities done.");
+					b.append("User: " + c + "\n");
 
 					//TemporaryUser
-					logger.info("--- publishing non-hosted TemporaryUser.");
 					c = 0;
 					for (TemporaryUser tempUser : factory.createTemporaryUserDao().listAllUsers(gridId)) {
 						TemporaryUserData data = new TemporaryUserData(tempUser);
 						baseSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
 						c++;
 					}
-					logger.info("--- " + c + " entities done.");
+					b.append("Temporary: " + c + "\n");
 
 					//AccessRight
-					logger.info("--- publishing non-hosted AccessRight.");
 					c = 0;
 					for (AccessRight accessRight : factory.createAccessRightDao().listAccessRights(gridId)) {
 						AccessRightData data = new AccessRightData(accessRight);
 						baseSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
 						c++;
 					}
-					logger.info("--- " + c + " entities done.");
+					b.append("AccessRight: " + c + "\n");
 
 					//Service
-					logger.info("--- publishing non-hosted Services.");
 					c = 0;
 					for (Service service : factory.createServiceDao().listAllServices(gridId)) {
 						ServiceData data = new ServiceData(service);
@@ -879,70 +867,63 @@ public class JXTAController implements P2PGridController {
 						baseSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
 						c++;
 					}
-					logger.info("--- " + c + " entities done.");
+					b.append("Service: " + c + "\n");
 
 					//News
-					logger.info("--- publishing non-hosted Newss.");
 					c = 0;
 					for (News news : factory.createNewsDao().listNews(gridId)) {
 						NewsData data = new NewsData(news);
 						baseSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
 						c++;
 					}
-					logger.info("--- " + c + " entities done.");
+					b.append("News: " + c + "\n");
 
 					//Node
-					logger.info("--- publishing non-hosted Nodes.");
 					c = 0;
 					for (Node node : factory.createNodeDao().listAllNodes(gridId)) {
 						NodeData data = new NodeData(node);
 						baseSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
 						c++;
 					}
-					logger.info("--- " + c + " entities done.");
+					b.append("Node: " + c + "\n");
 
 					//AccessLimit
-					logger.info("--- publishing non-hosted AccessLimits.");
 					c = 0;
 					for (AccessLimit limit : factory.createAccessLimitDao().listAccessLimits(gridId)) {
 						AccessLimitData data = new AccessLimitData(limit);
 						baseSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
 						c++;
 					}
-					logger.info("--- " + c + " entities done.");
+					b.append("AccessLimit: " + c + "\n");
 
 					//OverUseLimit
-					logger.info("--- publishing non-hosted OverUseLimits.");
 					c = 0;
 					for (OverUseLimit limit : factory.createOverUseLimitDao().listOverUseLimits(gridId, new Order[]{})) {
 						OverUseLimitData data = new OverUseLimitData(limit);
 						baseSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
 						c++;
 					}
-					logger.info("--- " + c + " entities done.");
+					b.append("OverUseLimit: " + c + "\n");
 
 					//Resource
-					logger.info("--- publishing non-hosted Resources.");
 					c = 0;
 					for (Resource resource : factory.createResourceDao().listAllResources(gridId)) {
 						ResourceData data = new ResourceData(resource);
 						baseSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
 						c++;
 					}
-					logger.info("--- " + c + " entities done.");
+					b.append("Resource: " + c + "\n");
 
 					//AccessState
-					logger.info("--- publishing non-hosted AccessStates.");
 					c = 0;
 					for (AccessStat state : factory.createAccessStateDao().listAccessStatsNewerThanOrEqualsTo(gridId, CalendarUtil.createBeginningOfDay(Calendar.getInstance()))) {
 						AccessStateData data = new AccessStateData(state);
 						baseSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
 						c++;
 					}
-					logger.info("--- " + c + " entities done.");
+					b.append("AccessStat: " + c + "\n");
 
 					//AccessLog
-					logger.info("--- publishing non-hosted AccessLogs.");
 					c = 0;
 					Calendar cal = Calendar.getInstance();
 					cal.add(Calendar.DATE, -1);
@@ -952,13 +933,16 @@ public class JXTAController implements P2PGridController {
 						baseSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
 						c++;
 					}
-					logger.info("--- " + c + " entities done.");
+					b.append("AccessLog: " + c + "\n");
+
+					logger.info(b.toString());
 				}
 			}
 
 			if(platform.isRdv()){
+				StringBuilder b = new StringBuilder("--- publishing domain entities of "
+						+ getSelfGridId() + " ---\n");
 				//Grid
-				logger.info("--- publishing rdv Grids.");
 				c = 0;
 				for (Grid grid : gridList){
 					GridData data = new GridData(grid);
@@ -967,22 +951,9 @@ public class JXTAController implements P2PGridController {
 					platform.publish(new DataAdv(data, platform.getPeerID()));
 					c++;
 				}
-				logger.info("--- " + c + " entities done.");
-
-				//Domain
-				logger.info("--- publishing rdv Domains.");
-				c = 0;
-				for (Domain domain : factory.createDomainDao().listAllDomains()) {
-					DomainData data = new DomainData(domain);
-					baseSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
-					hostSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
-					platform.publish(new DataAdv(data, platform.getPeerID()));
-					c++;
-				}
-				logger.info("--- " + c + " entities done.");
+				b.append("Grid: " + c + "\n");
 
 				//Federation
-				logger.info("--- publishing rdv Federations.");
 				c = 0;
 				for (Federation federation : factory.createFederationDao().list()) {
 					FederationData data = new FederationData(federation);
@@ -991,10 +962,20 @@ public class JXTAController implements P2PGridController {
 					platform.publish(new DataAdv(data, platform.getPeerID()));
 					c++;
 				}
-				logger.info("--- " + c + " entities done.");
+				b.append("Federation: " + c + "\n");
+
+				//Domain
+				c = 0;
+				for (Domain domain : factory.createDomainDao().listAllDomains()) {
+					DomainData data = new DomainData(domain);
+					baseSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
+					hostSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
+					platform.publish(new DataAdv(data, platform.getPeerID()));
+					c++;
+				}
+				b.append("Domain: " + c + "\n");
 
 				//Protocol
-				logger.info("--- publishing rdv Protocols.");
 				c = 0;
 				for (Protocol protocol : factory.createProtocolDao().listAllProtocols()) {
 					ProtocolData data = new ProtocolData(protocol);
@@ -1003,10 +984,9 @@ public class JXTAController implements P2PGridController {
 					platform.publish(new DataAdv(data, platform.getPeerID()));
 					c++;
 				}
-				logger.info("--- " + c + " entities done.");
+				b.append("Protocol: " + c + "\n");
 
 				//ResourceMetaAttribute
-				logger.info("--- publishing rdv ResourceMetaAttribute.");
 				c = 0;
 				for (ResourceMetaAttribute attr : factory.createResourceTypeDao().listAllResourceMetaAttributes()) {
 					ResourceMetaAttributeData data = new ResourceMetaAttributeData(attr);
@@ -1015,10 +995,9 @@ public class JXTAController implements P2PGridController {
 					platform.publish(new DataAdv(data, platform.getPeerID()));
 					c++;
 				}
-				logger.info("--- " + c + " entities done.");
+				b.append("ResourceMetaAttribute: " + c + "\n");
 
 				//ResourceType
-				logger.info("--- publishing rdv ResourceTypes.");
 				c = 0;
 				for (ResourceType resourceType : factory.createResourceTypeDao().listAllResourceTypes()) {
 					ResourceTypeData data = new ResourceTypeData(resourceType);
@@ -1027,10 +1006,9 @@ public class JXTAController implements P2PGridController {
 					platform.publish(new DataAdv(data, platform.getPeerID()));
 					c++;
 				}
-				logger.info("--- " + c + " entities done.");
+				b.append("ResourceType: " + c + "\n");
 
 				//ServiceMetaAttribute
-				logger.info("--- publishing rdv ServiceMetaAttributes.");
 				c = 0;
 				for (ServiceMetaAttribute attr : factory.createServiceTypeDao().listAllServiceMetaAttributes()) {
 					ServiceMetaAttributeData data = new ServiceMetaAttributeData(attr);
@@ -1039,28 +1017,23 @@ public class JXTAController implements P2PGridController {
 					platform.publish(new DataAdv(data, platform.getPeerID()));
 					c++;
 				}
-				logger.info("--- " + c + " entities done.");
+				b.append("ServiceMetaAttribute: " + c + "\n");
 
 				//ServiceType
-				logger.info("--- publishing rdv ServiceTypes.");
 				c = 0;
-				for(Domain d : factory.createDomainDao().listAllDomains(selfGridId)){
-					for (ServiceType serviceType : factory.createServiceTypeDao().listAllServiceTypes(d.getDomainId())) {
-						ServiceTypeData data = new ServiceTypeData(serviceType);
-						baseSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
-						hostSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
-						platform.publish(new DataAdv(data, platform.getPeerID()));
-						c++;
-					}
+				for (ServiceType serviceType : factory.createServiceTypeDao().listAllServiceTypes()) {
+					ServiceTypeData data = new ServiceTypeData(serviceType);
+					baseSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
+					hostSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
+					platform.publish(new DataAdv(data, platform.getPeerID()));
+					c++;
 				}
-				logger.info("--- " + c + " entities done.");
+				b.append("ServiceType: " + c + "\n");
 
 				//RdvNodeのみ既存データのSummaryを送出
 				logger.info("--- publishing summeries of hosted elements.");
 				summaryPublish(PeerSummaryAdv._hostedSummary);
-				logger.info("--- publishing summeries of hosted elements.");
 				summaryPublish(PeerSummaryAdv._logSummary);
-				logger.info("--- publishing summeries of hosted elements.");
 				summaryPublish(PeerSummaryAdv._stateSummary);
 			}else{
 				//Grid
@@ -1288,7 +1261,6 @@ public class JXTAController implements P2PGridController {
 	private String activeBpelDeployBinding;
 	private static final String IS_DELETED = "IsDeleted";
 	private static P2PGridController instance;
-	private static P2PGridbasisFederation federation;
 	private static int hostedSummarySequentialNumber = 0;
 	private static File baseDir;
 	private static Timer summaryTimer;
