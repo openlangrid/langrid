@@ -58,6 +58,7 @@ package net.jxta.impl.endpoint.servlethttp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Comparator;
 // import java.util.Enumeration;
 import java.util.Enumeration;
 import java.util.Map;
@@ -152,7 +153,7 @@ public class HttpMessageServlet extends HttpServlet {
 		String userGridIdAndId = req.getHeader(
 				LangridConstants.HTTPHEADER_FEDERATEDCALL_CALLERUSER
 				);
-		coutup(sourceGridId, userGridIdAndId);
+		countUp(sourceGridId, userGridIdAndId);
 		long start = System.currentTimeMillis();
 		try{
 			super.service(req, arg1);
@@ -166,13 +167,13 @@ public class HttpMessageServlet extends HttpServlet {
 			}
 		}
 	}
-	private static synchronized void coutup(String gid, String uid){
+	private static synchronized void countUp(String gid, String uid){
 		Pair<String, String> key = Pair.create(gid, uid);
 		Integer c = count.get(key);
 		if(c == null){
 			c = 0;
 		}
-		count.put(key, c + 1);
+		count.put(key, (Integer)(c.intValue() + 1));
 	}
 	private static synchronized void printCount(){
 		StringBuilder b = new StringBuilder("access count in this 10 minutes.\n");
@@ -181,12 +182,17 @@ public class HttpMessageServlet extends HttpServlet {
 			String uid = entry.getKey().getSecond();
 			b.append(String.format("[%s,%s] %d\n", gid, uid, entry.getValue()));
 		}
-		logger.info(b.toString());
+		LOG.info(b.toString());
 		count.clear();
 	}
-	private static Map<Pair<String, String>, Integer> count = new TreeMap<Pair<String, String>, Integer>();
+	private static Map<Pair<String, String>, Integer> count = new TreeMap<Pair<String, String>, Integer>(new Comparator<Pair<String, String>>() {
+		@Override
+		public int compare(Pair<String, String> o1, Pair<String, String> o2) {
+			return (o1.getFirst() + o1.getSecond()).compareTo(
+					o2.getFirst() + o2.getSecond());
+		}
+	});
 	private static Timer timer = new Timer(true);
-	private static Logger logger = Logger.getLogger(HttpMessageServlet.class.getName());
 	static{
 		timer.schedule(new TimerTask() {
 			@Override
