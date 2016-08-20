@@ -41,6 +41,12 @@ public class JsonicServiceTypeDao implements ServiceTypeDao {
 	}
 
 	@Override
+	public List<ServiceType> listAllServiceTypes()
+			throws DaoException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public List<ServiceType> listAllServiceTypes(String domainId)
 			throws DaoException {
 		return getList(domainId);
