@@ -38,10 +38,9 @@ public interface ServiceTypeDao{
 	 */
 	void clear() throws DaoException;
 
-	/**
-	 * 
-	 * 
-	 */
+	public List<ServiceType> listAllServiceTypes()
+	throws DaoException;
+
 	public List<ServiceType> listAllServiceTypes(String domainId)
 	throws DaoException;
 

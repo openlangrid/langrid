@@ -126,6 +126,11 @@ implements DataDao, ServiceTypeDao {
 	}
 
 	@Override
+	public List<ServiceType> listAllServiceTypes() throws DaoException {
+		return dao.listAllServiceTypes();
+	}
+
+	@Override
 	public List<ServiceType> listAllServiceTypes(String domainId)
 			throws DaoException {
 		return dao.listAllServiceTypes(domainId);

@@ -22,6 +22,11 @@ package jp.go.nict.langrid.dao.hibernate;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Property;
+
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.ServiceMetaAttributeAlreadyExistsException;
 import jp.go.nict.langrid.dao.ServiceMetaAttributeNotFoundException;
@@ -33,11 +38,6 @@ import jp.go.nict.langrid.dao.entity.ServiceMetaAttribute;
 import jp.go.nict.langrid.dao.entity.ServiceMetaAttributePK;
 import jp.go.nict.langrid.dao.entity.ServiceType;
 import jp.go.nict.langrid.dao.entity.ServiceTypePK;
-
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Property;
 
 /**
  * 
@@ -61,6 +61,12 @@ implements ServiceTypeDao{
 		deleteEntities(ServiceInterfaceDefinition.class);
 		deleteEntities(ServiceType.class);
 		deleteEntities(ServiceMetaAttribute.class);
+	}
+
+	@Override
+	public List<ServiceType> listAllServiceTypes()
+	throws DaoException {
+		return list();
 	}
 
 	@Override
