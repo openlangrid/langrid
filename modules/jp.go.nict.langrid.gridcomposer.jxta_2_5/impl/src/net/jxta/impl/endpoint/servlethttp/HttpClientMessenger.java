@@ -113,7 +113,7 @@ final class HttpClientMessenger extends BlockingMessenger {
      *  of time between our finishing sending a message or beginning a poll and 
      *  the beginning of receipt of a response.
      */
-    private final static int RESPONSE_TIMEOUT = (int) (2 * TimeUtils.AMINUTE) * 10; // extend by nakaguchi
+    private final static int RESPONSE_TIMEOUT = (int) (2 * TimeUtils.AMINUTE) * 10; // extended by nakaguchi
     
     /**
      *  Amount of time we are willing to accept for additional responses. This 
@@ -122,7 +122,7 @@ final class HttpClientMessenger extends BlockingMessenger {
      *  This setting governs the latency with which we switch back and forth 
      *  between sending and receiving messages. 
      */
-    private final static int EXTRA_RESPONSE_TIMEOUT = (int) (2 * TimeUtils.AMINUTE);
+    private final static int EXTRA_RESPONSE_TIMEOUT = (int) (2 * TimeUtils.AMINUTE) * 10; // extended by nakaguchi
     
     /**
      *  Messenger idle timeout.
