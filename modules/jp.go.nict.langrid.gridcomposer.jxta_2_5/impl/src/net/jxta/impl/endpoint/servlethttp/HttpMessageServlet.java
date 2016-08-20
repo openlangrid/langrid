@@ -165,8 +165,10 @@ public class HttpMessageServlet extends HttpServlet {
 		} finally{
 			long d = System.currentTimeMillis() - start;
 			if(d > 1000 * 60 * 2){
-				LOG.info(String.format("It took %d minutes to handle request from [%s,%s].",
-						(d / 1000 / 60), sourceGridId, userGridIdAndId));
+				LOG.info(String.format("It took %d minutes to handle request from [%s,%s].%n"
+						+ "url: %s",
+						(d / 1000 / 60), sourceGridId, userGridIdAndId,
+						req.getRequestURL() + "?" + req.getQueryString()));
 			}
 		}
 	}
