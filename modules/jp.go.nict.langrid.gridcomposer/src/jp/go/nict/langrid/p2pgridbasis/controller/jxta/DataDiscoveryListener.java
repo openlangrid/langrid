@@ -59,7 +59,7 @@ public class DataDiscoveryListener implements DiscoveryListener {
 	 * 
 	 */
 	public DataDiscoveryListener(JXTAController ctrl) {
-		this.ctrl = ctrl;
+		DataDiscoveryListener.ctrl = ctrl;
 	}
 
 
@@ -75,15 +75,19 @@ public class DataDiscoveryListener implements DiscoveryListener {
 				try {
 					data = parseResponse((String)responses.nextElement());
 					if(data == null) return;
-					Pair<AtomicLong, AtomicLong> c = counter.get(data.getType());
+					String key = data.getType();
+					if(data.getGridId() != null){
+						key += ":" + data.getGridId();
+					}
+					Pair<AtomicLong, AtomicLong> c = counter.get(key);
 					if(c == null){
 						synchronized(counter){
-							c = counter.get(data.getType());
+							c = counter.get(key);
 							if(c == null){
 								AtomicLong discovered = new AtomicLong();
 								AtomicLong updated = new AtomicLong();
 								c = Pair.create(discovered, updated);
-								counter.put(data.getType(), c);
+								counter.put(key, c);
 							}
 						}
 					}
@@ -141,7 +145,7 @@ public class DataDiscoveryListener implements DiscoveryListener {
 		return AdvertisementFactory.newAdvertisement(xmlDocument);
 	}
 
-	private JXTAController ctrl;
+	private static JXTAController ctrl;
 	private static MimeMediaType MIME_MEDIA_TYPE = new MimeMediaType("text/xml");
 	private static Map<String, Pair<AtomicLong, AtomicLong>> counter
 		= new ConcurrentHashMap<String, Pair<AtomicLong, AtomicLong>>();
@@ -152,7 +156,7 @@ public class DataDiscoveryListener implements DiscoveryListener {
 			@Override
 			public void run() {
 				StringBuilder b = new StringBuilder();
-				b.append("-- status of p2p-shared elements (" + counter.size() + ") --\n");
+				b.append("-- status of p2p-shared elements (" + counter.size() + ") of grid " + ctrl.getSelfGridId() + " --\n");
 				if(counter.size() == 0){
 					b.append("none.");
 				} else{
