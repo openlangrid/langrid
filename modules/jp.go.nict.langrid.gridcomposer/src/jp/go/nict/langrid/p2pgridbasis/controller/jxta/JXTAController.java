@@ -49,7 +49,6 @@ import jp.go.nict.langrid.dao.GridNotFoundException;
 import jp.go.nict.langrid.dao.NodeDao;
 import jp.go.nict.langrid.dao.Order;
 import jp.go.nict.langrid.dao.entity.AccessLimit;
-import jp.go.nict.langrid.dao.entity.AccessLog;
 import jp.go.nict.langrid.dao.entity.AccessRight;
 import jp.go.nict.langrid.dao.entity.AccessStat;
 import jp.go.nict.langrid.dao.entity.Domain;
