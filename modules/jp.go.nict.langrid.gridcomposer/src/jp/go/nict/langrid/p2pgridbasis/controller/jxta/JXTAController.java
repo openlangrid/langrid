@@ -805,7 +805,7 @@ public class JXTAController implements P2PGridController {
 				if(platform.isRdv() && grid.isHosted()){
 					hostSummaryCreate(gridId);
 				}else{
-					StringBuilder b = new StringBuilder(
+/*					StringBuilder b = new StringBuilder(
 							"--- publishing non-hosted entities of " + gridId + ". ---\n");
 					//User
 					c = 0;
@@ -936,7 +936,7 @@ public class JXTAController implements P2PGridController {
 					b.append("AccessLog: " + c + "\n");
 
 					logger.info(b.toString());
-				}
+*/				}
 			}
 
 			if(platform.isRdv()){
