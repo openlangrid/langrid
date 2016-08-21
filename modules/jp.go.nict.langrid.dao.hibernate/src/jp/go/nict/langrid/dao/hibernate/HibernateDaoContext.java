@@ -282,11 +282,18 @@ implements DaoContext{
 		IdClass idca = value.getClass().getAnnotation(IdClass.class);
 		if(idca == null) return;
 		for(Field f : value.getClass().getDeclaredFields()){
-			if(f.getAnnotation(GeneratedValue.class) != null){
-				try {
+			if(f.getAnnotation(GeneratedValue.class) == null) continue;
+			try {
+				if(f.getType().equals(int.class) || f.getType().equals(Integer.class)){
+					Number n = ObjectUtil.getProperty(value, f.getName());
+					if(n.intValue() != 0) continue;
 					ObjectUtil.setProperty(value, f.getName(), (int)nextSeq());
-				} catch (Exception e) {
+				} else if(f.getType().equals(long.class) || f.getType().equals(Long.class)){
+					Number n = ObjectUtil.getProperty(value, f.getName());
+					if(n.longValue() != 0) continue;
+					ObjectUtil.setProperty(value, f.getName(), nextSeq());
 				}
+			} catch (Exception e) {
 			}
 		}
 	}
