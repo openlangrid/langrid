@@ -22,8 +22,8 @@ package jp.go.nict.langrid.p2pgridbasis.dao.langrid;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
-
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
@@ -59,7 +59,7 @@ implements DataDao, NewsDao {
 
 	@Override
 	synchronized public boolean updateData(Data data) throws UnmatchedDataTypeException, DataDaoException {
-		logger.debug("[News] : " + data.getId());
+		logger.finest("[News] : " + data.getId());
 		if(data.getClass().equals(NewsData.class) == false) {
 			throw new UnmatchedDataTypeException(NewsData.class.toString(), data.getClass().toString());
 		}
@@ -118,7 +118,7 @@ implements DataDao, NewsDao {
 				getDaoContext().beginTransaction();
 				return true;
 			} catch (DaoException e) {
-				logger.error("failed to access dao.", e);
+				logger.log(Level.SEVERE, "failed to access dao.", e);
 				return false;
 			}
 		}
@@ -130,11 +130,11 @@ implements DataDao, NewsDao {
 						));
 				logger.info("published[News(id=" + id + ")]");
 			} catch(ControllerException e){
-				logger.error("failed to publish instance.", e);
+				logger.log(Level.SEVERE, "failed to publish instance.", e);
 			} catch(DaoException e){
-				logger.error("failed to access dao.", e);
+				logger.log(Level.SEVERE, "failed to access dao.", e);
 			} catch(DataConvertException e){
-				logger.error("failed to convert data.", e);
+				logger.log(Level.SEVERE, "failed to convert data.", e);
 			}
 		}
 
@@ -148,10 +148,10 @@ implements DataDao, NewsDao {
 			try{
 				getDaoContext().commitTransaction();
 			} catch (DaoException e) {
-				logger.error("failed to access dao.", e);
+				logger.log(Level.SEVERE, "failed to access dao.", e);
 			}
 		}
 	};
 
-	static private Logger logger = Logger.getLogger(P2PGridBasisNewsDao.class);
+	static private Logger logger = Logger.getLogger(P2PGridBasisNewsDao.class.getName());
 }
