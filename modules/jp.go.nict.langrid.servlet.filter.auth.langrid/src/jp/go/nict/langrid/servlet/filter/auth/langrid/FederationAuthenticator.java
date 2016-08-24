@@ -27,6 +27,7 @@ import jp.go.nict.langrid.dao.FederationDao;
 import jp.go.nict.langrid.dao.FederationNotFoundException;
 import jp.go.nict.langrid.dao.UserNotFoundException;
 import jp.go.nict.langrid.dao.entity.Federation;
+import jp.go.nict.langrid.management.logic.FederationLogic;
 
 /**
  * 
@@ -38,8 +39,8 @@ public class FederationAuthenticator extends AbstractLangridBasicAuthenticator{
 	protected boolean doAuthenticate(
 			ServletServiceContext context
 			, ServletRequest request, String authUser, String authPass)
-	throws UserNotFoundException, DaoException
-	{
+	throws UserNotFoundException, DaoException{
+		FederationDao fd = getDaoFactory().createFederationDao();
 		String[] federationResponses = context.getRequestMimeHeaders().getHeader(
 				LangridConstants.HTTPHEADER_FEDERATEDCALL_FEDERATIONRESPONSE
 				);
@@ -49,13 +50,10 @@ public class FederationAuthenticator extends AbstractLangridBasicAuthenticator{
 			try{
 				Federation f = null;
 				String selfGridId = context.getSelfGridId();
-				FederationDao fd = getDaoFactory().createFederationDao();
 				if(fd.isFederationExist(selfGridId, authUser)){
-					f = getDaoFactory().createFederationDao().getFederation(
-						selfGridId, authUser);
+					f = fd.getFederation(selfGridId, authUser);
 				} else if(fd.isFederationExist(authUser, selfGridId)) {
-					f = getDaoFactory().createFederationDao().getFederation(
-						authUser, selfGridId);
+					f = fd.getFederation(authUser, selfGridId);
 				}
 				if(authPass.equals(f.getTargetGridAccessToken())){
 					context.setAuthorized(authUser, authUser, authPass);
@@ -84,17 +82,32 @@ public class FederationAuthenticator extends AbstractLangridBasicAuthenticator{
 		String callerUserGridId = userGridIdAndId[0];
 		String callerUserId = userGridIdAndId[1];
 
-		Federation f = null;
 		try{
-			f = getDaoFactory().createFederationDao().getFederation(
-				sourceGridId, selfGridId);
+			Federation f = fd.getFederation(sourceGridId, selfGridId);
+			if(isValidFederation(f, authUser, authPass)){
+				context.setAuthorized(callerUserGridId, callerUserId, authPass);
+				return true;
+			}
 		} catch(FederationNotFoundException e){
-			return false;
+			// search federation route
+			FederationLogic fl = new FederationLogic();
+			for(Federation f : fd.listFederationsFrom(sourceGridId)){
+				if(fl.isReachable(f.getTargetGridId(), selfGridId)){
+					if(isValidFederation(f, authUser, authPass)){
+						context.setAuthorized(callerUserGridId, callerUserId, authPass);
+						return true;
+					}
+				}
+			}
 		}
+		return false;
+	}
+
+	private boolean isValidFederation(
+			Federation f, String targetGridUserId, String targetGridAccessToken){
 		if(f.isRequesting() || !f.isConnected()) return false;
-		if(!authUser.equals(f.getTargetGridUserId())) return false;
-		if(!authPass.equals(f.getTargetGridAccessToken())) return false;
-		context.setAuthorized(callerUserGridId, callerUserId, authPass);
+		if(!targetGridUserId.equals(f.getTargetGridUserId())) return false;
+		if(!targetGridAccessToken.equals(f.getTargetGridAccessToken())) return false;
 		return true;
 	}
 }
