@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.EntityAlreadyExistsException;
+import jp.go.nict.langrid.dao.FederationDao;
 import jp.go.nict.langrid.dao.GenericHandler;
 import jp.go.nict.langrid.dao.GridDao;
 import jp.go.nict.langrid.dao.GridNotFoundException;
@@ -55,10 +56,11 @@ implements DataDao, GridDao {
 	 * 
 	 * 
 	 */
-	public P2PGridBasisGridDao(GridDao dao, DaoContext context) {
+	public P2PGridBasisGridDao(GridDao dao, FederationDao fdao, DaoContext context) {
 		super(context);
 		setHandler(handler);
 		this.dao = dao;
+		this.fdao = fdao;
 	}
 
 	@Override
@@ -101,6 +103,11 @@ implements DataDao, GridDao {
 				if(dao.isGridExist(grid.getGridId())){
 					grid.setHosted(false);
 					getDaoContext().mergeEntity(grid);
+				} else if(
+						fdao.listFederationsFrom(grid.getGridId()).size() > 0 ||
+						fdao.listFederationsToward(grid.getGridId()).size() > 0
+						){
+					getDaoContext().saveEntity(grid);
 				}
 			} catch(DaoException ex){
 				exp = ex;
@@ -155,6 +162,7 @@ implements DataDao, GridDao {
 	}
 
 	private GridDao dao;
+	private FederationDao fdao;
 	private GenericHandler<Grid> handler = new GenericHandler<Grid>(){
 		protected boolean onNotificationStart() {
 			try{

@@ -161,7 +161,9 @@ public class P2PGridDaoFactory extends DaoFactory {
 
 	@Override
 	public GridDao createGridDao() throws DaoException {
-		return new P2PGridBasisGridDao(daoFactory.createGridDao(), getDaoContext());
+		return new P2PGridBasisGridDao(
+				daoFactory.createGridDao(),
+				daoFactory.createFederationDao(), getDaoContext());
 	}
 
 	@Override
