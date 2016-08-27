@@ -156,7 +156,9 @@ implements EntityManagementService{
 	private Class<?> getEntityClass(String entityType){
 		switch(entityType){
 			case "Grid": return Grid.class;
+			case "Federation": return Grid.class;
 			case "News": return News.class;
+			case "Node": return Grid.class;
 			case "User": return User.class;
 			case "Domain": return Domain.class;
 			case "ResourceType": return ResourceType.class;
