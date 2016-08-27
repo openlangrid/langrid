@@ -92,7 +92,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 			}
 			String gurl = g.getUrl();
 			if(!gurl.endsWith("/")) gurl += "/";
-			url = new URL(gurl + "invoker/" + serviceId
+			url = new URL(gurl + "invoker/" + serviceGridId + ":" + serviceId
 					+ ((additionalUrlPart != null) ? additionalUrlPart : ""));
 			authId = f.getTargetGridUserId();
 			authPasswd = f.getTargetGridAccessToken();
