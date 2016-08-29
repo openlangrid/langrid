@@ -156,6 +156,21 @@ public class FederationLogicTest {
 		Assert.assertNull(f);
 	}
 
+	@Test
+	public void test_getNearestFederation_unreachable_3() throws Throwable{
+		fdao.addFederation(newFederation("grid1", "grid2"));
+		fdao.addFederation(newFederation("grid2", "grid1"));
+		fdao.addFederation(newFederation("grid2", "grid3"));
+		fdao.addFederation(newFederation("grid3", "grid2"));
+		fdao.addFederation(newFederation("grid3", "grid4"));
+		for(int i = 1; i <= 4; i++){
+			gdao.addGrid(newGridSymm("grid" + i));
+		}
+		FederationLogic fl = new FederationLogic();
+		Assert.assertNull(fl.getNearestFederation("grid5", "grid1"));
+		Assert.assertNull(fl.getNearestFederation("grid0", "grid4"));
+	}
+
 	private Grid newGridSymm(String gridId){
 		Grid g = new Grid(gridId, "operator");
 		g.setSymmetricRelationEnabled(true);
