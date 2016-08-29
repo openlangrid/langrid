@@ -2,7 +2,9 @@ package jp.go.nict.langrid.management.logic.federation;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import jp.go.nict.langrid.dao.entity.Federation;
 import jp.go.nict.langrid.dao.entity.Grid;
@@ -45,9 +47,15 @@ public class FederationGraph {
 		int currentHops = Integer.MAX_VALUE;
 		Map<String, Federation> feds = federations.get(sourceGridId);
 		if(feds == null) return null;
+		Set<String> visited = new HashSet<>();
+		visited.add(sourceGridId);
 		for(Federation f : feds.values()){
-			if(!isSymmGrid(f.getTargetGridId())) continue;
-			int h = getHops(f.getTargetGridId(), targetGridId, federations, cache);
+			String tgid = f.getTargetGridId();
+			if(visited.contains(tgid)) continue;
+			if(!isSymmGrid(tgid)) continue;
+			visited.add(tgid);
+			int h = getHops(tgid, targetGridId, federations, cache, visited);
+			visited.remove(tgid);
 			if(currentHops > h){
 				ret = f;
 				currentHops = h;
@@ -58,7 +66,7 @@ public class FederationGraph {
 
 	private int getHops(String sgid, String tgid,
 			Map<String, Map<String, Federation>> federations,
-			Map<String, Integer> cache){
+			Map<String, Integer> cache, Set<String> visited){
 		if(sgid.equals(tgid)) return 0;
 		Integer r = cache.get(sgid);
 		if(r != null){
@@ -73,7 +81,10 @@ public class FederationGraph {
 				cache.put(sgid, 1);
 				return 1;
 			}
-			int v = getHops(f.getTargetGridId(), tgid, federations, cache);
+			if(visited.contains(f.getTargetGridId())) continue;
+			visited.add(f.getTargetGridId());
+			int v = getHops(f.getTargetGridId(), tgid, federations, cache, visited);
+			visited.remove(f.getTargetGridId());
 			if(v < curValue){
 				curValue = v;
 			}
