@@ -22,8 +22,8 @@ package jp.go.nict.langrid.p2pgridbasis.dao.langrid;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
-
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
@@ -65,7 +65,6 @@ implements DataDao, GridDao {
 
 	@Override
 	synchronized public boolean updateData(Data data) throws UnmatchedDataTypeException, DataDaoException {
-		logger.debug("[Grid] : " + data.getId());
 		if(data.getClass().equals(GridData.class) == false) {
 			throw new UnmatchedDataTypeException(GridData.class.toString(), data.getClass().toString());
 		}
@@ -95,10 +94,10 @@ implements DataDao, GridDao {
 			}
 		}
 
+		removeEntityListener();
 		try {
-			getDaoContext().beginTransaction();
-			removeEntityListener();
 			DaoException exp = null;
+			getDaoContext().beginTransaction();
 			try{
 				if(dao.isGridExist(grid.getGridId())){
 					grid.setHosted(false);
@@ -112,12 +111,11 @@ implements DataDao, GridDao {
 			} catch(DaoException ex){
 				exp = ex;
 			} finally{
-				setEntityListener();
-			}
-			if(exp != null){
-				getDaoContext().commitTransaction();
-			} else{
-				getDaoContext().rollbackTransaction();
+				if(exp == null){
+					getDaoContext().commitTransaction();
+				} else{
+					getDaoContext().rollbackTransaction();
+				}
 			}
 			getController().baseSummaryAdd(data);
 			return true;
@@ -125,6 +123,8 @@ implements DataDao, GridDao {
 			throw new DataDaoException(e);
 		} catch (ControllerException e) {
 			throw new DataDaoException(e);
+		} finally{
+			setEntityListener();
 		}
 	}
 
@@ -169,7 +169,7 @@ implements DataDao, GridDao {
 				getDaoContext().beginTransaction();
 				return true;
 			} catch (DaoException e) {
-				logger.error("failed to access dao.", e);
+				logger.log(Level.SEVERE, "failed to access dao.", e);
 				return false;
 			}
 		}
@@ -190,14 +190,12 @@ implements DataDao, GridDao {
 						}
 					}
 				}
-
-				logger.info("published[Node(id=" + id + ")]");
 			} catch(ControllerException e){
-				logger.error("failed to publish instance.", e);
+				logger.log(Level.SEVERE, "failed to publish instance.", e);
 			} catch(DaoException e){
-				logger.error("failed to access dao.", e);
+				logger.log(Level.SEVERE, "failed to access dao.", e);
 			} catch(DataConvertException e){
-				logger.error("failed to convert data.", e);
+				logger.log(Level.SEVERE, "failed to convert data.", e);
 			}
 		}
 
@@ -206,9 +204,9 @@ implements DataDao, GridDao {
 				getController().revoke(GridData.getDataID((String)id));
 				logger.info("revoked[Node(id=" + id + ")]");
 			} catch(ControllerException e){
-				logger.error("failed to revoke instance.", e);
+				logger.log(Level.SEVERE, "failed to revoke instance.", e);
 			} catch(DataNotFoundException e){
-				logger.error("failed to find data.", e);
+				logger.log(Level.SEVERE, "failed to find data.", e);
 			}
 		}
 
@@ -216,10 +214,10 @@ implements DataDao, GridDao {
 			try{
 				getDaoContext().commitTransaction();
 			} catch (DaoException e) {
-				logger.error("failed to access dao.", e);
+				logger.log(Level.SEVERE, "failed to access dao.", e);
 			}
 		}
 	};
 
-	static private Logger logger = Logger.getLogger(P2PGridBasisGridDao.class);
+	static private Logger logger = Logger.getLogger(P2PGridBasisGridDao.class.getName());
 }
