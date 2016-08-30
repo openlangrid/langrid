@@ -18,6 +18,7 @@ import jp.go.nict.langrid.dao.entity.AccessStat;
 import jp.go.nict.langrid.dao.entity.BPELService;
 import jp.go.nict.langrid.dao.entity.Domain;
 import jp.go.nict.langrid.dao.entity.ExternalService;
+import jp.go.nict.langrid.dao.entity.Federation;
 import jp.go.nict.langrid.dao.entity.Grid;
 import jp.go.nict.langrid.dao.entity.News;
 import jp.go.nict.langrid.dao.entity.Protocol;
@@ -156,7 +157,7 @@ implements EntityManagementService{
 	private Class<?> getEntityClass(String entityType){
 		switch(entityType){
 			case "Grid": return Grid.class;
-			case "Federation": return Grid.class;
+			case "Federation": return Federation.class;
 			case "News": return News.class;
 			case "Node": return Grid.class;
 			case "User": return User.class;
