@@ -71,6 +71,12 @@ implements DataDao, NewsDao {
 			if(!isReachableToOrFrom(entity.getGridId())) return false;
 		} catch(Exception e){
 			throw new DataDaoException(e);
+		} catch(StackOverflowError e){
+			try{
+				logger.info("ste from: " + entity.getGridId() + " to: " +
+						getSelfGridId());
+			} catch(Exception e2){}
+			return false;
 		}
 		return handleData(data, entity);
 	}
