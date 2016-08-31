@@ -17,6 +17,8 @@
  */
 package jp.go.nict.langrid.servlet.filter.auth.langrid;
 
+import java.util.logging.Logger;
+
 import javax.servlet.ServletRequest;
 
 import jp.go.nict.langrid.commons.lang.StringUtil;
@@ -66,6 +68,8 @@ public class FederationAuthenticator extends AbstractLangridBasicAuthenticator{
 			}
 		}
 		// service call or request of information sharing from other grid.
+		String targetGridUserId = authUser;
+		String targetGridAccessToken = authPass;
 		String[] sourceGridIds = context.getRequestMimeHeaders().getHeader(
 				LangridConstants.HTTPHEADER_FEDERATEDCALL_SOURCEGRIDID
 				);
@@ -84,19 +88,34 @@ public class FederationAuthenticator extends AbstractLangridBasicAuthenticator{
 
 		try{
 			Federation f = fd.getFederation(sourceGridId, selfGridId);
-			if(isValidFederation(f, authUser, authPass)){
+			if(isValidFederation(f, targetGridUserId, targetGridAccessToken)){
 				context.setAuthorized(callerUserGridId, callerUserId, authPass);
 				return true;
 			}
-		} catch(FederationNotFoundException e){
+/*			Logger.getLogger(getClass().getName()).info(String.format(
+					"auth failed. sourceGrid[%s], targetGridUser[%s], caller[%s|%s],"
+					+ "with federation[%s|%s].",
+					sourceGridId, targetGridUserId, callerUserGridId, callerUserId,
+					f.getSourceGridId(), f.getTargetGridId()));
+*/		} catch(FederationNotFoundException e){
 			// search federation route
 			FederationLogic fl = new FederationLogic();
 			for(Federation f : fd.listFederationsFrom(sourceGridId)){
 				if(fl.isReachable(f.getTargetGridId(), selfGridId)){
-					if(isValidFederation(f, authUser, authPass)){
+					if(isValidFederation(f, targetGridUserId, targetGridAccessToken)){
 						context.setAuthorized(callerUserGridId, callerUserId, authPass);
 						return true;
+					} else{
+						Logger.getLogger(getClass().getName()).info(String.format(
+								"not valid federation. sourceGrid[%s], targetGridUser[%s], caller[%s|%s],"
+								+ "with federation[%s|%s].",
+								sourceGridId, targetGridUserId, callerUserGridId, callerUserId,
+								f.getSourceGridId(), f.getTargetGridId()));
 					}
+				} else{
+					Logger.getLogger(getClass().getName()).info(String.format(
+							"not reachable. from %s to %s.",
+							f.getTargetGridId(), selfGridId));
 				}
 			}
 		}
