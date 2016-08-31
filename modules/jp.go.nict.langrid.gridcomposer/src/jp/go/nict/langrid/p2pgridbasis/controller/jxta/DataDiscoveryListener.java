@@ -102,6 +102,8 @@ public class DataDiscoveryListener implements DiscoveryListener {
 					logger.info(e.getMessage());
 				} catch (UnmatchedDataTypeException e) {
 					logger.info(e.getMessage());
+				} catch(java.lang.StackOverflowError e){
+					logger.severe("StackOverflowError for " + data.getType());
 				} catch (DataDaoException e) {
 					logger.log(
 							Level.INFO
