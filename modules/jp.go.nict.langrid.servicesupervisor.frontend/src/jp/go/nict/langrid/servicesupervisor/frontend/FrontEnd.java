@@ -302,15 +302,16 @@ static final int TAG_TYPE_MASK = (1 << TAG_TYPE_BITS) - 1;
 
 	private static String getJsonRpcCallTree(InputStream body)
 	throws IOException{
-		Scanner s = new Scanner(body, "UTF-8");
-		String tok = s.findInLine(
-				"\"name\":\"calltree\",\"namespace\":\""
-				+ StringEscapeUtils.escapeJavaScript(LangridConstants.ACTOR_SERVICE_CALLTREE)
-				+ "\",\"value\":\"(\\[[a-zA-Z0-9_\\[\\]\":,\\.\\{\\}\\\\]+\\])\"");
-		if(tok != null){
-			return StringEscapeUtils.unescapeJavaScript(s.match().group(1));
+		try(Scanner s = new Scanner(body, "UTF-8")){
+			String tok = s.findInLine(
+					"\"name\":\"calltree\",\"namespace\":\""
+					+ StringEscapeUtils.escapeJavaScript(LangridConstants.ACTOR_SERVICE_CALLTREE)
+					+ "\",\"value\":\"(\\[[a-zA-Z0-9_\\[\\]\":,\\.\\{\\}\\\\]+\\])\"");
+			if(tok != null){
+				return StringEscapeUtils.unescapeJavaScript(s.match().group(1));
+			}
+			return "";
 		}
-		return "";
 	}
 
 	private static Pattern soapct = Pattern.compile("<(\\w+:)?calltree[^>]+>([^<]+)</(\\w+:)?calltree>");
