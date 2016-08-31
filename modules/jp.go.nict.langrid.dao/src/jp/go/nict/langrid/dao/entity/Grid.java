@@ -19,16 +19,13 @@ package jp.go.nict.langrid.dao.entity;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 
@@ -206,14 +203,6 @@ implements AttributedElement<GridAttribute>, Serializable{
 		}
 	}
 
-	public List<Domain> getSupportedDomains(){
-		return supportedDomains;
-	}
-
-	public void setSupportedDomains(List<Domain> domains){
-		supportedDomains = domains;
-	}
-
 	public boolean isAutoApproveEnabled() {
 		return autoApproveEnabled;
 	}
@@ -292,9 +281,6 @@ implements AttributedElement<GridAttribute>, Serializable{
 	@MapKey(name="name")
 	@Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
 	private Map<String, GridAttribute> attributes = new HashMap<String, GridAttribute>();
-
-	@ManyToMany
-	private List<Domain> supportedDomains = new ArrayList<Domain>();
 
 	private static final long serialVersionUID = -549487723699790719L;
 }

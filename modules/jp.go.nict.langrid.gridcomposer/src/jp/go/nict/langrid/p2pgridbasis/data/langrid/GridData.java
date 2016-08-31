@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import jp.go.nict.langrid.dao.entity.Domain;
 import jp.go.nict.langrid.dao.entity.Grid;
 import jp.go.nict.langrid.dao.entity.GridAttribute;
 import jp.go.nict.langrid.p2pgridbasis.data.Data;
@@ -98,24 +97,7 @@ public class GridData extends Data{
 				grid.setAttribute(a);
 		}
 
-		List<Domain> d_list = getGridDomain(attr);
-		if(d_list != null){
-			grid.setSupportedDomains(d_list);
-		}
 		return grid;
-	}
-
-	private List<Domain> getGridDomain(DataAttributes attr){
-		List<Domain> ret_list = new ArrayList<Domain>();
-		String value = attr.getValue("supportedDomain_list");
-		if(value == null){
-			return null;
-		}
-
-		for(String str : value.split("\n")){
-			ret_list.add(new Domain(str));
-		}
-		return ret_list;
 	}
 
 	private List<GridAttribute> getGridAttribute(DataAttributes attr){

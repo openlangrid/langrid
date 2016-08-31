@@ -3,5 +3,7 @@
   "description": "",
   "protocolName": "PROTOCOLBUFFERS RPC",
   "protocolId": "PROTOCOLBUFFERS_RPC",
-  "updatedDateTime": "2010/07/26 17:38:15.265 JST"
+  "updatedDateTime": "2010/07/26 17:38:15.265 JST",
+  "ownerUserGridId": "kyoto1.langrid",
+  "ownerUserId": "langrid"
 }

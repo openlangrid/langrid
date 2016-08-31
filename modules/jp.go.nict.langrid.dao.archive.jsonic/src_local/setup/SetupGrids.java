@@ -9,14 +9,12 @@ import jp.go.nict.langrid.commons.io.RegexFileNameFilter;
 import jp.go.nict.langrid.commons.security.MessageDigestUtil;
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoFactory;
-import jp.go.nict.langrid.dao.DomainDao;
 import jp.go.nict.langrid.dao.GridDao;
 import jp.go.nict.langrid.dao.ResourceDao;
 import jp.go.nict.langrid.dao.ServiceDao;
 import jp.go.nict.langrid.dao.UserDao;
 import jp.go.nict.langrid.dao.archive.FilenameUtil;
 import jp.go.nict.langrid.dao.archive.LangridJSON;
-import jp.go.nict.langrid.dao.entity.Domain;
 import jp.go.nict.langrid.dao.entity.ExternalService;
 import jp.go.nict.langrid.dao.entity.Grid;
 import jp.go.nict.langrid.dao.entity.Resource;
@@ -57,17 +55,10 @@ public class SetupGrids {
 	private static List<String>  setupGrids(DaoFactory factory, File baseDir) throws Exception{
 		baseDir = new File(baseDir, "grids");
 		GridDao gdao = factory.createGridDao();
-		DomainDao ddao = factory.createDomainDao();
 		List<String> gridIds = new ArrayList<String>();
 		for(File f : baseDir.listFiles(new RegexFileNameFilter(".*\\.json$"))){
 			Grid g = new LangridJSON(baseDir, FilenameUtil.getIdFromFileName(f))
 					.parse(new FileInputStream(f), Grid.class);
-			List<Domain> domains = new ArrayList<Domain>();
-			for(Domain d : g.getSupportedDomains()){
-				domains.add(ddao.getDomain(d.getDomainId()));
-			}
-			g.getSupportedDomains().clear();
-			g.getSupportedDomains().addAll(domains);
 			gdao.addGrid(g);
 			gridIds.add(g.getGridId());
 		}

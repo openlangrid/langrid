@@ -10,7 +10,6 @@ import jp.go.nict.langrid.dao.ProtocolDao;
 import jp.go.nict.langrid.dao.ResourceTypeDao;
 import jp.go.nict.langrid.dao.ServiceTypeDao;
 import jp.go.nict.langrid.dao.entity.Domain;
-import jp.go.nict.langrid.dao.entity.Grid;
 import jp.go.nict.langrid.dao.entity.Protocol;
 import jp.go.nict.langrid.dao.entity.ResourceMetaAttribute;
 import jp.go.nict.langrid.dao.entity.ResourceType;
@@ -29,9 +28,6 @@ public class Importer {
 	}
 
 	public void clearDomains() throws DaoException{
-		for(Grid g : gdao.listAllGrids()){
-			g.getSupportedDomains().clear();
-		}
 		stdao.clear();
 		rtdao.clear();
 		pdao.clear();

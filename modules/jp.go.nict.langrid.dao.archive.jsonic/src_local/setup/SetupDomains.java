@@ -4,26 +4,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import jp.go.nict.langrid.commons.io.RegexFileNameFilter;
-import jp.go.nict.langrid.commons.transformer.TransformationException;
-import jp.go.nict.langrid.commons.transformer.Transformer;
-import jp.go.nict.langrid.commons.util.CollectionUtil;
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoFactory;
 import jp.go.nict.langrid.dao.DomainDao;
-import jp.go.nict.langrid.dao.DomainNotFoundException;
 import jp.go.nict.langrid.dao.ProtocolDao;
 import jp.go.nict.langrid.dao.ResourceTypeDao;
 import jp.go.nict.langrid.dao.ServiceTypeDao;
 import jp.go.nict.langrid.dao.archive.FilenameUtil;
 import jp.go.nict.langrid.dao.archive.LangridJSON;
 import jp.go.nict.langrid.dao.entity.Domain;
-import jp.go.nict.langrid.dao.entity.Grid;
 import jp.go.nict.langrid.dao.entity.Protocol;
 import jp.go.nict.langrid.dao.entity.ResourceMetaAttribute;
 import jp.go.nict.langrid.dao.entity.ResourceType;
@@ -41,12 +33,10 @@ public class SetupDomains {
 		DaoContext c = f.getDaoContext();
 		c.beginTransaction();
 		try{
-			Map<String, Collection<String>> grid_domains = backupGridDomains(f); 
 			clearAll(f);
 			c.commitTransaction();
 			c.beginTransaction();
 			List<String> domainIds = setupDomains(f, baseDir);
-			restoreGridDomains(f, grid_domains);
 			c.commitTransaction();
 			c.beginTransaction();
 			setupProtocols(f, baseDir);
@@ -61,38 +51,7 @@ public class SetupDomains {
 		} 
 	}
 
-	private static Map<String, Collection<String>> backupGridDomains(DaoFactory factory) throws Exception{
-		Map<String, Collection<String>> ret = new HashMap<String, Collection<String>>();
-		for(Grid g : factory.createGridDao().listAllGrids()){
-			ret.put(g.getGridId(), CollectionUtil.collect(
-					g.getSupportedDomains(), new Transformer<Domain, String>() {
-						@Override
-						public String transform(Domain value)
-								throws TransformationException {
-							return value.getDomainId();
-						}
-					}));
-		}
-		return ret;
-	}
-
-	private static void restoreGridDomains(DaoFactory factory, Map<String, Collection<String>> gridDomains)
-	throws Exception{
-		DomainDao ddao = factory.createDomainDao();
-		for(Grid g : factory.createGridDao().listAllGrids()){
-			for(String did : gridDomains.get(g.getGridId())){
-				try{
-					g.getSupportedDomains().add(ddao.getDomain(did));
-				} catch(DomainNotFoundException e){
-				}
-			}
-		}
-	}
-
 	private static void clearAll(DaoFactory factory) throws Exception{
-		for(Grid g : factory.createGridDao().listAllGrids()){
-			g.getSupportedDomains().clear();
-		}
 		factory.createServiceTypeDao().clear();
 		factory.createResourceTypeDao().clear();
 		factory.createProtocolDao().clear();

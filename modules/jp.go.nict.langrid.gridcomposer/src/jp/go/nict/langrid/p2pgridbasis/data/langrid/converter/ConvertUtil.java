@@ -35,9 +35,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.axis.encoding.Base64;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.Converter;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.log4j.Logger;
+
 import jp.go.nict.langrid.commons.io.StreamUtil;
 import jp.go.nict.langrid.dao.entity.BPELService;
-import jp.go.nict.langrid.dao.entity.Domain;
 import jp.go.nict.langrid.dao.entity.Grid;
 import jp.go.nict.langrid.dao.entity.GridAttribute;
 import jp.go.nict.langrid.dao.entity.InstanceType;
@@ -67,13 +73,6 @@ import jp.go.nict.langrid.language.Language;
 import jp.go.nict.langrid.language.LanguagePath;
 import jp.go.nict.langrid.p2pgridbasis.data.DataAttributes;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.DataConvertException;
-
-import org.apache.axis.encoding.Base64;
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.beanutils.Converter;
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.log4j.Logger;
 
 public class ConvertUtil {
 	static public DataAttributes encode(Object data) throws DataConvertException{
@@ -134,15 +133,6 @@ public class ConvertUtil {
 							value = value + str + "\n";
 						}
 						attr.setAttribute("allowedUse", value);
-						continue;
-					}else if(descriptor.getName().equalsIgnoreCase("supportedDomains")){
-						Grid g = (Grid)data;
-						List<Domain> list = g.getSupportedDomains();
-						String value = "";
-						for(Domain d:list){
-							value = value + d.getDomainId() + "\n";
-						}
-						attr.setAttribute("supportedDomain_list", value);
 						continue;
 					}else if(descriptor.getName().equalsIgnoreCase("partnerServiceNamespaceURIs")){
 						//partnerServiceNamespaceURIs

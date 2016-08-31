@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -25,7 +24,6 @@ import jp.go.nict.langrid.dao.ProtocolDao;
 import jp.go.nict.langrid.dao.ResourceTypeDao;
 import jp.go.nict.langrid.dao.ServiceTypeDao;
 import jp.go.nict.langrid.dao.entity.Domain;
-import jp.go.nict.langrid.dao.entity.Grid;
 import jp.go.nict.langrid.dao.entity.Protocol;
 import jp.go.nict.langrid.dao.entity.ResourceMetaAttribute;
 import jp.go.nict.langrid.dao.entity.ResourceType;
@@ -40,7 +38,6 @@ public class DomainInitializer {
 	throws DaoException, IOException, SQLException{
 		dc.beginTransaction();
 		try{
-			Grid g = f.createGridDao().getGrid(gridId);
 			ProtocolDao pDao = f.createProtocolDao();
 			DomainDao dDao = f.createDomainDao();
 			ResourceTypeDao rtDao = f.createResourceTypeDao();
@@ -48,13 +45,13 @@ public class DomainInitializer {
 			String path = baseDir;
 			if(dropAndCreate){
 				logger.info("dropAndCreate specified, refreshing entries..");
-				clearDomains(g, dDao, rtDao, stDao);
-				clearProtocols(g, pDao);
+				clearDomains(dDao, rtDao, stDao);
+				clearProtocols(pDao);
 			}
-			initProtocols(new File(path + "/protocols"), f.createProtocolDao(), g);
-			initDomains(
-					new File(path + "/domains"), dDao, rtDao, stDao,
-					g);
+			initProtocols(new File(path + "/protocols"),
+					f.createProtocolDao());
+			initDomains(new File(path + "/domains"),
+					dDao, rtDao, stDao);
 			dc.commitTransaction();
 		} catch(IOException e){
 			dc.rollbackTransaction();
@@ -68,34 +65,32 @@ public class DomainInitializer {
 		}
 	}
 
-	private static void clearProtocols(Grid grid, ProtocolDao pdao) throws DaoException{
+	private static void clearProtocols(ProtocolDao pdao) throws DaoException{
 		int count = 0;
-		for(Protocol p : pdao.listAllProtocols(grid.getGridId())){
+		for(Protocol p : pdao.listAllProtocols()){
 			pdao.deleteProtocol(p.getProtocolId());
 			count++;
 		}
 		logger.info(count + " protocols deleted.");
 	}
 
-	private static void clearDomains(Grid grid, DomainDao ddao, ResourceTypeDao rtDao, ServiceTypeDao stDao) throws DaoException{
-		Iterator<Domain> dit = grid.getSupportedDomains().iterator();
+	private static void clearDomains(DomainDao ddao, ResourceTypeDao rtDao, ServiceTypeDao stDao) throws DaoException{
 		int count = 0;
-		while(dit.hasNext()){
-			String did = dit.next().getDomainId();
+		for(Domain d : ddao.listAllDomains()){
+			String did = d.getDomainId();
 			rtDao.deleteResourceType(did);
+			rtDao.deleteResourceMetaAttribute(did);
 			stDao.deleteServiceType(did);
+			stDao.deleteServiceMetaAttribute(did);
 			ddao.deleteDomain(did);
-			dit.remove();
 			count++;
 		}
 		logger.info(count + " domains deleted.");
 	}
 
-	private static void initProtocols(File protocolsDir, ProtocolDao pdao, Grid grid)
+	private static void initProtocols(File protocolsDir, ProtocolDao pdao)
 			throws IOException, FileNotFoundException, DaoException {
 		if(!protocolsDir.exists()) return;
-		String gridId = grid.getGridId();
-		String gridOwnerUserId = grid.getOperatorUserId();
 		int count = 0;
 		for(File file : protocolsDir.listFiles(new RegexFileNameFilter(".*\\.json$"))){
 			InputStream is = new FileInputStream(file);
@@ -104,8 +99,6 @@ public class DomainInitializer {
 				if(pdao.isProtocolExist(p.getProtocolId())){
 					continue;
 				}
-				p.setOwnerUserGridId(gridId);
-				p.setOwnerUserId(gridOwnerUserId);
 				pdao.addProtocol(p);
 				count++;
 			} finally{
@@ -116,12 +109,9 @@ public class DomainInitializer {
 	}
 
 	private static void initDomains(
-			File domainsDir, DomainDao ddao, ResourceTypeDao rtdao, ServiceTypeDao stdao,
-			Grid grid)
+			File domainsDir, DomainDao ddao, ResourceTypeDao rtdao, ServiceTypeDao stdao)
 	throws DaoException, FileNotFoundException, IOException, SQLException{
 		if(!domainsDir.exists()) return;
-		String gridId = grid.getGridId();
-		String gridOwnerUserId = grid.getOperatorUserId();
 
 		int count = 0;
 		for(File file : domainsDir.listFiles(new RegexFileNameFilter(".*\\.json$"))){
@@ -132,14 +122,11 @@ public class DomainInitializer {
 				if(ddao.isDomainExist(did)){
 					continue;
 				}
-				d.setOwnerUserGridId(gridId);
-				d.setOwnerUserId(gridOwnerUserId);
 				ddao.addDomain(d);
 				initResourceMetaAttributes(domainsDir, rtdao, did);
 				initResourceTypes(domainsDir, rtdao, did);
 				initServiceMetaAttributes(domainsDir, stdao, did);
 				initServiceTypes(domainsDir, stdao, did);
-				grid.getSupportedDomains().add(d);
 				count++;
 			} finally{
 				is.close();
