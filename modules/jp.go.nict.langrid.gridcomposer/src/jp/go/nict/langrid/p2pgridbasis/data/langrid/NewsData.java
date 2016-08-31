@@ -62,6 +62,7 @@ public class NewsData extends Data{
 	public NewsData(News news) throws DataConvertException{
 		super(news.getGridId(), new DataID(_IDPrefix
 				+ news.getGridId() + "_"
+//				+ news.getId() + "_"
 				+ news.getNodeId() + "_"
 				+ news.getNodeLocalId()), null, null);
 		// set the updated datetime
