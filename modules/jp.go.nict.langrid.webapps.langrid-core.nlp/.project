@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>jp.go.nict.langrid.webapps.langrid-core.nlp</name>
+	<name>jp.go.nict.langrid.webapps.langrid-core.jxta-p2p.nict-nlp</name>
 	<comment></comment>
 	<projects>
 		<project>jp.go.nict.langrid.servlet.filter</project>
