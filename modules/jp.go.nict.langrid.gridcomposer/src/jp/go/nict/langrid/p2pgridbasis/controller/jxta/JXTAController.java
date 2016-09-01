@@ -822,7 +822,7 @@ public class JXTAController implements P2PGridController {
 						baseSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
 						c++;
 					}
-					b.append("Temporary: " + c + "\n");
+					b.append("TemporaryUser: " + c + "\n");
 
 					//AccessRight
 					c = 0;
