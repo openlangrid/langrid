@@ -25,6 +25,13 @@ package jp.go.nict.langrid.management.web.servlet;
  * @version $Revision: 406 $
  */
 public class DisconnectResponse {
+	public DisconnectResponse() {
+	}
+
+	public DisconnectResponse(boolean disconnected){
+		this.isDisconnect = disconnected;
+	}
+
 	/**
 	 * 
 	 * 

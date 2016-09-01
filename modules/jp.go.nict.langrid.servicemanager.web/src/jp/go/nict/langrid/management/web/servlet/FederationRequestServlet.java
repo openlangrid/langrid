@@ -18,7 +18,6 @@
 package jp.go.nict.langrid.management.web.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -33,6 +32,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import jp.go.nict.langrid.commons.lang.StringUtil;
+import jp.go.nict.langrid.commons.ws.ServiceContext;
+import jp.go.nict.langrid.commons.ws.ServletServiceContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.DaoFactory;
 import jp.go.nict.langrid.dao.entity.Grid;
@@ -64,16 +65,16 @@ public class FederationRequestServlet extends HttpServlet{
 	}
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-	throws ServletException
-	{
-		RequestType request;
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+	throws ServletException {
+		ServiceContext sc = new ServletServiceContext(request);
+		RequestType rt;
 		// do validate
-		if(req.getParameter("requestType") == null || req.getParameter("requestType").equals("")) {
+		if(request.getParameter("requestType") == null || request.getParameter("requestType").equals("")) {
 			throw new ServletException("parameter not found: 'requestType' is required.");
 		} else {
 			try {
-				request = RequestType.valueOf(req.getParameter("requestType"));
+				rt = RequestType.valueOf(request.getParameter("requestType"));
 			} catch(Exception e) {
 				throw new ServletException("Invalid parameter: 'requestType'");
 			}
@@ -81,22 +82,22 @@ public class FederationRequestServlet extends HttpServlet{
 		// do request process
 		try {
 			selfGridId = ServiceFactory.getInstance().getGridService().getSelfGridId();
-			String responseString = "";
-			if(request.equals(RequestType.CONNECT)){
+			if(rt.equals(RequestType.CONNECT)){
 				Grid g = DaoFactory.createInstance().createGridDao().getGrid(selfGridId);
 				boolean autoApproveEnabled = g.isAutoApproveEnabled();
-				responseString = doConnectFederationRequest(
-						req.getParameter("request"), autoApproveEnabled);
-			} else if(request.equals(RequestType.DISCONNECT)) {
-				responseString = doDisconnectFederationRequset(req.getParameter("request"));
-			}
-			// send response
-			resp.setContentType("text/plain");
-			PrintWriter w = resp.getWriter();
-			try{
-				w.print(responseString);
-			}finally{
-				w.close();
+				FederationRequest req = JSON.decode(request.getParameter("request"), FederationRequest.class);
+				req.setRequestUserId(sc.getAuthUser());
+				FederationResponse res = doConnectFederationRequest(
+						sc.getAuthUser(), req, autoApproveEnabled);
+				response.setContentType("text/plain");
+				JSON.encode(res, response.getOutputStream());
+			} else if(rt.equals(RequestType.DISCONNECT)) {
+				DisconnectRequest req = JSON.decode(request.getParameter("request"), DisconnectRequest.class);
+				DisconnectResponse res = new DisconnectResponse(doDisconnectFederationRequset(req));
+				response.setContentType("text/plain");
+				JSON.encode(res, response.getOutputStream());
+			} else{
+				throw new ServletException("invalid request type: " + rt);
 			}
 		} catch(IOException e) {
 			e.printStackTrace();
@@ -115,8 +116,7 @@ public class FederationRequestServlet extends HttpServlet{
 	 * 
 	 * 
 	 */
-	private String doDisconnectFederationRequset(String requestString) {
-		DisconnectRequest request = JSON.decode(requestString, DisconnectRequest.class);
+	private boolean doDisconnectFederationRequset(DisconnectRequest request) {
 		Boolean	response = true;
 		String federationSourceGridId = request.getFederationSourceGridId();
 		String federationTargetGridId = request.getFederationTargetGridId();		
@@ -164,29 +164,25 @@ public class FederationRequestServlet extends HttpServlet{
 			LogWriter.writeWarn("Operator", e.getMessage(), getClass());
 			response = false;
 		}
-//		// make response
-		DisconnectResponse dr = new DisconnectResponse();
-		dr.setDisconnect(response);
-		return JSON.encode(dr);
+		return response;
 	}
 
 	/**
 	 * 
 	 * 
 	 */
-	private String doConnectFederationRequest(String requestString, boolean autoApproveEnabled)
-	throws DaoException, ServletException
-	{
-		FederationRequest request = JSON.decode(requestString, FederationRequest.class);
-		String requestedGridId = request.getSourceGrid().getGridId();
-		String requestedUserId = request.getRequestUserId();
-		String sourceUrl = request.getSourceGrid().getUrl();
+	private FederationResponse doConnectFederationRequest(
+			String userId, FederationRequest req, boolean autoApproveEnabled)
+	throws DaoException, ServletException{
+		GridModel sourceGrid = req.getSourceGrid();
+		String sourceUrl = req.getSourceGrid().getUrl();
+		String requestedUserId = userId;
 
 		String selfGridId = getServletContext().getInitParameter("langrid.node.gridId");
 		String selfNodeId = getServletContext().getInitParameter("langrid.node.nodeId");
 		String selfOrganization = getServletContext().getInitParameter("langrid.operator.organization");
 		String selfHomepage = getServletContext().getInitParameter("langrid.operator.homepageUrl");
-		
+
 		ServiceFactory f = ServiceFactory.getInstance();
 		try{
 			FederationService fs = f.getFederationService(selfGridId);
@@ -194,14 +190,14 @@ public class FederationRequestServlet extends HttpServlet{
 			GridModel gm = gs.get(selfGridId);
 			
 			{
-				FederationModel fm = fs.get(requestedGridId, selfGridId);
+				FederationModel fm = fs.get(sourceGrid.getGridId(), selfGridId);
 				if(fm == null){
 					fm = new FederationModel();
 					fm.setConnected(false);
 					fm.setRequesting(true);
-					fm.setTargetGridAccessToken(request.getToken());
-					fm.setSourceGridId(requestedGridId);
-					fm.setSourceGridName(request.getSourceGrid().getGridName());
+					fm.setTargetGridAccessToken(req.getToken());
+					fm.setSourceGridId(sourceGrid.getGridId());
+					fm.setSourceGridName(sourceGrid.getGridName());
 					fm.setTargetGridId(selfGridId);
 					fm.setTargetGridName(gm.getGridName());
 					fm.setTargetGridUserHomepage(new URL(selfHomepage));
@@ -209,13 +205,13 @@ public class FederationRequestServlet extends HttpServlet{
 					fm.setTargetGridUserOrganization(selfOrganization);
 					fs.add(fm);
 				}else {
-					fs.setRequesting(requestedGridId, selfGridId, true);
+					fs.setRequesting(sourceGrid.getGridId(), selfGridId, true);
 				}
 			}
 			LogWriter.writeInfo("Operator"
 				, MessageManager.getMessage(
 					"LanguageGridOperator.federation.log.connect.Federation"
-					, Locale.ENGLISH, requestedGridId, selfGridId)
+					, Locale.ENGLISH, userId, selfGridId)
 				, getClass());
 			
 			FederationResponse fr = new FederationResponse();
@@ -224,21 +220,21 @@ public class FederationRequestServlet extends HttpServlet{
 			fr.setOperatorHomepage(selfHomepage);
 			fr.setApproved(autoApproveEnabled);
 			if(autoApproveEnabled) {
-				fs.setConnected(requestedGridId, selfGridId, true);
-				fs.setRequesting(requestedGridId, selfGridId, false);
-				if(gs.get(request.getSourceGrid().getGridId()) == null) {
-					gs.add(request.getSourceGrid());
+				fs.setConnected(sourceGrid.getGridId(), selfGridId, true);
+				fs.setRequesting(sourceGrid.getGridId(), selfGridId, false);
+				if(gs.get(req.getSourceGrid().getGridId()) == null) {
+					gs.add(req.getSourceGrid());
 					LogWriter.writeInfo("Operator"
 						, MessageManager.getMessage(
 							"LanguageGridOperator.federation.log.connect.registration.Grid"
-							, Locale.ENGLISH, requestedGridId)
+							, Locale.ENGLISH, sourceGrid.getGridId())
 						, getClass());
 				}
-				if(request.getSourceGrid().isSymmetricRelationEnabled() &&
+				if(req.getSourceGrid().isSymmetricRelationEnabled() &&
 						gm.isSymmetricRelationEnabled()){
 					// reverse connection
 					String revToken = StringUtil.randomString(25);
-					FederationModel fm = fs.get(selfGridId, requestedGridId);
+					FederationModel fm = fs.get(selfGridId, sourceGrid.getGridId());
 					if(fm == null){
 						fm = new FederationModel();
 						fm.setConnected(true);
@@ -246,14 +242,14 @@ public class FederationRequestServlet extends HttpServlet{
 						fm.setSourceGridId(selfGridId);
 						fm.setSourceGridName(gm.getGridName());
 						fm.setTargetGridAccessToken(revToken);
-						fm.setTargetGridId(requestedGridId);
-						fm.setTargetGridName(request.getSourceGrid().getGridName());
+						fm.setTargetGridId(sourceGrid.getGridId());
+						fm.setTargetGridName(sourceGrid.getGridName());
 						fm.setTargetGridUserHomepage(new URL(selfHomepage));
 						fm.setTargetGridUserId(requestedUserId);
 						fm.setTargetGridUserOrganization(selfOrganization);
 						fs.add(fm);
 					}else {
-						fs.setRequesting(requestedGridId, selfGridId, true);
+						fs.setRequesting(sourceGrid.getGridId(), selfGridId, true);
 					}
 					fr.setReverseConnectionToken(revToken);
 				}
@@ -262,7 +258,7 @@ public class FederationRequestServlet extends HttpServlet{
 					NewsModel nm = new NewsModel();
 					nm.setGridId(selfGridId);
 					Map<String, String> map = new HashMap<String, String>();
-					map.put("gridId", requestedGridId);
+					map.put("gridId", sourceGrid.getGridId());
 					nm.setContents(MessageManager.getMessage("news.federation.Connected", map));
 					// set node id
 					nm.setNodeId(MessageUtil.getSelfNodeId());
@@ -274,14 +270,14 @@ public class FederationRequestServlet extends HttpServlet{
 				OperationRequest or = new OperationRequest();
 				or.setGridId(selfGridId);
 				or.setTargetType(OperationType.FEDERATION);
-				or.setTargetId(requestedGridId);
+				or.setTargetId(sourceGrid.getGridId());
 				or.setRequestedUserId(requestedUserId);
 				or.setContents(sourceUrl);
 				or.setNodeId(selfNodeId);
 				DaoFactory.createInstance().createOperationRequestDao().addOperationRequest(or);
 			}
 			
-			return JSON.encode(fr);
+			return fr;
 		} catch(ServiceManagerException e) {
 			logger.severe("invalid url value: context parameter: 'langrid.operator.homepageUrl'");
 			throw new ServletException("proccess failed", e);
