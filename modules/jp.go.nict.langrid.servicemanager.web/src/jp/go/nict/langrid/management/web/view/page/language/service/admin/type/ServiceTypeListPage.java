@@ -59,7 +59,7 @@ public class ServiceTypeListPage extends ServiceManagerPage {
 			String gridId = getSelfGridId();
 			List<ITab> tabList = new ArrayList<ITab>();
 			DomainService ds = ServiceFactory.getInstance().getDomainService(gridId);
-			for(DomainModel dm : ds.getListOnGrid(gridId)) {
+			for(DomainModel dm : ds.getAllList()) {
 				setTabPanel(gridId, dm.getDomainName(), tabList, dm.getDomainId());
 			}
 			for(String sourceGridId : ServiceFactory.getInstance()
