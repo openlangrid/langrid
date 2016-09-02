@@ -20,9 +20,14 @@ package jp.go.nict.langrid.management.web.view.page.other;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
+import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
+import org.apache.wicket.extensions.markup.html.tabs.ITab;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.Model;
+
 import jp.go.nict.langrid.dao.MatchingCondition;
 import jp.go.nict.langrid.dao.Order;
-import jp.go.nict.langrid.dao.OrderDirection;
 import jp.go.nict.langrid.management.logic.Scope;
 import jp.go.nict.langrid.management.web.model.enumeration.GridRelation;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
@@ -31,12 +36,6 @@ import jp.go.nict.langrid.management.web.model.service.ServiceFactory;
 import jp.go.nict.langrid.management.web.view.model.provider.NewsSortableDataProvider;
 import jp.go.nict.langrid.management.web.view.page.ServiceManagerPage;
 import jp.go.nict.langrid.management.web.view.page.other.component.list.NewsListPanel;
-
-import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
-import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
-import org.apache.wicket.extensions.markup.html.tabs.ITab;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.Model;
 
 /**
  * 
@@ -56,7 +55,7 @@ public class NewsPage extends ServiceManagerPage {
 		try {
 			setTabPanel(gridId, tabList, GridRelation.SELF);
 			FederationService fs = ServiceFactory.getInstance().getFederationService(gridId);
-			for(String targetGridId : fs.getConnectedTargetGridIdList(gridId, new Order("tagetGridName", OrderDirection.ASCENDANT))) {
+			for(String targetGridId : fs.getReachableTargetGridIdListFrom(gridId)) {
 				setTabPanel(targetGridId, tabList, GridRelation.SOURCE);
 			}
 			add(new AjaxTabbedPanel("newsListPanel", tabList));

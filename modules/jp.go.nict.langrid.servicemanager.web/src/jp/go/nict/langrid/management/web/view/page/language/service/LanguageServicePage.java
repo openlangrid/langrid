@@ -22,17 +22,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import jp.go.nict.langrid.dao.Order;
-import jp.go.nict.langrid.dao.OrderDirection;
-import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
-import jp.go.nict.langrid.management.web.model.service.FederationService;
-import jp.go.nict.langrid.management.web.model.service.ServiceFactory;
-import jp.go.nict.langrid.management.web.view.model.LangridSearchCondition;
-import jp.go.nict.langrid.management.web.view.page.ServiceManagerPage;
-import jp.go.nict.langrid.management.web.view.page.language.service.component.form.panel.ServiceSearchFormPanel;
-import jp.go.nict.langrid.management.web.view.page.language.service.component.list.ServiceListFullOptionTabPanel;
-import jp.go.nict.langrid.management.web.view.session.ServiceManagerSession;
-
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
@@ -41,6 +30,15 @@ import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+
+import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
+import jp.go.nict.langrid.management.web.model.service.FederationService;
+import jp.go.nict.langrid.management.web.model.service.ServiceFactory;
+import jp.go.nict.langrid.management.web.view.model.LangridSearchCondition;
+import jp.go.nict.langrid.management.web.view.page.ServiceManagerPage;
+import jp.go.nict.langrid.management.web.view.page.language.service.component.form.panel.ServiceSearchFormPanel;
+import jp.go.nict.langrid.management.web.view.page.language.service.component.list.ServiceListFullOptionTabPanel;
+import jp.go.nict.langrid.management.web.view.session.ServiceManagerSession;
 
 /**
  * 
@@ -80,7 +78,7 @@ public class LanguageServicePage extends ServiceManagerPage {
          setTabPanel(gridId, tabList);
          
          FederationService fs = ServiceFactory.getInstance().getFederationService(gridId);
-         for(String targetId : fs.getConnectedTargetGridIdList(gridId, new Order("tagetGridName", OrderDirection.ASCENDANT))) {
+         for(String targetId : fs.getReachableTargetGridIdListFrom(gridId)) {
             setTabPanel(targetId, tabList);
          }
          add(tabPanel = new AjaxTabbedPanel("serviceListPanel", tabList));

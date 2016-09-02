@@ -12,6 +12,12 @@ import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException
  * @version $Revision: 497 $
  */
 public interface FederationService extends DataService<FederationModel> {
+	public LangridList<String> getReachableTargetGridIdListFrom(String sourceGridId)
+	throws ServiceManagerException;
+
+	public LangridList<String> getReachableTargetGridIdListTo(String targetGridId)
+	throws ServiceManagerException;
+
 	/**
 	 * 
 	 * 

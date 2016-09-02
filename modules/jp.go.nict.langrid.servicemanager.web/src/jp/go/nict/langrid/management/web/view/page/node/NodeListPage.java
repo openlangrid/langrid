@@ -20,8 +20,13 @@ package jp.go.nict.langrid.management.web.view.page.node;
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.go.nict.langrid.dao.Order;
-import jp.go.nict.langrid.dao.OrderDirection;
+import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
+import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
+import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
+import org.apache.wicket.extensions.markup.html.tabs.ITab;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.Model;
+
 import jp.go.nict.langrid.management.web.model.NodeModel;
 import jp.go.nict.langrid.management.web.model.enumeration.GridRelation;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
@@ -30,13 +35,6 @@ import jp.go.nict.langrid.management.web.model.service.ServiceFactory;
 import jp.go.nict.langrid.management.web.view.page.ServiceManagerPage;
 import jp.go.nict.langrid.management.web.view.page.node.component.list.NodeListPanel;
 import jp.go.nict.langrid.management.web.view.page.node.component.list.TabbedNodeListPanel;
-
-import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
-import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
-import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
-import org.apache.wicket.extensions.markup.html.tabs.ITab;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.Model;
 
 /**
  * 
@@ -56,7 +54,7 @@ public class NodeListPage extends ServiceManagerPage {
 		try {
 			setTabPanel(gridId, tabList, GridRelation.SELF);
 			FederationService fs = ServiceFactory.getInstance().getFederationService(gridId);
-			for(String targetGridId : fs.getConnectedTargetGridIdList(gridId, new Order("tagetGridName", OrderDirection.ASCENDANT))) {
+			for(String targetGridId : fs.getReachableTargetGridIdListFrom(gridId)) {
 				setTabPanel(targetGridId, tabList, GridRelation.SOURCE);
 			}
 			add(new AjaxTabbedPanel("nodeListPanel", tabList));

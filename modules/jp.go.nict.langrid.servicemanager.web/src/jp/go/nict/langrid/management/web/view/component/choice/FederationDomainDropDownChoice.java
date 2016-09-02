@@ -20,19 +20,17 @@ package jp.go.nict.langrid.management.web.view.component.choice;
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.go.nict.langrid.dao.MatchingCondition;
-import jp.go.nict.langrid.dao.Order;
-import jp.go.nict.langrid.dao.OrderDirection;
-import jp.go.nict.langrid.management.logic.Scope;
-import jp.go.nict.langrid.management.web.model.DomainModel;
-import jp.go.nict.langrid.management.web.model.FederationModel;
-import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
-import jp.go.nict.langrid.management.web.model.service.ServiceFactory;
-
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.util.WildcardListModel;
+
+import jp.go.nict.langrid.dao.MatchingCondition;
+import jp.go.nict.langrid.dao.Order;
+import jp.go.nict.langrid.management.logic.Scope;
+import jp.go.nict.langrid.management.web.model.DomainModel;
+import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
+import jp.go.nict.langrid.management.web.model.service.ServiceFactory;
 
 /**
  * 
@@ -50,7 +48,7 @@ public class FederationDomainDropDownChoice extends DropDownChoice<DomainModel> 
 	throws ServiceManagerException {
 		super(componentId, new Model<DomainModel>(), new WildcardListModel<DomainModel>());
 		setChoiceRenderer(new DomainChoiceRenderer());
-		targetFederationList = ServiceFactory.getInstance().getFederationService(gridId).getConnectedTargetGridIdList(gridId, new Order("targetGridId", OrderDirection.ASCENDANT));
+		targetFederationList = ServiceFactory.getInstance().getFederationService(gridId).getReachableTargetGridIdListFrom(gridId);
 		list = new ArrayList<DomainModel>();
 		List<DomainModel> selfGridDomains = ServiceFactory.getInstance().getDomainService(gridId).getList(
 				0, 1, new MatchingCondition[]{}, new Order[]{}, Scope.ALL);

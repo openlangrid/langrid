@@ -2,6 +2,7 @@ package jp.go.nict.langrid.management.web.model.service.impl;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -203,9 +204,37 @@ public class FederationServiceImpl implements FederationService {
 		}
 	}
 
+	@Override
+	public LangridList<String> getReachableTargetGridIdListFrom(String sourceGridId)
+	throws ServiceManagerException{
+		try {
+			LangridList<String> list = new LangridList<String>();
+			Collection<String> ids = logic.listAllReachableGridIdsFrom(sourceGridId);
+			list.addAll(ids);
+			list.setTotalCount(ids.size());
+			return list;
+		} catch(DaoException e) {
+			throw new ServiceManagerException(e, this.getClass());
+		}
+	}
+
+	@Override
+	public LangridList<String> getReachableTargetGridIdListTo(String targetGridId)
+	throws ServiceManagerException{
+		try {
+			LangridList<String> list = new LangridList<String>();
+			Collection<String> ids = logic.listAllReachableGridIdsTo(targetGridId);
+			list.addAll(ids);
+			list.setTotalCount(ids.size());
+			return list;
+		} catch(DaoException e) {
+			throw new ServiceManagerException(e, this.getClass());
+		}
+	}
+
+	@Override
 	public LangridList<String> getConnectedTargetGridIdList(String gridId, Order order)
-	throws ServiceManagerException
-	{
+	throws ServiceManagerException{
 		try {
 			LangridList<String> list = new LangridList<String>();
 			List<Federation> result = logic.listAllFederations();

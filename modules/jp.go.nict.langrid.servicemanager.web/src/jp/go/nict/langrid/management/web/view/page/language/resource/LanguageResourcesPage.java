@@ -20,20 +20,18 @@ package jp.go.nict.langrid.management.web.view.page.language.resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.go.nict.langrid.dao.Order;
-import jp.go.nict.langrid.dao.OrderDirection;
+import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
+import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
+import org.apache.wicket.extensions.markup.html.tabs.ITab;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.Model;
+
 import jp.go.nict.langrid.management.web.model.enumeration.GridRelation;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 import jp.go.nict.langrid.management.web.model.service.FederationService;
 import jp.go.nict.langrid.management.web.model.service.ServiceFactory;
 import jp.go.nict.langrid.management.web.view.page.ServiceManagerPage;
 import jp.go.nict.langrid.management.web.view.page.language.resource.component.list.TabbedResourceListPanel;
-
-import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
-import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
-import org.apache.wicket.extensions.markup.html.tabs.ITab;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.Model;
 
 /**
  * 
@@ -53,8 +51,7 @@ public class LanguageResourcesPage extends ServiceManagerPage {
 		try {
 			setTabPanel(gridId, tabList, GridRelation.SELF);
 			FederationService fs = ServiceFactory.getInstance().getFederationService(gridId);
-			for(String targetGridId : fs.getConnectedTargetGridIdList(gridId
-				, new Order("sourceGridName", OrderDirection.ASCENDANT)))
+			for(String targetGridId : fs.getReachableTargetGridIdListFrom(gridId))
 			{
 				setTabPanel(targetGridId, tabList, GridRelation.SOURCE);
 			}

@@ -20,6 +20,13 @@ package jp.go.nict.langrid.management.web.view.page.language.service.admin.type;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
+import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
+import org.apache.wicket.extensions.markup.html.tabs.ITab;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.model.Model;
+
 import jp.go.nict.langrid.dao.MatchingCondition;
 import jp.go.nict.langrid.dao.Order;
 import jp.go.nict.langrid.dao.OrderDirection;
@@ -34,13 +41,6 @@ import jp.go.nict.langrid.management.web.view.page.ServiceManagerPage;
 import jp.go.nict.langrid.management.web.view.page.language.service.admin.type.component.list.EmptyServiceTypeListPanel;
 import jp.go.nict.langrid.management.web.view.page.language.service.admin.type.component.list.ServiceTypeListPanel;
 import jp.go.nict.langrid.management.web.view.page.language.service.admin.type.component.list.row.ServiceTypeListRowPanel;
-
-import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
-import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
-import org.apache.wicket.extensions.markup.html.tabs.ITab;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.model.Model;
 
 /**
  * 
@@ -64,8 +64,7 @@ public class ServiceTypeListPage extends ServiceManagerPage {
 			}
 			for(String sourceGridId : ServiceFactory.getInstance()
 				.getFederationService(gridId)
-				.getConnectedTargetGridIdList(gridId,
-					new Order("tagetGridName", OrderDirection.ASCENDANT)))
+				.getReachableTargetGridIdListFrom(gridId))
 			{
 				for(DomainModel dm : ds.getListOnGrid(sourceGridId)) {
 					setTabPanel(sourceGridId, dm.getDomainName(), tabList,

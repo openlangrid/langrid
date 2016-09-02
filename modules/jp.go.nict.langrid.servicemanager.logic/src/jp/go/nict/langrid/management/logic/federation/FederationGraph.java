@@ -1,5 +1,6 @@
 package jp.go.nict.langrid.management.logic.federation;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,6 +24,18 @@ public class FederationGraph {
 			}
 			feds.put(f.getTargetGridId(), f);
 		}
+	}
+
+	public boolean isTransitive(String gridId){
+		Grid g = grids.get(gridId);
+		if(g == null) return false;
+		return g.isTranstiveRelationEnabled();
+	}
+
+	public Collection<Federation> listFederationsFrom(String sourceGridId){
+		Map<String, Federation> targets = federations.get(sourceGridId);
+		if(targets == null) return new ArrayList<>();
+		return targets.values();
 	}
 
 	public boolean isReachable(String sourceGridId, String targetGridId){

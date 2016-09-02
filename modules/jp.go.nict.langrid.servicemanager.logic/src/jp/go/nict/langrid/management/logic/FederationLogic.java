@@ -20,13 +20,19 @@
 package jp.go.nict.langrid.management.logic;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.FederationDao;
 import jp.go.nict.langrid.dao.FederationNotFoundException;
 import jp.go.nict.langrid.dao.entity.Federation;
 import jp.go.nict.langrid.management.logic.federation.FederationGraph;
+import jp.go.nict.langrid.management.logic.federation.FederationReverseGraph;
 
 /**
  * 
@@ -52,7 +58,87 @@ public class FederationLogic extends AbstractLogic{
 	public List<Federation> listAllFederations() throws DaoException{
 		return getFederationDao().list();
 	}
-	
+
+	@DaoTransaction
+	public Collection<String> listAllReachableGridIdsFrom(String sourceGridId) throws DaoException{
+		Set<String> ret = new LinkedHashSet<>();
+
+		FederationGraph fg = buildGraph();
+		ret.add(sourceGridId);
+		List<Federation> feds = new ArrayList<>(fg.listFederationsFrom(sourceGridId));
+		Collections.sort(feds, (l, r) -> (int)(r.getCreatedDateTime().getTimeInMillis() - l.getCreatedDateTime().getTimeInMillis()));
+		Collection<String> ids = new ArrayList<>();
+		for(Federation f : feds){
+			if(f.isRequesting() || !f.isConnected()) continue;
+			String gid = f.getTargetGridId();
+			ret.add(gid);
+			ids.add(gid);
+		}
+		for(String gid : ids){
+			listAllReachableGridIdsFrom(gid, fg, ret);
+		}
+		ret.remove(sourceGridId);
+		return ret;
+	}
+
+	private void listAllReachableGridIdsFrom(String sourceGridId, FederationGraph fg, Set<String> ret){
+		List<Federation> feds = new ArrayList<>(fg.listFederationsFrom(sourceGridId));
+		Collections.sort(feds, (l, r) -> (int)(r.getCreatedDateTime().getTimeInMillis() - l.getCreatedDateTime().getTimeInMillis()));
+		Collection<String> ids = new ArrayList<>();
+		for(Federation f : feds){
+			if(f.isRequesting() || !f.isConnected()) continue;
+			String gid = f.getTargetGridId();
+			if(ret.contains(gid)) continue;
+			if(!fg.isTransitive(gid)) continue;
+			ret.add(gid);
+			ids.add(gid);
+		}
+		for(String gid : ids){
+			listAllReachableGridIdsFrom(gid, fg, ret);
+		}
+	}
+
+	@DaoTransaction
+	public Collection<String> listAllReachableGridIdsTo(String targetGridId) throws DaoException{
+		Set<String> ret = new LinkedHashSet<>();
+
+		FederationReverseGraph fg = buildReverseGraph();
+		ret.add(targetGridId);
+		List<Federation> feds = new ArrayList<>(fg.listFederationsTo(targetGridId));
+		Collections.sort(feds, (l, r) -> (int)(r.getCreatedDateTime().getTimeInMillis() - l.getCreatedDateTime().getTimeInMillis()));
+		Collection<String> ids = new ArrayList<>();
+		for(Federation f : feds){
+			if(f.isRequesting() || !f.isConnected()) continue;
+			String gid = f.getSourceGridId();
+			ret.add(gid);
+			ids.add(gid);
+		}
+		if(fg.isTransitive(targetGridId)){
+			for(String gid : ids){
+				listAllReachableGridIdsTo(gid, fg, ret);
+			}
+		}
+		ret.remove(targetGridId);
+		return ret;
+	}
+
+	private void listAllReachableGridIdsTo(String targetGridId, FederationReverseGraph fg, Set<String> ret){
+		List<Federation> feds = new ArrayList<>(fg.listFederationsTo(targetGridId));
+		Collections.sort(feds, (l, r) -> (int)(r.getCreatedDateTime().getTimeInMillis() - l.getCreatedDateTime().getTimeInMillis()));
+		Collection<String> ids = new ArrayList<>();
+		for(Federation f : feds){
+			if(f.isRequesting() || !f.isConnected()) continue;
+			String gid = f.getSourceGridId();
+			if(ret.contains(gid)) continue;
+			ret.add(gid);
+			ids.add(gid);
+		}
+		if(fg.isTransitive(targetGridId)){
+			for(String gid : ids){
+				listAllReachableGridIdsTo(gid, fg, ret);
+			}
+		}
+	}
 	@DaoTransaction
 	public void addFederation(String sourceGridId, String targetGridId)
 	throws DaoException{
@@ -92,16 +178,25 @@ public class FederationLogic extends AbstractLogic{
 		getFederationDao().setConnected(sourceGridId, targetGridId, isConnected);
 	}
 
+	@DaoTransaction
 	public FederationGraph buildGraph()
 	throws DaoException{
 		return new FederationGraph(getGridDao().listAllGrids(), getFederationDao().list());
 	}
 
+	@DaoTransaction
+	public FederationReverseGraph buildReverseGraph()
+	throws DaoException{
+		return new FederationReverseGraph(getGridDao().listAllGrids(), getFederationDao().list());
+	}
+
+	@DaoTransaction
 	public boolean isReachable(String sourceGridId, String targetGridId)
 	throws DaoException{
 		return getNearestFederation(sourceGridId, targetGridId) != null;
 	}
 
+	@DaoTransaction
 	public Federation getNearestFederation(String sourceGridId, String targetGridId)
 	throws DaoException{
 		FederationDao fdao = getFederationDao();
