@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>jp.go.nict.langrid.webapps.langrid-core-withoutp2p</name>
+	<name>jp.go.nict.langrid.webapps.langrid-core.no-p2p</name>
 	<comment></comment>
 	<projects>
 		<project>jp.go.nict.langrid.servlet.filter</project>
@@ -30,6 +30,8 @@
 		<project>jp.go.nict.langrid.client</project>
 		<project>jp.go.nict.langrid.servicecontainer.handler.axis</project>
 		<project>jp.go.nict.langrid.commons</project>
+		<project>org.langrid.jsinvoker</project>
+		<project>jp.go.nict.langrid.client.soap</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
