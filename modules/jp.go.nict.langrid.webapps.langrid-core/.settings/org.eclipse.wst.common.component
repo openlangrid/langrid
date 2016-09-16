@@ -266,6 +266,15 @@
         <dependent-module archiveName="jp.go.nict.langrid.servicecontainer.handler.axis.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicecontainer.handler.axis/jp.go.nict.langrid.servicecontainer.handler.axis">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="org.langrid.jsinvoker.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/org.langrid.jsinvoker/org.langrid.jsinvoker">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jmte-3.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/jmte/jmte-3.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.client.soap.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.client.soap/jp.go.nict.langrid.client.soap">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="java-output-path" value="/jp.go.nict.langrid.webapps.langrid-core/build/classes"/>
 		<property name="context-root" value="jp.go.nict.langrid.webapps.langrid-core"/>
     </wb-module>
