@@ -8,9 +8,6 @@
         <dependent-module archiveName="aopalliance.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/spring/aopalliance.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="axis.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/axis/axis.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module archiveName="aspectjrt.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/aspectj/aspectjrt.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
@@ -231,6 +228,9 @@
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="hibernate3.3.2.patched.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/hibernate/hibernate3.3.2.patched.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="axis-java8-1.4.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/axis/axis-java8-1.4.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="java-output-path" value="/jp.go.nict.langrid.webapps.langrid-core-withoutp2p-jsdao/build/classes"/>

@@ -14,9 +14,6 @@
         <dependent-module archiveName="aopalliance.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/spring/aopalliance.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="axis.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/axis/axis.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module archiveName="aspectjrt.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/aspectj/aspectjrt.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
@@ -282,6 +279,9 @@
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.servicecontainer.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servicecontainer/jp.go.nict.langrid.servicecontainer">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="axis-java8-1.4.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/axis/axis-java8-1.4.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="java-output-path" value="/jp.go.nict.langrid.webapps.langrid-core.jxta-p2p.nict-nlp/build/classes"/>
