@@ -36,6 +36,7 @@
 		<project>jp.go.nict.langrid.servicecontainer.handler.axis</project>
 		<project>org.langrid.jsinvoker</project>
 		<project>jp.go.nict.langrid.client.soap</project>
+		<project>jp.go.nict.langrid.servicecontainer</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
