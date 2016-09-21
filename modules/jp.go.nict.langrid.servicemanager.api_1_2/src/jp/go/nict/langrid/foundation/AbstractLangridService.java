@@ -176,6 +176,7 @@ public class AbstractLangridService {
 	 * 
 	 */
 	protected ServiceContext getServiceContext(){
+		if(serviceContext != null) return serviceContext;
 		ServiceContext sc = RIProcessor.getCurrentServiceContext();
 		if(sc != null) return sc;
 		else return new WebserviceServiceContext();
@@ -360,10 +361,11 @@ public class AbstractLangridService {
 	 */
 	protected UserChecker getUserChecker() throws DaoException{
 		if(userChecker.get() == null){
-			String gid = serviceContext.getSelfGridId();
+			ServiceContext sc = getServiceContext();
+			String gid = sc.getSelfGridId();
 			if(gid == null) gid = getGridId();
 			userChecker.set(new UserChecker(
-					serviceContext, getDaoContext()
+					sc, getDaoContext()
 					, gid, getUserDao(), getServiceDao()
 					));
 		}
