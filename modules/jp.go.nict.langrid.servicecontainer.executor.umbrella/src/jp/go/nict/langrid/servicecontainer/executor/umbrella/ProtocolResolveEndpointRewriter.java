@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jp.go.nict.langrid.commons.ws.Protocols;
 import jp.go.nict.langrid.cosee.AbstractEndpointRewriter;
 import jp.go.nict.langrid.cosee.Endpoint;
 import jp.go.nict.langrid.cosee.EndpointRewriter;
@@ -29,7 +30,6 @@ import jp.go.nict.langrid.servicecontainer.executor.umbrella.dao.DaoException;
 import jp.go.nict.langrid.servicecontainer.executor.umbrella.dao.EndpointAddressProtocolDao;
 import jp.go.nict.langrid.servicecontainer.executor.umbrella.dao.ServiceProtocolDao;
 import jp.go.nict.langrid.servicecontainer.executor.umbrella.dao.entity.EndpointAddressProtocol;
-import jp.go.nict.langrid.servicecontainer.executor.umbrella.dao.entity.Protocols;
 import jp.go.nict.langrid.servicecontainer.executor.umbrella.dao.entity.ServiceProtocol;
 
 public class ProtocolResolveEndpointRewriter
@@ -76,13 +76,13 @@ implements EndpointRewriter {
 
 			ServiceProtocol p = spDao.getServiceProtocol(gid, sid);
 			if(p == null || p.getProtocol() == null){
-				return Protocols.DEFULAT;
+				return Protocols.DEFAULT;
 			} else{
 				return p.getProtocol();
 			}
 		} catch(DaoException e){
 			logger.log(Level.WARNING, "failed to access DAO.", e);
-			return Protocols.DEFULAT;
+			return Protocols.DEFAULT;
 		}
 	}
 
@@ -90,13 +90,13 @@ implements EndpointRewriter {
 		try{
 			EndpointAddressProtocol p = eapDao.getEndpointAddressProtocol(address.toString());
 			if(p == null){
-				return Protocols.DEFULAT;
+				return Protocols.DEFAULT;
 			} else{
 				return p.getProtocol();
 			}
 		} catch(DaoException e){
 			logger.log(Level.WARNING, "failed to access DAO.", e);
-			return Protocols.DEFULAT;
+			return Protocols.DEFAULT;
 		}
 	}
 

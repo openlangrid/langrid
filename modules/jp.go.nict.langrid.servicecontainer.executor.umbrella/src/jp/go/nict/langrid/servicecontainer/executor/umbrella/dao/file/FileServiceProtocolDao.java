@@ -21,9 +21,6 @@ implements ServiceProtocolDao{
 				value = context.load(ServiceProtocol.class, "*:" + serviceId);
 			}
 			if(value == null){
-				value = context.load(ServiceProtocol.class, "*:" + serviceId);
-			}
-			if(value == null){
 				value = context.load(ServiceProtocol.class, gridId + ":*");
 			}
 			if(value == null){

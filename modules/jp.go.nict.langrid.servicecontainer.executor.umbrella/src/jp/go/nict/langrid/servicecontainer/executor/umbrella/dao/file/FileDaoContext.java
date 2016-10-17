@@ -26,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Serializable;
 import java.sql.Blob;
 import java.util.Collection;
@@ -126,19 +127,15 @@ public class FileDaoContext implements DaoContext{
 		Map<String, String> map = cache.get(clazz);
 		if(map == null){
 			map = new LinkedHashMap<String, String>();
-			try{
-				FileInputStream is = new FileInputStream(new File(path, clazz.getSimpleName() + ".dat"));
-				try{
-					BufferedReader r = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-					String line = null;
-					while((line = r.readLine()) != null){
-						if(line.charAt(0) == '#') continue;
-						String[] value = line.split(",");
-						if(value.length != 2) continue;
-						map.put(value[0].trim(), value[1].trim());
-					}
-				} finally{
-					is.close();
+			try(InputStream is = new FileInputStream(new File(path, clazz.getSimpleName() + ".dat"));
+				Reader isr = new InputStreamReader(is, "UTF-8");
+				BufferedReader r = new BufferedReader(isr)){
+				String line = null;
+				while((line = r.readLine()) != null){
+					if(line.charAt(0) == '#') continue;
+					String[] value = line.split(",");
+					if(value.length != 2) continue;
+					map.put(value[0].trim(), value[1].trim());
 				}
 			} catch(FileNotFoundException e){
 				logger.warning("file for dao not found: " + clazz.getSimpleName() + ".dat");
