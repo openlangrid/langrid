@@ -60,6 +60,10 @@ implements EndpointRewriter {
 
 	private String getProtocolForServiceId(String serviceId){
 		try{
+			int qi = serviceId.indexOf('?');
+			if(qi != -1){
+				serviceId = serviceId.substring(0, qi);
+			}
 			String[] ids = serviceId.split(":");
 			String gid = null, sid = null;
 			if(ids.length == 2){
@@ -68,10 +72,6 @@ implements EndpointRewriter {
 			} else{
 				gid = "*";
 				sid = serviceId;
-			}
-			int qi = serviceId.indexOf('?');
-			if(qi != -1){
-				serviceId = serviceId.substring(0, qi);
 			}
 
 			ServiceProtocol p = spDao.getServiceProtocol(gid, sid);
