@@ -33,6 +33,7 @@ import jp.go.nict.langrid.commons.rpc.TransportHeader;
 import jp.go.nict.langrid.commons.ws.LangridConstants;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.cosee.binding.TreeBindings;
+import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
 
 /**
  * 
@@ -48,22 +49,22 @@ public class DynamicBindingRewriter extends AbstractEndpointRewriter{
 		super.extractProperties(
 				serviceContext, properties);
 
+		List<RpcHeader> bindings = null;
 		try{
 			TreeBindings treeBindings = (TreeBindings)properties.get("treeBindings");
 			if(treeBindings == null){
 				treeBindings = new TreeBindings();
 			}
-			treeBindings.merge(new TreeBindings(
-					(List<RpcHeader>)properties.get(
-							LangridConstants.ACTOR_SERVICE_TREEBINDING
-							)
-					));
+			bindings = (List<RpcHeader>)properties.get(
+					LangridConstants.ACTOR_SERVICE_TREEBINDING
+					);
+			treeBindings.merge(new TreeBindings(bindings));
 			properties.put("treeBindings", treeBindings);
 			properties.put("treeBindings.authKey", serviceContext.getInitParameter("langrid.appAuthKey"));
 			properties.put("treeBindings.authUserId", serviceContext.getAuthUser());
 		} catch(ParseException e){
 			logger.log(Level.WARNING
-					, "failed to parse binding information."
+					, "failed to parse binding information: " + JSON.encode(bindings, true)
 					, e);
 			properties.put("treeBindings", new TreeBindings());
 		}
