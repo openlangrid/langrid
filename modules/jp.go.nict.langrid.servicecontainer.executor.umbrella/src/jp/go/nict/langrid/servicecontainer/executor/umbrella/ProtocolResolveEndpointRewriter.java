@@ -75,7 +75,7 @@ implements EndpointRewriter {
 			}
 
 			ServiceProtocol p = spDao.getServiceProtocol(gid, sid);
-			if(p == null){
+			if(p == null || p.getProtocol() == null){
 				return Protocols.DEFULAT;
 			} else{
 				return p.getProtocol();
