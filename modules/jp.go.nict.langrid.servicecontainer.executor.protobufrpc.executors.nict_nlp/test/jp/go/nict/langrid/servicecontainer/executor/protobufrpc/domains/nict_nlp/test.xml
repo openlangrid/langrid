@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="factory" class="jp.go.nict.langrid.servicecontainer.executor.protobufrpc.PbComponentServiceFactory">
+		<property name="executors">
+			<map>
+				<entry
+					key="jp.go.nict.langrid.service_1_2.bilingualdictionary.BilingualDictionaryWithLongestMatchSearchService"
+					value="jp.go.nict.langrid.servicecontainer.executor.protobufrpc.executors.nict_nlp.PbBilingualDictionaryWithLongestMatchSearchServiceExecutor"
+					/>
+				<entry
+					key="jp.go.nict.langrid.service_1_2.morphologicalanalysis.MorphologicalAnalysisService"
+					value="jp.go.nict.langrid.servicecontainer.executor.protobufrpc.executors.nict_nlp.PbMorphologicalAnalysisServiceExecutor"
+					/>
+				<entry
+					key="jp.go.nict.langrid.service_1_2.translation.TranslationService"
+					value="jp.go.nict.langrid.servicecontainer.executor.protobufrpc.executors.nict_nlp.PbTranslationServiceExecutor"
+					/>
+			</map>
+		</property>
+	</bean>
+</beans>

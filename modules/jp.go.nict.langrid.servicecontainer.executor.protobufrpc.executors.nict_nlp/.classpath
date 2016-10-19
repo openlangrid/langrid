@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.servicecontainer.executor.protobufrpc"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.commons.protobufrpc"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.client.ws_1_2.protobuf"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.commons"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.cosee"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.service.language_1_2"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.service.common_1_2"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.servicecontainer"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="/lib/spring/org.springframework.asm-3.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/lib/spring/org.springframework.beans-3.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/lib/spring/org.springframework.context-3.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/lib/spring/org.springframework.context.support-3.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/lib/spring/org.springframework.core-3.0.6.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/lib/spring/org.springframework.expression-3.0.6.RELEASE.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
