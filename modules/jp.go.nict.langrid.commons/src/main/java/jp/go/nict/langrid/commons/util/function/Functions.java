@@ -39,6 +39,24 @@ public class Functions {
 		};
 	}
 
+	public static <P, E extends Throwable> void tunnelingExecute(
+			Consumer<Consumer<P>> term, ConsumerWithException<P, E> process)
+	throws E{
+		unsoften(() -> {
+			term.accept(Functions.soften(
+					(ConsumerWithException<P, E>)(pr -> process.accept(pr))));
+			});
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <E extends Throwable> void unsoften(Runnable r) throws E{
+		try{
+			r.run();
+		} catch(SoftenedException e){
+			throw (E)e.getCause();
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	public static <E extends Throwable> void unsoft(SoftenedException e) throws E{
 		Throwable t = e.getCause();
