@@ -58,9 +58,9 @@ public class ServiceProfileFieldPanel extends Panel {
 		add(new RequiredServiceDescriptionField("serviceDescription",
 			serviceDescription = new Model<String>()));
 		if(type.equals(InstanceType.EXTERNAL)) {
-			serviceType = new AtomicServiceTypeDropDownChoice(gridId, "serviceType");
+			serviceType = new AtomicServiceTypeDropDownChoice("serviceType");
 		} else {
-			serviceType = new CompositeServiceTypeDropDownChoice(gridId, "serviceType");
+			serviceType = new CompositeServiceTypeDropDownChoice("serviceType");
 		}
 		serviceType.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			@Override

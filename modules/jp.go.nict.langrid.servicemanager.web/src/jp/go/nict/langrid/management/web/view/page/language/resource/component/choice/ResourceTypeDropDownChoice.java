@@ -41,10 +41,20 @@ import org.apache.wicket.model.util.WildcardListModel;
  */
 public class ResourceTypeDropDownChoice extends
 		DropDownChoice<ResourceTypeModel> {
-	/**
-	 * 
-	 * 
-	 */
+	public ResourceTypeDropDownChoice(String componentId)
+			throws ServiceManagerException {
+		super(componentId, new Model<ResourceTypeModel>(),
+				new WildcardListModel<ResourceTypeModel>());
+		setChoiceRenderer(new ResourceTypeModelChoiceRenderer());
+		list = new ArrayList<ResourceTypeModel>();
+		for(DomainModel dm : ServiceFactory.getInstance().getDomainService(null).getAllList()){
+			list.addAll(ServiceFactory.getInstance().getResourceTypeService(null)
+					.getAllList(dm.getDomainId()));
+		}
+		list.add(ResourceModelUtil.makeOtherResourceTypeModel());
+		setChoices(list);
+	}
+
 	public ResourceTypeDropDownChoice(String gridId, String componentId)
 			throws ServiceManagerException {
 		super(componentId, new Model<ResourceTypeModel>(),

@@ -44,7 +44,7 @@ public class ResourceProfileFieldPanel extends Panel {
 			resourceDescription = new Model<String>()));
 		add(new RequiredCopyrightField("copyrightInfo",
 			copyrightInfo = new Model<String>()));
-		type = new ResourceTypeDropDownChoice(gridId, "resourceType");
+		type = new ResourceTypeDropDownChoice("resourceType");
 		type.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {

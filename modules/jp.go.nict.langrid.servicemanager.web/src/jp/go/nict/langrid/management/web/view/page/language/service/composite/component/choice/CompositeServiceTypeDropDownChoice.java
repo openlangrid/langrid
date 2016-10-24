@@ -33,6 +33,10 @@ import jp.go.nict.langrid.management.web.view.page.language.service.component.ch
  */
 public class CompositeServiceTypeDropDownChoice extends ServiceTypeDropDownChoice
 {
+	public CompositeServiceTypeDropDownChoice(String componentId)
+	throws ServiceManagerException{
+		super(componentId);
+	}
 	/**
 	 * 
 	 * 

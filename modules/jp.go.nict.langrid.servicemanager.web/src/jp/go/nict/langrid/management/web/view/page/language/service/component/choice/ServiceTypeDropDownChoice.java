@@ -40,6 +40,15 @@ import org.apache.wicket.model.util.WildcardListModel;
  * @version $Revision: 1519 $
  */
 public class ServiceTypeDropDownChoice extends DropDownChoice<ServiceTypeModel> {
+	public ServiceTypeDropDownChoice(String componentId)
+	throws ServiceManagerException {
+		super(componentId
+				, new Model<ServiceTypeModel>()
+				, new WildcardListModel<ServiceTypeModel>());
+		setChoiceRenderer(new ServiceTypeModelChoiceRenderer());
+		setChoices(getServiceTypeList());
+	}
+
 	/**
 	 * 
 	 * 
@@ -89,6 +98,20 @@ public class ServiceTypeDropDownChoice extends DropDownChoice<ServiceTypeModel> 
 	 */
 	public boolean isSelected() {
 		return getValue().equals(NO_SELECTION_VALUE);
+	}
+
+	protected List<ServiceTypeModel> getServiceTypeList()
+	throws ServiceManagerException {
+		try {
+			typeList = new ArrayList<ServiceTypeModel>();
+			for(DomainModel dm : ServiceFactory.getInstance().getDomainService(null).getAllList()){
+				typeList.addAll(ServiceFactory.getInstance().getServiceTypeService(null).getAllList(dm.getDomainId()));
+			}
+			typeList.add(ServiceModelUtil.makeOtherServiceTypeModel());
+		} catch(ServiceManagerException e) {
+			return new LangridList<ServiceTypeModel>();
+		}
+		return typeList;
 	}
 
 	protected List<ServiceTypeModel> getServiceTypeList(String gridId)

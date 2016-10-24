@@ -32,6 +32,10 @@ import jp.go.nict.langrid.management.web.view.page.language.service.component.ch
  * @version $Revision: 1521 $
  */
 public class AtomicServiceTypeDropDownChoice extends ServiceTypeDropDownChoice{
+	public AtomicServiceTypeDropDownChoice(String componentId)
+	throws ServiceManagerException{
+		super(componentId);
+	}
 	/**
 	 * 
 	 * 
@@ -41,7 +45,7 @@ public class AtomicServiceTypeDropDownChoice extends ServiceTypeDropDownChoice{
 	throws ServiceManagerException{
 		super(gridId, componentId);
 	}
-	
+
 	@Override
 	protected List<ServiceTypeModel> getServiceTypeList(String gridId)
 	throws ServiceManagerException
