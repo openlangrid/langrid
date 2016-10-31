@@ -73,12 +73,13 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 			, String additionalUrlPart, String protocol, byte[] input
 			)
 	throws DaoException, TooManyCallNestException, NoValidEndpointsException, ProcessFailedException, IOException{
-		Service service = null;
+		Service serviceOnThisGrid = null;
 		URL url = null;
 		String authId = null;
 		String authPasswd = null;
 		daoContext.beginTransaction();
 		try{
+			boolean forward = true;
 			Federation f = null;
 			List<Federation> path = federationLogic.getShortestPath(serviceContext.getSelfGridId(), serviceGridId);
 			if(path.size() > 0){
@@ -86,34 +87,36 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 						LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION) != null){
 					// get farthest
 					f = path.get(path.size() - 1);
+					forward = f.getTargetGridId().equals(serviceGridId);
 				} else{
 					// get nearest
 					f = path.get(0);
+					forward = f.getSourceGridId().equals(serviceContext.getSelfGridId());
 				}
 			}
 			if(f == null){
 				throw new ProcessFailedException("no route to target grid: " + serviceGridId);
 			}
 			if(serviceGridId.equals(serviceContext.getSelfGridId())){
-				service = serviceDao.getService(serviceContext.getSelfGridId(), serviceId);
-				if(service == null){
+				serviceOnThisGrid = serviceDao.getService(serviceContext.getSelfGridId(), serviceId);
+				if(serviceOnThisGrid == null){
 					throw new ProcessFailedException("no service: " + serviceId +
 							" exists at grid: " + serviceGridId);
 				}
 			}
-			Grid g = gridDao.getGrid(f.getTargetGridId());
+			Grid g = gridDao.getGrid(forward ? f.getTargetGridId() : f.getSourceGridId());
 			String gurl = g.getUrl();
 			if(!gurl.endsWith("/")) gurl += "/";
 			url = new URL(gurl + "invoker/" + serviceGridId + ":" + serviceId
 					+ ((additionalUrlPart != null) ? additionalUrlPart : ""));
-			authId = f.getTargetGridUserId();
+			authId = forward ? f.getTargetGridUserId() : f.getSourceGridUserId();
 			authPasswd = f.getTargetGridAccessToken();
 		} catch(MalformedURLException e){
 			throw new ProcessFailedException(e);
 		} finally{
 			daoContext.commitTransaction();
 		}
-		adjustHeaders(serviceContext, service, headers);
+		adjustHeaders(serviceContext, serviceOnThisGrid, headers);
 
 		String nestCountString = headers.get(LangridConstants.HTTPHEADER_CALLNEST);
 		if(nestCountString != null){
