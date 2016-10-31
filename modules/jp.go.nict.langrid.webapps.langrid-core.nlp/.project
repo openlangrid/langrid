@@ -34,8 +34,6 @@
 		<project>jp.go.nict.langrid.client.ws_1_2.management</project>
 		<project>jp.go.nict.langrid.client</project>
 		<project>jp.go.nict.langrid.servicecontainer.handler.axis</project>
-		<project>org.langrid.jsinvoker</project>
-		<project>jp.go.nict.langrid.client.soap</project>
 		<project>jp.go.nict.langrid.servicecontainer</project>
 	</projects>
 	<buildSpec>
