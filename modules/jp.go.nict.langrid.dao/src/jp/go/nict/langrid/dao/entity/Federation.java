@@ -68,14 +68,14 @@ extends UpdateManagedEntity
 	 * 
 	 */
 	public Federation(String sourceGridId, String targetGridId,
-			String sourceGridName, String tagetGridName,
+			String sourceGridName, String targetGridName,
 			String targetGridUserId, String targetGridAccessToken,
 			boolean requesting, String targetGridOrganization,
 			URL targetGridHomepageUrl, boolean connected) {
 		this.sourceGridId = sourceGridId;
 		this.targetGridId = targetGridId;
 		this.sourceGridName = sourceGridName;
-		this.tagetGridName = tagetGridName;
+		this.targetGridName = targetGridName;
 		this.targetGridUserId = targetGridUserId;
 		this.targetGridAccessToken = targetGridAccessToken;
 		this.requesting = requesting;
@@ -209,12 +209,12 @@ extends UpdateManagedEntity
 		this.sourceGridName = sourceGridName;
 	}
 
-	public String getTagetGridName() {
-		return tagetGridName;
+	public String getTargetGridName() {
+		return targetGridName;
 	}
 
-	public void setTargetGridName(String tagetGridName) {
-		this.tagetGridName = tagetGridName;
+	public void setTargetGridName(String targetGridName) {
+		this.targetGridName = targetGridName;
 	}
 	
 	public void setConnected(boolean connected) {
@@ -243,7 +243,7 @@ extends UpdateManagedEntity
 	private String targetGridId;
 
 	private String sourceGridName;
-	private String tagetGridName;
+	private String targetGridName;
 	
 	private String targetGridUserId;
 	private String targetGridAccessToken;
