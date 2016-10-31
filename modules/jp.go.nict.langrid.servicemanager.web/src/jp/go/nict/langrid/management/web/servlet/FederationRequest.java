@@ -48,6 +48,22 @@ public class FederationRequest {
 		this.requestUserId = requestUserId;
 	}
 
+	public boolean isSymmetric() {
+		return symmetric;
+	}
+
+	public void setSymmetric(boolean symmetric) {
+		this.symmetric = symmetric;
+	}
+
+	public boolean isTransitive() {
+		return transitive;
+	}
+
+	public void setTransitive(boolean transitive) {
+		this.transitive = transitive;
+	}
+
 	@Deprecated
 	public String getSourceUrl() {
 		return sourceUrl;
@@ -62,4 +78,6 @@ public class FederationRequest {
 	private String requestUserId;
 	private String sourceUrl;
 	private GridModel sourceGrid;
+	private boolean symmetric;
+	private boolean transitive;
 }

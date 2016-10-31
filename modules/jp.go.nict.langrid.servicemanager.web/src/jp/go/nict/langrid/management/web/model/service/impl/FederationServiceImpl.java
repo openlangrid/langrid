@@ -301,11 +301,24 @@ public class FederationServiceImpl implements FederationService {
 
 	@Override
 	public void setConnected(
-		String sourceGridId, String targetGridId, boolean isConnected)
-	throws ServiceManagerException
-	{
+			String sourceGridId, String targetGridId, boolean isConnected)
+		throws ServiceManagerException
+		{
+			try {
+				logic.setConnection(sourceGridId, targetGridId, isConnected);
+			} catch(DaoException e) {
+				throw new ServiceManagerException(e, this.getClass());
+			}
+		}
+
+	public void setRelations(
+			String sourceGridId, String targetGridId, boolean symmetric, boolean transitive)
+	throws ServiceManagerException{
 		try {
-			logic.setConnection(sourceGridId, targetGridId, isConnected);
+			logic.update(sourceGridId, targetGridId, f -> {
+				f.setSymmetric(symmetric);
+				f.setTransitive(transitive);
+			});
 		} catch(DaoException e) {
 			throw new ServiceManagerException(e, this.getClass());
 		}

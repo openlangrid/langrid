@@ -21,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -78,7 +79,18 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 		String authPasswd = null;
 		daoContext.beginTransaction();
 		try{
-			Federation f = federationLogic.getNearestFederation(serviceContext.getSelfGridId(), serviceGridId);
+			Federation f = null;
+			List<Federation> path = federationLogic.getShortestPath(serviceContext.getSelfGridId(), serviceGridId);
+			if(path.size() > 0){
+				if(serviceContext.getRequestMimeHeaders().getHeader(
+						LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION) != null){
+					// get farthest
+					f = path.get(path.size() - 1);
+				} else{
+					// get nearest
+					f = path.get(0);
+				}
+			}
 			if(f == null){
 				throw new ProcessFailedException("no route to target grid: " + serviceGridId);
 			}

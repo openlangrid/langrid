@@ -224,6 +224,18 @@ extends UpdateManagedEntity
 	public boolean isConnected() {
 		return connected;
 	}
+	public boolean isSymmetric() {
+		return symmetric != null && symmetric;
+	}
+	public void setSymmetric(boolean symmetric) {
+		this.symmetric = symmetric;
+	}
+	public boolean isTransitive() {
+		return transitive != null && transitive;
+	}
+	public void setTransitive(boolean transitive) {
+		this.transitive = transitive;
+	}
 
 	@Id
 	private String sourceGridId;
@@ -246,4 +258,7 @@ extends UpdateManagedEntity
 	private EmbeddableStringValueClass<URL> targetGridHomepageUrl;
 	
 	private boolean connected;
+	@Column(name="symmetricRel")
+	private Boolean symmetric = false;
+	private Boolean transitive = false;
 }

@@ -8,7 +8,6 @@ import jp.go.nict.langrid.dao.DaoFactory;
 import jp.go.nict.langrid.dao.FederationDao;
 import jp.go.nict.langrid.dao.GridDao;
 import jp.go.nict.langrid.dao.entity.Federation;
-import jp.go.nict.langrid.dao.entity.Grid;
 import jp.go.nict.langrid.management.logic.FederationLogic;
 
 public class FederationLogicTest {
@@ -39,7 +38,7 @@ public class FederationLogicTest {
 	public void test_getNearestFederation_1hop() throws Throwable{
 		FederationLogic fl = new FederationLogic();
 		fdao.addFederation(newFederation("grid1", "grid2"));
-		Assert.assertEquals("grid2", fl.getNearestFederation("grid1", "grid2").getTargetGridId());
+		Assert.assertEquals("grid2", fl.getShortestPath("grid1", "grid2").get(0).getTargetGridId());
 	}
 
 	@Test
@@ -47,9 +46,6 @@ public class FederationLogicTest {
 		FederationLogic fl = new FederationLogic();
 		fdao.addFederation(newFederation("grid1", "grid2"));
 		fdao.addFederation(newFederation("grid2", "grid3"));
-		gdao.addGrid(newGridSymm("grid1"));
-		gdao.addGrid(newGridSymm("grid2"));
-		gdao.addGrid(newGridSymm("grid3"));
 		Assert.assertTrue(fl.isReachable("grid1", "grid3"));
 	}
 
@@ -58,9 +54,6 @@ public class FederationLogicTest {
 		FederationLogic fl = new FederationLogic();
 		fdao.addFederation(newFederation("grid1", "grid2"));
 		fdao.addFederation(new Federation("grid2", "grid3"));
-		gdao.addGrid(newGridSymm("grid1"));
-		gdao.addGrid(newGridSymm("grid2"));
-		gdao.addGrid(newGridSymm("grid3"));
 		Assert.assertFalse(fl.isReachable("grid1", "grid3"));
 	}
 
@@ -68,10 +61,7 @@ public class FederationLogicTest {
 	public void test_isReachable_2hop_unreachable() throws Throwable{
 		FederationLogic fl = new FederationLogic();
 		fdao.addFederation(newFederation("grid1", "grid2"));
-		fdao.addFederation(newFederation("grid2", "grid3"));
-		gdao.addGrid(newGridSymm("grid1"));
-		gdao.addGrid(newGridNoSymm("grid2"));
-		gdao.addGrid(newGridSymm("grid3"));
+		fdao.addFederation(newFederation("grid2", "grid3", true, false));
 		Assert.assertFalse(fl.isReachable("grid1", "grid3"));
 	}
 
@@ -82,26 +72,9 @@ public class FederationLogicTest {
 		fdao.addFederation(newFederation("grid2", "grid3"));
 		fdao.addFederation(newFederation("grid3", "grid4"));
 		fdao.addFederation(newFederation("grid1", "grid3"));
-		for(int i = 1; i <= 4; i++){
-			gdao.addGrid(newGridSymm("grid" + i));
-		}
-		Federation f = fl.getNearestFederation("grid1", "grid4");
+		Federation f = fl.getShortestPath("grid1", "grid4").get(0);
 		Assert.assertNotNull(f);
 		Assert.assertEquals("grid3", f.getTargetGridId());
-	}
-
-	@Test
-	public void test_getNearestFederation_null() throws Throwable{
-		FederationLogic fl = new FederationLogic();
-		fdao.addFederation(new Federation("grid1", "grid2"));
-		fdao.addFederation(new Federation("grid2", "grid3"));
-		fdao.addFederation(new Federation("grid3", "grid4"));
-		fdao.addFederation(new Federation("grid1", "grid3"));
-		for(int i = 1; i <= 4; i++){
-			gdao.addGrid(newGridSymm("grid" + i));
-		}
-		Federation f = fl.getNearestFederation("grid1", "grid4");
-		Assert.assertNull(f);
 	}
 
 	@Test
@@ -120,10 +93,7 @@ public class FederationLogicTest {
 		fdao.addFederation(newFederation("grid8", "grid10"));
 		fdao.addFederation(newFederation("grid9", "grid11"));
 		fdao.addFederation(newFederation("grid10", "grid11"));
-		for(int i = 1; i <= 11; i++){
-			gdao.addGrid(newGridSymm("grid" + i));
-		}
-		Federation f = fl.getNearestFederation("grid1", "grid11");
+		Federation f = fl.getShortestPath("grid1", "grid11").get(0);
 		Assert.assertNotNull(f);
 		Assert.assertEquals("grid7", f.getTargetGridId());
 	}
@@ -133,12 +103,8 @@ public class FederationLogicTest {
 		fdao.addFederation(newFederation("grid1", "grid2"));
 		fdao.addFederation(newFederation("grid2", "grid1"));
 		fdao.addFederation(newFederation("grid3", "grid4"));
-		for(int i = 1; i <= 4; i++){
-			gdao.addGrid(newGridSymm("grid" + i));
-		}
 		FederationLogic fl = new FederationLogic();
-		Federation f = fl.getNearestFederation("grid1", "grid5");
-		Assert.assertNull(f);
+		Assert.assertEquals(0, fl.getShortestPath("grid1", "grid5").size());
 	}
 
 	@Test
@@ -148,12 +114,8 @@ public class FederationLogicTest {
 		fdao.addFederation(newFederation("grid2", "grid3"));
 		fdao.addFederation(newFederation("grid3", "grid2"));
 		fdao.addFederation(newFederation("grid3", "grid4"));
-		for(int i = 1; i <= 4; i++){
-			gdao.addGrid(newGridSymm("grid" + i));
-		}
 		FederationLogic fl = new FederationLogic();
-		Federation f = fl.getNearestFederation("grid1", "grid5");
-		Assert.assertNull(f);
+		Assert.assertEquals(0, fl.getShortestPath("grid1", "grid5").size());
 	}
 
 	@Test
@@ -163,30 +125,21 @@ public class FederationLogicTest {
 		fdao.addFederation(newFederation("grid2", "grid3"));
 		fdao.addFederation(newFederation("grid3", "grid2"));
 		fdao.addFederation(newFederation("grid3", "grid4"));
-		for(int i = 1; i <= 4; i++){
-			gdao.addGrid(newGridSymm("grid" + i));
-		}
 		FederationLogic fl = new FederationLogic();
-		Assert.assertNull(fl.getNearestFederation("grid5", "grid1"));
-		Assert.assertNull(fl.getNearestFederation("grid0", "grid4"));
-	}
-
-	private Grid newGridSymm(String gridId){
-		Grid g = new Grid(gridId, "operator");
-		g.setSymmetricRelationEnabled(true);
-		return g;
-	}
-
-	private Grid newGridNoSymm(String gridId){
-		Grid g = new Grid(gridId, "operator");
-		g.setSymmetricRelationEnabled(false);
-		return g;
+		Assert.assertEquals(0, fl.getShortestPath("grid5", "grid1").size());
+		Assert.assertEquals(0, fl.getShortestPath("grid0", "grid4").size());
 	}
 
 	private Federation newFederation(String sgid, String tgid){
+		return newFederation(sgid, tgid, true, true);
+	}
+
+	private Federation newFederation(String sgid, String tgid, boolean symmetric, boolean transitive){
 		Federation f = new Federation(sgid, tgid);
 		f.setConnected(true);
 		f.setRequesting(false);
+		f.setSymmetric(symmetric);
+		f.setTransitive(transitive);
 		return f;
 	}
 

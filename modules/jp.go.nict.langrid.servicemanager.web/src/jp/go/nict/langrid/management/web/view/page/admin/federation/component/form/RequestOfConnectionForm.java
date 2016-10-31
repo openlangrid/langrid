@@ -25,7 +25,6 @@ import jp.go.nict.langrid.management.web.log.LogWriter;
 import jp.go.nict.langrid.management.web.model.FederationModel;
 import jp.go.nict.langrid.management.web.model.GridModel;
 import jp.go.nict.langrid.management.web.model.NewsModel;
-import jp.go.nict.langrid.management.web.model.UserModel;
 import jp.go.nict.langrid.management.web.model.exception.ServiceManagerException;
 import jp.go.nict.langrid.management.web.model.service.FederationService;
 import jp.go.nict.langrid.management.web.model.service.GridService;
@@ -137,53 +136,27 @@ public abstract class RequestOfConnectionForm extends AbstractForm<String> {
 									nm.setNodeId(MessageUtil.getSelfNodeId());
 									ServiceFactory.getInstance().getNewsService(gridId).add(nm);
 								} catch(ServiceManagerException e) {
-									LogWriter.writeError("Operator", e, getClass());					
+									LogWriter.writeError("Operator", e, getClass());
 								}
 							}
 							FederationService fService = ServiceFactory.getInstance().getFederationService(gridId);
-							{	FederationModel fm = fService.get(gridId, targetGridId);
-								if(fm == null) {
-									fm = new FederationModel();
-									fm.setRequesting(!fr.isApproved());
-									fm.setConnected(fr.isApproved());
-									fm.setSourceGridId(gridId);
-									fm.setSourceGridName(grid.getGridName());
-									fm.setTargetGridId(targetGridId);
-									fm.setTargetGridName(fr.getTargetGrid().getGridName());
-									fm.setTargetGridAccessToken(token);
-									fm.setTargetGridUserHomepage(new URL(fr.getOperatorHomepage()));
-									fm.setTargetGridUserId(userId.getModelObject());
-									fm.setTargetGridUserOrganization(fr.getOperatorOrganization());
-									fService.add(fm);
-								} else if(fr.isApproved()){
-									fService.setRequesting(gridId, targetGridId, false);
-									fService.setConnected(gridId, targetGridId, true);
-								}
-							}
-							if(fr.isApproved() && fr.getTargetGrid().isSymmetricRelationEnabled()
-									&& grid.isSymmetricRelationEnabled()){
-								// reverse connection
-								FederationModel fm = fService.get(targetGridId, gridId);
-								if(fm == null) {
-									fm = new FederationModel();
-									fm.setRequesting(false);
-									fm.setConnected(true);
-									fm.setSourceGridId(targetGridId);
-									fm.setSourceGridName(fr.getTargetGrid().getGridName());
-									fm.setTargetGridId(gridId);
-									fm.setTargetGridName(grid.getGridName());
-									fm.setTargetGridAccessToken(fr.getReverseConnectionToken());
-									UserModel um = ServiceFactory.getInstance().getUserService(gridId).get(grid.getOperatorUserId());
-									fm.setTargetGridUserHomepage(um.getHomepageUrl().getValue());
-									fm.setTargetGridUserId(um.getUserId());
-									fm.setTargetGridUserOrganization(um.getOrganization());
-									fService.add(fm);
-								} else {
-									fService.setRequesting(targetGridId, gridId, false);
-									if(fr.isApproved()){
-										fService.setConnected(targetGridId, gridId, true);
-									}
-								}
+							FederationModel fm = fService.get(gridId, targetGridId);
+							if(fm == null) {
+								fm = new FederationModel();
+								fm.setRequesting(!fr.isApproved());
+								fm.setConnected(fr.isApproved());
+								fm.setSourceGridId(gridId);
+								fm.setSourceGridName(grid.getGridName());
+								fm.setTargetGridId(targetGridId);
+								fm.setTargetGridName(fr.getTargetGrid().getGridName());
+								fm.setTargetGridAccessToken(token);
+								fm.setTargetGridUserHomepage(new URL(fr.getOperatorHomepage()));
+								fm.setTargetGridUserId(userId.getModelObject());
+								fm.setTargetGridUserOrganization(fr.getOperatorOrganization());
+								fService.add(fm);
+							} else if(fr.isApproved()){
+								fService.setRequesting(gridId, targetGridId, false);
+								fService.setConnected(gridId, targetGridId, true);
 							}
 						}
 					} else if(code == HttpStatus.SC_INTERNAL_SERVER_ERROR

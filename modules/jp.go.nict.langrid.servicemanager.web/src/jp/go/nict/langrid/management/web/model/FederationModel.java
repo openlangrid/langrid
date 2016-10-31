@@ -163,6 +163,22 @@ public class FederationModel implements Serializable {
 		this.connected = disconnected;
 	}
 
+	public boolean isSymmetricRelationEnabled() {
+		return symmetricRelationEnabled;
+	}
+	
+	public void setSymmetricRelationEnabled(boolean symmetricRelationEnabled) {
+		this.symmetricRelationEnabled = symmetricRelationEnabled;
+	}
+	
+	public boolean isTransitiveRelationEnabled() {
+		return transitiveRelationEnabled;
+	}
+	
+	public void setTransitiveRelationEnabled(boolean transitiveRelationEnabled) {
+		this.transitiveRelationEnabled = transitiveRelationEnabled;
+	}
+
 	private boolean requesting;
 	private String sourceGridId;
 	private String sourceGridName;
@@ -173,5 +189,7 @@ public class FederationModel implements Serializable {
 	private String targetGridUserId;
 	private String targetGridUserOrganization;
 	private boolean connected;
-	
+	private boolean symmetricRelationEnabled;
+	private boolean transitiveRelationEnabled;
+	private static final long serialVersionUID = 5175155697194974301L;
 }

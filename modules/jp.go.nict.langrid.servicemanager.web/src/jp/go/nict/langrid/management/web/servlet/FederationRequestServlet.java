@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jp.go.nict.langrid.commons.lang.StringUtil;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.commons.ws.ServletServiceContext;
 import jp.go.nict.langrid.dao.DaoException;
@@ -195,6 +194,8 @@ public class FederationRequestServlet extends HttpServlet{
 					fm = new FederationModel();
 					fm.setConnected(false);
 					fm.setRequesting(true);
+					fm.setSymmetricRelationEnabled(req.isSymmetric());
+					fm.setTransitiveRelationEnabled(req.isTransitive());
 					fm.setTargetGridAccessToken(req.getToken());
 					fm.setSourceGridId(sourceGrid.getGridId());
 					fm.setSourceGridName(sourceGrid.getGridName());
@@ -229,29 +230,6 @@ public class FederationRequestServlet extends HttpServlet{
 							"LanguageGridOperator.federation.log.connect.registration.Grid"
 							, Locale.ENGLISH, sourceGrid.getGridId())
 						, getClass());
-				}
-				if(req.getSourceGrid().isSymmetricRelationEnabled() &&
-						gm.isSymmetricRelationEnabled()){
-					// reverse connection
-					String revToken = StringUtil.randomString(25);
-					FederationModel fm = fs.get(selfGridId, sourceGrid.getGridId());
-					if(fm == null){
-						fm = new FederationModel();
-						fm.setConnected(true);
-						fm.setRequesting(false);
-						fm.setSourceGridId(selfGridId);
-						fm.setSourceGridName(gm.getGridName());
-						fm.setTargetGridAccessToken(revToken);
-						fm.setTargetGridId(sourceGrid.getGridId());
-						fm.setTargetGridName(sourceGrid.getGridName());
-						fm.setTargetGridUserHomepage(new URL(selfHomepage));
-						fm.setTargetGridUserId(requestedUserId);
-						fm.setTargetGridUserOrganization(selfOrganization);
-						fs.add(fm);
-					}else {
-						fs.setRequesting(sourceGrid.getGridId(), selfGridId, true);
-					}
-					fr.setReverseConnectionToken(revToken);
 				}
 				try {
 					// add news

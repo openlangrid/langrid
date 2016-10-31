@@ -222,8 +222,6 @@ public class GridServiceImpl implements GridService {
 		GridModel model = new GridModel();
 		model.setAutoApproveEnabled(entity.isAutoApproveEnabled());
 		model.setCommercialUseAllowed(entity.isCommercialUseAllowed());
-		model.setSymmetricRelationEnabled(entity.isSymmetricRelationEnabled());
-		model.setTransitiveRelationEnabled(entity.isTranstiveRelationEnabled());
 		model.setCreatedDateTime(entity.getCreatedDateTime());
 		model.setGridId(entity.getGridId());
 		model.setGridName(entity.getGridName());
@@ -237,8 +235,6 @@ public class GridServiceImpl implements GridService {
 	private Grid setProperty(GridModel model, Grid entity) {
 		entity.setAutoApproveEnabled(model.isAutoApproveEnabled());
 		entity.setCommercialUseAllowed(model.isCommercialUseAllowed());
-		entity.setSymmetricRelationEnabled(model.isSymmetricRelationEnabled());
-		entity.setTranstiveRelationEnabled(model.isTransitiveRelationEnabled());
 		entity.setGridId(model.getGridId());
 		entity.setGridName(model.getGridName());
 		entity.setHosted(model.isHosted());

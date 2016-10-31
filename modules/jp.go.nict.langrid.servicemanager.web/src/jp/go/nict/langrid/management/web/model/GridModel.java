@@ -105,30 +105,12 @@ public class GridModel extends ServiceGridModel {
 		this.url = url;
 	}
 	
-	public boolean isSymmetricRelationEnabled() {
-		return symmetricRelationEnabled;
-	}
-	
-	public void setSymmetricRelationEnabled(boolean symmetricRelationEnabled) {
-		this.symmetricRelationEnabled = symmetricRelationEnabled;
-	}
-	
-	public boolean isTransitiveRelationEnabled() {
-		return transitiveRelationEnabled;
-	}
-	
-	public void setTransitiveRelationEnabled(boolean transitiveRelationEnabled) {
-		this.transitiveRelationEnabled = transitiveRelationEnabled;
-	}
-
 	private String gridName;
 	private String operatorUserId;
 	private String url;
 	private boolean autoApproveEnabled;
 	private boolean hosted;
 	private boolean commercialUseAllowed;
-	private boolean symmetricRelationEnabled;
-	private boolean transitiveRelationEnabled;
 
 	private static final long serialVersionUID = -751181555043874710L;
 }

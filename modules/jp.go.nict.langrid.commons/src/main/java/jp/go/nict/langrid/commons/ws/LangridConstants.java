@@ -148,6 +148,8 @@ public class LangridConstants {
 	public static final String HTTPHEADER_FEDERATEDCALL_FEDERATIONRESPONSE
 		= "X-Langrid-FederatedCall-FederationResponse";
 
+	public static final String HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION
+		= "X-Langrid-FederatedCall-BypassingInvocation";
 	/**
 	 * 
 	 * 
