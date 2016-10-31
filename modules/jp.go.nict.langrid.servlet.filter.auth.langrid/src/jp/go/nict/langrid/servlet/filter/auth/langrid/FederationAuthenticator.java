@@ -71,7 +71,7 @@ public class FederationAuthenticator extends AbstractLangridBasicAuthenticator{
 		String sourceGridId = MimeHeadersUtil.getJoinedValue(
 				context.getRequestMimeHeaders(), LangridConstants.HTTPHEADER_FEDERATEDCALL_SOURCEGRIDID
 				);
-		String[] callerUserGridIdAndId = Optional.of(MimeHeadersUtil.getJoinedValue(
+		String[] callerUserGridIdAndId = Optional.ofNullable(MimeHeadersUtil.getJoinedValue(
 				context.getRequestMimeHeaders(), LangridConstants.HTTPHEADER_FEDERATEDCALL_CALLERUSER
 				)).map(s -> s.split(":")).orElse(null);
 		if(sourceGridId == null || callerUserGridIdAndId == null || callerUserGridIdAndId.length != 2){
