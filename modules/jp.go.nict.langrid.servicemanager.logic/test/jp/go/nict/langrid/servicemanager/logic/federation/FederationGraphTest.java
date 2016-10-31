@@ -1,5 +1,7 @@
 package jp.go.nict.langrid.servicemanager.logic.federation;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -231,6 +233,31 @@ public class FederationGraphTest {
 		Iterator<String> it = ids.iterator();
 		for(int i = 2; i <= 9; i++){
 			Assert.assertEquals("grid" + i, it.next());
+		}
+		Assert.assertFalse(it.hasNext());
+	}
+
+	@Test
+	public void test_listAllReachableGridIds_3() throws Throwable{
+		fdao.addFederation(newFederation("grid1", "grid2"));
+		fdao.addFederation(newFederation("grid2", "grid3"));
+		fdao.addFederation(newFederation("grid3", "grid8"));
+		fdao.addFederation(newFederation("grid4", "grid5", false, false));
+		fdao.addFederation(newFederation("grid5", "grid6"));
+		fdao.addFederation(newFederation("grid1", "grid7"));
+		fdao.addFederation(newFederation("grid7", "grid8"));
+		fdao.addFederation(newFederation("grid8", "grid9"));
+		fdao.addFederation(newFederation("grid4", "grid9", true));
+
+		Set<String> unreachables = new HashSet<>(Arrays.asList("grid5", "grid6"));
+		FederationGraph fg = new FederationLogic().buildGraph();
+		Set<String> ids = new TreeSet<>(fg.listAllReachableGridIds("grid1"));
+
+		Assert.assertEquals(6, ids.size());
+		Iterator<String> it = ids.iterator();
+		for(int i = 2; i <= 9; i++){
+			String gid = "grid" + i;
+			if(!unreachables.contains(gid)) Assert.assertEquals(gid, it.next());
 		}
 		Assert.assertFalse(it.hasNext());
 	}
