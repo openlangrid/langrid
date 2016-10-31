@@ -72,7 +72,7 @@ public class SoapResponseParser {
 			}
 
 			Node body = findFirstChildNamed(envelope, "Body");
-			for(Node res = body.getFirstChild(); res != null; res = res.getNextSibling()){
+			if(body != null) for(Node res = body.getFirstChild(); res != null; res = res.getNextSibling()){
 				if(!(res instanceof Element)) continue;
 				if(res.getLocalName().equals(methodName + "Response")){
 					for(Node ret = res.getFirstChild(); ret != null; ret = ret.getNextSibling()){
