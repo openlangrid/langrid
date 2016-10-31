@@ -77,18 +77,17 @@ public class FederationLogic extends AbstractLogic{
 	}
 
 	@DaoTransaction
-	public void addFederation(String sourceGridId, String sourceGridName
-		, String targetGridId, String targetGridName, boolean requesting
-		   , String targetGridUserId, String targetGridAccessToken, String targetGridOrganization
-		   , URL targetGridHomepage, boolean disconnected)
+	public void addFederation(
+			String sourceGridId, String sourceGridName, String sourceGridUserId, String sourceGridOrganization,
+			String targetGridId, String targetGridName, String targetGridUserId, String targetGridOrganization,
+			URL targetGridHomepage, String targetGridAccessToken,
+			boolean requesting, boolean disconnected, boolean symmetric, boolean transitive)
 	throws DaoException{
 		getFederationDao().addFederation(new Federation(
-				sourceGridId, targetGridId
-				, sourceGridName, targetGridName
-				, targetGridUserId, targetGridAccessToken
-				, requesting
-				, targetGridOrganization, targetGridHomepage
-				, disconnected));
+				sourceGridId, sourceGridName, sourceGridUserId, sourceGridOrganization,
+				targetGridId, targetGridName, targetGridUserId, targetGridOrganization, targetGridHomepage, 
+				targetGridAccessToken,
+				requesting, disconnected, symmetric, transitive));
 	}
 
 	@DaoTransaction

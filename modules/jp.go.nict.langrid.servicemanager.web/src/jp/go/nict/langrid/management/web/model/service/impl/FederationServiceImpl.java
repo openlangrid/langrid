@@ -27,12 +27,14 @@ public class FederationServiceImpl implements FederationService {
 	@Override
 	public void add(FederationModel obj) throws ServiceManagerException {
 		try {
-			new FederationLogic().addFederation(obj.getSourceGridId(),
-				obj.getSourceGridName(), obj.getTargetGridId(),
-				obj.getTargetGridName(), obj.isRequesting(),
-				obj.getTargetGridUserId(), obj.getTargetGridAccessToken(),
-				obj.getTargetGridUserOrganization(),
-				obj.getTargetGridUserHomepage(), obj.isConnected());
+			new FederationLogic().addFederation(
+				obj.getSourceGridId(), obj.getSourceGridName(),
+				null, null,
+				obj.getTargetGridId(), obj.getTargetGridName(),
+				obj.getTargetGridUserId(), obj.getTargetGridUserOrganization(),
+				obj.getTargetGridUserHomepage(),
+				obj.getTargetGridAccessToken(),
+				obj.isRequesting(), obj.isConnected(), false, false);
 		} catch(DaoException e) {
 			throw new ServiceManagerException(e);
 		}

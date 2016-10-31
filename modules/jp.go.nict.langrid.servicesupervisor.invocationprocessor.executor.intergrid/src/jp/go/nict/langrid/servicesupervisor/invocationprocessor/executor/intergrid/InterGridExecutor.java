@@ -96,7 +96,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 				}
 			}
 			if(f == null){
-				throw new ProcessFailedException("no route to target grid: " + serviceGridId);
+				throw new ProcessFailedException("no route to target grid: " + serviceGridId + " from grid:" + selfGridId);
 			}
 			if(serviceGridId.equals(selfGridId)){
 				serviceOnThisGrid = serviceDao.getService(selfGridId, serviceId);

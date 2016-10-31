@@ -67,25 +67,26 @@ extends UpdateManagedEntity
 	 * 
 	 * 
 	 */
-	public Federation(String sourceGridId, String sourceGridName, String sourceGridUserId,
-			String targetGridId, String targetGridName, String targetGridUserId,
-			String targetGridAccessToken,
-			boolean requesting, String targetGridOrganization,
-			URL targetGridHomepageUrl, boolean connected,
+	public Federation(
+			String sourceGridId, String sourceGridName, String sourceGridUserId, String sourceGridOrganization,
+			String targetGridId, String targetGridName, String targetGridUserId, String targetGridOrganization,
+			URL targetGridHomepageUrl, String targetGridAccessToken,
+			boolean requesting, boolean connected,
 			boolean symmetric, boolean transitive) {
 		this.sourceGridId = sourceGridId;
 		this.sourceGridName = sourceGridName;
 		this.sourceGridUserId = sourceGridUserId;
+		this.sourceGridOrganization = sourceGridOrganization;
 		this.targetGridId = targetGridId;
 		this.targetGridName = targetGridName;
 		this.targetGridUserId = targetGridUserId;
+		this.targetGridOrganization = targetGridOrganization;
+		setTargetGridHomepageUrl(targetGridHomepageUrl);
 		this.targetGridAccessToken = targetGridAccessToken;
 		this.requesting = requesting;
-		this.targetGridOrganization = targetGridOrganization;
 		this.connected = connected;
 		this.symmetric = symmetric;
 		this.transitive = transitive;
-		setTargetGridHomepageUrl(targetGridHomepageUrl);
 	}
 
 	@Override
@@ -243,13 +244,13 @@ extends UpdateManagedEntity
 	private String targetGridName;
 	private String targetGridUserId;
 	private String targetGridOrganization;
-	private String targetGridAccessToken;
 	@Embedded
 	@AttributeOverrides({
 		@AttributeOverride(name="stringValue", column=@Column(name="targetGridHomepageUrlStringValue"))
 		, @AttributeOverride(name="clazz", column=@Column(name="targetGridHomepageUrlClazz"))
 	})
 	private EmbeddableStringValueClass<URL> targetGridHomepageUrl;
+	private String targetGridAccessToken;
 
 	private boolean requesting;
 	private boolean connected;
