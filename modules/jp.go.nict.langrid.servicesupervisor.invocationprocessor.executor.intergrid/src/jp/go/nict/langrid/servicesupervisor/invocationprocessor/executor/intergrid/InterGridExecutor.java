@@ -74,6 +74,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 			)
 	throws DaoException, TooManyCallNestException, NoValidEndpointsException, ProcessFailedException, IOException{
 		String selfGridId = serviceContext.getSelfGridId();
+		String prevGridId = selfGridId;
 		Service serviceOnThisGrid = null;
 		URL url = null;
 		String authId = null;
@@ -89,6 +90,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 					// get farthest
 					f = path.get(path.size() - 1);
 					forward = f.getTargetGridId().equals(serviceGridId);
+					prevGridId = forward ? f.getSourceGridId() : f.getTargetGridId();
 				} else{
 					// get nearest
 					f = path.get(0);
@@ -118,7 +120,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 			daoContext.commitTransaction();
 		}
 		if(serviceOnThisGrid != null) adjustHeaders(serviceOnThisGrid, headers);
-		headers.put(LangridConstants.HTTPHEADER_FEDERATEDCALL_SOURCEGRIDID, selfGridId);
+		headers.put(LangridConstants.HTTPHEADER_FEDERATEDCALL_SOURCEGRIDID, prevGridId);
 		headers.putIfAbsent(
 				LangridConstants.HTTPHEADER_FEDERATEDCALL_CALLERUSER
 				, serviceContext.getAuthUserGridId() + ":" + serviceContext.getAuthUser()
