@@ -94,14 +94,14 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 			if(f == null){
 				throw new ProcessFailedException("no route to target grid: " + serviceGridId);
 			}
-			Grid g = gridDao.getGrid(f.getTargetGridId());
-			if(f.getTargetGridId().equals(serviceGridId)){
-				service = serviceDao.getService(serviceGridId, serviceId);
+			if(serviceGridId.equals(serviceContext.getSelfGridId())){
+				service = serviceDao.getService(serviceContext.getSelfGridId(), serviceId);
 				if(service == null){
 					throw new ProcessFailedException("no service: " + serviceId +
 							" exists at grid: " + serviceGridId);
 				}
 			}
+			Grid g = gridDao.getGrid(f.getTargetGridId());
 			String gurl = g.getUrl();
 			if(!gurl.endsWith("/")) gurl += "/";
 			url = new URL(gurl + "invoker/" + serviceGridId + ":" + serviceId
