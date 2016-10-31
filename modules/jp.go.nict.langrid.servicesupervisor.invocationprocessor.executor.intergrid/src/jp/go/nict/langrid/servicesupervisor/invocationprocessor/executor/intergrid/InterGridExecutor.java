@@ -73,6 +73,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 			, String additionalUrlPart, String protocol, byte[] input
 			)
 	throws DaoException, TooManyCallNestException, NoValidEndpointsException, ProcessFailedException, IOException{
+		String selfGridId = serviceContext.getSelfGridId();
 		Service serviceOnThisGrid = null;
 		URL url = null;
 		String authId = null;
@@ -81,7 +82,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 		try{
 			boolean forward = true;
 			Federation f = null;
-			List<Federation> path = federationLogic.getShortestPath(serviceContext.getSelfGridId(), serviceGridId);
+			List<Federation> path = federationLogic.getShortestPath(selfGridId, serviceGridId);
 			if(path.size() > 0){
 				if(serviceContext.getRequestMimeHeaders().getHeader(
 						LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION) != null){
@@ -97,8 +98,8 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 			if(f == null){
 				throw new ProcessFailedException("no route to target grid: " + serviceGridId);
 			}
-			if(serviceGridId.equals(serviceContext.getSelfGridId())){
-				serviceOnThisGrid = serviceDao.getService(serviceContext.getSelfGridId(), serviceId);
+			if(serviceGridId.equals(selfGridId)){
+				serviceOnThisGrid = serviceDao.getService(selfGridId, serviceId);
 				if(serviceOnThisGrid == null){
 					throw new ProcessFailedException("no service: " + serviceId +
 							" exists at grid: " + serviceGridId);
@@ -116,7 +117,12 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 		} finally{
 			daoContext.commitTransaction();
 		}
-		adjustHeaders(serviceContext, serviceOnThisGrid, headers);
+		if(serviceOnThisGrid != null) adjustHeaders(serviceOnThisGrid, headers);
+		headers.put(LangridConstants.HTTPHEADER_FEDERATEDCALL_SOURCEGRIDID, selfGridId);
+		headers.putIfAbsent(
+				LangridConstants.HTTPHEADER_FEDERATEDCALL_CALLERUSER
+				, serviceContext.getAuthUserGridId() + ":" + serviceContext.getAuthUser()
+				);
 
 		String nestCountString = headers.get(LangridConstants.HTTPHEADER_CALLNEST);
 		if(nestCountString != null){
@@ -137,19 +143,6 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 				);
 	}
 
-	protected void adjustHeaders(ServiceContext context, Service service, Map<String, String> headers){
-		if(service != null) super.adjustHeaders(service, headers);
-		headers.put(
-				LangridConstants.HTTPHEADER_FEDERATEDCALL_SOURCEGRIDID
-				, context.getSelfGridId()
-				);
-		headers.put(
-				LangridConstants.HTTPHEADER_FEDERATEDCALL_CALLERUSER
-				, context.getAuthUserGridId() + ":" + context.getAuthUser()
-				);
-
-	}
-	
 	private FederationLogic federationLogic;
 	private GridDao gridDao;
 	private ServiceDao serviceDao;
