@@ -17,6 +17,7 @@
  */
 package jp.go.nict.langrid.servlet.filter.auth.langrid;
 
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletRequest;
@@ -24,8 +25,8 @@ import javax.servlet.ServletRequest;
 import jp.go.nict.langrid.commons.lang.StringUtil;
 import jp.go.nict.langrid.commons.ws.LangridConstants;
 import jp.go.nict.langrid.commons.ws.ServletServiceContext;
+import jp.go.nict.langrid.commons.ws.util.MimeHeadersUtil;
 import jp.go.nict.langrid.dao.DaoException;
-import jp.go.nict.langrid.dao.FederationDao;
 import jp.go.nict.langrid.dao.FederationNotFoundException;
 import jp.go.nict.langrid.dao.UserNotFoundException;
 import jp.go.nict.langrid.dao.entity.Federation;
@@ -42,22 +43,19 @@ public class FederationAuthenticator extends AbstractLangridBasicAuthenticator{
 			ServletServiceContext context
 			, ServletRequest request, String authUser, String authPass)
 	throws UserNotFoundException, DaoException{
-		FederationDao fd = getDaoFactory().createFederationDao();
+		String accessToken = authPass;
+		String selfGridId = context.getSelfGridId();
+		FederationLogic fl = new FederationLogic();
 		String[] federationResponses = context.getRequestMimeHeaders().getHeader(
 				LangridConstants.HTTPHEADER_FEDERATEDCALL_FEDERATIONRESPONSE
 				);
 		String federationResponse = federationResponses != null ? StringUtil.join(federationResponses, ",") : null;
 		if(federationResponse != null){
 			// request about connecting/disconnecting federation
+			String previousGridId = authUser;
 			try{
-				Federation f = null;
-				String selfGridId = context.getSelfGridId();
-				if(fd.isFederationExist(selfGridId, authUser)){
-					f = fd.getFederation(selfGridId, authUser);
-				} else if(fd.isFederationExist(authUser, selfGridId)) {
-					f = fd.getFederation(authUser, selfGridId);
-				}
-				if(authPass.equals(f.getTargetGridAccessToken())){
+				Federation f = fl.getValidFederation(previousGridId, selfGridId);
+				if(accessToken.equals(f.getTargetGridAccessToken())){
 					context.setAuthorized(authUser, authUser, authPass);
 					return true;
 				}
@@ -70,63 +68,34 @@ public class FederationAuthenticator extends AbstractLangridBasicAuthenticator{
 		// service call or request of information sharing from other grid.
 		String targetGridUserId = authUser;
 		String targetGridAccessToken = authPass;
-		String[] sourceGridIds = context.getRequestMimeHeaders().getHeader(
-				LangridConstants.HTTPHEADER_FEDERATEDCALL_SOURCEGRIDID
+		String sourceGridId = MimeHeadersUtil.getJoinedValue(
+				context.getRequestMimeHeaders(), LangridConstants.HTTPHEADER_FEDERATEDCALL_SOURCEGRIDID
 				);
-		String sourceGridId = sourceGridIds != null ? StringUtil.join(sourceGridIds, ",") : null;
-		String[] userGridIdAndIds = context.getRequestMimeHeaders().getHeader(
-				LangridConstants.HTTPHEADER_FEDERATEDCALL_CALLERUSER
-				);
-		String[] userGridIdAndId = userGridIdAndIds != null ? StringUtil.join(userGridIdAndIds, ",").split(":") : null;
-
-		if(sourceGridId == null || userGridIdAndId == null || userGridIdAndId.length != 2){
+		String[] callerUserGridIdAndId = Optional.of(MimeHeadersUtil.getJoinedValue(
+				context.getRequestMimeHeaders(), LangridConstants.HTTPHEADER_FEDERATEDCALL_CALLERUSER
+				)).map(s -> s.split(":")).orElse(null);
+		if(sourceGridId == null || callerUserGridIdAndId == null || callerUserGridIdAndId.length != 2){
 			return false;
 		}
-		String selfGridId = context.getSelfGridId();
-		String callerUserGridId = userGridIdAndId[0];
-		String callerUserId = userGridIdAndId[1];
+		String callerUserGridId = callerUserGridIdAndId[0];
+		String callerUserId = callerUserGridIdAndId[1];
 
-		try{
-			Federation f = fd.getFederation(sourceGridId, selfGridId);
-			if(isValidFederation(f, targetGridUserId, targetGridAccessToken)){
-				context.setAuthorized(callerUserGridId, callerUserId, authPass);
-				return true;
-			}
-/*			Logger.getLogger(getClass().getName()).info(String.format(
-					"auth failed. sourceGrid[%s], targetGridUser[%s], caller[%s|%s],"
-					+ "with federation[%s|%s].",
-					sourceGridId, targetGridUserId, callerUserGridId, callerUserId,
-					f.getSourceGridId(), f.getTargetGridId()));
-*/		} catch(FederationNotFoundException e){
-			// search federation route
-			FederationLogic fl = new FederationLogic();
-			for(Federation f : fd.listFederationsFrom(sourceGridId)){
-				if(fl.isReachable(f.getTargetGridId(), selfGridId)){
-					if(isValidFederation(f, targetGridUserId, targetGridAccessToken)){
-						context.setAuthorized(callerUserGridId, callerUserId, authPass);
-						return true;
-					} else{
-						Logger.getLogger(getClass().getName()).info(String.format(
-								"not valid federation. sourceGrid[%s], targetGridUser[%s], caller[%s|%s],"
-								+ "with federation[%s|%s].",
-								sourceGridId, targetGridUserId, callerUserGridId, callerUserId,
-								f.getSourceGridId(), f.getTargetGridId()));
-					}
-				} else{
-					Logger.getLogger(getClass().getName()).info(String.format(
-							"not reachable. from %s to %s.",
-							f.getTargetGridId(), selfGridId));
-				}
-			}
+		Federation f = fl.getValidFederation(sourceGridId, selfGridId);
+		if(f.getTargetGridAccessToken().equals(targetGridAccessToken) &&
+				(	// forward
+					f.getTargetGridId().equals(selfGridId) && f.getTargetGridUserId().equals(targetGridUserId))
+				||
+				(	// backward
+					f.getSourceGridId().equals(selfGridId) && f.getSourceGridUserId().equals(targetGridUserId))
+				){
+			context.setAuthorized(callerUserGridId, callerUserId, authPass);
+			return true;
 		}
+		Logger.getLogger(getClass().getName()).info(String.format(
+				"auth failed. sourceGrid[%s], targetGridUser[%s], caller[%s|%s],"
+				+ "with federation[%s|%s].",
+				sourceGridId, targetGridUserId, callerUserGridId, callerUserId,
+				f.getSourceGridId(), f.getTargetGridId()));
 		return false;
-	}
-
-	private boolean isValidFederation(
-			Federation f, String targetGridUserId, String targetGridAccessToken){
-		if(f.isRequesting() || !f.isConnected()) return false;
-		if(!targetGridUserId.equals(f.getTargetGridUserId())) return false;
-		if(!targetGridAccessToken.equals(f.getTargetGridAccessToken())) return false;
-		return true;
 	}
 }
