@@ -67,20 +67,24 @@ extends UpdateManagedEntity
 	 * 
 	 * 
 	 */
-	public Federation(String sourceGridId, String targetGridId,
-			String sourceGridName, String targetGridName,
-			String targetGridUserId, String targetGridAccessToken,
+	public Federation(String sourceGridId, String sourceGridName, String sourceGridUserId,
+			String targetGridId, String targetGridName, String targetGridUserId,
+			String targetGridAccessToken,
 			boolean requesting, String targetGridOrganization,
-			URL targetGridHomepageUrl, boolean connected) {
+			URL targetGridHomepageUrl, boolean connected,
+			boolean symmetric, boolean transitive) {
 		this.sourceGridId = sourceGridId;
-		this.targetGridId = targetGridId;
 		this.sourceGridName = sourceGridName;
+		this.sourceGridUserId = sourceGridUserId;
+		this.targetGridId = targetGridId;
 		this.targetGridName = targetGridName;
 		this.targetGridUserId = targetGridUserId;
 		this.targetGridAccessToken = targetGridAccessToken;
 		this.requesting = requesting;
 		this.targetGridOrganization = targetGridOrganization;
 		this.connected = connected;
+		this.symmetric = symmetric;
+		this.transitive = transitive;
 		setTargetGridHomepageUrl(targetGridHomepageUrl);
 	}
 
@@ -99,20 +103,29 @@ extends UpdateManagedEntity
 		return ToStringBuilder.reflectionToString(this);
 	}
 
-	/**
-	 * 
-	 * 
-	 */
 	public String getSourceGridId() {
 		return sourceGridId;
 	}
-
-	/**
-	 * 
-	 * 
-	 */
 	public void setSourceGridId(String sourceGridId) {
 		this.sourceGridId = sourceGridId;
+	}
+	public String getSourceGridName() {
+		return sourceGridName;
+	}
+	public void setSourceGridName(String sourceGridName) {
+		this.sourceGridName = sourceGridName;
+	}
+	public String getSourceGridUserId() {
+		return sourceGridUserId;
+	}
+	public void setSourceGridUserId(String sourceGridUserId) {
+		this.sourceGridUserId = sourceGridUserId;
+	}
+	public String getSourceGridOrganization() {
+		return sourceGridOrganization;
+	}
+	public void setSourceGridOrganization(String sourceGridOrganization) {
+		this.sourceGridOrganization = sourceGridOrganization;
 	}
 
 	/**
@@ -163,22 +176,6 @@ extends UpdateManagedEntity
 		this.targetGridAccessToken = targetGridAccessToken;
 	}
 
-	/**
-	 * 
-	 * 
-	 */
-	public boolean isRequesting() {
-		return requesting;
-	}
-
-	/**
-	 * 
-	 * 
-	 */
-	public void setRequesting(boolean requesting) {
-		this.requesting = requesting;
-	}
-	
 	public String getTargetGridOrganization() {
 		return targetGridOrganization;
 	}
@@ -201,13 +198,6 @@ extends UpdateManagedEntity
 			this.targetGridHomepageUrl.setValue(targetGridHomepageUrl);
 		}
 	}
-	public String getSourceGridName() {
-		return sourceGridName;
-	}
-
-	public void setSourceGridName(String sourceGridName) {
-		this.sourceGridName = sourceGridName;
-	}
 
 	public String getTargetGridName() {
 		return targetGridName;
@@ -220,7 +210,13 @@ extends UpdateManagedEntity
 	public void setConnected(boolean connected) {
 		this.connected = connected;
 	}
-	
+
+	public boolean isRequesting() {
+		return requesting;
+	}
+	public void setRequesting(boolean requesting) {
+		this.requesting = requesting;
+	}
 	public boolean isConnected() {
 		return connected;
 	}
@@ -239,24 +235,23 @@ extends UpdateManagedEntity
 
 	@Id
 	private String sourceGridId;
+	private String sourceGridName;
+	private String sourceGridUserId;  // available only symmetric
+	private String sourceGridOrganization;  // available only symmetric
 	@Id
 	private String targetGridId;
-
-	private String sourceGridName;
 	private String targetGridName;
-	
 	private String targetGridUserId;
-	private String targetGridAccessToken;
-	private boolean requesting;
-	
 	private String targetGridOrganization;
+	private String targetGridAccessToken;
 	@Embedded
 	@AttributeOverrides({
 		@AttributeOverride(name="stringValue", column=@Column(name="targetGridHomepageUrlStringValue"))
 		, @AttributeOverride(name="clazz", column=@Column(name="targetGridHomepageUrlClazz"))
 	})
 	private EmbeddableStringValueClass<URL> targetGridHomepageUrl;
-	
+
+	private boolean requesting;
 	private boolean connected;
 	@Column(name="symmetricRel")
 	private Boolean symmetric = false;
