@@ -38,7 +38,8 @@ public abstract class AbstractFederationGraph implements FederationGraph{
 			String next = entry.getKey();
 			if(!ids.contains(next)){
 				ids.add(next);
-				listAllReachableGridIdsFromDeeper(next, ids);
+				if(entry.getValue().isTransitive())
+					listAllReachableGridIdsFromDeeper(next, ids);
 			}
 		}
 	}
