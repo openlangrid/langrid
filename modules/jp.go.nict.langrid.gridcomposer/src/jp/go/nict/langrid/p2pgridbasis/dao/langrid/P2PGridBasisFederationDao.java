@@ -119,7 +119,7 @@ implements DataDao, FederationDao {
 							null);
 				}
 				if(!gdao.isGridExist(entity.getTargetGridId())){
-					addGrid(entity.getTargetGridId(), entity.getTagetGridName(),
+					addGrid(entity.getTargetGridId(), entity.getTargetGridName(),
 							entity.getTargetGridUserId());
 				}
 			}

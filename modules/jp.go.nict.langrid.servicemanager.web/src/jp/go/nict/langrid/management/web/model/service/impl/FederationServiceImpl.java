@@ -361,7 +361,7 @@ public class FederationServiceImpl implements FederationService {
 		model.setTargetGridId(entity.getTargetGridId());
 		model.setSourceGridId(entity.getSourceGridId());
 		model.setSourceGridName(entity.getSourceGridName());
-		model.setTargetGridName(entity.getTagetGridName());
+		model.setTargetGridName(entity.getTargetGridName());
 		model.setTargetGridUserHomepage(entity.getTargetGridHomepageUrl());
 		model.setTargetGridUserOrganization(entity.getTargetGridOrganization());
 		model.setConnected(entity.isConnected());
