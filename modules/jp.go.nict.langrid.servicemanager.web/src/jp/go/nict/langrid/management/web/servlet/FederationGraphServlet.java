@@ -1,6 +1,5 @@
 package jp.go.nict.langrid.management.web.servlet;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,7 +25,7 @@ import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.DaoFactory;
 import jp.go.nict.langrid.dao.entity.Federation;
 
-@WebServlet("/federationgraph")
+@WebServlet("/federationGraph")
 public class FederationGraphServlet extends HttpServlet{
 	@Override
 	public void init(ServletConfig config) throws ServletException {
