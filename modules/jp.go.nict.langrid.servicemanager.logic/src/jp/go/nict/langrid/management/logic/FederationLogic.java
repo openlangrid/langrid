@@ -153,11 +153,7 @@ public class FederationLogic extends AbstractLogic{
 				return ret;
 			}
 		}
-		for(Federation f :
-			buildGraph().getShortestPath(sourceGridId, targetGridId)){
-			ret.add(getValidFederation(f.getSourceGridId(), f.getTargetGridId()));
-		}
-		return ret;
+		return buildGraph().getShortestPath(sourceGridId, targetGridId);
 	}
 	
 	@DaoTransaction
