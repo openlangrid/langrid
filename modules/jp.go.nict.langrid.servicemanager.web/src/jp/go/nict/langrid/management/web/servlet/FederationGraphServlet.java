@@ -38,7 +38,7 @@ public class FederationGraphServlet extends HttpServlet{
 		File f = new File(dotPath);
 		if(!f.exists()){
 			resp.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
-					"Graphvis not found. Please install it and set its path to \"dotPath\" context parameter.");
+					"Graphvis not found. Please install it and set its path to \"dotPath\" config or context parameter.");
 			return;
 		}
 		ParameterContext pc = new HttpServletRequestParameterContext(req);
