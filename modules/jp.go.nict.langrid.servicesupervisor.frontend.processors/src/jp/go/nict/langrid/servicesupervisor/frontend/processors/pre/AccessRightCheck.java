@@ -47,8 +47,10 @@ public class AccessRightCheck implements Preprocess {
 	public void process(ProcessContext context, MimeHeaders requestMimeHeaders)
 	throws AccessLimitExceededException, NoAccessPermissionException,
 	SystemErrorException{
+		String selfGridId = context.getProcessingNode().getGridId();
 		User u = context.getCallerUser();
 		Service s = context.getTargetService();
+		if(!s.getGridId().equals(selfGridId)) return;
 		if(u.getGridId().equals(s.getGridId())){
 			if(u.isAdminUser()) return;
 			if(u.getUserId().equals(s.getOwnerUserId())) return;

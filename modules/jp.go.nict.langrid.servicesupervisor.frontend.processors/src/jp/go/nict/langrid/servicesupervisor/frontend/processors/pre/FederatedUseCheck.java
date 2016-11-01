@@ -36,8 +36,10 @@ public class FederatedUseCheck implements Preprocess {
 	public void process(ProcessContext context, MimeHeaders requestMimeHeaders)
 	throws AccessLimitExceededException, NoAccessPermissionException,
 	SystemErrorException{
+		String selfGridId = context.getProcessingNode().getGridId();
 		User u = context.getCallerUser();
 		Service s = context.getTargetService();
+		if(!s.getGridId().equals(selfGridId)) return;
 		if(!isInvocable(u.getGridId(), s.getGridId(), s.isFederatedUseAllowed())){
 			throw new NoAccessPermissionException(
 					u.getGridId(), u.getUserId()

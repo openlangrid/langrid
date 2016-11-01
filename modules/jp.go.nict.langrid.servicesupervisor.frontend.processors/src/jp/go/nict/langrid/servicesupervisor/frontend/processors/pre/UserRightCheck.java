@@ -39,28 +39,25 @@ import jp.go.nict.langrid.servicesupervisor.frontend.SystemErrorException;
 public class UserRightCheck implements Preprocess {
 	public void process(ProcessContext context, MimeHeaders requestMimeHeaders)
 	throws AccessLimitExceededException, NoAccessPermissionException, SystemErrorException{
+		String selfGridId = context.getProcessingNode().getGridId();
 		User u = context.getCallerUser();
 		Service s = context.getTargetService();
-		String selfGridId = context.getProcessingNode().getGridId();
-		if(u.getGridId().equals(selfGridId)){
-			if(s.getGridId().equals(selfGridId) &&
-					u.getUserId().equals(s.getOwnerUserId())) return;
-			if(u.isAdminUser()) return;
-			if(u.isAbleToCallServices()){
-				boolean permit = false;
-				for(UserRole r : u.getRoles()){
-					String rn = r.getRoleName();
-					if(rn.equals(UserRole.ADMIN_ROLE) ||
-							rn.equals(UserRole.USER_ROLE) ||
-							rn.equals(UserRole.SERVICE_USER_ROLE)){
-						permit = true;
-						break;
-					}
+		if(!u.getGridId().equals(selfGridId)) return;
+		if(s.getGridId().equals(selfGridId) &&
+				u.getUserId().equals(s.getOwnerUserId())) return;
+		if(u.isAdminUser()) return;
+		if(u.isAbleToCallServices()){
+			boolean permit = false;
+			for(UserRole r : u.getRoles()){
+				String rn = r.getRoleName();
+				if(rn.equals(UserRole.ADMIN_ROLE) ||
+						rn.equals(UserRole.USER_ROLE) ||
+						rn.equals(UserRole.SERVICE_USER_ROLE)){
+					permit = true;
+					break;
 				}
-				if(permit) return;
 			}
-		} else{
-			return;
+			if(permit) return;
 		}
 		throw new NoAccessPermissionException(u.getGridId(), u.getUserId());
 	}
