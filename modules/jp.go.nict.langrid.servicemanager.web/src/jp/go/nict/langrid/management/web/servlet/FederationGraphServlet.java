@@ -19,6 +19,7 @@ import org.apache.wicket.util.file.File;
 
 import jp.go.nict.langrid.commons.io.StreamUtil;
 import jp.go.nict.langrid.commons.parameter.ParameterContext;
+import jp.go.nict.langrid.commons.ws.ServletServiceContext;
 import jp.go.nict.langrid.commons.ws.param.HttpServletRequestParameterContext;
 import jp.go.nict.langrid.commons.ws.param.ServletConfigParameterContext;
 import jp.go.nict.langrid.dao.DaoException;
@@ -35,6 +36,8 @@ public class FederationGraphServlet extends HttpServlet{
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String selfGridId = new ServletServiceContext(req).getSelfGridId();
+
 		File f = new File(dotPath);
 		if(!f.exists()){
 			resp.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE,
@@ -45,13 +48,13 @@ public class FederationGraphServlet extends HttpServlet{
 		String format = pc.getString("format", "png");
 		resp.setContentType("image/" + format);
 		try {
-			generateGraph(dotPath, format, resp.getOutputStream());
+			generateGraph(selfGridId, dotPath, format, resp.getOutputStream());
 		} catch (DaoException | InterruptedException e) {
 			throw new ServletException(e);
 		}
 	}
 
-	private void generateGraph(String dotPath, String format, OutputStream os)
+	private void generateGraph(String selfGridId, String dotPath, String format, OutputStream os)
 	throws IOException, DaoException, InterruptedException{
 		Process p = new ProcessBuilder(dotPath, "-T" + format).start();
 		try{
@@ -60,6 +63,7 @@ public class FederationGraphServlet extends HttpServlet{
 					PrintWriter pw = new PrintWriter(w)){
 				pw.println("digraph g{");
 				pw.println("\tgraph[layout=neato,overlap=false];");
+				pw.format("\t\"%s\" [peripheries=2];%n", selfGridId);
 				for(Federation f : DaoFactory.createInstance().createFederationDao().list()){
 					pw.format("\t\"%s\"->\"%s\" [", f.getSourceGridId(), f.getTargetGridId());
 					boolean first = true;
@@ -77,8 +81,7 @@ public class FederationGraphServlet extends HttpServlet{
 						pw.format("style=dashed");
 						first = false;
 					}
-					pw.format("]");
-					pw.format(";%n");
+					pw.format("];%n");
 				}
 				pw.println("}");
 			}
