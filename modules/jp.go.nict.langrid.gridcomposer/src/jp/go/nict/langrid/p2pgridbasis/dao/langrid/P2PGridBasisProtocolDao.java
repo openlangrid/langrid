@@ -27,7 +27,6 @@ import org.apache.log4j.Logger;
 
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
-import jp.go.nict.langrid.dao.DomainNotFoundException;
 import jp.go.nict.langrid.dao.GenericHandler;
 import jp.go.nict.langrid.dao.ProtocolAlreadyExistsException;
 import jp.go.nict.langrid.dao.ProtocolDao;
@@ -74,12 +73,9 @@ implements DataDao, ProtocolDao {
 			entity = ((ProtocolData)data).getProtocol();
 			if(entity.getOwnerUserGridId().equals(getSelfGridId())) return false;
 			if(!isReachableTo(entity.getOwnerUserGridId())) return false;
-			try {
-				Protocol entityInDb = getDaoContext().loadEntity(
-						Protocol.class, EntityUtil.getId(entity));
-				if(entityInDb.getOwnerUserGridId().equals(getSelfGridId())) return false;
-			} catch (DomainNotFoundException e) {
-			}
+			Protocol entityInDb = getDaoContext().loadEntity(
+					Protocol.class, EntityUtil.getId(entity));
+			if(entityInDb == null || entityInDb.getOwnerUserGridId().equals(getSelfGridId())) return false;
 		} catch(Exception e) {
 			throw new DataDaoException(e);
 		}
