@@ -18,7 +18,9 @@
 package jp.go.nict.langrid.management.web.view.page.user;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
@@ -50,8 +52,7 @@ public class LanguageGridUsersPage extends ServiceManagerPage {
 			List<ITab> tabList = new ArrayList<ITab>();
 			String gridId = getSelfGridId();
 			setTabPanel(gridId, tabList, GridRelation.SELF);
-			//   	   List<String> cache = new ArrayList<String>();
-			List<String> cache = new ArrayList<String>();
+			Set<String> cache = new HashSet<String>();
 			FederationService fs = ServiceFactory.getInstance().getFederationService(gridId);
 			// target grid
 			for(String targetGridId : fs.getReachableTargetGridIdListFrom(gridId)) {
