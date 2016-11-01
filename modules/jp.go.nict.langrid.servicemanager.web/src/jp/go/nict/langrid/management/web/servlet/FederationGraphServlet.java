@@ -45,15 +45,15 @@ public class FederationGraphServlet extends HttpServlet{
 		String format = pc.getString("format", "png");
 		resp.setContentType("image/" + format);
 		try {
-			generateGraph(format, resp.getOutputStream());
+			generateGraph(dotPath, format, resp.getOutputStream());
 		} catch (DaoException | InterruptedException e) {
 			throw new ServletException(e);
 		}
 	}
 
-	private void generateGraph(String format, OutputStream os)
+	private void generateGraph(String dotPath, String format, OutputStream os)
 	throws IOException, DaoException, InterruptedException{
-		Process p = new ProcessBuilder("/usr/local/bin/dot", "-T" + format).start();
+		Process p = new ProcessBuilder(dotPath, "-T" + format).start();
 		try{
 			try(OutputStream dot = p.getOutputStream();
 					Writer w = new OutputStreamWriter(dot, "UTF-8");
