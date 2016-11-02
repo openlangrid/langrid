@@ -96,6 +96,11 @@ implements DataDao, UserDao {
 		return true;
 	}
 
+	private boolean beforePublish(User user){
+		user.setPassword(null);
+		return true;
+	}
+
 	@Override
 	public void addUser(User user, String... userRoles) throws DaoException,
 			UserAlreadyExistsException {
@@ -186,9 +191,10 @@ implements DataDao, UserDao {
 
 		protected void doUpdate(Serializable id, Set<String> modifiedProperties){
 			try{
-				getController().publish(new UserData(
-						getDaoContext().loadEntity(User.class, id)
-						));
+				User u = getDaoContext().loadEntity(User.class, id);
+				if(u != null && beforePublish(u)){
+					getController().publish(new UserData(u));
+				}
 				logger.info("published[User(id=" + id + ")]");
 			} catch(ControllerException e){
 				logger.error("failed to publish instance.", e);

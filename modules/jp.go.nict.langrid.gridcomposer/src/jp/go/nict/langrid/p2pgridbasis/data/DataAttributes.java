@@ -57,6 +57,10 @@ public class DataAttributes {
 		return this.attributes.get(name);
 	}
 
+	public String removeValue(String name){
+		return this.attributes.remove(name);
+	}
+
 	/**
 	 * 
 	 * 
