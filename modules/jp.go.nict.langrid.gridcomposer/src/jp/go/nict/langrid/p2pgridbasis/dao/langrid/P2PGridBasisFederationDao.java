@@ -211,6 +211,11 @@ implements DataDao, FederationDao {
 	public List<Federation> list() throws DaoException {
 		return dao.list();
 	}
+	
+	@Override
+	public List<Federation> listFromOldest() throws DaoException {
+		return dao.listFromOldest();
+	}
 
 	@Override
 	public void setRequesting(String sourceGridId, String targetGridId,

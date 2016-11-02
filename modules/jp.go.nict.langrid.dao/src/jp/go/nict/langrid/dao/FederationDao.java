@@ -39,6 +39,8 @@ public interface FederationDao{
 	 */
 	public List<Federation> list() throws DaoException;
 
+	public List<Federation> listFromOldest() throws DaoException;
+
 	/**
 	 * 
 	 * 

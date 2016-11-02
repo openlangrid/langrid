@@ -47,6 +47,12 @@ public class JsonicFederationDao implements FederationDao {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
+	public List<Federation> listFromOldest() throws DaoException {
+		return Collections.EMPTY_LIST;
+	}
+
+	@Override
 	public List<String> listTargetGridIds(String sourceGridId)
 	throws DaoException {
 		throw new UnsupportedOperationException();

@@ -21,6 +21,12 @@ package jp.go.nict.langrid.dao.hibernate;
 
 import java.util.List;
 
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
+
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.EntityNotFoundException;
 import jp.go.nict.langrid.dao.FederationAlreadyExistsException;
@@ -28,10 +34,6 @@ import jp.go.nict.langrid.dao.FederationDao;
 import jp.go.nict.langrid.dao.FederationNotFoundException;
 import jp.go.nict.langrid.dao.entity.Federation;
 import jp.go.nict.langrid.dao.entity.FederationPK;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
 
 /**
  * 
@@ -58,6 +60,17 @@ implements FederationDao{
 	@Override
 	public List<Federation> list() throws DaoException {
 		return super.list();
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<Federation> listFromOldest() throws DaoException{
+		return transact(session -> {
+				return (List<Federation>)session.createCriteria(Federation.class)
+						.addOrder(Order.asc("createdDateTime"))
+						.list();
+		});
+
 	}
 
 	@Override
