@@ -34,13 +34,17 @@ public abstract class AbstractFederationGraph implements FederationGraph{
 	private void listAllReachableGridIdsFrom1st(String source, Set<String> ids){
 		Map<String, Federation> targets = getFederations().get(source);
 		if(targets == null) return;
+		List<String> addedAndTransitive = new ArrayList<>();
 		for(Map.Entry<String, Federation> entry : targets.entrySet()){
 			String next = entry.getKey();
 			if(!ids.contains(next)){
 				ids.add(next);
 				if(entry.getValue().isTransitive())
-					listAllReachableGridIdsFromDeeper(next, ids);
+					addedAndTransitive.add(next);
 			}
+		}
+		for(String gid : addedAndTransitive){
+			listAllReachableGridIdsFromDeeper(gid, ids);
 		}
 	}
 
