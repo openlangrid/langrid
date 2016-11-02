@@ -111,13 +111,13 @@ public class FederationLogic extends AbstractLogic{
 	@DaoTransaction
 	public FederationGraph buildGraph()
 	throws DaoException{
-		return new ForwardFederationGraph(getFederationDao().list());
+		return new ForwardFederationGraph(getFederationDao().listFromOldest());
 	}
 
 	@DaoTransaction
 	public FederationGraph buildReverseGraph()
 	throws DaoException{
-		return new ReverseFederationGraph(getFederationDao().list());
+		return new ReverseFederationGraph(getFederationDao().listFromOldest());
 	}
 
 	@DaoTransaction

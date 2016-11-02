@@ -1,7 +1,7 @@
 package jp.go.nict.langrid.management.logic.federation;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import jp.go.nict.langrid.dao.entity.Federation;
@@ -11,11 +11,11 @@ public class ForwardFederationGraph extends AbstractFederationGraph {
 		for(jp.go.nict.langrid.dao.entity.Federation f : federations){
 			if(!f.isConnected() || f.isRequesting()) continue;
 			// forward
-			this.federations.computeIfAbsent(f.getSourceGridId(), key -> new HashMap<>())
+			this.federations.computeIfAbsent(f.getSourceGridId(), key -> new LinkedHashMap<>())
 				.put(f.getTargetGridId(), f);
 			if(f.isSymmetric()){
 				// backward
-				this.federations.computeIfAbsent(f.getTargetGridId(), key -> new HashMap<>())
+				this.federations.computeIfAbsent(f.getTargetGridId(), key -> new LinkedHashMap<>())
 					.put(f.getSourceGridId(), f);
 			}
 		}
@@ -26,6 +26,6 @@ public class ForwardFederationGraph extends AbstractFederationGraph {
 		return federations;
 	}
 
-	private Map<String, Map<String, Federation>> federations = new HashMap<>();
+	private Map<String, Map<String, Federation>> federations = new LinkedHashMap<>();
 //	private static Logger logger = Logger.getLogger(FederationGraph.class.getName());
 }

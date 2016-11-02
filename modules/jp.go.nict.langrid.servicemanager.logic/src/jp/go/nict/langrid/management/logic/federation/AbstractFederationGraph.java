@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,7 +25,7 @@ public abstract class AbstractFederationGraph implements FederationGraph{
 	}
 
 	public Collection<String> listAllReachableGridIds(String sourceGridId){
-		Set<String> ret = new HashSet<>();
+		Set<String> ret = new LinkedHashSet<>();
 		ret.add(sourceGridId);
 		listAllReachableGridIdsFrom1st(sourceGridId, ret);
 		ret.remove(sourceGridId);
