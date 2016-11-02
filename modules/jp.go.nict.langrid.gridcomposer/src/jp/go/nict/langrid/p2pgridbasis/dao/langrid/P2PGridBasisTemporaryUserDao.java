@@ -53,7 +53,7 @@ import jp.go.nict.langrid.p2pgridbasis.data.langrid.TemporaryUserData;
  * @version $Revision: 401 $
  */
 public class P2PGridBasisTemporaryUserDao
-extends AbstractP2PGridBasisDao<TemporaryUser>
+extends AbstractP2PGridBasisUpdateManagedEntityDao<TemporaryUser>
 implements DataDao, TemporaryUserDao {
 	/**
 	 * 

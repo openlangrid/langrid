@@ -54,7 +54,7 @@ import jp.go.nict.langrid.p2pgridbasis.data.langrid.ResourceTypeData;
  * @version $Revision: 401 $
  */
 public class P2PGridBasisResourceTypeDao
-extends AbstractP2PGridBasisDao<ResourceType>
+extends AbstractP2PGridBasisUpdateManagedEntityDao<ResourceType>
 implements DataDao, ResourceTypeDao {
 	/**
 	 * 

@@ -49,7 +49,7 @@ import jp.go.nict.langrid.p2pgridbasis.data.langrid.ProtocolData;
  * @version $Revision: 1043 $
  */
 public class P2PGridBasisProtocolDao
-extends AbstractP2PGridBasisDao<Protocol>
+extends AbstractP2PGridBasisUpdateManagedEntityDao<Protocol>
 implements DataDao, ProtocolDao {
 	/**
 	 * 

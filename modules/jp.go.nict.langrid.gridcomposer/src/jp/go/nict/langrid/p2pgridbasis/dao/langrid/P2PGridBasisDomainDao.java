@@ -49,7 +49,7 @@ import jp.go.nict.langrid.p2pgridbasis.data.langrid.DomainData;
  * @version $Revision: 1522 $
  */
 public class P2PGridBasisDomainDao
-extends AbstractP2PGridBasisDao<Domain>
+extends AbstractP2PGridBasisUpdateManagedEntityDao<Domain>
 implements DataDao, DomainDao {
 	/**
 	 * 

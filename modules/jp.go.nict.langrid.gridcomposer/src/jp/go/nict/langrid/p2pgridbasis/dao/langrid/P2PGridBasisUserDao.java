@@ -54,7 +54,7 @@ import jp.go.nict.langrid.p2pgridbasis.data.langrid.UserData;
  * @version $Revision: 401 $
  */
 public class P2PGridBasisUserDao
-extends AbstractP2PGridBasisDao<User>
+extends AbstractP2PGridBasisUpdateManagedEntityDao<User>
 implements DataDao, UserDao {
 	/**
 	 * 
@@ -82,6 +82,18 @@ implements DataDao, UserDao {
 			throw new DataDaoException(e);
 		}
 		return handleData(data, entity);
+	}
+	
+	@Override
+	protected boolean beforeUpdateEntity(User entity) {
+		entity.setPassword(null);
+		return true;
+	}
+
+	@Override
+	protected boolean beforeSaveEntity(User entity) {
+		entity.setPassword(null);
+		return true;
 	}
 
 	@Override

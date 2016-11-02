@@ -53,7 +53,7 @@ import jp.go.nict.langrid.p2pgridbasis.data.langrid.NodeData;
  * @version $Revision: 401 $
  */
 public class P2PGridBasisNodeDao
-extends AbstractP2PGridBasisDao<Node>
+extends AbstractP2PGridBasisUpdateManagedEntityDao<Node>
 implements DataDao, NodeDao {
 	/**
 	 * 

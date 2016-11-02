@@ -8,8 +8,6 @@ import jp.go.nict.langrid.commons.lang.reflect.GenericsUtil;
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.GenericHandler;
-import jp.go.nict.langrid.dao.entity.UpdateManagedEntity;
-import jp.go.nict.langrid.dao.util.EntityUtil;
 import jp.go.nict.langrid.management.logic.FederationLogic;
 import jp.go.nict.langrid.management.logic.federation.FederationGraph;
 import jp.go.nict.langrid.p2pgridbasis.controller.ControllerException;
@@ -17,7 +15,6 @@ import jp.go.nict.langrid.p2pgridbasis.controller.P2PGridController;
 import jp.go.nict.langrid.p2pgridbasis.controller.jxta.JXTAController;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDao;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDaoException;
-import jp.go.nict.langrid.p2pgridbasis.data.Data;
 
 public abstract class AbstractP2PGridBasisDao<T>
 implements DataDao{
@@ -62,71 +59,6 @@ implements DataDao{
 		getDaoContext().removeEntityListener(clazz, handler);
 	}
 
-	protected boolean handleDataDeletion(Data data, UpdateManagedEntity entity)
-	throws DataDaoException{
-		if(data.getAttributes().getKeys().contains("IsDeleted") &&
-				data.getAttributes().getValue("IsDeleted").equals("true")) {
-			try {
-				removeEntityListener();
-				try{
-					dc.removeEntity(
-							entity.getClass(), EntityUtil.getId(entity));
-					return true;
-				} finally{
-					setEntityListener();
-					getController().baseSummaryAdd(data);
-				}
-			} catch(Exception e) {
-				throw new DataDaoException(e);
-			}
-		}
-		return false;
-	}
-
-	protected boolean handleData(Data data, UpdateManagedEntity entity)
-	throws DataDaoException{
-		if(data.getAttributes().getKeys().contains("IsDeleted") &&
-				data.getAttributes().getValue("IsDeleted").equals("true")) {
-			try {
-				removeEntityListener();
-				try{
-					return dc.removeEntity(
-							entity.getClass(), EntityUtil.getId(entity));
-				} finally{
-					setEntityListener();
-					getController().baseSummaryAdd(data);
-				}
-			} catch(Exception e) {
-				throw new DataDaoException(e);
-			}
-		}
-
-		try {
-			removeEntityListener();
-			try{
-				dc.beginTransaction();
-				try{
-					UpdateManagedEntity existing = dc.loadEntity(
-							entity.getClass(), EntityUtil.getId(entity));
-					if(existing != null){
-						if(entity.getUpdatedDateTime().after(existing.getUpdatedDateTime())){
-							dc.mergeEntity(entity);
-						}
-					} else{
-						dc.saveEntity(entity);
-					}
-				} finally{
-					dc.commitTransaction();
-				}
-				return true;
-			} finally{
-				setEntityListener();
-				getController().baseSummaryAdd(data);
-			}
-		} catch(Exception e) {
-			throw new DataDaoException(e);
-		}
-	}
 
 	protected boolean isReachableTo(String gridId)
 	throws DataDaoException{
@@ -164,11 +96,12 @@ implements DataDao{
 		return graph;
 	}
 
+	private static FederationGraph graph;
+	private static long graphTime;
+
 	private P2PGridController controller;
 	private DaoContext dc;
 	private Class<T> clazz;
 	private GenericHandler<T> handler;
-	private static FederationGraph graph;
-	private static long graphTime;
 	private static Logger logger = Logger.getLogger(AbstractP2PGridBasisDao.class.getName());
 }

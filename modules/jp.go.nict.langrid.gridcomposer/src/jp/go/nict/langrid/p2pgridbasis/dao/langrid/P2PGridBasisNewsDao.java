@@ -45,7 +45,7 @@ import jp.go.nict.langrid.p2pgridbasis.data.langrid.NewsData;
  * @version $Revision: 401 $
  */
 public class P2PGridBasisNewsDao
-extends AbstractP2PGridBasisDao<News>
+extends AbstractP2PGridBasisUpdateManagedEntityDao<News>
 implements DataDao, NewsDao {
 	/**
 	 * 

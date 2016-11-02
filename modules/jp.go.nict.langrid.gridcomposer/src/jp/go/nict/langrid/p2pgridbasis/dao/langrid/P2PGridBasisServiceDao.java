@@ -68,7 +68,7 @@ import jp.go.nict.langrid.p2pgridbasis.data.langrid.ServiceData;
  * @version $Revision: 487 $
  */
 public class P2PGridBasisServiceDao
-extends AbstractP2PGridBasisDao<Service>
+extends AbstractP2PGridBasisUpdateManagedEntityDao<Service>
 implements DataDao, ServiceDao {
 	/**
 	 * 

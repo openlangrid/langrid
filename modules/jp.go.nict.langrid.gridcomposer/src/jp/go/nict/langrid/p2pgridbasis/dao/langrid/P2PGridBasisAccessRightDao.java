@@ -50,7 +50,7 @@ import jp.go.nict.langrid.p2pgridbasis.data.langrid.DataConvertException;
  * @version $Revision: 401 $
  */
 public class P2PGridBasisAccessRightDao
-extends AbstractP2PGridBasisDao<AccessRight>
+extends AbstractP2PGridBasisUpdateManagedEntityDao<AccessRight>
 implements AccessRightDao {
 	/**
 	 * The constructor.

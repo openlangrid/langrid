@@ -51,7 +51,7 @@ import jp.go.nict.langrid.p2pgridbasis.data.langrid.ServiceMetaAttributeData;
  * @version $Revision: 1514 $
  */
 public class P2PGridBasisServiceMetaAttributeDao
-extends AbstractP2PGridBasisDao<ServiceMetaAttribute>
+extends AbstractP2PGridBasisUpdateManagedEntityDao<ServiceMetaAttribute>
 implements DataDao, ServiceTypeDao {
 	/**
 	 * 

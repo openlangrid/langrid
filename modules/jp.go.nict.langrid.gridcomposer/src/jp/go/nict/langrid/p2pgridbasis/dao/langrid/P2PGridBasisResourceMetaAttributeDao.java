@@ -51,7 +51,7 @@ import jp.go.nict.langrid.p2pgridbasis.data.langrid.ResourceMetaAttributeData;
  * @version $Revision: 401 $
  */
 public class P2PGridBasisResourceMetaAttributeDao
-extends AbstractP2PGridBasisDao<ResourceMetaAttribute>
+extends AbstractP2PGridBasisUpdateManagedEntityDao<ResourceMetaAttribute>
 implements DataDao, ResourceTypeDao {
 	/**
 	 * 
