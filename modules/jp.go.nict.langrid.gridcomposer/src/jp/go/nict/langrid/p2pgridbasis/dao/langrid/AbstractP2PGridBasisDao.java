@@ -1,7 +1,5 @@
 package jp.go.nict.langrid.p2pgridbasis.dao.langrid;
 
-import java.lang.reflect.Type;
-
 import org.apache.log4j.Logger;
 
 import jp.go.nict.langrid.commons.lang.reflect.GenericsUtil;
@@ -21,10 +19,10 @@ implements DataDao{
 	@SuppressWarnings("unchecked")
 	public AbstractP2PGridBasisDao(DaoContext daoContext){
 		this.dc = daoContext;
-		Type type = GenericsUtil.getActualTypeArgumentTypes(this.getClass(), AbstractP2PGridBasisDao.class)[0];
-		if(!(type instanceof Class)) throw new RuntimeException(
-				"The parameter for T of AbstractP2PGridBasisDao must not be parameterized type.");
-		this.clazz = (Class<T>)type;
+		Class<?>[] classes = GenericsUtil.getTypeArgumentClasses(this.getClass(), AbstractP2PGridBasisDao.class);
+		if(classes.length == 0) throw new RuntimeException(
+				"Failed to determine acctual class of type argument T.");
+		this.clazz = (Class<T>)classes[0];
 	}
 
 	protected DaoContext getDaoContext() {
