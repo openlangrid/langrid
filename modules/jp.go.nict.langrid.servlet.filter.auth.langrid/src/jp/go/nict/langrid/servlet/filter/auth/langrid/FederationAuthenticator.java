@@ -81,7 +81,7 @@ public class FederationAuthenticator extends AbstractLangridBasicAuthenticator{
 		String callerUserId = callerUserGridIdAndId[1];
 
 		Federation f = fl.getValidFederation(sourceGridId, selfGridId);
-		if(f.getTargetGridAccessToken().equals(targetGridAccessToken) &&
+		if(f != null && f.getTargetGridAccessToken().equals(targetGridAccessToken) &&
 				(	// forward
 					f.getTargetGridId().equals(selfGridId) && f.getTargetGridUserId().equals(targetGridUserId))
 				||
