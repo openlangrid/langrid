@@ -2,14 +2,14 @@
 # 凡例
 # GRIDID:SERVICEID,PROTOCOL
 # PROTOCOL - "PROCOCOLBUFFERS_RPC"又は"SOAP_RPC_ENCODED"
-*:BilingualDictionaryWithLongestMatchCrossSearch,PROTOCOLBUFFERS_RPC
-*:GoogleTranslate,PROTOCOLBUFFERS_RPC
-*:ICTCLAS,PROTOCOLBUFFERS_RPC
-*:Klt,PROTOCOLBUFFERS_RPC
-*:KyotoTourismDictionaryDb,PROTOCOLBUFFERS_RPC
-*:Mecab,PROTOCOLBUFFERS_RPC
-*:NICTCLWT,PROTOCOLBUFFERS_RPC
-*:NICTJServer,PROTOCOLBUFFERS_RPC
-*:TreeTagger,PROTOCOLBUFFERS_RPC
-*:WikipediaDictionary_Katakana_ja,PROTOCOLBUFFERS_RPC
-*:WikipediaDictionary_NationalParkUS_en,PROTOCOLBUFFERS_RPC
+kyoto1.langrid:BilingualDictionaryWithLongestMatchCrossSearch,PROTOCOLBUFFERS_RPC
+kyoto1.langrid:GoogleTranslate,PROTOCOLBUFFERS_RPC
+kyoto1.langrid:ICTCLAS,PROTOCOLBUFFERS_RPC
+kyoto1.langrid:Klt,PROTOCOLBUFFERS_RPC
+kyoto1.langrid:KyotoTourismDictionaryDb,PROTOCOLBUFFERS_RPC
+kyoto1.langrid:Mecab,PROTOCOLBUFFERS_RPC
+kyoto1.langrid:NICTCLWT,PROTOCOLBUFFERS_RPC
+kyoto1.langrid:NICTJServer,PROTOCOLBUFFERS_RPC
+kyoto1.langrid:TreeTagger,PROTOCOLBUFFERS_RPC
+kyoto1.langrid:WikipediaDictionary_Katakana_ja,PROTOCOLBUFFERS_RPC
+kyoto1.langrid:WikipediaDictionary_NationalParkUS_en,PROTOCOLBUFFERS_RPC
