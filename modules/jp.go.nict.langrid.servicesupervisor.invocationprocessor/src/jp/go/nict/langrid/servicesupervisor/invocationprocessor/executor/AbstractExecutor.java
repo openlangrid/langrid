@@ -16,6 +16,7 @@ public class AbstractExecutor {
 				){
 			headers.remove(LangridConstants.HTTPHEADER_FROMADDRESS);
 			headers.remove(LangridConstants.HTTPHEADER_CALLNEST);
+			headers.remove(LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION);
 		}
 	}
 }

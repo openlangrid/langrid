@@ -19,13 +19,10 @@ package jp.go.nict.langrid.servicesupervisor.invocationprocessor;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -180,8 +177,8 @@ extends AbstractLangridServlet{
 		String transHeader2 = LangridConstants.HTTPHEADER_TRANSFER_TO_ENDPOINT_OBSOLETE.toLowerCase();
 		while(en.hasMoreElements()){
 			String name = en.nextElement().toLowerCase();
-			if(transHeaders.contains(name)){
-				headers.put(name, request.getHeader(name));
+			if(transHeaders.containsKey(name)){
+				headers.put(transHeaders.get(name), request.getHeader(name));
 			} else if(name.startsWith(transHeader1)){
 				String n = name.substring(transHeader1.length());
 				headers.put(n, request.getHeader(name));
@@ -194,14 +191,16 @@ extends AbstractLangridServlet{
 		return headers;
 	}
 
-	private static Set<String> transHeaders;
+	private static Map<String, String> transHeaders = new HashMap<>();
 	static{
-		transHeaders = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(new String[]{
-				LangridConstants.HTTPHEADER_TYPEOFAPPPROVISION.toLowerCase(),
-				LangridConstants.HTTPHEADER_TYPEOFUSE.toLowerCase(),
-				LangridConstants.HTTPHEADER_PROTOCOL.toLowerCase(),
-				LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION
-		})));
+		for(String s : new String[]{
+				LangridConstants.HTTPHEADER_TYPEOFAPPPROVISION,
+				LangridConstants.HTTPHEADER_TYPEOFUSE,
+				LangridConstants.HTTPHEADER_PROTOCOL,
+				LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION}){
+			transHeaders.put(s.toLowerCase(), s);
+		}
+		transHeaders = Collections.unmodifiableMap(transHeaders);
 	}
 
 	private String getProtocol(HttpServletRequest request){
