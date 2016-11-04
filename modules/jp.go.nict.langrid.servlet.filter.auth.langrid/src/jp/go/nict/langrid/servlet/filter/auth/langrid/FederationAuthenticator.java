@@ -86,7 +86,7 @@ public class FederationAuthenticator extends AbstractLangridBasicAuthenticator{
 					f.getTargetGridId().equals(selfGridId) && f.getTargetGridUserId().equals(targetGridUserId))
 				||
 				(	// backward
-					f.getSourceGridId().equals(selfGridId) && f.getSourceGridUserId().equals(targetGridUserId))
+					f.getSourceGridId().equals(selfGridId) && (f.getSourceGridId() != null && f.getSourceGridUserId().equals(targetGridUserId)))
 				){
 			context.setAuthorized(callerUserGridId, callerUserId, authPass);
 			return true;
