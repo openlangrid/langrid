@@ -197,9 +197,10 @@ extends AbstractLangridServlet{
 	private static Set<String> transHeaders;
 	static{
 		transHeaders = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(new String[]{
-				LangridConstants.HTTPHEADER_TYPEOFAPPPROVISION.toLowerCase()
-				, LangridConstants.HTTPHEADER_TYPEOFUSE.toLowerCase()
-				, LangridConstants.HTTPHEADER_PROTOCOL.toLowerCase()
+				LangridConstants.HTTPHEADER_TYPEOFAPPPROVISION.toLowerCase(),
+				LangridConstants.HTTPHEADER_TYPEOFUSE.toLowerCase(),
+				LangridConstants.HTTPHEADER_PROTOCOL.toLowerCase(),
+				LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION
 		})));
 	}
 

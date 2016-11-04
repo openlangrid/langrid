@@ -34,6 +34,7 @@ import javax.xml.soap.MimeHeaders;
 
 import jp.go.nict.langrid.commons.cs.calltree.CallNode;
 import jp.go.nict.langrid.commons.cs.calltree.CallTreeUtil;
+import jp.go.nict.langrid.commons.lang.StringUtil;
 import jp.go.nict.langrid.commons.rpc.RpcFault;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.rpc.TransportHeader;
@@ -71,6 +72,7 @@ public class AspectBase{
 		extractHttpHeader(mHeaders, props, LangridConstants.HTTPHEADER_CALLNEST);
 		extractHttpHeader(mHeaders, props, LangridConstants.HTTPHEADER_TYPEOFUSE);
 		extractHttpHeader(mHeaders, props, LangridConstants.HTTPHEADER_TYPEOFAPPPROVISION);
+		extractHttpHeader(mHeaders, props, LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION);
 		// 呼出アドレスが無ければ足す。
 		if(mHeaders.getHeader(LangridConstants.HTTPHEADER_FROMADDRESS) == null){
 			props.put(
@@ -80,8 +82,11 @@ public class AspectBase{
 		// SOAPヘッダ情報を抽出
 		Iterable<RpcHeader> rHeaders = serviceContext.getRequestRpcHeaders();
 		extractSoapHeader(rHeaders, props, LangridConstants.ACTOR_SERVICE_TREEBINDING);
+
 		// calltree準備
 		props.put("calltree", new ArrayList<CallNode>());
+		// gridTracks準備
+		props.put("gridTracks", new ArrayList<String>());
 		// additionalMimeHeaders準備
 		props.put("additionalMimeHeaders", new ArrayList<TransportHeader>());
 		// additionalRpcHeaders準備
@@ -179,6 +184,7 @@ public class AspectBase{
 			copyHttpHeader(tempProperties, mimeHeaders, LangridConstants.HTTPHEADER_CALLNEST);
 			copyHttpHeader(tempProperties, mimeHeaders, LangridConstants.HTTPHEADER_TYPEOFUSE);
 			copyHttpHeader(tempProperties, mimeHeaders, LangridConstants.HTTPHEADER_TYPEOFAPPPROVISION);
+			copyHttpHeader(tempProperties, mimeHeaders, LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION);
 			copyAdditionalMimeHeaders(tempProperties, mimeHeaders);
 
 			// Rpcヘッダ情報をコピー
@@ -224,6 +230,8 @@ public class AspectBase{
 					serviceId + "\" because of invalid calltree text."
 					, e);
 		}
+		Collection<String> gridTracks = (Collection<String>)properties.get("gridTracks");
+		gridTracks.add(MimeHeadersUtil.getJoinedValue(mimeHeaders, LangridConstants.HTTPHEADER_GRIDTRACK));
 	}
 
 	/**
@@ -245,6 +253,11 @@ public class AspectBase{
 					LangridConstants.ACTOR_SERVICE_CALLTREE
 					, "calltree", CallTreeUtil.encodeTree(nodes)
 					));
+		}
+		Collection<String> gridTracks = (Collection<String>)properties.get("gridTracks");
+		if(gridTracks.size() > 0){
+			mimeHeaders.addHeader(LangridConstants.HTTPHEADER_GRIDTRACK,
+					"((" + StringUtil.join(gridTracks.toArray(new String[]{}), "),(") + "))");
 		}
 		Collection<RpcHeader> headers = (Collection<RpcHeader>)properties.get(
 				"responseHeaders");
