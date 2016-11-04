@@ -81,21 +81,24 @@ public class FederationAuthenticator extends AbstractLangridBasicAuthenticator{
 		String callerUserId = callerUserGridIdAndId[1];
 
 		Federation f = fl.getValidFederation(sourceGridId, selfGridId);
-		if(f != null && f.getTargetGridAccessToken().equals(targetGridAccessToken) &&
+		if(f != null){
+			if((f.getTargetGridAccessToken().equals(targetGridAccessToken) &&
 				(	// forward
 					f.getTargetGridId().equals(selfGridId) && f.getTargetGridUserId().equals(targetGridUserId))
 				||
 				(	// backward
 					f.getSourceGridId().equals(selfGridId) && (f.getSourceGridUserId() != null && f.getSourceGridUserId().equals(targetGridUserId)))
-				){
-			context.setAuthorized(callerUserGridId, callerUserId, authPass);
-			return true;
+				)){
+				context.setAuthorized(callerUserGridId, callerUserId, authPass);
+				return true;
+			} else{
+				Logger.getLogger(getClass().getName()).info(String.format(
+						"auth failed. sourceGrid[%s], targetGridUser[%s], caller[%s|%s],"
+						+ "with federation[%s|%s].",
+						sourceGridId, targetGridUserId, callerUserGridId, callerUserId,
+						f.getSourceGridId(), f.getTargetGridId()));
+			}
 		}
-		Logger.getLogger(getClass().getName()).info(String.format(
-				"auth failed. sourceGrid[%s], targetGridUser[%s], caller[%s|%s],"
-				+ "with federation[%s|%s].",
-				sourceGridId, targetGridUserId, callerUserGridId, callerUserId,
-				f.getSourceGridId(), f.getTargetGridId()));
 		return false;
 	}
 }
