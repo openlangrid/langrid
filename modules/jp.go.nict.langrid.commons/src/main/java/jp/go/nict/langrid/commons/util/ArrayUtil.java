@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import jp.go.nict.langrid.commons.lang.ClassUtil;
@@ -339,6 +340,12 @@ public class ArrayUtil {
 
 	public static <T> Stream<T> stream(T[] array){
 		return Arrays.stream(array);
+	}
+
+	public static <T> void fill(T[] array, Supplier<T> sup){
+		for(int i = 0; i < array.length; i++){
+			array[i] = sup.get();
+		}
 	}
 
 	private static String[] emptyStrings_ = new String[]{};
