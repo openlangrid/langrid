@@ -41,6 +41,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
 import jp.go.nict.langrid.commons.io.StreamUtil;
+import jp.go.nict.langrid.commons.ws.LangridConstants;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.intragrid.HttpClientUtil;
 
 /**
@@ -55,7 +56,7 @@ public class ServiceInvoker {
 	 * 
 	 */
 	public static int invoke(
-			URL url, String userName, String password
+			String selfGridId, URL url, String userName, String password
 			, Map<String, String> headers
 			, InputStream input, HttpServletResponse output, OutputStream errorOut
 			, int connectionTimeout, int soTimeout)
@@ -111,14 +112,20 @@ public class ServiceInvoker {
 			}
 			output.setStatus(status);
 			if(status == 200){
+				StringBuilder gridTrack = new StringBuilder();
 				for(Header h : method.getResponseHeaders()){
 					String name = h.getName();
+					if(name.equals(LangridConstants.HTTPHEADER_GRIDTRACK)){
+						gridTrack.append(h.getValue());
+					}
 					if(name.startsWith("X-Langrid")
 							|| (!throughHeaders.contains(name.toLowerCase())))
 						continue;
 					String value = h.getValue();
 					output.addHeader(name, value);
 				}
+				output.addHeader(LangridConstants.HTTPHEADER_GRIDTRACK,
+						selfGridId + (gridTrack.length() > 0 ? ", " + gridTrack : ""));
 				OutputStream os = output.getOutputStream();
 				StreamUtil.transfer(method.getResponseBodyAsStream(), os);
 				os.flush();

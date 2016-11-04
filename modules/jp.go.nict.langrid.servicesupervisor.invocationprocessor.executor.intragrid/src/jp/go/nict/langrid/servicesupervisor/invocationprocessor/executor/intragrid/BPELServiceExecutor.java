@@ -138,7 +138,7 @@ public class BPELServiceExecutor implements ServiceExecutor{
 		}
 		try{
 			ServiceInvoker.invoke(
-					url, userName, password, headers
+					context.getSelfGridId(), url, userName, password, headers
 					, new ByteArrayInputStream(input), output, output.getOutputStream()
 					, conTimeoutMillis, readTimeoutMillis
 					);

@@ -139,7 +139,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 		}
 
 		ServiceInvoker.invoke(
-				url, authId, authPasswd, headers
+				selfGridId, url, authId, authPasswd, headers
 				, new ByteArrayInputStream(input), response, response.getOutputStream()
 				, connectionTimeout, readTimeout
 				);

@@ -252,7 +252,7 @@ public class ExternalServiceExecutor implements ServiceExecutor{
 			try{
 				long s = System.currentTimeMillis(); 
 				resCode = ServiceInvoker.invoke(
-						url, userName, password, headers
+						context.getSelfGridId(), url, userName, password, headers
 						, new ByteArrayInputStream(input), output, errorOut
 						, connectionTimeoutMillis
 						, readTimeoutMillis // != 0 ? timeoutMillis : readTimeout

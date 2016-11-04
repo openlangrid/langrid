@@ -150,6 +150,7 @@ public class LangridConstants {
 
 	public static final String HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION
 		= "X-Langrid-FederatedCall-BypassingInvocation";
+
 	/**
 	 * 
 	 * 
@@ -173,4 +174,7 @@ public class LangridConstants {
 	// for backward compatibility
 	public static final String HTTPHEADER_TRANSFER_TO_ENDPOINT_OBSOLETE
 		= "X-Langrid-Service-";
+
+	public static final String HTTPHEADER_GRIDTRACK
+		= "X-ServiceGrid-GridTrack";
 }
