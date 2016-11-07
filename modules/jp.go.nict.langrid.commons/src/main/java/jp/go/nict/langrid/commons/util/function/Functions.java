@@ -99,6 +99,23 @@ public class Functions {
 		};
 	}
 
+	public static interface BiConsumerWithException<T, U, E extends Throwable>{
+		void accept(T value1, U value2) throws E;
+	}
+	public static <T, U, E extends Throwable> java.util.function.BiConsumer<T, U> soften(
+			final BiConsumerWithException<T, U, E> c){
+		return new java.util.function.BiConsumer<T, U>(){
+			@Override
+			public void accept(T value1, U value2) {
+				try{
+					c.accept(value1, value2);
+				} catch(Throwable e){
+					throw new SoftenedException(e);
+				}
+			}
+		};
+	}
+
 	public static interface FunctionWithException<T, R, E extends Throwable>{
 		R apply(T value) throws E;
 	}
@@ -109,6 +126,23 @@ public class Functions {
 			public R apply(T value) {
 				try{
 					return f.apply(value);
+				} catch(Throwable e){
+					throw new SoftenedException(e);
+				}
+			}
+		};
+	}
+
+	public static interface BiFunctionWithException<T, U, R, E extends Throwable>{
+		R apply(T value1, U value2) throws E;
+	}
+	public static <T, U, R, E extends Throwable> java.util.function.BiFunction<T, U, R> soften(
+			final BiFunctionWithException<T, U, R, E> f){
+		return new java.util.function.BiFunction<T, U, R>(){
+			@Override
+			public R apply(T value1, U value2) {
+				try{
+					return f.apply(value1, value2);
 				} catch(Throwable e){
 					throw new SoftenedException(e);
 				}
