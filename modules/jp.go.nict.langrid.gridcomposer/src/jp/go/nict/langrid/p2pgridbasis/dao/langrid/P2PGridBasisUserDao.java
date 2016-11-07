@@ -96,8 +96,8 @@ implements DataDao, UserDao {
 		return true;
 	}
 
-	private boolean beforePublish(User user){
-		user.setPassword(null);
+	private boolean beforePublish(UserData ud){
+		ud.getAttributes().removeValue("password");
 		return true;
 	}
 
@@ -192,8 +192,9 @@ implements DataDao, UserDao {
 		protected void doUpdate(Serializable id, Set<String> modifiedProperties){
 			try{
 				User u = getDaoContext().loadEntity(User.class, id);
-				if(u != null && beforePublish(u)){
-					getController().publish(new UserData(u));
+				UserData ud = new UserData(u);
+				if(u != null && beforePublish(ud)){
+					getController().publish(ud);
 				}
 				logger.info("published[User(id=" + id + ")]");
 			} catch(ControllerException e){
