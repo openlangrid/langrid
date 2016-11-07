@@ -38,6 +38,7 @@ import jp.go.nict.langrid.commons.lang.StringUtil;
 import jp.go.nict.langrid.commons.rpc.RpcFault;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.rpc.TransportHeader;
+import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.commons.ws.LangridConstants;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.commons.ws.util.MimeHeadersUtil;
@@ -86,7 +87,7 @@ public class AspectBase{
 		// calltree準備
 		props.put("calltree", new ArrayList<CallNode>());
 		// gridTracks準備
-		props.put("gridTracks", new ArrayList<String>());
+		props.put("gridTracks", new ArrayList<Pair<String, String>>());
 		// additionalMimeHeaders準備
 		props.put("additionalMimeHeaders", new ArrayList<TransportHeader>());
 		// additionalRpcHeaders準備
@@ -230,8 +231,11 @@ public class AspectBase{
 					serviceId + "\" because of invalid calltree text."
 					, e);
 		}
-		Collection<String> gridTracks = (Collection<String>)properties.get("gridTracks");
-		gridTracks.add(MimeHeadersUtil.getJoinedValue(mimeHeaders, LangridConstants.HTTPHEADER_GRIDTRACK));
+		Collection<Pair<String, String>> gridTracks = (Collection<Pair<String, String>>)properties.get("gridTracks");
+		gridTracks.add(Pair.create(
+				invocationName,
+				MimeHeadersUtil.getJoinedValue(mimeHeaders, LangridConstants.HTTPHEADER_GRIDTRACK))
+				);
 	}
 
 	/**
@@ -254,11 +258,17 @@ public class AspectBase{
 					, "calltree", CallTreeUtil.encodeTree(nodes)
 					));
 		}
-		Collection<String> gridTracks = (Collection<String>)properties.get("gridTracks");
+
+		Collection<Pair<String, String>> gridTracks = (Collection<Pair<String, String>>)
+				properties.get("gridTracks");
 		if(gridTracks.size() > 0){
-			mimeHeaders.addHeader(LangridConstants.HTTPHEADER_GRIDTRACK,
-					"((" + StringUtil.join(gridTracks.toArray(new String[]{}), "),(") + "))");
+			String v = "(" + StringUtil.join(
+					gridTracks.toArray(new Pair[]{}),
+					p -> p.getFirst() + ":" + p.getSecond(),
+					",") + ")";
+			mimeHeaders.addHeader(LangridConstants.HTTPHEADER_GRIDTRACK, v);
 		}
+
 		Collection<RpcHeader> headers = (Collection<RpcHeader>)properties.get(
 				"responseHeaders");
 		if(headers.size() > 0){
