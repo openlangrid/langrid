@@ -193,7 +193,7 @@ public class UserServiceImpl implements UserService {
 	throws ServiceManagerException {
 		try {
 			return new UserLogic().transactRead(userGridId, userId,
-					user -> user.getPassword().equals(
+					user -> user.getPassword() != null && user.getPassword().equals(
 									MessageDigestUtil.digestBySHA512(password))
 					, () -> false);
 		} catch (DaoException e) {
