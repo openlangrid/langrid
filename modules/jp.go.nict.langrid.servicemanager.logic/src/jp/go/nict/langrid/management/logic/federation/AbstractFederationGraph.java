@@ -20,8 +20,7 @@ public abstract class AbstractFederationGraph implements FederationGraph{
 	}
 
 	public List<Federation> getShortestPath(String sourceGridId, String targetGridId){
-//		return getShortestPath(sourceGridId, sourceGridId, targetGridId, getFederations(), new HashMap<>(), new HashSet<>());
-		return getShortestPath2(sourceGridId, sourceGridId, targetGridId, getFederations(), new HashMap<>(), new HashSet<>());
+		return getShortestPath(sourceGridId, sourceGridId, targetGridId, getFederations(), new HashMap<>(), new HashSet<>());
 	}
 
 	public Collection<String> listAllReachableGridIds(String sourceGridId){
@@ -62,48 +61,6 @@ public abstract class AbstractFederationGraph implements FederationGraph{
 	}
 
 	private List<Federation> getShortestPath(String sgid, String cgid, String tgid,
-			Map<String, Map<String, Federation>> federations,
-			Map<String, List<Federation>> cache, Set<String> visited){
-		if(cgid.equals(tgid)) return Arrays.asList();
-		List<Federation> cached = cache.get(cgid);
-		if(cached != null){
-			return cached;
-		}
-		List<Federation> curPath = Arrays.asList();
-		Map<String, Federation> feds = federations.get(cgid);
-		if(feds != null){
-			{
-				Federation f = feds.get(tgid);
-				if(f != null && (f.isTransitive() || cgid.equals(sgid))){
-					List<Federation> ret = Arrays.asList(f);
-					cache.put(cgid, ret);
-					return ret;
-				}
-			}
-			int curLen = Integer.MAX_VALUE;
-			for(Map.Entry<String, Federation> entry : feds.entrySet()){
-				String target = entry.getKey();
-				Federation f = entry.getValue();
-				if(target.equals(tgid)) continue;
-				if(!f.isTransitive()) continue;
-				if(visited.contains(target)) continue;
-				visited.add(target);
-				List<Federation> can = getShortestPath(sgid, target, tgid, federations, cache, visited);
-				visited.remove(target);
-				if(0 < can.size() && can.size() < curLen){
-					List<Federation> r = new ArrayList<>();
-					r.add(f);
-					r.addAll(can);
-					curPath = r;
-					curLen = can.size();
-				}
-			}
-		}
-		cache.put(cgid, curPath);
-		return curPath;
-	}
-
-	private List<Federation> getShortestPath2(String sgid, String cgid, String tgid,
 			Map<String, Map<String, Federation>> federations,
 			Map<String, List<Federation>> cache, Set<String> visited){
 		visited.add(cgid);
