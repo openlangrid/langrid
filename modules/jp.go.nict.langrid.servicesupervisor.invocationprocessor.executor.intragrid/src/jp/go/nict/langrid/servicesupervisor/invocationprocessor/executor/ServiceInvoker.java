@@ -24,8 +24,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -43,7 +41,6 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
 import jp.go.nict.langrid.commons.io.StreamUtil;
-import jp.go.nict.langrid.commons.lang.StringUtil;
 import jp.go.nict.langrid.commons.ws.LangridConstants;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.intragrid.HttpClientUtil;
 
@@ -114,23 +111,31 @@ public class ServiceInvoker {
 				status = HttpServletResponse.SC_REQUEST_TIMEOUT;
 			}
 			output.setStatus(status);
-			if(status == 200){
-				Collection<String> gridTracks = new ArrayList<>();
-				for(Header h : method.getResponseHeaders()){
-					String name = h.getName();
-					if(name.equals(LangridConstants.HTTPHEADER_GRIDTRACK)){
-						gridTracks.add(h.getValue());
-					}
-					if(name.startsWith("X-Langrid")
-							|| (!throughHeaders.contains(name.toLowerCase())))
-						continue;
-					String value = h.getValue();
-					output.addHeader(name, value);
+
+			// process headers
+			String gridTrack = "";
+			for(Header h : method.getResponseHeaders()){
+				String name = h.getName();
+				if(name.equals(LangridConstants.HTTPHEADER_GRIDTRACK)){
+					gridTrack = h.getValue();
 				}
-				output.addHeader(LangridConstants.HTTPHEADER_GRIDTRACK,
-						gridTracks.size() > 0 ?
-								("(" + selfGridId + ",(" + StringUtil.join(gridTracks.toArray(new String[]{}), ",") + "))")
-								: selfGridId);
+				if(name.startsWith("X-Langrid")
+						|| (!throughHeaders.contains(name.toLowerCase())))
+					continue;
+				String value = h.getValue();
+				output.addHeader(name, value);
+			}
+			String v = selfGridId;
+			if(gridTrack.length() > 0){
+				if(gridTrack.charAt(0) == '('){
+					v = v + gridTrack;
+				} else{
+					v = v + " -> " + gridTrack;
+				}
+			}
+			output.addHeader(LangridConstants.HTTPHEADER_GRIDTRACK, v);
+
+			if(status == 200){
 				OutputStream os = output.getOutputStream();
 				StreamUtil.transfer(method.getResponseBodyAsStream(), os);
 				os.flush();
