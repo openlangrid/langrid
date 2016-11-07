@@ -17,6 +17,7 @@
  */
 package jp.go.nict.langrid.commons.lang.reflect;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -38,5 +39,29 @@ public class GenericsUtilTest {
 		Assert.assertNull(
 				GenericsUtil.getTypeArgumentClasses(new ArrayList<Integer>().getClass(), ArrayList.class)
 				);
+	}
+
+	class C1<T>{}
+	class C2<T> extends C1<T>{}
+	class C3 extends C1<Integer>{}
+	class C4 extends C2<Integer>{}
+	@Test
+	public void test_getActualTypeArgumentTypes() throws Throwable{
+		System.out.println("-- C3, C1 --");
+		for(Type t : GenericsUtil.getActualTypeArgumentTypes(C3.class, C1.class)){
+			System.out.println(t);
+		}
+		System.out.println("-- C4, C2 --");
+		for(Type t : GenericsUtil.getActualTypeArgumentTypes(C4.class, C2.class)){
+			System.out.println(t);
+		}
+		System.out.println("-- C4, C1 --");
+		for(Type t : GenericsUtil.getActualTypeArgumentTypes(C4.class, C1.class)){
+			System.out.println(t);
+		}
+		System.out.println("-- C4, C1 --");
+		for(Class<?> t : GenericsUtil.getTypeArgumentClasses(C4.class, C1.class)){
+			System.out.println(t);
+		}
 	}
 }
