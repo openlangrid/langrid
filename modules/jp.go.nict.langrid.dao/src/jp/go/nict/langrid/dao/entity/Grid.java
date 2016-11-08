@@ -211,6 +211,14 @@ implements AttributedElement<GridAttribute>, Serializable{
 		this.autoApproveEnabled = autoApproveEnabled;
 	}
 
+	public boolean isBypassExecutionAllowed() {
+		return bypassExecutionAllowed != null ? bypassExecutionAllowed : false;
+	}
+
+	public void setBypassExecutionAllowed(Boolean bypassExecutionAllowed) {
+		this.bypassExecutionAllowed = bypassExecutionAllowed;
+	}
+
 	protected EqualsBuilder appendSpecialEquals(
 			EqualsBuilder builder, Object value
 			, Collection<String> appendedFields, boolean ignoreDates){
@@ -258,6 +266,7 @@ implements AttributedElement<GridAttribute>, Serializable{
 	private boolean hosted;
 	private boolean commercialUseAllowed;
 	private boolean autoApproveEnabled = false;
+	private Boolean bypassExecutionAllowed = true;
 
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="gridId")
 	@MapKey(name="name")
