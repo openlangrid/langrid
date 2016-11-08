@@ -86,7 +86,9 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 			List<Federation> path = federationLogic.getShortestPath(selfGridId, serviceGridId);
 			if(path.size() > 0){
 				if(serviceContext.getRequestMimeHeaders().getHeader(
-						LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION) != null){
+						LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION) != null
+						&&
+						gridDao.getGrid(serviceGridId).isBypassExecutionAllowed()){
 					// get farthest
 					f = path.get(path.size() - 1);
 					forward = f.getTargetGridId().equals(serviceGridId);
