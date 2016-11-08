@@ -21,6 +21,8 @@ package jp.go.nict.langrid.commons.parameter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
 import java.util.Properties;
 
@@ -49,11 +51,9 @@ extends ParameterContext
 	public PropertiesParameterContext(URL resource)
 	throws IOException{
 		Properties p = new Properties();
-		InputStream is = resource.openStream();
-		try{
-			p.load(is);
-		} finally{
-			is.close();
+		try(InputStream is = resource.openStream();
+				Reader r = new InputStreamReader(is, "UTF-8")){
+			p.load(r);
 		}
 		this.properties = p;
 	}
