@@ -34,7 +34,7 @@ public class BasicAuthUtil {
 		if(authorization == null) return null;
 		String[] values = authorization.split(" ");
 		if(values.length != 2) return null;
-		if(!values[0].equals("Basic")) return null;
+		if(!values[0].equalsIgnoreCase("Basic")) return null;
 		String[] v = Base64Util.decode(values[1]).split(":", 2);
 		String user = v.length > 0 ? v[0] : "";
 		String pass = v.length > 1 ? v[1] : "";
