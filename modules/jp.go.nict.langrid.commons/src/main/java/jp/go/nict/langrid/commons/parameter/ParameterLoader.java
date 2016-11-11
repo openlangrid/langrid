@@ -64,17 +64,27 @@ public class ParameterLoader{
 		load(bean, context, new LinkedList<String>());
 	}
 
+	public void load(Object bean, ParameterContext context, boolean loadAllFields)
+	throws ParameterRequiredException{
+		load(bean, context, new LinkedList<String>(), loadAllFields);
+	}
+
 	/**
 	 * 
 	 * 
 	 */
 	public void load(Object bean, ParameterContext context, Collection<String> noNamedParams)
 	throws ParameterRequiredException{
+		load(bean, context, noNamedParams, false);
+	}
+
+	public void load(Object bean, ParameterContext context, Collection<String> noNamedParams, boolean loadAllFields)
+	throws ParameterRequiredException{
 		Queue<String> params = new LinkedList<String>();
 		params.addAll(noNamedParams);
 		Class<?> clazz = bean.getClass();
 		String prefix = "";
-		boolean loadAll = false;
+		boolean loadAll = loadAllFields;
 		ParameterConfig pc = clazz.getAnnotation(ParameterConfig.class);
 		if(pc != null){
 			prefix = pc.prefix();
