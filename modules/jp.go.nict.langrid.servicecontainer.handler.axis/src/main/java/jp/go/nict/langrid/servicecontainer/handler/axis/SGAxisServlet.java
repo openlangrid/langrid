@@ -36,6 +36,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 
+import org.apache.axis.AxisFault;
+import org.apache.axis.EngineConfiguration;
+import org.apache.axis.WSDDEngineConfiguration;
+import org.apache.axis.deployment.wsdd.WSDDBeanMapping;
+import org.apache.axis.deployment.wsdd.WSDDConstants;
+import org.apache.axis.deployment.wsdd.WSDDDeployment;
+import org.apache.axis.deployment.wsdd.WSDDService;
+import org.apache.axis.transport.http.AxisServlet;
+
 import jp.go.nict.langrid.commons.lang.StringUtil;
 import jp.go.nict.langrid.commons.parameter.ParameterContext;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
@@ -49,15 +58,6 @@ import jp.go.nict.langrid.servicecontainer.handler.ServiceFactory;
 import jp.go.nict.langrid.servicecontainer.handler.ServiceLoader;
 import jp.go.nict.langrid.servicecontainer.handler.annotation.ServicesUtil;
 import jp.go.nict.langrid.servicecontainer.handler.loader.ServiceFactoryLoader;
-
-import org.apache.axis.AxisFault;
-import org.apache.axis.EngineConfiguration;
-import org.apache.axis.WSDDEngineConfiguration;
-import org.apache.axis.deployment.wsdd.WSDDBeanMapping;
-import org.apache.axis.deployment.wsdd.WSDDConstants;
-import org.apache.axis.deployment.wsdd.WSDDDeployment;
-import org.apache.axis.deployment.wsdd.WSDDService;
-import org.apache.axis.transport.http.AxisServlet;
 
 /**
  * 
@@ -166,12 +166,24 @@ public class SGAxisServlet extends AxisServlet {
 					updateServiceDeployment();
 				}
 			}
-			super.service(req, resp);
+			// First execution must be completed before other executions start in order
+			// to prevent ConcurrentModificationException caused in axis library.
+			boolean done = false;
+			synchronized(SGAxisServlet.class){
+				if(first){
+					super.service(req, resp);
+					done = true;
+				}
+			}
+			if(!done){
+				super.service(req, resp);
+			}
 		} finally{
 			currentServiceLoader.remove();
 			currentServletConfig.remove();
 		}
 	}
+	private static boolean first = true;
 
 	private void initNamespaceMappings(String mappings){
 		for(String m : mappings.split("\\n")){
