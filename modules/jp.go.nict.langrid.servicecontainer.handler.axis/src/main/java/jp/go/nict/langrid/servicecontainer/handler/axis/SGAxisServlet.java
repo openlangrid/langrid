@@ -172,6 +172,7 @@ public class SGAxisServlet extends AxisServlet {
 			synchronized(SGAxisServlet.class){
 				if(first){
 					super.service(req, resp);
+					first = false;
 					done = true;
 				}
 			}
