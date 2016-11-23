@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
+import jp.go.nict.langrid.commons.lang.StringUtil;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.FederationDao;
 import jp.go.nict.langrid.dao.FederationNotFoundException;
@@ -46,6 +47,10 @@ public class FederationLogic extends AbstractLogic{
 	 * 
 	 */
 	public FederationLogic() throws DaoException{
+	}
+
+	public static String newToken(){
+		return StringUtil.randomString(25);
 	}
 
 	@DaoTransaction
