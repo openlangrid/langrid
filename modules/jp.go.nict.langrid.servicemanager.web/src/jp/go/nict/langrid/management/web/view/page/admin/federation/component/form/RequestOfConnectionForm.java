@@ -19,7 +19,7 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
 
-import jp.go.nict.langrid.commons.lang.StringUtil;
+import jp.go.nict.langrid.management.logic.FederationLogic;
 import jp.go.nict.langrid.management.logic.service.HttpClientUtil;
 import jp.go.nict.langrid.management.web.log.LogWriter;
 import jp.go.nict.langrid.management.web.model.FederationModel;
@@ -73,7 +73,7 @@ public abstract class RequestOfConnectionForm extends AbstractForm<String> {
 		add(new Button("submit") {
 			@Override
 			public void onSubmit() {
-				String token = StringUtil.randomString(25);
+				String token = FederationLogic.newToken();
 				
 				String inputedUrl = url.getModelObject();
 				String[] hostAndPort = inputedUrl.split("/", 4)[2].split(":");
