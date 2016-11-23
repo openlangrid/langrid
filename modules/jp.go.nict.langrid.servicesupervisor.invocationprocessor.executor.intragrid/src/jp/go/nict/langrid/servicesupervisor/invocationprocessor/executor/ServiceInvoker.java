@@ -119,9 +119,11 @@ public class ServiceInvoker {
 				if(name.equals(LangridConstants.HTTPHEADER_GRIDTRACK)){
 					gridTrack = h.getValue();
 				}
-				if(name.startsWith("X-Langrid")
-						|| (!throughHeaders.contains(name.toLowerCase())))
-					continue;
+				if(!name.equalsIgnoreCase(LangridConstants.HTTPHEADER_FEDERATEDCALL_SHORTCUTRESULT)){
+					if(name.startsWith("X-Langrid")
+							|| (!throughHeaders.contains(name.toLowerCase())))
+						continue;
+				}
 				String value = h.getValue();
 				output.addHeader(name, value);
 			}

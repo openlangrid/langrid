@@ -102,18 +102,21 @@ extends AbstractLangridServlet{
 	}
 
 	protected void doProcess(
-			HttpServletRequest request, HttpServletResponse response
-			, ServiceContext serviceContext, DaoContext daoContext
-			, String userGridId, String userId, String serviceGridId, String serviceId
-			, String additionalUrlPart)
+			HttpServletRequest request, HttpServletResponse response,
+			ServiceContext serviceContext, DaoContext daoContext,
+			String userGridId, String userId,
+			String serviceGridId, String serviceId,
+			String additionalUrlPart)
 	throws IOException, ServletException{
 		try{
 			getExecutor(serviceContext.getSelfGridId(), serviceGridId).execute(
-					getServletContext(), request, response
-					, serviceContext, daoContext
-					, serviceGridId, serviceId
-					, createHeaders(request)
-					, additionalUrlPart, getProtocol(request), StreamUtil.readAsBytes(request.getInputStream())
+					getServletContext(), request, response,
+					serviceContext, daoContext,
+					userGridId, userId,
+					serviceGridId, serviceId,
+					createHeaders(request),
+					additionalUrlPart, getProtocol(request),
+					StreamUtil.readAsBytes(request.getInputStream())
 					);
 		} catch(jp.go.nict.langrid.dao.ServiceNotFoundException e){
 			LangridHttpUtil.write404_ServiceNotFound(response, serviceGridId, serviceId);
@@ -197,7 +200,8 @@ extends AbstractLangridServlet{
 				LangridConstants.HTTPHEADER_TYPEOFAPPPROVISION,
 				LangridConstants.HTTPHEADER_TYPEOFUSE,
 				LangridConstants.HTTPHEADER_PROTOCOL,
-				LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION}){
+				LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION,
+				LangridConstants.HTTPHEADER_FEDERATEDCALL_CREATESHORTCUT}){
 			transHeaders.put(s.toLowerCase(), s);
 		}
 		transHeaders = Collections.unmodifiableMap(transHeaders);

@@ -30,12 +30,19 @@ import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.DaoFactory;
+import jp.go.nict.langrid.dao.FederationDao;
+import jp.go.nict.langrid.dao.GridDao;
 import jp.go.nict.langrid.dao.ServiceDao;
+import jp.go.nict.langrid.dao.UserDao;
 import jp.go.nict.langrid.dao.entity.BPELService;
 import jp.go.nict.langrid.dao.entity.ExternalService;
+import jp.go.nict.langrid.dao.entity.Federation;
+import jp.go.nict.langrid.dao.entity.Grid;
 import jp.go.nict.langrid.dao.entity.Service;
 import jp.go.nict.langrid.dao.entity.ServiceEndpoint;
+import jp.go.nict.langrid.dao.entity.User;
 import jp.go.nict.langrid.dao.entity.WebappService;
+import jp.go.nict.langrid.management.logic.FederationLogic;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.AbstractExecutor;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.Executor;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.ExecutorParams;
@@ -50,7 +57,10 @@ extends AbstractExecutor
 implements Executor {
 	public IntraGridExecutor(DaoFactory daoFactory, ExecutorParams params)
 	throws DaoException{
+		this.gridDao = daoFactory.createGridDao();
+		this.federationDao = daoFactory.createFederationDao();
 		this.serviceDao = daoFactory.createServiceDao();
+		this.userDao = daoFactory.createUserDao();
 		this.maxCallNest = params.maxCallNest;
 		this.esExecutor = new ExternalServiceExecutor(
 				params.javaEngineAppAuthKey
@@ -71,12 +81,13 @@ implements Executor {
 	}
 
 	public void execute(
-			ServletContext servletContext
-			, HttpServletRequest request, HttpServletResponse response
-			, ServiceContext serviceContext, DaoContext daoContext
-			, String serviceGridId, String serviceId
-			, Map<String, String> headers
-			, String additionalUrlPart, String protocol,byte[] input
+			ServletContext servletContext,
+			HttpServletRequest request, HttpServletResponse response,
+			ServiceContext serviceContext, DaoContext daoContext,
+			String sourceGridId, String sourceUserId,
+			String targetGridId, String targetServiceId,
+			Map<String, String> headers,
+			String additionalUrlPart, String protocol,byte[] input
 			)
 	throws DaoException, TooManyCallNestException, NoValidEndpointsException, ProcessFailedException, IOException{
 		Service service = null;
@@ -84,12 +95,12 @@ implements Executor {
 		daoContext.beginTransaction();
 		ServiceExecutor exec = null;
 		try{
-			service = serviceDao.getService(serviceGridId, serviceId);
+			service = serviceDao.getService(targetGridId, targetServiceId);
 			if(service.isUseAlternateService() && service.getAlternateServiceId() != null){
 				String altId = service.getAlternateServiceId();
-				Service altService = serviceDao.getService(serviceGridId, altId);
+				Service altService = serviceDao.getService(targetGridId, altId);
 				if(altService.isActive()){
-					serviceId = altId;
+					targetServiceId = altId;
 					service = altService;
 				}
 			}
@@ -106,7 +117,7 @@ implements Executor {
 		}
 		if(endpoints.size() == 0){
 			throw new NoValidEndpointsException(
-					"No valid endpoints exist for service: " + serviceGridId + ":" + serviceId);
+					"No valid endpoints exist for service: " + targetGridId + ":" + targetServiceId);
 		}
 
 		String nestCountString = headers.get(LangridConstants.HTTPHEADER_CALLNEST);
@@ -128,9 +139,36 @@ implements Executor {
 					, service, endpoints
 					, additionalUrlPart, headers, input
 					);
+		// create shortcut if allowed
+		do{
+			if(serviceContext.getRequestMimeHeaders().getHeader(
+					LangridConstants.HTTPHEADER_FEDERATEDCALL_CREATESHORTCUT
+					) == null) break;
+			Grid source = gridDao.getGrid(sourceGridId);
+			Grid target = gridDao.getGrid(targetGridId);
+			boolean ff = federationDao.isFederationExist(sourceGridId, targetGridId);
+			boolean bf = federationDao.isFederationExist(targetGridId, sourceGridId);
+			if(ff || bf || !source.isCreateShortcutAllowed() || !target.isCreateShortcutAllowed()) break;
+			User sourceUser = userDao.getUser(sourceGridId, source.getOperatorUserId());
+			User targetUser = userDao.getUser(targetGridId, target.getOperatorUserId());
+			if(sourceUser == null || targetUser == null) break;
+			boolean sym = new FederationLogic().buildReverseGraph().isReachable(targetGridId, sourceGridId);
+			String token = FederationLogic.newToken();
+			federationDao.addFederation(new Federation(
+					sourceGridId, source.getGridName(), sourceUser.getUserId(), sourceUser.getOrganization(),
+					targetGridId, target.getGridName(), targetUser.getUserId(), targetUser.getOrganization(),
+					targetUser.getHomepageUrl(), token,
+					false, true, sym, true));
+			response.setHeader(
+					LangridConstants.HTTPHEADER_FEDERATEDCALL_SHORTCUTRESULT,
+					(sym ? "symm" : "asym") + ";" + token);
+		} while(false);
 	}
 
+	private GridDao gridDao;
+	private FederationDao federationDao;
 	private ServiceDao serviceDao;
+	private UserDao userDao;
 	private int maxCallNest;
 	private ExternalServiceExecutor esExecutor;
 	private BPELServiceExecutor bsExecutor;

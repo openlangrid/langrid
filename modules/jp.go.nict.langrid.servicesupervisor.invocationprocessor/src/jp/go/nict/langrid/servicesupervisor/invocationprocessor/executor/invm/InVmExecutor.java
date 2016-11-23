@@ -53,16 +53,12 @@ implements Executor {
 		this.compositeServiceReadTimeout = params.compositeServiceReadTimeout;
 	}
 
-	public void execute(
-			ServletContext servletContext
-			, HttpServletRequest request, HttpServletResponse response
-			, ServiceContext serviceContext, DaoContext daoContext
-			, String serviceGridId, String serviceId
-			, Map<String, String> headers
-			, String additionalUrlPart, String protocol,byte[] input
-			)
-	throws DaoException, TooManyCallNestException, NoValidEndpointsException, ProcessFailedException
-	, IOException{
+	@Override
+	public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response,
+			ServiceContext serviceContext, DaoContext daoContext, String sourceGridId, String sourceUserId,
+			String targetGridId, String targetServiceId, Map<String, String> headers, String query, String protocol,
+			byte[] input) throws DaoException, TooManyCallNestException, NoValidEndpointsException,
+			ProcessFailedException, IOException {
 		Service service = null;
 		List<ServiceEndpoint> endpoints = null;
 
@@ -70,14 +66,14 @@ implements Executor {
 				webappTimeoutEnabled, atomicServiceReadTimeout, compositeServiceReadTimeout);
 		daoContext.beginTransaction();
 		try{
-			service = serviceDao.getService(serviceGridId, serviceId);
+			service = serviceDao.getService(targetGridId, targetServiceId);
 			endpoints = executor.getEndpoints(service, protocol);
 		} finally{
 			daoContext.commitTransaction();
 		}
 		if(endpoints.size() == 0){
 			throw new NoValidEndpointsException(
-					"No valid endpoints exist for service: " + serviceGridId + ":" + serviceId);
+					"No valid endpoints exist for service: " + targetGridId + ":" + targetServiceId);
 		}
 		adjustHeaders(service, headers);
 
@@ -98,7 +94,7 @@ implements Executor {
 						servletContext, request, response
 						, serviceContext, daoContext
 						, service, endpoints
-						, additionalUrlPart, headers, input
+						, query, headers, input
 						);
 		} else{
 			throw new ProcessFailedException(

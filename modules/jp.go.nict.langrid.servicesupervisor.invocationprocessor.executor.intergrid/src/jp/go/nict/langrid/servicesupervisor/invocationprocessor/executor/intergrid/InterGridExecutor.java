@@ -33,11 +33,14 @@ import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.DaoFactory;
+import jp.go.nict.langrid.dao.FederationDao;
 import jp.go.nict.langrid.dao.GridDao;
 import jp.go.nict.langrid.dao.ServiceDao;
+import jp.go.nict.langrid.dao.UserDao;
 import jp.go.nict.langrid.dao.entity.Federation;
 import jp.go.nict.langrid.dao.entity.Grid;
 import jp.go.nict.langrid.dao.entity.Service;
+import jp.go.nict.langrid.dao.entity.User;
 import jp.go.nict.langrid.management.logic.FederationLogic;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.AbstractExecutor;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.Executor;
@@ -56,8 +59,10 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 	public InterGridExecutor(DaoFactory daoFactory, ExecutorParams params)
 	throws DaoException{
 		this.gridDao = daoFactory.createGridDao();
+		this.federationDao = daoFactory.createFederationDao();
 		this.federationLogic = new FederationLogic();
 		this.serviceDao = daoFactory.createServiceDao();
+		this.userDao = daoFactory.createUserDao();
 		this.connectionTimeout = params.interGridCallConnectionTimeout;
 		this.readTimeout = params.interGridCallReadTimeout;
 		this.maxCallNest = params.maxCallNest;
@@ -65,12 +70,13 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 
 	@Override
 	public void execute(
-			ServletContext servletContext
-			, HttpServletRequest request, HttpServletResponse response
-			, ServiceContext serviceContext, DaoContext daoContext
-			, String serviceGridId, String serviceId
-			, Map<String, String> headers
-			, String additionalUrlPart, String protocol, byte[] input
+			ServletContext servletContext,
+			HttpServletRequest request, HttpServletResponse response,
+			ServiceContext serviceContext, DaoContext daoContext,
+			String sourceGridId, String sourceUserId,
+			String targetGridId, String targetServiceId,
+			Map<String, String> headers,
+			String query, String protocol, byte[] input
 			)
 	throws DaoException, TooManyCallNestException, NoValidEndpointsException, ProcessFailedException, IOException{
 		String selfGridId = serviceContext.getSelfGridId();
@@ -83,15 +89,15 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 		try{
 			boolean forward = true;
 			Federation f = null;
-			List<Federation> path = federationLogic.getShortestPath(selfGridId, serviceGridId);
+			List<Federation> path = federationLogic.getShortestPath(selfGridId, targetGridId);
 			if(path.size() > 0){
 				if(serviceContext.getRequestMimeHeaders().getHeader(
 						LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION) != null
 						&&
-						gridDao.getGrid(serviceGridId).isBypassExecutionAllowed()){
+						gridDao.getGrid(targetGridId).isBypassExecutionAllowed()){
 					// get farthest
 					f = path.get(path.size() - 1);
-					forward = f.getTargetGridId().equals(serviceGridId);
+					forward = f.getTargetGridId().equals(targetGridId);
 					prevGridId = forward ? f.getSourceGridId() : f.getTargetGridId();
 				} else{
 					// get nearest
@@ -100,20 +106,20 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 				}
 			}
 			if(f == null){
-				throw new ProcessFailedException("no route to target grid: " + serviceGridId + " from grid:" + selfGridId);
+				throw new ProcessFailedException("no route to target grid: " + targetGridId + " from grid:" + selfGridId);
 			}
-			if(serviceGridId.equals(selfGridId)){
-				serviceOnThisGrid = serviceDao.getService(selfGridId, serviceId);
+			if(targetGridId.equals(selfGridId)){
+				serviceOnThisGrid = serviceDao.getService(selfGridId, targetServiceId);
 				if(serviceOnThisGrid == null){
-					throw new ProcessFailedException("no service: " + serviceId +
-							" exists at grid: " + serviceGridId);
+					throw new ProcessFailedException("no service: " + targetServiceId +
+							" exists at grid: " + targetGridId);
 				}
 			}
 			Grid g = gridDao.getGrid(forward ? f.getTargetGridId() : f.getSourceGridId());
 			String gurl = g.getUrl();
 			if(!gurl.endsWith("/")) gurl += "/";
-			url = new URL(gurl + "invoker/" + serviceGridId + ":" + serviceId
-					+ ((additionalUrlPart != null) ? additionalUrlPart : ""));
+			url = new URL(gurl + "invoker/" + targetGridId + ":" + targetServiceId
+					+ ((query != null) ? query : ""));
 			authId = forward ? f.getTargetGridUserId() : f.getSourceGridUserId();
 			authPasswd = f.getTargetGridAccessToken();
 		} catch(MalformedURLException e){
@@ -145,11 +151,40 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 				, new ByteArrayInputStream(input), response, response.getOutputStream()
 				, connectionTimeout, readTimeout
 				);
+		// create shortcut if created at destination grid.
+		do{
+			if(!serviceContext.getSelfGridId().equals(sourceGridId) ||
+				serviceContext.getRequestMimeHeaders().getHeader(
+						LangridConstants.HTTPHEADER_FEDERATEDCALL_CREATESHORTCUT
+				) == null) break;
+			String sr = response.getHeader(
+					LangridConstants.HTTPHEADER_FEDERATEDCALL_SHORTCUTRESULT);
+			if(sr == null) break;
+			String[] symAndToken = sr.split(";", 2);
+			if(symAndToken.length != 2) break;
+			Grid source = gridDao.getGrid(sourceGridId);
+			Grid target = gridDao.getGrid(targetGridId);
+			boolean ff = federationDao.isFederationExist(sourceGridId, targetGridId);
+			boolean bf = federationDao.isFederationExist(targetGridId, sourceGridId);
+			if(ff || bf || !source.isCreateShortcutAllowed() || !target.isCreateShortcutAllowed()) break;
+			User sourceUser = userDao.getUser(source.getGridId(), source.getOperatorUserId());
+			User targetUser = userDao.getUser(target.getGridId(), target.getOperatorUserId());
+			if(sourceUser == null || targetUser == null) break;
+			boolean sym = symAndToken[0].equals("symm");
+			String token = symAndToken[1];
+			federationDao.addFederation(new Federation(
+					sourceGridId, source.getGridName(), source.getOperatorUserId(), sourceUser.getOrganization(),
+					targetGridId, target.getGridName(), target.getOperatorUserId(), targetUser.getOrganization(),
+					targetUser.getHomepageUrl(), token,
+					false, true, sym, true));
+		} while(false);
 	}
 
 	private FederationLogic federationLogic;
 	private GridDao gridDao;
+	private FederationDao federationDao;
 	private ServiceDao serviceDao;
+	private UserDao userDao;
 	private int connectionTimeout;
 	private int readTimeout;
 	private int maxCallNest;

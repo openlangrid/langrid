@@ -53,12 +53,13 @@ public interface Executor {
 	 * @throws IOException
 	 */
 	void execute(
-			ServletContext servletContext
-			, HttpServletRequest request, HttpServletResponse response
-			, ServiceContext serviceContext, DaoContext daoContext
-			, String serviceGridId, String serviceId
-			, Map<String, String> headers
-			, String query, String protocol, byte[] input
+			ServletContext servletContext,
+			HttpServletRequest request, HttpServletResponse response,
+			ServiceContext serviceContext, DaoContext daoContext,
+			String sourceGridId, String sourceUserId,
+			String targetGridId, String targetServiceId,
+			Map<String, String> headers,
+			String query, String protocol, byte[] input
 			)
 	throws DaoException, TooManyCallNestException, NoValidEndpointsException, ProcessFailedException
 	, IOException;
