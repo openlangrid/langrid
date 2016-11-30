@@ -171,6 +171,17 @@ public class CollectionUtil {
 		}
 	}
 
+	public static <T> boolean[] mapToBoolean(
+			Collection<T> elements, Function<T, Boolean> mapper){
+		boolean[] ret = new boolean[elements.size()];
+		Iterator<T> it = elements.iterator();
+		int i = 0;
+		while(it.hasNext()){
+			ret[i++] = mapper.apply(it.next());
+		}
+		return ret;
+	}
+
 	/**
 	 * 
 	 * 
