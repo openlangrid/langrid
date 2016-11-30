@@ -28,25 +28,5 @@
   		<artifactId>jp.go.nict.langrid.commons</artifactId>
   		<version>1.0-SNAPSHOT</version>
   	</dependency>
-  	<dependency>
-  		<groupId>org.langrid</groupId>
-  		<artifactId>jp.go.nict.langrid.client</artifactId>
-  		<version>1.0-SNAPSHOT</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.apache.axis</groupId>
-  		<artifactId>axis</artifactId>
-  		<version>1.4</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.apache.axis</groupId>
-  		<artifactId>axis-jaxrpc</artifactId>
-  		<version>1.4</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.apache.axis</groupId>
-  		<artifactId>axis-saaj</artifactId>
-  		<version>1.4</version>
-  	</dependency>
   </dependencies>
 </project>
