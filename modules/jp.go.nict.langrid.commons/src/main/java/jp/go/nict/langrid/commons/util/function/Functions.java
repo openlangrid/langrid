@@ -39,32 +39,6 @@ public class Functions {
 		};
 	}
 
-	public static <P, E extends Throwable> void tunnelingExecute(
-			Consumer<Consumer<P>> term, ConsumerWithException<P, E> process)
-	throws E{
-		unsoften(() -> {
-			term.accept(Functions.soften(
-					(ConsumerWithException<P, E>)(pr -> process.accept(pr))));
-			});
-	}
-
-	@SuppressWarnings("unchecked")
-	public static <E extends Throwable> void unsoften(Runnable r) throws E{
-		try{
-			r.run();
-		} catch(SoftenedException e){
-			throw (E)e.getCause();
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	public static <E extends Throwable> void unsoft(SoftenedException e) throws E{
-		Throwable t = e.getCause();
-		if(t instanceof RuntimeException) throw (RuntimeException)t;
-		if(t instanceof Error) throw (Error)t;
-		throw (E)t;
-	}
-
 	public static interface RunnableWithException<E extends Throwable>{
 		void run() throws E;
 	}
@@ -148,5 +122,25 @@ public class Functions {
 				}
 			}
 		};
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <E extends Throwable> void unsoft(SoftenedException e) throws E{
+		Throwable t = e.getCause();
+		if(t instanceof RuntimeException) throw (RuntimeException)t;
+		if(t instanceof Error) throw (Error)t;
+		throw (E)t;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <P, E extends Throwable> void tunnelingExecute(
+			Consumer<Consumer<P>> term, ConsumerWithException<P, E> process)
+	throws E{
+		try{
+			term.accept(Functions.soften(
+					(ConsumerWithException<P, E>)(pr -> process.accept(pr))));
+		} catch(SoftenedException e){
+			throw (E)e.getCause();
+		}
 	}
 }
