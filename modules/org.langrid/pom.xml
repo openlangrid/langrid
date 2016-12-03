@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.langrid</groupId>
   <artifactId>servicegrid</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.8</version>
   <packaging>pom</packaging>
   <name>Root Artifact</name>
   <description>Root artifact for all artifacts.</description>
@@ -117,5 +117,6 @@
     <module>../jp.go.nict.langrid.serviceexecutor.db.bilingualdictionary/pom.xml</module>
     <module>../jp.go.nict.langrid.wrapper.common/pom.xml</module>
     <module>../jp.go.nict.langrid.wrapper.workflowsupport/pom.xml</module>
+    <module>../org.langrid.service.api.lapps_nlp/pom.xml</module>
   </modules>
 </project>
