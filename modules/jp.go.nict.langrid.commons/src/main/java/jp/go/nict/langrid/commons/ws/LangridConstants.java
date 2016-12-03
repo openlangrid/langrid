@@ -153,6 +153,8 @@ public class LangridConstants {
 
 	public static final String HTTPHEADER_FEDERATEDCALL_CREATESHORTCUT
 		= "X-Langrid-FederatedCall-CreateShortcut";
+	public static final String HTTPHEADER_FEDERATEDCALL_REMOVESHORTCUT
+		= "X-Langrid-FederatedCall-RemoveShortcut";
 
 	// (symm|asym);token
 	public static final String HTTPHEADER_FEDERATEDCALL_SHORTCUTRESULT
