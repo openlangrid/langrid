@@ -44,6 +44,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -233,11 +234,10 @@ implements ServiceManagementService
 					et.setServiceId(s.getGridId() + ":" + s.getServiceId());
 					et.setOwnerUserId(s.getGridId() + ":" + et.getOwnerUserId());
 				}
-				String serviceTypeId = s.getServiceTypeId();
-				if(serviceTypeId == null){
-					serviceTypeId = "OTHER";
-				}
-				et.setServiceType(serviceTypeId.toUpperCase());
+				et.setServiceTypeDomain(
+						Optional.ofNullable(s.getServiceTypeDomainId()).orElse("UNKNOWN"));
+				et.setServiceType(
+						Optional.ofNullable(s.getServiceTypeId()).orElse("OTHER").toUpperCase());
 				et.setSupportedLanguages(generateSupportedLanguages(s));
 				if(getCoreNodeUrl().length() > 0){
 					et.setEndpointUrl(getCoreNodeUrl() + "invoker/" + s.getGridId() + ":" + s.getServiceId());
@@ -308,11 +308,10 @@ implements ServiceManagementService
 					et.setServiceId(s.getGridId() + ":" + s.getServiceId());
 					et.setOwnerUserId(s.getGridId() + ":" + et.getOwnerUserId());
 				}
-				String serviceTypeId = s.getServiceTypeId();
-				if(serviceTypeId == null){
-					serviceTypeId = "OTHER";
-				}
-				et.setServiceType(serviceTypeId.toUpperCase());
+				et.setServiceTypeDomainId(
+						Optional.ofNullable(s.getServiceTypeDomainId()).orElse("UNKNOWN"));
+				et.setServiceTypeId(
+						Optional.ofNullable(s.getServiceTypeId()).orElse("OTHER").toUpperCase());
 				et.setSupportedLanguages(generateSupportedLanguagesInCompactExpression(s));
 				if(getCoreNodeUrl().length() > 0){
 					et.setEndpointUrl(getCoreNodeUrl() + "invoker/" + s.getGridId() + ":" + s.getServiceId());
@@ -450,7 +449,7 @@ implements ServiceManagementService
 						// 
 						if(invocation.getServiceGridId() != null){
 							servicesInUse.add(new ServiceEntry(
-									invocation.getServiceId(), null, null, null
+									invocation.getServiceId(), null, null, null, null
 									, null, null, null, null, null, null
 									, false
 									));
@@ -460,6 +459,7 @@ implements ServiceManagementService
 				entries[i] = new CompositeServiceEntry(
 						entry.getServiceId(), entry.getServiceName()
 						, entry.getServiceDescription()
+						, entry.getServiceTypeDomain()
 						, entry.getServiceType()
 						, entry.getInstanceType()
 						, entry.getSupportedLanguages()
@@ -1326,6 +1326,9 @@ implements ServiceManagementService
 									, "can't find targetNamespace of WSDL[" + i + "]");
 						}
 					}
+				case LAR:
+				case SCRIPT:
+				default:
 			}
 		} catch(IOException e){
 			throw new InvalidParameterException(parameterName, ExceptionUtil.getMessageWithStackTrace(e));

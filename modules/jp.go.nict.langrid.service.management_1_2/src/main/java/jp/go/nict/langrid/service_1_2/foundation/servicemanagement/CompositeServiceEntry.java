@@ -50,7 +50,8 @@ implements Serializable
 	 * 
 	 */
 	public CompositeServiceEntry(String serviceId, String serviceName
-			, String serviceDescription, String serviceType
+			, String serviceDescription, 
+			String serviceTypeDomain, String serviceType
 			, String instanceType, LanguagePath[] supportedLanguages
 			, String endpointUrl, String ownerUserId
 			, Calendar registeredDate, Calendar updatedDate
@@ -59,7 +60,8 @@ implements Serializable
 			)
 	{
 		super(serviceId, serviceName
-			, serviceDescription, serviceType
+			, serviceDescription,
+			serviceTypeDomain, serviceType
 			, instanceType, supportedLanguages
 			, endpointUrl, ownerUserId
 			, registeredDate, updatedDate

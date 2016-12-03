@@ -66,7 +66,8 @@ implements Serializable
 	 * 
 	 */
 	public ServiceEntryWithCompactLanguageExpression(String serviceId, String serviceName
-			, String serviceDescription, String serviceType
+			, String serviceDescription,
+			String serviceTypeDomainId, String serviceTypeId
 			, String instanceType, LanguagePathWithType[] supportedLanguages
 			, String endpointUrl, String ownerUserId
 			, Calendar registeredDate, Calendar updatedDate
@@ -76,7 +77,8 @@ implements Serializable
 		this.serviceId = serviceId;
 		this.serviceName = serviceName;
 		this.serviceDescription = serviceDescription;
-		this.serviceType = serviceType;
+		this.serviceTypeDomainId = serviceTypeDomainId;
+		this.serviceTypeId = serviceTypeId;
 		this.instanceType = instanceType;
 		this.supportedLanguages = supportedLanguages;
 		this.endpointUrl = endpointUrl;
@@ -159,14 +161,21 @@ implements Serializable
 		this.serviceDescription = serviceDescription;
 	}
 
+	public String getServiceTypeDomainId() {
+		return serviceTypeDomainId;
+	}
+	public void setServiceTypeDomainId(String serviceTypeDomainId) {
+		this.serviceTypeDomainId = serviceTypeDomainId;
+	}
+
 	/**
 	 * 
 	 * Returns service type.
 	 * @return Service type
 	 * 
 	 */
-	public String getServiceType() {
-		return serviceType;
+	public String getServiceTypeId() {
+		return serviceTypeId;
 	}
 
 	/**
@@ -175,8 +184,8 @@ implements Serializable
 	 * @param serviceType Service type
 	 * 
 	 */
-	public void setServiceType(String serviceType){
-		this.serviceType = serviceType;
+	public void setServiceTypeId(String serviceType){
+		this.serviceTypeId = serviceType;
 	}
 
 	/**
@@ -320,7 +329,8 @@ implements Serializable
 	private String serviceId = "";
 	private String serviceName = "";
 	private String serviceDescription = "";
-	private String serviceType = "";
+	private String serviceTypeDomainId = "";
+	private String serviceTypeId = "";
 	private String instanceType = "";
 	private LanguagePathWithType[] supportedLanguages = new LanguagePathWithType[]{};
 	private String endpointUrl = "";

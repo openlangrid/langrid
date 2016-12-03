@@ -66,7 +66,8 @@ implements Serializable
 	 * 
 	 */
 	public ServiceEntry(String serviceId, String serviceName
-			, String serviceDescription, String serviceType
+			, String serviceDescription,
+			String serviceTypeDomain, String serviceType
 			, String instanceType, LanguagePath[] supportedLanguages
 			, String endpointUrl, String ownerUserId
 			, Calendar registeredDate, Calendar updatedDate
@@ -157,6 +158,13 @@ implements Serializable
 	 */
 	public void setServiceDescription(String serviceDescription) {
 		this.serviceDescription = serviceDescription;
+	}
+
+	public String getServiceTypeDomain() {
+		return serviceTypeDomain;
+	}
+	public void setServiceTypeDomain(String serviceTypeDomain) {
+		this.serviceTypeDomain = serviceTypeDomain;
 	}
 
 	/**
@@ -320,6 +328,7 @@ implements Serializable
 	private String serviceId = "";
 	private String serviceName = "";
 	private String serviceDescription = "";
+	private String serviceTypeDomain = "";
 	private String serviceType = "";
 	private String instanceType = "";
 	private LanguagePath[] supportedLanguages = new LanguagePath[]{};
