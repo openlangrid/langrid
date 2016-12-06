@@ -34,6 +34,7 @@ import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.DaoFactory;
 import jp.go.nict.langrid.dao.FederationDao;
+import jp.go.nict.langrid.dao.FederationNotFoundException;
 import jp.go.nict.langrid.dao.GridDao;
 import jp.go.nict.langrid.dao.ServiceDao;
 import jp.go.nict.langrid.dao.UserDao;
@@ -151,6 +152,26 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 				, new ByteArrayInputStream(input), response, response.getOutputStream()
 				, connectionTimeout, readTimeout
 				);
+		// remove shortcut if removed at destination grid.
+		if(!serviceContext.getSelfGridId().equals(sourceGridId) &&
+					serviceContext.getRequestMimeHeaders().getHeader(
+							LangridConstants.HTTPHEADER_FEDERATEDCALL_REMOVESHORTCUT
+					) != null){
+			String r = response.getHeader(
+							LangridConstants.HTTPHEADER_FEDERATEDCALL_SHORTCUTRESULT);
+			if(r != null && r.equals("removed")){
+				try{
+					Federation f = federationDao.getFederation(sourceGridId, targetGridId);
+					if(f.isShortcut()){
+						federationDao.deleteFederation(sourceGridId, targetGridId);
+						response.setHeader(
+								LangridConstants.HTTPHEADER_FEDERATEDCALL_SHORTCUTRESULT,
+								"removed");
+					}
+				} catch(FederationNotFoundException e){
+				}
+			}
+		}
 		// create shortcut if created at destination grid.
 		do{
 			if(!serviceContext.getSelfGridId().equals(sourceGridId) ||
@@ -176,7 +197,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 					sourceGridId, source.getGridName(), source.getOperatorUserId(), sourceUser.getOrganization(),
 					targetGridId, target.getGridName(), target.getOperatorUserId(), targetUser.getOrganization(),
 					targetUser.getHomepageUrl(), token,
-					false, true, sym, true));
+					false, true, sym, true, true));
 		} while(false);
 	}
 

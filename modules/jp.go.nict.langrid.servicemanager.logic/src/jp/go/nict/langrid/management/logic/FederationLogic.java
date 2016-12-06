@@ -92,7 +92,7 @@ public class FederationLogic extends AbstractLogic{
 				sourceGridId, sourceGridName, sourceGridUserId, sourceGridOrganization,
 				targetGridId, targetGridName, targetGridUserId, targetGridOrganization, targetGridHomepage, 
 				targetGridAccessToken,
-				requesting, disconnected, symmetric, transitive));
+				requesting, disconnected, symmetric, transitive, false));
 	}
 
 	@DaoTransaction

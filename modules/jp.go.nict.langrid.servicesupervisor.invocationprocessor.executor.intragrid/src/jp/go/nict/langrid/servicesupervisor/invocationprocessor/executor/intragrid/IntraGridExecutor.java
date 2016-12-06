@@ -31,6 +31,7 @@ import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.DaoFactory;
 import jp.go.nict.langrid.dao.FederationDao;
+import jp.go.nict.langrid.dao.FederationNotFoundException;
 import jp.go.nict.langrid.dao.GridDao;
 import jp.go.nict.langrid.dao.ServiceDao;
 import jp.go.nict.langrid.dao.UserDao;
@@ -139,6 +140,23 @@ implements Executor {
 					, service, endpoints
 					, additionalUrlPart, headers, input
 					);
+
+		if(sourceGridId.equals(targetGridId)) return;
+		// remove shortcut if desired
+		if(serviceContext.getRequestMimeHeaders().getHeader(
+					LangridConstants.HTTPHEADER_FEDERATEDCALL_REMOVESHORTCUT
+					) != null){
+			try{
+				Federation f = federationDao.getFederation(sourceGridId, targetGridId);
+				if(f.isShortcut()){
+					federationDao.deleteFederation(sourceGridId, targetGridId);
+					response.setHeader(
+							LangridConstants.HTTPHEADER_FEDERATEDCALL_SHORTCUTRESULT,
+							"removed");
+				}
+			} catch(FederationNotFoundException e){
+			}
+		}
 		// create shortcut if allowed
 		do{
 			if(serviceContext.getRequestMimeHeaders().getHeader(
@@ -158,7 +176,7 @@ implements Executor {
 					sourceGridId, source.getGridName(), sourceUser.getUserId(), sourceUser.getOrganization(),
 					targetGridId, target.getGridName(), targetUser.getUserId(), targetUser.getOrganization(),
 					targetUser.getHomepageUrl(), token,
-					false, true, sym, true));
+					false, true, sym, true, true));
 			response.setHeader(
 					LangridConstants.HTTPHEADER_FEDERATEDCALL_SHORTCUTRESULT,
 					(sym ? "symm" : "asym") + ";" + token);

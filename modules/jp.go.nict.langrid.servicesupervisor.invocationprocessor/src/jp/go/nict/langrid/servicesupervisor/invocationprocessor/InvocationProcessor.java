@@ -201,7 +201,8 @@ extends AbstractLangridServlet{
 				LangridConstants.HTTPHEADER_TYPEOFUSE,
 				LangridConstants.HTTPHEADER_PROTOCOL,
 				LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION,
-				LangridConstants.HTTPHEADER_FEDERATEDCALL_CREATESHORTCUT}){
+				LangridConstants.HTTPHEADER_FEDERATEDCALL_CREATESHORTCUT,
+				LangridConstants.HTTPHEADER_FEDERATEDCALL_REMOVESHORTCUT}){
 			transHeaders.put(s.toLowerCase(), s);
 		}
 		transHeaders = Collections.unmodifiableMap(transHeaders);

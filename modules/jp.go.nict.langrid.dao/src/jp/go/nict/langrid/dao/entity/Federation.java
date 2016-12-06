@@ -72,7 +72,7 @@ extends UpdateManagedEntity
 			String targetGridId, String targetGridName, String targetGridUserId, String targetGridOrganization,
 			URL targetGridHomepageUrl, String targetGridAccessToken,
 			boolean requesting, boolean connected,
-			boolean symmetric, boolean transitive) {
+			boolean symmetric, boolean transitive, boolean shortcut) {
 		this.sourceGridId = sourceGridId;
 		this.sourceGridName = sourceGridName;
 		this.sourceGridUserId = sourceGridUserId;
@@ -87,6 +87,7 @@ extends UpdateManagedEntity
 		this.connected = connected;
 		this.symmetric = symmetric;
 		this.transitive = transitive;
+		this.shortcut = shortcut;
 	}
 
 	@Override
@@ -233,6 +234,12 @@ extends UpdateManagedEntity
 	public void setTransitive(boolean transitive) {
 		this.transitive = transitive;
 	}
+	public boolean isShortcut() {
+		return shortcut != null && shortcut;
+	}
+	public void setShortcut(boolean shortcut) {
+		this.shortcut = shortcut;
+	}
 
 	@Id
 	private String sourceGridId;
@@ -257,4 +264,5 @@ extends UpdateManagedEntity
 	@Column(name="symmetricRel")
 	private Boolean symmetric = false;
 	private Boolean transitive = false;
+	private Boolean shortcut = false;
 }
