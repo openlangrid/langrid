@@ -405,9 +405,13 @@ public class ListenerAdaptor implements Runnable {
     /**
      * {@inheritDoc}
      */
+    private long startTime;
+    private long limitMillis = 1000 * 60 * 20;
     public void run() {
+    	startTime = System.currentTimeMillis();
         try {
             while (!shutdown) {
+            	if((System.currentTimeMillis() - startTime) > limitMillis) break;
                 try {
                     Collection<SimpleSelectable> changed = selector.select();
                     for (SimpleSelectable simpleSelectable : changed) {
