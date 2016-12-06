@@ -1,0 +1,10 @@
+{
+	"createdDateTime": "2012/07/18 05:14:56.549 JST",
+	"description": "Text Summarizer",
+	"metaAttributes": [{
+		"attributeId": "supportedLanguages",
+	}],
+	"resourceTypeId": "TextSummarizer",
+	"resourceTypeName": "TextSummarizer",
+	"updatedDateTime": "2012/07/11 06:53:01.372 JST"
+}
