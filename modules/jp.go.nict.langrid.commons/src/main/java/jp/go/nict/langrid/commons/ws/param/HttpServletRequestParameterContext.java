@@ -17,6 +17,10 @@
  */
 package jp.go.nict.langrid.commons.ws.param;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import jp.go.nict.langrid.commons.parameter.ParameterContext;
@@ -41,8 +45,14 @@ public class HttpServletRequestParameterContext extends ParameterContext{
 
 	@Override
 	public String[] getStrings(String parameterName, String[] defaultValue) {
-		String[] ret = request.getParameterValues(parameterName);
-		if(ret != null) return ret;
+		String[] values = request.getParameterValues(parameterName);
+		List<String> ret = new ArrayList<>();
+		if(values != null){
+			for(String v : values){
+				ret.addAll(Arrays.asList(v.split(",")));
+			}
+			return ret.toArray(new String[]{});
+		}
 		return defaultValue;
 	}
 
