@@ -34,7 +34,7 @@ public class FederationServiceImpl implements FederationService {
 				obj.getTargetGridUserId(), obj.getTargetGridUserOrganization(),
 				obj.getTargetGridUserHomepage(),
 				obj.getTargetGridAccessToken(),
-				obj.isRequesting(), obj.isConnected(), false, false);
+				obj.isRequesting(), obj.isConnected(), false, false, false);
 		} catch(DaoException e) {
 			throw new ServiceManagerException(e);
 		}
@@ -314,12 +314,14 @@ public class FederationServiceImpl implements FederationService {
 		}
 
 	public void setRelations(
-			String sourceGridId, String targetGridId, boolean symmetric, boolean transitive)
+			String sourceGridId, String targetGridId,
+			boolean targetTransitive, boolean symmetric, boolean sourceTransitive)
 	throws ServiceManagerException{
 		try {
 			logic.update(sourceGridId, targetGridId, f -> {
+				f.setTargetTransitive(targetTransitive);
 				f.setSymmetric(symmetric);
-				f.setTransitive(transitive);
+				f.setSourceTransitive(sourceTransitive);
 			});
 		} catch(DaoException e) {
 			throw new ServiceManagerException(e, this.getClass());

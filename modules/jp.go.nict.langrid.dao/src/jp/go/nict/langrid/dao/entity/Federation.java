@@ -72,7 +72,7 @@ extends UpdateManagedEntity
 			String targetGridId, String targetGridName, String targetGridUserId, String targetGridOrganization,
 			URL targetGridHomepageUrl, String targetGridAccessToken,
 			boolean requesting, boolean connected,
-			boolean symmetric, boolean transitive, boolean shortcut) {
+			boolean targetTransitive, boolean symmetric, boolean sourceTransitive, boolean shortcut) {
 		this.sourceGridId = sourceGridId;
 		this.sourceGridName = sourceGridName;
 		this.sourceGridUserId = sourceGridUserId;
@@ -85,8 +85,9 @@ extends UpdateManagedEntity
 		this.targetGridAccessToken = targetGridAccessToken;
 		this.requesting = requesting;
 		this.connected = connected;
+		this.targetTransitive = targetTransitive;
 		this.symmetric = symmetric;
-		this.transitive = transitive;
+		this.sourceTransitive = sourceTransitive;
 		this.shortcut = shortcut;
 	}
 
@@ -222,17 +223,23 @@ extends UpdateManagedEntity
 	public boolean isConnected() {
 		return connected;
 	}
+	public boolean isTargetTransitive() {
+		return targetTransitive != null && targetTransitive;
+	}
+	public void setTargetTransitive(boolean targetTransitive) {
+		this.targetTransitive = targetTransitive;
+	}
 	public boolean isSymmetric() {
 		return symmetric != null && symmetric;
 	}
 	public void setSymmetric(boolean symmetric) {
 		this.symmetric = symmetric;
 	}
-	public boolean isTransitive() {
-		return transitive != null && transitive;
+	public Boolean isSourceTransitive() {
+		return sourceTransitive != null && sourceTransitive;
 	}
-	public void setTransitive(boolean transitive) {
-		this.transitive = transitive;
+	public void setSourceTransitive(Boolean sourceTransitive) {
+		this.sourceTransitive = sourceTransitive;
 	}
 	public boolean isShortcut() {
 		return shortcut != null && shortcut;
@@ -261,8 +268,9 @@ extends UpdateManagedEntity
 
 	private boolean requesting;
 	private boolean connected;
+	private Boolean targetTransitive = false;
 	@Column(name="symmetricRel")
 	private Boolean symmetric = false;
-	private Boolean transitive = false;
+	private Boolean sourceTransitive = false;
 	private Boolean shortcut = false;
 }

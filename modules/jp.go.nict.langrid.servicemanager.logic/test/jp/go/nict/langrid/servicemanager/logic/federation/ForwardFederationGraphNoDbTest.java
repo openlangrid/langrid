@@ -290,7 +290,8 @@ public class ForwardFederationGraphNoDbTest {
 		f.setConnected(true);
 		f.setRequesting(false);
 		f.setSymmetric(symmetric);
-		f.setTransitive(transitive);
+		f.setTargetTransitive(transitive);
+		if(symmetric) f.setSourceTransitive(transitive);
 		return f;
 	}
 
@@ -299,7 +300,8 @@ public class ForwardFederationGraphNoDbTest {
 		f.setConnected(true);
 		f.setRequesting(true);
 		f.setSymmetric(symmetric);
-		f.setTransitive(transitive);
+		f.setTargetTransitive(transitive);
+		if(symmetric) f.setSourceTransitive(transitive);
 		return f;
 	}
 }

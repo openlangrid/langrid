@@ -67,7 +67,7 @@ public class FederationGraphServlet extends HttpServlet{
 				for(Federation f : DaoFactory.createInstance().createFederationDao().list()){
 					pw.format("\t\"%s\"->\"%s\" [", f.getSourceGridId(), f.getTargetGridId());
 					boolean first = true;
-					if(f.isTransitive()){
+					if(f.isTargetTransitive()){
 						pw.format("arrowhead=normalnormal");
 						first = false;
 					}
@@ -75,6 +75,9 @@ public class FederationGraphServlet extends HttpServlet{
 						if(!first) pw.format(",");
 						pw.format("dir=both");
 						first = false;
+						if(f.isSourceTransitive()){
+							pw.format(",arrowtail=normalnormal");
+						}
 					}
 					if(f.isRequesting() || !f.isConnected()){
 						if(!first) pw.format(",");

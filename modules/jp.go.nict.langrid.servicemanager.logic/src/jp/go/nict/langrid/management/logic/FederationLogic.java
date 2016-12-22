@@ -86,13 +86,14 @@ public class FederationLogic extends AbstractLogic{
 			String sourceGridId, String sourceGridName, String sourceGridUserId, String sourceGridOrganization,
 			String targetGridId, String targetGridName, String targetGridUserId, String targetGridOrganization,
 			URL targetGridHomepage, String targetGridAccessToken,
-			boolean requesting, boolean disconnected, boolean symmetric, boolean transitive)
+			boolean requesting, boolean disconnected,
+			boolean targetTransitive, boolean symmetric, boolean sourceTransitive)
 	throws DaoException{
 		getFederationDao().addFederation(new Federation(
 				sourceGridId, sourceGridName, sourceGridUserId, sourceGridOrganization,
 				targetGridId, targetGridName, targetGridUserId, targetGridOrganization, targetGridHomepage, 
 				targetGridAccessToken,
-				requesting, disconnected, symmetric, transitive, false));
+				requesting, disconnected, targetTransitive, symmetric, sourceTransitive, false));
 	}
 
 	@DaoTransaction

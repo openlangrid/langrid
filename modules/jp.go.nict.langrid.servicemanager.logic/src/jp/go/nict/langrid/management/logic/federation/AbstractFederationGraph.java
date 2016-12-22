@@ -39,7 +39,7 @@ public abstract class AbstractFederationGraph implements FederationGraph{
 			String next = entry.getKey();
 			if(!ids.contains(next)){
 				ids.add(next);
-				if(entry.getValue().isTransitive())
+				if(entry.getValue().isTargetTransitive())
 					addedAndTransitive.add(next);
 			}
 		}
@@ -53,7 +53,7 @@ public abstract class AbstractFederationGraph implements FederationGraph{
 		if(targets == null) return;
 		for(Map.Entry<String, Federation> entry : targets.entrySet()){
 			String next = entry.getKey();
-			if(!ids.contains(next) && entry.getValue().isTransitive()){
+			if(!ids.contains(next) && entry.getValue().isTargetTransitive()){
 				ids.add(next);
 				listAllReachableGridIdsFromDeeper(next, ids);
 			}
@@ -79,12 +79,12 @@ public abstract class AbstractFederationGraph implements FederationGraph{
 					Federation nextFederation = entry.getValue();
 					if(visited.contains(nextGid)) continue;
 					if(nextGid.equals(tgid)){
-						if(nextFederation.isTransitive() || cgid.equals(sgid)){
+						if(nextFederation.isTargetTransitive() || cgid.equals(sgid)){
 							curPath = Arrays.asList(nextFederation);
 							break;
 						}
 						continue;
-					} else if(nextFederation.isTransitive()){
+					} else if(nextFederation.isTargetTransitive()){
 						List<Federation> can = getShortestPath(sgid, nextGid, tgid, federations, cache, visited);
 						if(0 < can.size() && can.size() < curLen){
 							List<Federation> r = new ArrayList<>();

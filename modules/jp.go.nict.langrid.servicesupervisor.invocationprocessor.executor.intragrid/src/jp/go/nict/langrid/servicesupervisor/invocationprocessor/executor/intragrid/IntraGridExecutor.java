@@ -176,7 +176,7 @@ implements Executor {
 					sourceGridId, source.getGridName(), sourceUser.getUserId(), sourceUser.getOrganization(),
 					targetGridId, target.getGridName(), targetUser.getUserId(), targetUser.getOrganization(),
 					targetUser.getHomepageUrl(), token,
-					false, true, sym, true, true));
+					false, true, true, sym, true, true));
 			response.setHeader(
 					LangridConstants.HTTPHEADER_FEDERATEDCALL_SHORTCUTRESULT,
 					(sym ? "symm" : "asym") + ";" + token);

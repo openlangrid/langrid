@@ -88,7 +88,7 @@ public interface FederationService extends DataService<FederationModel> {
 	throws ServiceManagerException;
 
 	public void setRelations(
-			String sourceGridId, String targetGridId, boolean symmetric, boolean transitive)
+			String sourceGridId, String targetGridId, boolean targetTransitive, boolean symmetric, boolean sourceTransitive)
 	throws ServiceManagerException;
 
 	/**

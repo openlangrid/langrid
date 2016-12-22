@@ -72,7 +72,8 @@ public class FederationResponseServlet extends HttpServlet {
 				}
 				fs.setRequesting(selfGridId, targetGridId, false);
 				fs.setConnected(selfGridId, targetGridId, true);
-				fs.setRelations(selfGridId, targetGridId, response.isSymmetric(), response.isTransitive());
+				fs.setRelations(selfGridId, targetGridId,
+						response.isTargetTransitive(), response.isSymmetric(), response.isSourceTransitive());
 				LogWriter.writeInfo("Operator"
 					, MessageManager.getMessage(
 						"LanguageGridOperator.federation.log.connect.Federation"

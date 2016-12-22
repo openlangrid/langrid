@@ -197,7 +197,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 					sourceGridId, source.getGridName(), source.getOperatorUserId(), sourceUser.getOrganization(),
 					targetGridId, target.getGridName(), target.getOperatorUserId(), targetUser.getOrganization(),
 					targetUser.getHomepageUrl(), token,
-					false, true, sym, true, true));
+					false, true, true, sym, sym, true));
 		} while(false);
 	}
 

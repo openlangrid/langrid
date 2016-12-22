@@ -78,20 +78,23 @@ public class FederationResponse {
 		this.reverseConnectionToken = reverseConnectionToken;
 	}
 
+	public boolean isTargetTransitive() {
+		return targetTransitive;
+	}
+	public void setTargetTransitive(boolean targetTransitive) {
+		this.targetTransitive = targetTransitive;
+	}
 	public boolean isSymmetric() {
 		return symmetric;
 	}
-	
 	public void setSymmetric(boolean symmetric) {
 		this.symmetric = symmetric;
 	}
-	
-	public boolean isTransitive() {
-		return transitive;
+	public boolean isSourceTransitive() {
+		return sourceTransitive;
 	}
-
-	public void setTransitive(boolean transitive) {
-		this.transitive = transitive;
+	public void setSourceTransitive(boolean sourceTransitive) {
+		this.sourceTransitive = sourceTransitive;
 	}
 
 	private boolean approved;
@@ -100,8 +103,9 @@ public class FederationResponse {
 	private String operatorHomepage;
 	private String newsMessage;
 	private String reverseConnectionToken;
-	boolean symmetric;
-	boolean transitive;
+	private boolean targetTransitive;
+	private boolean symmetric;
+	private boolean sourceTransitive;
 
 	private GridModel targetGrid;
 }

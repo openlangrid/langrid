@@ -1,6 +1,8 @@
 package jp.go.nict.langrid.servicemanager.logic.federation;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,12 +21,26 @@ public class ReverseFederationGraphNoDbTest {
 		Assert.assertTrue(fg.isReachable("grid3", "grid1"));
 	}
 
+	@Test
+	public void test_listAllReachableGridIds() throws Throwable{
+		FederationGraph fg = new ReverseFederationGraph(Arrays.asList(
+				newFederation("grid1", "grid2", true, true),
+				newFederation("grid2", "grid3", true, true)
+				));
+		Set<String> expected = new HashSet<>(Arrays.asList("grid1", "grid2"));
+		for(String gid : fg.listAllReachableGridIds("grid3")){
+			Assert.assertTrue(expected.remove(gid));
+		}
+		Assert.assertEquals(0, expected.size());
+	}
+
 	private Federation newFederation(String sgid, String tgid, boolean symmetric, boolean transitive){
 		Federation f = new Federation(sgid, tgid);
 		f.setConnected(true);
 		f.setRequesting(false);
 		f.setSymmetric(symmetric);
-		f.setTransitive(transitive);
+		f.setTargetTransitive(transitive);
+		if(symmetric) f.setSourceTransitive(transitive);
 		return f;
 	}
 }
