@@ -17,13 +17,18 @@
  */
 package jp.go.nict.langrid.commons.lang.reflect;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import jp.go.nict.langrid.commons.lang.StringUtil;
 
 public class GenericsUtilTest {
 	@SuppressWarnings("serial")
@@ -64,4 +69,32 @@ public class GenericsUtilTest {
 			System.out.println(t);
 		}
 	}
+
+	public List<String> func(){ return null;}
+
+	@Test
+	public void test_returntype() throws Throwable{
+		Method m = getClass().getMethod("func");
+		Type t = m.getGenericReturnType();
+		System.out.println(t.getClass());
+		ParameterizedType pt = (ParameterizedType)t;
+		System.out.println("ActualTypeArguments: " + Arrays.toString(pt.getActualTypeArguments()));
+		System.out.println("RawType: " + pt.getRawType());
+		System.out.println("OwnerType: " + pt.getOwnerType());
+		System.out.println(t);
+	}
+	
+	public void func2(int arg1, Integer arg2, List<Number> arg3){}
+	@Test
+	public void test_arg() throws Throwable{
+		Method m = getClass().getMethod("func2", int.class, Integer.class, List.class);
+		Type[] ptypes = m.getGenericParameterTypes();
+		for(int i = 0; i < ptypes.length; i++){
+			Type t = ptypes[i];
+			System.out.println((t instanceof Class) + ": " + t.getClass().getName() +
+					" extends " + t.getClass().getGenericSuperclass().getTypeName() +
+					" implements " + StringUtil.join(t.getClass().getGenericInterfaces(), it -> it.getTypeName(), ", "));
+		}
+	}
+	
 }

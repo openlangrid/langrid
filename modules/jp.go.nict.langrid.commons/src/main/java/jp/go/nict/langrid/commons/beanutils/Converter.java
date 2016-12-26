@@ -192,6 +192,21 @@ public class Converter{
 		return (Collection<T>)ret;
 	}
 
+	@SuppressWarnings({"unchecked","rawtypes"})
+	public <T> Collection<T> convertCollection(Collection<?> value, Class<?> compositeType, Type componentType)
+	throws ConversionException{
+		Collection ret = null;
+		if(compositeType.isAssignableFrom(LinkedHashSet.class)){
+			ret = new LinkedHashSet<>();
+		} else{
+			ret = new ArrayList();
+		}
+		for(Object element : (Collection)value){
+			ret.add(convert(element, componentType));
+		}
+		return (Collection<T>)ret;
+	}
+
 	@SuppressWarnings("unchecked")
 	public <T> T[] convertCollectionToArray(Collection<?> value, Class<T> componentType)
 	throws ConversionException{
@@ -232,10 +247,13 @@ public class Converter{
 				}
 				Object v = value.get(name);
 				if(v == null) continue;
+				Type setterPropType = m.getGenericParameterTypes()[0];
 				Class<?> setterPropClass = m.getParameterTypes()[0];
-				if(!setterPropClass.isAssignableFrom(v.getClass())){
+				if(Collection.class.isAssignableFrom(setterPropClass)){
+					v = convertCollection((Collection<?>)v, setterPropClass, ((ParameterizedType) setterPropType).getActualTypeArguments()[0]);
+				} else if(!setterPropClass.isAssignableFrom(v.getClass())){
 					if(!setterPropClass.isPrimitive()){
-						v = convert(v, m.getGenericParameterTypes()[0]);
+						v = convert(v, setterPropType);
 					}
 					else v = convert(v, setterPropClass);
 					if(v == null) continue;
@@ -395,7 +413,7 @@ public class Converter{
 		for(Pair<String, Method> prop : ClassUtil.getReadableProperties(source.getClass())){
 			for(Method s : ClassUtil.findSetters(target.getClass(), prop.getFirst())){
 				try{
-					s.invoke(target, convert(prop.getSecond().invoke(source), s.getParameterTypes()[0]));
+					s.invoke(target, convert(prop.getSecond().invoke(source), s.getGenericParameterTypes()[0]));
 					break;
 				} catch(IllegalAccessException e){
 				} catch(InvocationTargetException e){

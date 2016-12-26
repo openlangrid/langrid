@@ -23,6 +23,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -100,13 +101,18 @@ public class JsonRpcDynamicHandler extends AbstractJsonRpcHandler implements Jso
 					}
 					Object service = f.createService(cl, sc, clazz);
 					// Currently only array("[]") is supported, while JsonRpc accepts Object("{}")
-					Class<?>[] ptypes = method.getParameterTypes();
+					Type[] ptypes = method.getGenericParameterTypes();
 					Object[] params = req.getParams();
 					Object[] args = new Object[ptypes.length];
 					for(int i = 0; i < args.length; i++){
 						if(params[i].equals("")){
-							if(ptypes[i].isPrimitive()){
-								args[i] = ClassUtil.getDefaultValueForPrimitive(ptypes[i]);
+							if(ptypes[i] instanceof Class){
+								Class<?> clz = (Class<?>) ptypes[i];
+								if(clz.isPrimitive()){
+									args[i] = ClassUtil.getDefaultValueForPrimitive(clz);
+								} else{
+									args[i] = null;
+								}
 							} else{
 								args[i] = null;
 							}
