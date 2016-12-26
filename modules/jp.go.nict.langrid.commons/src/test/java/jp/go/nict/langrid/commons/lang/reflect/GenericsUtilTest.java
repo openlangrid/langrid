@@ -17,13 +17,16 @@
  */
 package jp.go.nict.langrid.commons.lang.reflect;
 
+import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -83,18 +86,31 @@ public class GenericsUtilTest {
 		System.out.println("OwnerType: " + pt.getOwnerType());
 		System.out.println(t);
 	}
-	
+
 	public void func2(int arg1, Integer arg2, List<Number> arg3){}
 	@Test
 	public void test_arg() throws Throwable{
 		Method m = getClass().getMethod("func2", int.class, Integer.class, List.class);
 		Type[] ptypes = m.getGenericParameterTypes();
 		for(int i = 0; i < ptypes.length; i++){
-			Type t = ptypes[i];
-			System.out.println((t instanceof Class) + ": " + t.getClass().getName() +
+			Type type = ptypes[i];
+			Function<Type, String> conv = t -> t + ": " + (t instanceof Class) + ": " + t.getClass().getName() +
 					" extends " + t.getClass().getGenericSuperclass().getTypeName() +
-					" implements " + StringUtil.join(t.getClass().getGenericInterfaces(), it -> it.getTypeName(), ", "));
+					" implements " + StringUtil.join(t.getClass().getGenericInterfaces(), it -> it.getTypeName(), ", ");
+			System.out.println(conv.apply(type));
+			if(type instanceof ParameterizedType){
+				System.out.println("  " + conv.apply(((ParameterizedType)type).getRawType()));
+			}
+		}
+		System.out.println("");
+		Class<?>[] pclasses = m.getParameterTypes();
+		for(int i = 0; i < pclasses.length; i++){
+			Class<?> clz = pclasses[i];
+			if(clz instanceof GenericDeclaration){
+				for(TypeVariable<?> tv : ((GenericDeclaration)clz).getTypeParameters()){
+					System.out.println(tv.getTypeName() + ": " + tv.getGenericDeclaration().getClass());
+				}
+			}
 		}
 	}
-	
 }

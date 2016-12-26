@@ -279,15 +279,14 @@ public class Converter{
 			ParameterizedType pt = (ParameterizedType)type;
 			if(value instanceof Collection){
 				if(Collection.class.isAssignableFrom((Class)pt.getRawType())){
-					return (T)convertCollection((Collection)value, (Class)pt.getRawType(), (Class)pt.getActualTypeArguments()[0]);
+					return (T)convertCollection(
+							(Collection)value, (Class)pt.getRawType(),
+							(Class)pt.getActualTypeArguments()[0]);
 				}
 			}
-		}
-		if(type instanceof Class){
+			return (T)convert(value, pt.getRawType());
+		} else if(type instanceof Class){
 			return (T)convert(value, (Class)type);
-		}
-		if(type instanceof ParameterizedType){
-			return (T)convert(value, ((ParameterizedType)type).getRawType());
 		}
 		throw new ConversionException("unsupported conversion from " + value.getClass().getName() + " to " + type);
 	}
