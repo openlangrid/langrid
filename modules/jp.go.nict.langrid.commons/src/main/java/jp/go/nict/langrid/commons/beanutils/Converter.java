@@ -412,7 +412,7 @@ public class Converter{
 		for(Pair<String, Method> prop : ClassUtil.getReadableProperties(source.getClass())){
 			for(Method s : ClassUtil.findSetters(target.getClass(), prop.getFirst())){
 				try{
-					s.invoke(target, convert(prop.getSecond().invoke(source), s.getGenericParameterTypes()[0]));
+					s.invoke(target, (Object)convert(prop.getSecond().invoke(source), s.getGenericParameterTypes()[0]));
 					break;
 				} catch(IllegalAccessException e){
 				} catch(InvocationTargetException e){
