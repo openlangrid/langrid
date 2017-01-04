@@ -35,14 +35,11 @@ import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.GenericHandler;
 import jp.go.nict.langrid.dao.Order;
 import jp.go.nict.langrid.dao.entity.AccessStat;
-import jp.go.nict.langrid.dao.entity.AccessStatPK;
 import jp.go.nict.langrid.dao.entity.Period;
-import jp.go.nict.langrid.dao.util.EntityUtil;
 import jp.go.nict.langrid.p2pgridbasis.controller.ControllerException;
 import jp.go.nict.langrid.p2pgridbasis.controller.jxta.adv.PeerSummaryAdv;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDao;
 import jp.go.nict.langrid.p2pgridbasis.dao.DataDaoException;
-import jp.go.nict.langrid.p2pgridbasis.dao.DataNotFoundException;
 import jp.go.nict.langrid.p2pgridbasis.dao.UnmatchedDataTypeException;
 import jp.go.nict.langrid.p2pgridbasis.data.Data;
 import jp.go.nict.langrid.p2pgridbasis.data.langrid.AccessStateData;
@@ -74,7 +71,8 @@ implements DataDao, AccessStatDao {
 		if(data.getClass().equals(AccessStateData.class) == false) {
 			throw new UnmatchedDataTypeException(AccessStateData.class.toString(), data.getClass().toString());
 		}
-
+		return true;
+/*
 		AccessStat entity = null;
 		try {
 			entity = ((AccessStateData)data).getAccessState();
@@ -122,7 +120,7 @@ implements DataDao, AccessStatDao {
 		} catch (ControllerException e) {
 			throw new DataDaoException(e);
 		}
-	}
+*/	}
 
 	@Override
 	public void clear() throws DaoException {
@@ -206,7 +204,7 @@ implements DataDao, AccessStatDao {
 				, userGridId, startDateTime, endDateTime, period, orders);
 	}
 
-	public void updateCountCheck(Serializable id){
+	private void updateCountCheck(Serializable id){
 		if(updateCount == 0){
 			try {
 				firstAccessTime = getDaoContext().loadEntity(AccessStat.class, id).getLastAccessDateTime();
@@ -226,7 +224,7 @@ implements DataDao, AccessStatDao {
 		}
 	}
 
-	public void publish() {
+	private void publish() {
 		timer.cancel();
 		task = null;
 		updateCount = 0;
@@ -269,14 +267,14 @@ implements DataDao, AccessStatDao {
 				return false;
 			}
 		}
-
+// 共有しない
 		protected void doUpdate(Serializable id, Set<String> modifiedProperties){
 			logger.info("updateCountCheck[AccessState(id=" + id + ")]");
-			updateCountCheck(id);
+//			updateCountCheck(id);
 		}
 
 		protected void doRemove(Serializable id){
-			try{
+/*			try{
 				AccessStatPK pk = (AccessStatPK)id;
 				getController().revoke(AccessStateData.getDataID(null, pk));
 				logger.info("revoked[AccessState(id=" + id + ")]");
@@ -285,7 +283,7 @@ implements DataDao, AccessStatDao {
 			} catch(DataNotFoundException e){
 				logger.error("failed to find data.", e);
 			}
-		}
+*/		}
 
 		protected void onNotificationEnd(){
 			try{
@@ -325,7 +323,7 @@ class minuteTimerTask extends TimerTask{
 
 	public void run() {
 		logger.debug("### AccessState 1min Timer ### Arrival");
-		new P2PGridBasisAccessStateDao(dao, daoContext).publish();
+//		new P2PGridBasisAccessStateDao(dao, daoContext).publish();
 	}
 	private AccessStatDao dao;
 	private DaoContext daoContext;
