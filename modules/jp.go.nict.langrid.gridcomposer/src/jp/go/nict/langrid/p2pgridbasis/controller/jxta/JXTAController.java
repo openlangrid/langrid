@@ -38,7 +38,6 @@ import java.util.logging.Logger;
 import org.apache.axis.encoding.Base64;
 
 import jp.go.nict.langrid.commons.io.StreamUtil;
-import jp.go.nict.langrid.commons.util.CalendarUtil;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
@@ -50,7 +49,6 @@ import jp.go.nict.langrid.dao.NodeDao;
 import jp.go.nict.langrid.dao.Order;
 import jp.go.nict.langrid.dao.entity.AccessLimit;
 import jp.go.nict.langrid.dao.entity.AccessRight;
-import jp.go.nict.langrid.dao.entity.AccessStat;
 import jp.go.nict.langrid.dao.entity.Domain;
 import jp.go.nict.langrid.dao.entity.Federation;
 import jp.go.nict.langrid.dao.entity.Grid;
@@ -746,8 +744,8 @@ public class JXTAController implements P2PGridController {
 			}
 			b.append("Resource: " + c + "\n");
 
-			//AccessState
-			c = 0;
+			// AccessStat
+/*			c = 0;
 			for (AccessStat state : factory.createAccessStateDao().listAccessStatsNewerThanOrEqualsTo(gridId, CalendarUtil.createBeginningOfDay(Calendar.getInstance()))) {
 				AccessStateData data = new AccessStateData(state);
 				baseSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
@@ -756,11 +754,10 @@ public class JXTAController implements P2PGridController {
 				c++;
 			}
 			b.append("AccessStat: " + c + "\n");
-
-			//AccessLog
+*/
+			// AccessLog
 /*			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.DATE, -1);
-			logger.info("--- publishing host AccessLogs.");
 			c = 0;
 			for (AccessLog log : factory.createAccessLogDao().listAccessLogsNewerThanOrEqualsTo(
 					gridId, cal)) {
@@ -770,8 +767,9 @@ public class JXTAController implements P2PGridController {
 				platform.publish(new DataAdv(data, platform.getPeerID()));
 				c++;
 			}
-			logger.info("--- " + c + " entities done.");
-*/		} catch (JXTAPlatformException e) {
+			b.append("AccessLog: " + c + "\n");
+*/
+		} catch (JXTAPlatformException e) {
 			throw new ControllerException(e);
 		} catch (DaoException e) {
 			throw new ControllerException(e);
@@ -913,17 +911,17 @@ public class JXTAController implements P2PGridController {
 					}
 					b.append("Resource: " + c + "\n");
 
-					//AccessState
-					c = 0;
+					// AccessStat
+/*					c = 0;
 					for (AccessStat state : factory.createAccessStateDao().listAccessStatsNewerThanOrEqualsTo(gridId, CalendarUtil.createBeginningOfDay(Calendar.getInstance()))) {
 						AccessStateData data = new AccessStateData(state);
 						baseSummaryDao.addDataSummary(new DataSummary(data.getId(), data.getLastUpdate()));
 						c++;
 					}
 					b.append("AccessStat: " + c + "\n");
-/*
-					//AccessLog
-					c = 0;
+*/
+					// AccessLog
+/*					c = 0;
 					Calendar cal = Calendar.getInstance();
 					cal.add(Calendar.DATE, -1);
 					for (AccessLog log : factory.createAccessLogDao().listAccessLogsNewerThanOrEqualsTo(
