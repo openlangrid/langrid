@@ -68,12 +68,10 @@ public class AspectBase{
 		// 
 		// 
 		MimeHeaders mHeaders = serviceContext.getRequestMimeHeaders();
-		extractHttpHeader(mHeaders, props, LangridConstants.HTTPHEADER_FROMADDRESS);
 		extractHttpHeader(mHeaders, props, LangridConstants.HTTPHEADER_CORENODEURL);
-		extractHttpHeader(mHeaders, props, LangridConstants.HTTPHEADER_CALLNEST);
-		extractHttpHeader(mHeaders, props, LangridConstants.HTTPHEADER_TYPEOFUSE);
-		extractHttpHeader(mHeaders, props, LangridConstants.HTTPHEADER_TYPEOFAPPPROVISION);
-		extractHttpHeader(mHeaders, props, LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION);
+		for(String h : headersToCopy){
+			extractHttpHeader(mHeaders, props, h);
+		}
 		// 呼出アドレスが無ければ足す。
 		if(mHeaders.getHeader(LangridConstants.HTTPHEADER_FROMADDRESS) == null){
 			props.put(
@@ -181,11 +179,9 @@ public class AspectBase{
 			}
 
 			// HTTPヘッダ情報をコピー
-			copyHttpHeader(tempProperties, mimeHeaders, LangridConstants.HTTPHEADER_FROMADDRESS);
-			copyHttpHeader(tempProperties, mimeHeaders, LangridConstants.HTTPHEADER_CALLNEST);
-			copyHttpHeader(tempProperties, mimeHeaders, LangridConstants.HTTPHEADER_TYPEOFUSE);
-			copyHttpHeader(tempProperties, mimeHeaders, LangridConstants.HTTPHEADER_TYPEOFAPPPROVISION);
-			copyHttpHeader(tempProperties, mimeHeaders, LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION);
+			for(String h : headersToCopy){
+				copyHttpHeader(tempProperties, mimeHeaders, h);
+			}
 			copyAdditionalMimeHeaders(tempProperties, mimeHeaders);
 
 			// Rpcヘッダ情報をコピー
@@ -356,5 +352,15 @@ public class AspectBase{
 	private EndpointRewriter[] rewriters;
 	private Map<Long, Map<String, Object>> idToProperties
 		= new ConcurrentHashMap<Long, Map<String, Object>>();
+	private static String[] headersToCopy = {
+			LangridConstants.HTTPHEADER_FROMADDRESS,
+			LangridConstants.HTTPHEADER_CALLNEST,
+			LangridConstants.HTTPHEADER_TYPEOFUSE,
+			LangridConstants.HTTPHEADER_TYPEOFAPPPROVISION,
+			LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION,
+			LangridConstants.HTTPHEADER_FEDERATEDCALL_CREATESHORTCUT,
+			LangridConstants.HTTPHEADER_FEDERATEDCALL_REMOVESHORTCUT,
+			LangridConstants.HTTPHEADER_FEDERATEDCALL_ROUTE
+	};
 	private static Logger logger = LoggerFactory.create();
 }

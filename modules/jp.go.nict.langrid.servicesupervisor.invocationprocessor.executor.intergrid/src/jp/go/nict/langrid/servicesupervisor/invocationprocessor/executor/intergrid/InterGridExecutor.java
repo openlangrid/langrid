@@ -28,6 +28,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import jp.go.nict.langrid.commons.lang.StringUtil;
 import jp.go.nict.langrid.commons.ws.LangridConstants;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.dao.DaoContext;
@@ -40,7 +41,6 @@ import jp.go.nict.langrid.dao.ServiceDao;
 import jp.go.nict.langrid.dao.UserDao;
 import jp.go.nict.langrid.dao.entity.Federation;
 import jp.go.nict.langrid.dao.entity.Grid;
-import jp.go.nict.langrid.dao.entity.Service;
 import jp.go.nict.langrid.dao.entity.User;
 import jp.go.nict.langrid.management.logic.FederationLogic;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.AbstractExecutor;
@@ -82,7 +82,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 	throws DaoException, TooManyCallNestException, NoValidEndpointsException, ProcessFailedException, IOException{
 		String selfGridId = serviceContext.getSelfGridId();
 		String prevGridId = selfGridId;
-		Service serviceOnThisGrid = null;
+//		Service serviceOnThisGrid = null;
 		URL url = null;
 		String authId = null;
 		String authPasswd = null;
@@ -90,34 +90,50 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 		try{
 			boolean forward = true;
 			Federation f = null;
-			List<Federation> path = federationLogic.getShortestPath(selfGridId, targetGridId);
-			if(path.size() > 0){
-				if(serviceContext.getRequestMimeHeaders().getHeader(
-						LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION) != null
-						&&
-						gridDao.getGrid(targetGridId).isBypassExecutionAllowed()){
-					// get farthest
-					f = path.get(path.size() - 1);
-					forward = f.getTargetGridId().equals(targetGridId);
-					prevGridId = forward ? f.getSourceGridId() : f.getTargetGridId();
-				} else{
-					// get nearest
-					f = path.get(0);
-					forward = f.getSourceGridId().equals(serviceContext.getSelfGridId());
+			Grid nextGrid = null;
+			String[] route = serviceContext.getRequestMimeHeaders().getHeader(LangridConstants.HTTPHEADER_FEDERATEDCALL_ROUTE);
+			if(route != null && route.length > 0){
+				// パス指定があればそれに従う．無ければショートカット含め接続を検索/探索
+				String[] r = StringUtil.join(route, ",").split(",", 2);
+				if(r.length != 2) throw new ProcessFailedException("invalid route spec: " + StringUtil.join(route, ","));
+				String nextGid = r[0];
+				String rest = r[1];
+				f = federationLogic.getReachableTransitiveFederation(selfGridId, nextGid);
+				if(f == null){
+					throw new ProcessFailedException("no reachable federation from " + selfGridId + " to " + nextGid);
 				}
-			}
-			if(f == null){
-				throw new ProcessFailedException("no route to target grid: " + targetGridId + " from grid:" + selfGridId);
-			}
-			if(targetGridId.equals(selfGridId)){
-				serviceOnThisGrid = serviceDao.getService(selfGridId, targetServiceId);
-				if(serviceOnThisGrid == null){
-					throw new ProcessFailedException("no service: " + targetServiceId +
-							" exists at grid: " + targetGridId);
+				forward = true;
+				headers.put(LangridConstants.HTTPHEADER_FEDERATEDCALL_ROUTE, rest);
+			} else{
+				List<Federation> path = federationLogic.getShortestPath(selfGridId, targetGridId);
+				if(path.size() > 0){
+					if(serviceContext.getRequestMimeHeaders().getHeader(
+							LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION) != null
+							&&
+							gridDao.getGrid(targetGridId).isBypassExecutionAllowed()){
+						// get farthest
+						f = path.get(path.size() - 1);
+						forward = f.getTargetGridId().equals(targetGridId);
+						prevGridId = forward ? f.getSourceGridId() : f.getTargetGridId();
+					} else{
+						// get nearest
+						f = path.get(0);
+						forward = f.getSourceGridId().equals(serviceContext.getSelfGridId());
+					}
 				}
+				if(f == null){
+					throw new ProcessFailedException("no route to target grid: " + targetGridId + " from grid:" + selfGridId);
+				}
+/*				if(targetGridId.equals(selfGridId)){
+					serviceOnThisGrid = serviceDao.getService(selfGridId, targetServiceId);
+					if(serviceOnThisGrid == null){
+						throw new ProcessFailedException("no service: " + targetServiceId +
+								" exists at grid: " + targetGridId);
+					}
+				}
+*/				nextGrid = gridDao.getGrid(forward ? f.getTargetGridId() : f.getSourceGridId());
 			}
-			Grid g = gridDao.getGrid(forward ? f.getTargetGridId() : f.getSourceGridId());
-			String gurl = g.getUrl();
+			String gurl = nextGrid.getUrl();
 			if(!gurl.endsWith("/")) gurl += "/";
 			url = new URL(gurl + "invoker/" + targetGridId + ":" + targetServiceId
 					+ ((query != null) ? query : ""));
@@ -128,7 +144,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 		} finally{
 			daoContext.commitTransaction();
 		}
-		if(serviceOnThisGrid != null) adjustHeaders(serviceOnThisGrid, headers);
+//		if(serviceOnThisGrid != null) adjustHeaders(serviceOnThisGrid, headers);
 		headers.put(LangridConstants.HTTPHEADER_FEDERATEDCALL_SOURCEGRIDID, prevGridId);
 		headers.putIfAbsent(
 				LangridConstants.HTTPHEADER_FEDERATEDCALL_CALLERUSER
@@ -187,7 +203,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 			Grid target = gridDao.getGrid(targetGridId);
 			boolean ff = federationDao.isFederationExist(sourceGridId, targetGridId);
 			boolean bf = federationDao.isFederationExist(targetGridId, sourceGridId);
-			if(ff || bf || !source.isCreateShortcutAllowed() || !target.isCreateShortcutAllowed()) break;
+			if(ff || bf) break;
 			User sourceUser = userDao.getUser(source.getGridId(), source.getOperatorUserId());
 			User targetUser = userDao.getUser(target.getGridId(), target.getOperatorUserId());
 			if(sourceUser == null || targetUser == null) break;

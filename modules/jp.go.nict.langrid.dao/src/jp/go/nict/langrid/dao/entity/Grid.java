@@ -219,14 +219,6 @@ implements AttributedElement<GridAttribute>, Serializable{
 		this.bypassExecutionAllowed = bypassExecutionAllowed;
 	}
 
-	public boolean isCreateShortcutAllowed() {
-		return createShortcutAllowed != null ? createShortcutAllowed : false;
-	}
-	
-	public void setCreateShortcutAllowed(Boolean createShortcutAllowed) {
-		this.createShortcutAllowed = createShortcutAllowed;
-	}
-
 	protected EqualsBuilder appendSpecialEquals(
 			EqualsBuilder builder, Object value
 			, Collection<String> appendedFields, boolean ignoreDates){
@@ -275,7 +267,6 @@ implements AttributedElement<GridAttribute>, Serializable{
 	private boolean commercialUseAllowed;
 	private boolean autoApproveEnabled = false;
 	private Boolean bypassExecutionAllowed = true;
-	private Boolean createShortcutAllowed = false;
 
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="gridId")
 	@MapKey(name="name")

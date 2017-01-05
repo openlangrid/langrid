@@ -157,7 +157,7 @@ implements Executor {
 			} catch(FederationNotFoundException e){
 			}
 		}
-		// create shortcut if allowed
+		// create shortcut
 		do{
 			if(serviceContext.getRequestMimeHeaders().getHeader(
 					LangridConstants.HTTPHEADER_FEDERATEDCALL_CREATESHORTCUT
@@ -166,7 +166,7 @@ implements Executor {
 			Grid target = gridDao.getGrid(targetGridId);
 			boolean ff = federationDao.isFederationExist(sourceGridId, targetGridId);
 			boolean bf = federationDao.isFederationExist(targetGridId, sourceGridId);
-			if(ff || bf || !source.isCreateShortcutAllowed() || !target.isCreateShortcutAllowed()) break;
+			if(ff || bf) break;
 			User sourceUser = userDao.getUser(sourceGridId, source.getOperatorUserId());
 			User targetUser = userDao.getUser(targetGridId, target.getOperatorUserId());
 			if(sourceUser == null || targetUser == null) break;

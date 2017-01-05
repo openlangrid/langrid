@@ -14,9 +14,20 @@ public class AbstractExecutor {
 				(ct != null && !ct.equals(ServiceContainerType.COMPOSITE))
 				|| (ct == null && service.getInstanceType().equals(InstanceType.EXTERNAL))
 				){
-			headers.remove(LangridConstants.HTTPHEADER_FROMADDRESS);
-			headers.remove(LangridConstants.HTTPHEADER_CALLNEST);
-			headers.remove(LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION);
+			for(String h : removeHeadersForAtomicServices){
+				headers.remove(h);
+			}
 		}
 	}
+
+	private static String[] removeHeadersForAtomicServices = {
+			LangridConstants.HTTPHEADER_FROMADDRESS,
+			LangridConstants.HTTPHEADER_CALLNEST,
+			LangridConstants.HTTPHEADER_TYPEOFUSE,
+			LangridConstants.HTTPHEADER_TYPEOFAPPPROVISION,
+			LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION,
+			LangridConstants.HTTPHEADER_FEDERATEDCALL_CREATESHORTCUT,
+			LangridConstants.HTTPHEADER_FEDERATEDCALL_REMOVESHORTCUT,
+			LangridConstants.HTTPHEADER_FEDERATEDCALL_ROUTE,
+	};
 }

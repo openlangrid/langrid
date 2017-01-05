@@ -133,7 +133,7 @@ public class FederationLogic extends AbstractLogic{
 	}
 
 	@DaoTransaction
-	public Federation getValidFederation(String sourceGridId, String targetGridId)
+	public Federation getReachableFederation(String sourceGridId, String targetGridId)
 	throws DaoException{
 		FederationDao fdao = getFederationDao();
 		try{
@@ -150,10 +150,27 @@ public class FederationLogic extends AbstractLogic{
 	}
 
 	@DaoTransaction
+	public Federation getReachableTransitiveFederation(String sourceGridId, String targetGridId)
+	throws DaoException{
+		FederationDao fdao = getFederationDao();
+		try{
+			Federation f = fdao.getFederation(sourceGridId, targetGridId);
+			if(f.isConnected() && !f.isRequesting() && f.isForwardTransitive()) return f;
+		} catch(FederationNotFoundException e){
+		}
+		try{
+			Federation f = fdao.getFederation(targetGridId, sourceGridId);
+			if(f.isConnected() && !f.isRequesting() && f.isSymmetric() && f.isBackwardTransitive()) return f;
+		} catch(FederationNotFoundException e){
+		}
+		return null;
+	}
+
+	@DaoTransaction
 	public List<Federation> getShortestPath(String sourceGridId, String targetGridId)
 	throws DaoException{
 		List<Federation> ret = new ArrayList<>();
-		{	Federation f = getValidFederation(sourceGridId, targetGridId);
+		{	Federation f = getReachableFederation(sourceGridId, targetGridId);
 			if(f != null){
 				ret.add(f);
 				return ret;

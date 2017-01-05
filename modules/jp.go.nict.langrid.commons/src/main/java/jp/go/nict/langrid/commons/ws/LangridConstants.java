@@ -151,6 +151,9 @@ public class LangridConstants {
 	public static final String HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION
 		= "X-Langrid-FederatedCall-BypassingInvocation";
 
+	public static final String HTTPHEADER_FEDERATEDCALL_ROUTE
+		= "X-Langrid-FederatedCall-Route";
+	
 	public static final String HTTPHEADER_FEDERATEDCALL_CREATESHORTCUT
 		= "X-Langrid-FederatedCall-CreateShortcut";
 	public static final String HTTPHEADER_FEDERATEDCALL_REMOVESHORTCUT

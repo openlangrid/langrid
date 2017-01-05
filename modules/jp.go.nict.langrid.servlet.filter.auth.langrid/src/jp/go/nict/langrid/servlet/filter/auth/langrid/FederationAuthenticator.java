@@ -54,7 +54,7 @@ public class FederationAuthenticator extends AbstractLangridBasicAuthenticator{
 			// request about connecting/disconnecting federation
 			String previousGridId = authUser;
 			try{
-				Federation f = fl.getValidFederation(previousGridId, selfGridId);
+				Federation f = fl.getReachableFederation(previousGridId, selfGridId);
 				if(accessToken.equals(f.getTargetGridAccessToken())){
 					context.setAuthorized(authUser, authUser, authPass);
 					return true;
@@ -80,7 +80,7 @@ public class FederationAuthenticator extends AbstractLangridBasicAuthenticator{
 		String callerUserGridId = callerUserGridIdAndId[0];
 		String callerUserId = callerUserGridIdAndId[1];
 
-		Federation f = fl.getValidFederation(sourceGridId, selfGridId);
+		Federation f = fl.getReachableFederation(sourceGridId, selfGridId);
 		if(f != null){
 			if((f.getTargetGridAccessToken().equals(targetGridAccessToken) &&
 				(	// forward

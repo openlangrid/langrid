@@ -197,12 +197,14 @@ extends AbstractLangridServlet{
 	private static Map<String, String> transHeaders = new HashMap<>();
 	static{
 		for(String s : new String[]{
+				LangridConstants.HTTPHEADER_PROTOCOL,
 				LangridConstants.HTTPHEADER_TYPEOFAPPPROVISION,
 				LangridConstants.HTTPHEADER_TYPEOFUSE,
-				LangridConstants.HTTPHEADER_PROTOCOL,
 				LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION,
 				LangridConstants.HTTPHEADER_FEDERATEDCALL_CREATESHORTCUT,
-				LangridConstants.HTTPHEADER_FEDERATEDCALL_REMOVESHORTCUT}){
+				LangridConstants.HTTPHEADER_FEDERATEDCALL_REMOVESHORTCUT,
+				LangridConstants.HTTPHEADER_FEDERATEDCALL_ROUTE,
+				}){
 			transHeaders.put(s.toLowerCase(), s);
 		}
 		transHeaders = Collections.unmodifiableMap(transHeaders);

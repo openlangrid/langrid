@@ -72,7 +72,7 @@ extends UpdateManagedEntity
 			String targetGridId, String targetGridName, String targetGridUserId, String targetGridOrganization,
 			URL targetGridHomepageUrl, String targetGridAccessToken,
 			boolean requesting, boolean connected,
-			boolean targetTransitive, boolean symmetric, boolean sourceTransitive, boolean shortcut) {
+			boolean forwardTransitive, boolean symmetric, boolean backwardTransitive, boolean shortcut) {
 		this.sourceGridId = sourceGridId;
 		this.sourceGridName = sourceGridName;
 		this.sourceGridUserId = sourceGridUserId;
@@ -85,9 +85,9 @@ extends UpdateManagedEntity
 		this.targetGridAccessToken = targetGridAccessToken;
 		this.requesting = requesting;
 		this.connected = connected;
-		this.targetTransitive = targetTransitive;
+		this.forwardTransitive = forwardTransitive;
 		this.symmetric = symmetric;
-		this.sourceTransitive = sourceTransitive;
+		this.backwardTransitive = backwardTransitive;
 		this.shortcut = shortcut;
 	}
 
@@ -223,11 +223,11 @@ extends UpdateManagedEntity
 	public boolean isConnected() {
 		return connected;
 	}
-	public boolean isTargetTransitive() {
-		return targetTransitive != null && targetTransitive;
+	public boolean isForwardTransitive() {
+		return forwardTransitive != null && forwardTransitive;
 	}
-	public void setTargetTransitive(boolean targetTransitive) {
-		this.targetTransitive = targetTransitive;
+	public void setForwardTransitive(boolean forwardTransitive) {
+		this.forwardTransitive = forwardTransitive;
 	}
 	public boolean isSymmetric() {
 		return symmetric != null && symmetric;
@@ -235,11 +235,11 @@ extends UpdateManagedEntity
 	public void setSymmetric(boolean symmetric) {
 		this.symmetric = symmetric;
 	}
-	public Boolean isSourceTransitive() {
-		return sourceTransitive != null && sourceTransitive;
+	public Boolean isBackwardTransitive() {
+		return backwardTransitive != null && backwardTransitive;
 	}
-	public void setSourceTransitive(Boolean sourceTransitive) {
-		this.sourceTransitive = sourceTransitive;
+	public void setBackwardTransitive(Boolean sourceTransitive) {
+		this.backwardTransitive = sourceTransitive;
 	}
 	public boolean isShortcut() {
 		return shortcut != null && shortcut;
@@ -268,9 +268,9 @@ extends UpdateManagedEntity
 
 	private boolean requesting;
 	private boolean connected;
-	private Boolean targetTransitive = false;
+	private Boolean forwardTransitive = false;
 	@Column(name="symmetricRel")
 	private Boolean symmetric = false;
-	private Boolean sourceTransitive = false;
+	private Boolean backwardTransitive = false;
 	private Boolean shortcut = false;
 }
