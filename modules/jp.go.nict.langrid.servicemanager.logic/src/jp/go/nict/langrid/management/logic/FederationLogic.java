@@ -22,7 +22,9 @@ package jp.go.nict.langrid.management.logic;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import jp.go.nict.langrid.commons.lang.StringUtil;
@@ -129,7 +131,7 @@ public class FederationLogic extends AbstractLogic{
 	@DaoTransaction
 	public boolean isReachable(String sourceGridId, String targetGridId)
 	throws DaoException{
-		return getShortestPath(sourceGridId, targetGridId).size() > 0;
+		return getShortestPath(sourceGridId, targetGridId, Collections.emptySet()).size() > 0;
 	}
 
 	@DaoTransaction
@@ -167,7 +169,7 @@ public class FederationLogic extends AbstractLogic{
 	}
 
 	@DaoTransaction
-	public List<Federation> getShortestPath(String sourceGridId, String targetGridId)
+	public List<Federation> getShortestPath(String sourceGridId, String targetGridId, Set<String> visited)
 	throws DaoException{
 		List<Federation> ret = new ArrayList<>();
 		{	Federation f = getReachableFederation(sourceGridId, targetGridId);
@@ -176,7 +178,7 @@ public class FederationLogic extends AbstractLogic{
 				return ret;
 			}
 		}
-		return buildGraph().getShortestPath(sourceGridId, targetGridId);
+		return buildGraph().getShortestPath(sourceGridId, targetGridId, visited);
 	}
 	
 	@DaoTransaction

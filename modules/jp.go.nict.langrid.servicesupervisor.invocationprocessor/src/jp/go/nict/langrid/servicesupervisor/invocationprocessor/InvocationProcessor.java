@@ -204,6 +204,7 @@ extends AbstractLangridServlet{
 				LangridConstants.HTTPHEADER_FEDERATEDCALL_CREATESHORTCUT,
 				LangridConstants.HTTPHEADER_FEDERATEDCALL_REMOVESHORTCUT,
 				LangridConstants.HTTPHEADER_FEDERATEDCALL_ROUTE,
+				LangridConstants.HTTPHEADER_FEDERATEDCALL_VISITED,
 				}){
 			transHeaders.put(s.toLowerCase(), s);
 		}

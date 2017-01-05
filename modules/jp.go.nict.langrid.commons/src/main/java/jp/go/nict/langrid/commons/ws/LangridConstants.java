@@ -151,9 +151,12 @@ public class LangridConstants {
 	public static final String HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION
 		= "X-Langrid-FederatedCall-BypassingInvocation";
 
+	public static final String HTTPHEADER_FEDERATEDCALL_VISITED
+		= "X-Langrid-FederatedCall-Visited";
+
 	public static final String HTTPHEADER_FEDERATEDCALL_ROUTE
 		= "X-Langrid-FederatedCall-Route";
-	
+
 	public static final String HTTPHEADER_FEDERATEDCALL_CREATESHORTCUT
 		= "X-Langrid-FederatedCall-CreateShortcut";
 	public static final String HTTPHEADER_FEDERATEDCALL_REMOVESHORTCUT
@@ -162,6 +165,9 @@ public class LangridConstants {
 	// (symm|asym);token
 	public static final String HTTPHEADER_FEDERATEDCALL_SHORTCUTRESULT
 		= "X-Langrid-FederatedCall-ShortcutResult";
+
+	public static final String HTTPHEADER_GRIDTRACK
+		= "X-ServiceGrid-GridTrack";
 
 	/**
 	 * 
@@ -186,7 +192,4 @@ public class LangridConstants {
 	// for backward compatibility
 	public static final String HTTPHEADER_TRANSFER_TO_ENDPOINT_OBSOLETE
 		= "X-Langrid-Service-";
-
-	public static final String HTTPHEADER_GRIDTRACK
-		= "X-ServiceGrid-GridTrack";
 }

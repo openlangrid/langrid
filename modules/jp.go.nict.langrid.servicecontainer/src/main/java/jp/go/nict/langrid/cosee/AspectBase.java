@@ -360,7 +360,8 @@ public class AspectBase{
 			LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION,
 			LangridConstants.HTTPHEADER_FEDERATEDCALL_CREATESHORTCUT,
 			LangridConstants.HTTPHEADER_FEDERATEDCALL_REMOVESHORTCUT,
-			LangridConstants.HTTPHEADER_FEDERATEDCALL_ROUTE
+			LangridConstants.HTTPHEADER_FEDERATEDCALL_ROUTE,
+			LangridConstants.HTTPHEADER_FEDERATEDCALL_VISITED,
 	};
 	private static Logger logger = LoggerFactory.create();
 }

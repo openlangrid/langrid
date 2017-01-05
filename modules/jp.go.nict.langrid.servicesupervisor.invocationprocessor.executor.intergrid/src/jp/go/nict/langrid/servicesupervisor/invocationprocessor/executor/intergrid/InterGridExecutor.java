@@ -21,6 +21,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import jp.go.nict.langrid.commons.lang.StringUtil;
+import jp.go.nict.langrid.commons.util.ArrayUtil;
 import jp.go.nict.langrid.commons.ws.LangridConstants;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.dao.DaoContext;
@@ -86,6 +89,9 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 		URL url = null;
 		String authId = null;
 		String authPasswd = null;
+		String[] visited = serviceContext.getRequestMimeHeaders().getHeader(LangridConstants.HTTPHEADER_FEDERATEDCALL_VISITED);
+		if(visited == null) visited = new String[]{};
+		visited = StringUtil.join(visited, ",").split(",");
 		daoContext.beginTransaction();
 		try{
 			boolean forward = true;
@@ -105,7 +111,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 				forward = true;
 				headers.put(LangridConstants.HTTPHEADER_FEDERATEDCALL_ROUTE, rest);
 			} else{
-				List<Federation> path = federationLogic.getShortestPath(selfGridId, targetGridId);
+				List<Federation> path = federationLogic.getShortestPath(selfGridId, targetGridId, new HashSet<>(Arrays.asList(visited)));
 				if(path.size() > 0){
 					if(serviceContext.getRequestMimeHeaders().getHeader(
 							LangridConstants.HTTPHEADER_FEDERATEDCALL_BYPASSINGINVOCATION) != null
@@ -145,6 +151,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 			daoContext.commitTransaction();
 		}
 //		if(serviceOnThisGrid != null) adjustHeaders(serviceOnThisGrid, headers);
+		headers.put(LangridConstants.HTTPHEADER_FEDERATEDCALL_VISITED, StringUtil.join(ArrayUtil.append(visited, selfGridId), ","));
 		headers.put(LangridConstants.HTTPHEADER_FEDERATEDCALL_SOURCEGRIDID, prevGridId);
 		headers.putIfAbsent(
 				LangridConstants.HTTPHEADER_FEDERATEDCALL_CALLERUSER
