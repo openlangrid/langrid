@@ -169,6 +169,12 @@ public class FederationLogic extends AbstractLogic{
 	}
 
 	@DaoTransaction
+	public List<Federation> getShortestPath(String sourceGridId, String targetGridId)
+	throws DaoException{
+		return getShortestPath(sourceGridId, targetGridId, Collections.emptySet());
+	}
+
+	@DaoTransaction
 	public List<Federation> getShortestPath(String sourceGridId, String targetGridId, Set<String> visited)
 	throws DaoException{
 		List<Federation> ret = new ArrayList<>();
@@ -180,7 +186,7 @@ public class FederationLogic extends AbstractLogic{
 		}
 		return buildGraph().getShortestPath(sourceGridId, targetGridId, visited);
 	}
-	
+
 	@DaoTransaction
 	public void update(String sourceGridId, String targetGridId, Consumer<Federation> cons)
 	throws DaoException{
