@@ -145,7 +145,8 @@ extends AbstractLangridServlet{
 	}
 
 	private Executor getExecutor(HttpServletRequest request, String selfGridId, String gridId){
-		boolean hasRoute = request.getHeader(LangridConstants.HTTPHEADER_FEDERATEDCALL_ROUTE) != null;
+		String route = request.getHeader(LangridConstants.HTTPHEADER_FEDERATEDCALL_ROUTE);
+		boolean hasRoute = route != null && route.trim().length() > 0;
 		if(interGrid == null || (gridId.equals(selfGridId) && !hasRoute)){
 			if(intraGrid != null) return intraGrid;
 			else return inVm;

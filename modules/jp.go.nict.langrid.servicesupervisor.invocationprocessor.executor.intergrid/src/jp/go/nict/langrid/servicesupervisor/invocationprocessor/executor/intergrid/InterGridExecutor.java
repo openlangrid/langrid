@@ -97,19 +97,20 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 			Federation f = null;
 			Grid nextGrid = null;
 			String[] route = serviceContext.getRequestMimeHeaders().getHeader(LangridConstants.HTTPHEADER_FEDERATEDCALL_ROUTE);
-			if(route != null && route.length > 0){
+			if(route != null && route.length == 1 && route[0].length() > 0){
 				// パス指定があればそれに従う．無ければショートカット含め接続を検索/探索
 				String[] r = StringUtil.join(route, ",").split(",", 2);
-				if(r.length != 2) throw new ProcessFailedException("invalid route spec: " + StringUtil.join(route, ","));
+				if(r.length == 0) throw new ProcessFailedException("invalid route spec: " + StringUtil.join(route, ","));
 				String nextGid = r[0];
-				String rest = r[1];
+				String rest = r.length > 1 ? r[1] : null;
 				nextGrid = gridDao.getGrid(nextGid);
 				f = federationLogic.getReachableTransitiveFederation(selfGridId, nextGid);
 				if(f == null){
 					throw new ProcessFailedException("no reachable federation from " + selfGridId + " to " + nextGid);
 				}
 				forward = true;
-				headers.put(LangridConstants.HTTPHEADER_FEDERATEDCALL_ROUTE, rest);
+				if(rest != null) headers.put(LangridConstants.HTTPHEADER_FEDERATEDCALL_ROUTE, rest);
+				else headers.put(LangridConstants.HTTPHEADER_FEDERATEDCALL_ROUTE, "");
 			} else{
 				List<Federation> path = federationLogic.getShortestPath(selfGridId, targetGridId, new HashSet<>(Arrays.asList(visited)));
 				if(path.size() > 0){
@@ -143,7 +144,6 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 		} finally{
 			daoContext.commitTransaction();
 		}
-//		if(serviceOnThisGrid != null) adjustHeaders(serviceOnThisGrid, headers);
 		headers.put(LangridConstants.HTTPHEADER_FEDERATEDCALL_VISITED, StringUtil.join(ArrayUtil.append(visited, selfGridId), ","));
 		headers.put(LangridConstants.HTTPHEADER_FEDERATEDCALL_SOURCEGRIDID, prevGridId);
 		headers.putIfAbsent(
