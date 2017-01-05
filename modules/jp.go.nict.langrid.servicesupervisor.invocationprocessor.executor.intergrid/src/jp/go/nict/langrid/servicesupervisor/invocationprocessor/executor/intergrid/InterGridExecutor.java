@@ -85,7 +85,6 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 	throws DaoException, TooManyCallNestException, NoValidEndpointsException, ProcessFailedException, IOException{
 		String selfGridId = serviceContext.getSelfGridId();
 		String prevGridId = selfGridId;
-//		Service serviceOnThisGrid = null;
 		URL url = null;
 		String authId = null;
 		String authPasswd = null;
@@ -104,6 +103,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 				if(r.length != 2) throw new ProcessFailedException("invalid route spec: " + StringUtil.join(route, ","));
 				String nextGid = r[0];
 				String rest = r[1];
+				nextGrid = gridDao.getGrid(nextGid);
 				f = federationLogic.getReachableTransitiveFederation(selfGridId, nextGid);
 				if(f == null){
 					throw new ProcessFailedException("no reachable federation from " + selfGridId + " to " + nextGid);
@@ -130,14 +130,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 				if(f == null){
 					throw new ProcessFailedException("no route to target grid: " + targetGridId + " from grid:" + selfGridId);
 				}
-/*				if(targetGridId.equals(selfGridId)){
-					serviceOnThisGrid = serviceDao.getService(selfGridId, targetServiceId);
-					if(serviceOnThisGrid == null){
-						throw new ProcessFailedException("no service: " + targetServiceId +
-								" exists at grid: " + targetGridId);
-					}
-				}
-*/				nextGrid = gridDao.getGrid(forward ? f.getTargetGridId() : f.getSourceGridId());
+				nextGrid = gridDao.getGrid(forward ? f.getTargetGridId() : f.getSourceGridId());
 			}
 			String gurl = nextGrid.getUrl();
 			if(!gurl.endsWith("/")) gurl += "/";
@@ -175,23 +168,24 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 				, new ByteArrayInputStream(input), response, response.getOutputStream()
 				, connectionTimeout, readTimeout
 				);
+
 		// remove shortcut if removed at destination grid.
-		if(!serviceContext.getSelfGridId().equals(sourceGridId) &&
+		if(selfGridId.equals(sourceGridId) &&
 					serviceContext.getRequestMimeHeaders().getHeader(
 							LangridConstants.HTTPHEADER_FEDERATEDCALL_REMOVESHORTCUT
 					) != null){
 			String r = response.getHeader(
 							LangridConstants.HTTPHEADER_FEDERATEDCALL_SHORTCUTRESULT);
 			if(r != null && r.equals("removed")){
+				daoContext.beginTransaction();
 				try{
 					Federation f = federationDao.getFederation(sourceGridId, targetGridId);
 					if(f.isShortcut()){
 						federationDao.deleteFederation(sourceGridId, targetGridId);
-						response.setHeader(
-								LangridConstants.HTTPHEADER_FEDERATEDCALL_SHORTCUTRESULT,
-								"removed");
 					}
 				} catch(FederationNotFoundException e){
+				} finally{
+					daoContext.commitTransaction();
 				}
 			}
 		}
