@@ -174,6 +174,15 @@ public class ForwardFederationGraphNoDbTest {
 	}
 
 	@Test
+	public void test_getShortestPath_not_backwardTransitive() throws Throwable{
+		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+				newFederation("grid1", "grid2", true, false, false),
+				newFederation("grid3", "grid2", true, false, false)
+				));
+		Assert.assertEquals(0, fg.getShortestPath("grid1", "grid3").size());
+	}
+
+	@Test
 	public void test_getShortestPath_2hop_unreachable_1() throws Throwable{
 		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
 				newFederation("grid1", "grid2", true),
@@ -290,18 +299,30 @@ public class ForwardFederationGraphNoDbTest {
 		f.setConnected(true);
 		f.setRequesting(false);
 		f.setSymmetric(symmetric);
-		f.setTargetTransitive(transitive);
-		if(symmetric) f.setSourceTransitive(transitive);
+		f.setForwardTransitive(transitive);
+		if(symmetric) f.setBackwardTransitive(transitive);
 		return f;
 	}
 
-	private Federation newRequestingFederation(String sgid, String tgid, boolean symmetric, boolean transitive){
+	private Federation newFederation(String sgid, String tgid,
+			boolean forwardTransitive, boolean symmetric, boolean backwardTransitive){
+		Federation f = new Federation(sgid, tgid);
+		f.setConnected(true);
+		f.setRequesting(false);
+		f.setForwardTransitive(forwardTransitive);
+		f.setSymmetric(symmetric);
+		f.setBackwardTransitive(backwardTransitive);
+		return f;
+	}
+
+	private Federation newRequestingFederation(String sgid, String tgid,
+			boolean symmetric, boolean transitive){
 		Federation f = new Federation(sgid, tgid);
 		f.setConnected(true);
 		f.setRequesting(true);
 		f.setSymmetric(symmetric);
-		f.setTargetTransitive(transitive);
-		if(symmetric) f.setSourceTransitive(transitive);
+		f.setForwardTransitive(transitive);
+		if(symmetric) f.setBackwardTransitive(transitive);
 		return f;
 	}
 }

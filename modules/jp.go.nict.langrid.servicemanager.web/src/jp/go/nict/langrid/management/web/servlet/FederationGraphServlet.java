@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletConfig;
@@ -54,20 +55,31 @@ public class FederationGraphServlet extends HttpServlet{
 		}
 	}
 
-	private void generateGraph(String selfGridId, String dotPath, String format, OutputStream os)
-	throws IOException, DaoException, InterruptedException{
+	void generateGraph(String selfGridId, String dotPath, String format, OutputStream os)
+			throws IOException, DaoException, InterruptedException{
 		Process p = new ProcessBuilder(dotPath, "-T" + format).start();
-		try{
-			try(OutputStream dot = p.getOutputStream();
-					Writer w = new OutputStreamWriter(dot, "UTF-8");
-					PrintWriter pw = new PrintWriter(w)){
+		try(OutputStream dot = p.getOutputStream()){
+			doGenerateGraph(DaoFactory.createInstance().createFederationDao().list(),
+				selfGridId, os);
+			try(InputStream is = p.getInputStream()){
+				StreamUtil.transfer(is, os);
+			}
+		} finally{
+			p.waitFor(1000, TimeUnit.MILLISECONDS);
+		}
+	}
+
+	void doGenerateGraph(List<Federation> federations, String selfGridId, OutputStream os)
+	throws IOException, DaoException, InterruptedException{
+		try(Writer w = new OutputStreamWriter(os, "UTF-8");
+			PrintWriter pw = new PrintWriter(w)){
 				pw.println("digraph g{");
 				pw.println("\tgraph[layout=neato,overlap=false];");
 				pw.format("\t\"%s\" [peripheries=2];%n", selfGridId);
-				for(Federation f : DaoFactory.createInstance().createFederationDao().list()){
+				for(Federation f : federations){
 					pw.format("\t\"%s\"->\"%s\" [", f.getSourceGridId(), f.getTargetGridId());
 					boolean first = true;
-					if(f.isTargetTransitive()){
+					if(f.isForwardTransitive()){
 						pw.format("arrowhead=normalnormal");
 						first = false;
 					}
@@ -75,7 +87,7 @@ public class FederationGraphServlet extends HttpServlet{
 						if(!first) pw.format(",");
 						pw.format("dir=both");
 						first = false;
-						if(f.isSourceTransitive()){
+						if(f.isBackwardTransitive()){
 							pw.format(",arrowtail=normalnormal");
 						}
 					}
@@ -88,12 +100,6 @@ public class FederationGraphServlet extends HttpServlet{
 				}
 				pw.println("}");
 			}
-			try(InputStream is = p.getInputStream()){
-				StreamUtil.transfer(is, os);
-			}
-		} finally{
-			p.waitFor(1000, TimeUnit.MILLISECONDS);
-		}
 	}
 
 	private String dotPath;

@@ -39,8 +39,8 @@ public class ReverseFederationGraphNoDbTest {
 		f.setConnected(true);
 		f.setRequesting(false);
 		f.setSymmetric(symmetric);
-		f.setTargetTransitive(transitive);
-		if(symmetric) f.setSourceTransitive(transitive);
+		f.setForwardTransitive(transitive);
+		if(symmetric) f.setBackwardTransitive(transitive);
 		return f;
 	}
 }

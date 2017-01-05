@@ -319,9 +319,9 @@ public class FederationServiceImpl implements FederationService {
 	throws ServiceManagerException{
 		try {
 			logic.update(sourceGridId, targetGridId, f -> {
-				f.setTargetTransitive(targetTransitive);
+				f.setForwardTransitive(targetTransitive);
 				f.setSymmetric(symmetric);
-				f.setSourceTransitive(sourceTransitive);
+				f.setBackwardTransitive(sourceTransitive);
 			});
 		} catch(DaoException e) {
 			throw new ServiceManagerException(e, this.getClass());

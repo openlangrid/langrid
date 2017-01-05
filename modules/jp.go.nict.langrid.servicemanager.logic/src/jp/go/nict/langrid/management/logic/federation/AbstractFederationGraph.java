@@ -3,6 +3,7 @@ package jp.go.nict.langrid.management.logic.federation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -16,11 +17,13 @@ public abstract class AbstractFederationGraph implements FederationGraph{
 	protected abstract Map<String, Map<String, Federation>> getFederations();
 
 	public boolean isReachable(String sourceGridId, String targetGridId){
-		return getShortestPath(sourceGridId, targetGridId).size() > 0;
+		return getShortestPath(sourceGridId, targetGridId, Collections.emptySet()).size() > 0;
 	}
 
-	public List<Federation> getShortestPath(String sourceGridId, String targetGridId){
-		return getShortestPath(sourceGridId, sourceGridId, targetGridId, getFederations(), new HashMap<>(), new HashSet<>());
+	public List<Federation> getShortestPath(
+			String sourceGridId, String targetGridId, Set<String> ignores){
+		return getShortestPath(sourceGridId, sourceGridId, targetGridId, getFederations(),
+				new HashMap<>(), new HashSet<>(ignores));
 	}
 
 	public Collection<String> listAllReachableGridIds(String sourceGridId){
@@ -39,7 +42,7 @@ public abstract class AbstractFederationGraph implements FederationGraph{
 			String next = entry.getKey();
 			if(!ids.contains(next)){
 				ids.add(next);
-				if(entry.getValue().isTargetTransitive())
+				if(entry.getValue().isForwardTransitive())
 					addedAndTransitive.add(next);
 			}
 		}
@@ -53,14 +56,15 @@ public abstract class AbstractFederationGraph implements FederationGraph{
 		if(targets == null) return;
 		for(Map.Entry<String, Federation> entry : targets.entrySet()){
 			String next = entry.getKey();
-			if(!ids.contains(next) && entry.getValue().isTargetTransitive()){
+			if(!ids.contains(next) && entry.getValue().isForwardTransitive()){
 				ids.add(next);
 				listAllReachableGridIdsFromDeeper(next, ids);
 			}
 		}
 	}
 
-	private List<Federation> getShortestPath(String sgid, String cgid, String tgid,
+	private List<Federation> getShortestPath(
+			String sgid, String cgid, String tgid,
 			Map<String, Map<String, Federation>> federations,
 			Map<String, List<Federation>> cache, Set<String> visited){
 		visited.add(cgid);
@@ -79,12 +83,12 @@ public abstract class AbstractFederationGraph implements FederationGraph{
 					Federation nextFederation = entry.getValue();
 					if(visited.contains(nextGid)) continue;
 					if(nextGid.equals(tgid)){
-						if(nextFederation.isTargetTransitive() || cgid.equals(sgid)){
+						if(nextFederation.isForwardTransitive() || cgid.equals(sgid)){
 							curPath = Arrays.asList(nextFederation);
 							break;
 						}
 						continue;
-					} else if(nextFederation.isTargetTransitive()){
+					} else if(nextFederation.isForwardTransitive()){
 						List<Federation> can = getShortestPath(sgid, nextGid, tgid, federations, cache, visited);
 						if(0 < can.size() && can.size() < curLen){
 							List<Federation> r = new ArrayList<>();
