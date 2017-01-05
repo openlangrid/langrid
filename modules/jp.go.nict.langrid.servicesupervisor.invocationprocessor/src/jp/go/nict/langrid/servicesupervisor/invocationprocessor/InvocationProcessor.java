@@ -109,7 +109,7 @@ extends AbstractLangridServlet{
 			String additionalUrlPart)
 	throws IOException, ServletException{
 		try{
-			getExecutor(serviceContext.getSelfGridId(), serviceGridId).execute(
+			getExecutor(request, serviceContext.getSelfGridId(), serviceGridId).execute(
 					getServletContext(), request, response,
 					serviceContext, daoContext,
 					userGridId, userId,
@@ -144,8 +144,9 @@ extends AbstractLangridServlet{
 		}
 	}
 
-	private Executor getExecutor(String selfGridId, String gridId){
-		if(interGrid == null || gridId.equals(selfGridId)){
+	private Executor getExecutor(HttpServletRequest request, String selfGridId, String gridId){
+		boolean hasRoute = request.getHeader(LangridConstants.HTTPHEADER_FEDERATEDCALL_ROUTE) != null;
+		if(interGrid == null || (gridId.equals(selfGridId) && !hasRoute)){
 			if(intraGrid != null) return intraGrid;
 			else return inVm;
 		} else{
