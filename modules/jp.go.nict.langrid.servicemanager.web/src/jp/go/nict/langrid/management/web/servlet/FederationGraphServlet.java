@@ -55,21 +55,21 @@ public class FederationGraphServlet extends HttpServlet{
 		}
 	}
 
-	void generateGraph(String selfGridId, String dotPath, String format, OutputStream os)
+	static void generateGraph(String selfGridId, String dotPath, String format, OutputStream os)
 			throws IOException, DaoException, InterruptedException{
 		Process p = new ProcessBuilder(dotPath, "-T" + format).start();
 		try(OutputStream dot = p.getOutputStream()){
 			doGenerateGraph(DaoFactory.createInstance().createFederationDao().list(),
-				selfGridId, os);
-			try(InputStream is = p.getInputStream()){
-				StreamUtil.transfer(is, os);
-			}
+				selfGridId, dot);
+		}
+		try(InputStream is = p.getInputStream()){
+			StreamUtil.transfer(is, os);
 		} finally{
 			p.waitFor(1000, TimeUnit.MILLISECONDS);
 		}
 	}
 
-	void doGenerateGraph(List<Federation> federations, String selfGridId, OutputStream os)
+	static void doGenerateGraph(List<Federation> federations, String selfGridId, OutputStream os)
 	throws IOException, DaoException, InterruptedException{
 		try(Writer w = new OutputStreamWriter(os, "UTF-8");
 			PrintWriter pw = new PrintWriter(w)){
