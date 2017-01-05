@@ -282,6 +282,6 @@
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="java-output-path" value="/jp.go.nict.langrid.webapps.langrid-core.jxta-p2p.nict-nlp/build/classes"/>
-        <property name="context-root" value="jp.go.nict.langrid.webapps.servicegrid-server.jxta-p2p.nict-nlp"/>
+        <property name="context-root" value="jp.go.nict.langrid.webapps.servicegrid-core.jxta-p2p.nict-nlp"/>
     </wb-module>
 </project-modules>

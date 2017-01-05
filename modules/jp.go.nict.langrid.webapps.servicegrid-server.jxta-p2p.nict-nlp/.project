@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>jp.go.nict.langrid.webapps.servicegrid-server.jxta-p2p.nict-nlp</name>
+	<name>jp.go.nict.langrid.webapps.servicegrid-core.jxta-p2p.nict-nlp</name>
 	<comment></comment>
 	<projects>
 		<project>jp.go.nict.langrid.bpel</project>
