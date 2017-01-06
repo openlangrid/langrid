@@ -170,13 +170,13 @@ implements Executor {
 			User sourceUser = userDao.getUser(sourceGridId, source.getOperatorUserId());
 			User targetUser = userDao.getUser(targetGridId, target.getOperatorUserId());
 			if(sourceUser == null || targetUser == null) break;
-			boolean sym = new FederationLogic().buildReverseGraph().isReachable(targetGridId, sourceGridId);
+			boolean sym = new FederationLogic().buildGraph().isReachable(targetGridId, sourceGridId);
 			String token = FederationLogic.newToken();
 			federationDao.addFederation(new Federation(
 					sourceGridId, source.getGridName(), sourceUser.getUserId(), sourceUser.getOrganization(),
 					targetGridId, target.getGridName(), targetUser.getUserId(), targetUser.getOrganization(),
 					targetUser.getHomepageUrl(), token,
-					false, true, true, sym, true, true));
+					false, true, true, sym, sym, true));
 			response.setHeader(
 					LangridConstants.HTTPHEADER_FEDERATEDCALL_SHORTCUTRESULT,
 					(sym ? "symm" : "asym") + ";" + token);

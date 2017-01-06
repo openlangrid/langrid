@@ -108,7 +108,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 				if(f == null){
 					throw new ProcessFailedException("no reachable federation from " + selfGridId + " to " + nextGid);
 				}
-				forward = true;
+				forward = f.getSourceGridId().equals(selfGridId);
 				if(rest != null) headers.put(LangridConstants.HTTPHEADER_FEDERATEDCALL_ROUTE, rest);
 				else headers.put(LangridConstants.HTTPHEADER_FEDERATEDCALL_ROUTE, "");
 			} else{
@@ -125,7 +125,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 					} else{
 						// get nearest
 						f = path.get(0);
-						forward = f.getSourceGridId().equals(serviceContext.getSelfGridId());
+						forward = f.getSourceGridId().equals(selfGridId);
 					}
 				}
 				if(f == null){
@@ -216,6 +216,11 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 					targetUser.getHomepageUrl(), token,
 					false, true, true, sym, sym, true));
 		} while(false);
+
+		if(selfGridId.equals(sourceGridId)){
+			// remove unnecessary headers for client
+//			response.setHeader(LangridConstants.HTTPHEADER_FEDERATEDCALL_SHORTCUTRESULT, null);
+		}
 	}
 
 	private FederationLogic federationLogic;
