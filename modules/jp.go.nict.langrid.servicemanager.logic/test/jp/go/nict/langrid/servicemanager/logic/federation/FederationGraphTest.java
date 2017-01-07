@@ -1,9 +1,9 @@
 package jp.go.nict.langrid.servicemanager.logic.federation;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -11,6 +11,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import jp.go.nict.langrid.commons.test.CollectionFixture;
 import jp.go.nict.langrid.dao.DaoFactory;
 import jp.go.nict.langrid.dao.FederationDao;
 import jp.go.nict.langrid.dao.GridDao;
@@ -51,9 +52,9 @@ public class FederationGraphTest {
 		fdao.addFederation(newFederation("grid3", "grid4", false, true));
 		fdao.addFederation(newFederation("grid1", "grid3", false, true));
 		FederationGraph fg = new FederationLogic().buildGraph();
-		List<Federation> p = fg.getShortestPath("grid1", "grid4");
+		Collection<Federation> p = fg.getShortestPath("grid1", "grid4");
 		Assert.assertEquals(2, p.size());
-		Assert.assertEquals("grid3", p.get(0).getTargetGridId());
+		Assert.assertEquals("grid3", p.iterator().next().getTargetGridId());
 	}
 
 	@Test
@@ -72,9 +73,9 @@ public class FederationGraphTest {
 		fdao.addFederation(newFederation("grid9", "grid11"));
 		fdao.addFederation(newFederation("grid10", "grid11"));
 		FederationGraph fg = new FederationLogic().buildGraph();
-		List<Federation> path = fg.getShortestPath("grid1", "grid11");
+		Collection<Federation> path = fg.getShortestPath("grid1", "grid11");
 		Assert.assertEquals(4, path.size());
-		Assert.assertEquals("grid7", path.get(0).getTargetGridId());
+		Assert.assertEquals("grid7", path.iterator().next().getTargetGridId());
 	}
 
 	@Test
@@ -83,15 +84,21 @@ public class FederationGraphTest {
 		fdao.addFederation(newFederation("grid3", "grid2", true, true));
 		fdao.addFederation(newFederation("grid3", "grid4", false, true));
 		FederationGraph fg = new FederationLogic().buildGraph();
-		List<Federation> p = fg.getShortestPath("grid1", "grid4");
-		Assert.assertEquals(3, p.size());
-		Assert.assertEquals("grid1", p.get(0).getSourceGridId());
-		Assert.assertEquals("grid2", p.get(0).getTargetGridId());
-		Assert.assertTrue(p.get(1).isSymmetric());
-		Assert.assertEquals("grid3", p.get(1).getSourceGridId());
-		Assert.assertEquals("grid2", p.get(1).getTargetGridId());
-		Assert.assertEquals("grid3", p.get(2).getSourceGridId());
-		Assert.assertEquals("grid4", p.get(2).getTargetGridId());
+		CollectionFixture<Federation> p = new CollectionFixture<>(fg.getShortestPath("grid1", "grid4"));
+		p.assertSize(3);
+		p.next(f -> {
+			Assert.assertEquals("grid1", f.getSourceGridId());
+			Assert.assertEquals("grid2", f.getTargetGridId());
+		});
+		p.next(f -> {
+			Assert.assertTrue(f.isSymmetric());
+			Assert.assertEquals("grid3", f.getSourceGridId());
+			Assert.assertEquals("grid2", f.getTargetGridId());
+		});
+		p.next(f -> {
+			Assert.assertEquals("grid3", f.getSourceGridId());
+			Assert.assertEquals("grid4", f.getTargetGridId());
+		});
 	}
 
 	@Test
@@ -135,16 +142,22 @@ public class FederationGraphTest {
 	public void test_getShortestPath_1hop() throws Throwable{
 		fdao.addFederation(newFederation("grid1", "grid2"));
 		FederationGraph fg = new FederationLogic().buildGraph();
-		Assert.assertEquals("grid2", fg.getShortestPath("grid1", "grid2").get(0).getTargetGridId());
+		CollectionFixture<Federation> p = new CollectionFixture<>(fg.getShortestPath("grid1", "grid2"));
+		p.next(f -> {
+			Assert.assertEquals("grid2", f.getTargetGridId());
+		});
 	}
 
 	@Test
 	public void test_getShortestPath_1hop_2() throws Throwable{
 		fdao.addFederation(newFederation("grid1", "grid2", true, false));
 		FederationGraph fg = new FederationLogic().buildGraph();
-		List<Federation> path = fg.getShortestPath("grid1", "grid2");
-		Assert.assertEquals(1, path.size());
-		Assert.assertEquals("grid2", path.get(0).getTargetGridId());
+		CollectionFixture<Federation> p = new CollectionFixture<>(fg.getShortestPath("grid1", "grid2"));
+		p.assertSize(1);
+		p.next(f -> {
+			Assert.assertEquals("grid2", f.getTargetGridId());
+		});
+		p.assertNotHasNext();
 	}
 
 	@Test

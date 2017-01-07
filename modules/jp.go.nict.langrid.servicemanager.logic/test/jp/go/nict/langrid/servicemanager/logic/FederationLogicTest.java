@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import jp.go.nict.langrid.commons.test.CollectionFixture;
 import jp.go.nict.langrid.dao.DaoFactory;
 import jp.go.nict.langrid.dao.FederationDao;
 import jp.go.nict.langrid.dao.GridDao;
@@ -38,7 +39,10 @@ public class FederationLogicTest {
 	public void test_getNearestFederation_1hop() throws Throwable{
 		FederationLogic fl = new FederationLogic();
 		fdao.addFederation(newFederation("grid1", "grid2"));
-		Assert.assertEquals("grid2", fl.getShortestPath("grid1", "grid2").get(0).getTargetGridId());
+		CollectionFixture<Federation> p = new CollectionFixture<>(fl.getShortestPath("grid1", "grid2"));
+		p.next(f -> {
+			Assert.assertEquals("grid2", f.getTargetGridId());
+		});
 	}
 
 	@Test
@@ -72,9 +76,11 @@ public class FederationLogicTest {
 		fdao.addFederation(newFederation("grid2", "grid3"));
 		fdao.addFederation(newFederation("grid3", "grid4"));
 		fdao.addFederation(newFederation("grid1", "grid3"));
-		Federation f = fl.getShortestPath("grid1", "grid4").get(0);
-		Assert.assertNotNull(f);
-		Assert.assertEquals("grid3", f.getTargetGridId());
+		CollectionFixture<Federation> p = new CollectionFixture<>(fl.getShortestPath("grid1", "grid4"));
+		p.next(f -> {
+			Assert.assertNotNull(f);
+			Assert.assertEquals("grid3", f.getTargetGridId());
+		});
 	}
 
 	@Test
@@ -93,9 +99,11 @@ public class FederationLogicTest {
 		fdao.addFederation(newFederation("grid8", "grid10"));
 		fdao.addFederation(newFederation("grid9", "grid11"));
 		fdao.addFederation(newFederation("grid10", "grid11"));
-		Federation f = fl.getShortestPath("grid1", "grid11").get(0);
-		Assert.assertNotNull(f);
-		Assert.assertEquals("grid7", f.getTargetGridId());
+		CollectionFixture<Federation> p = new CollectionFixture<>(fl.getShortestPath("grid1", "grid11"));
+		p.next(f -> {
+			Assert.assertNotNull(f);
+			Assert.assertEquals("grid7", f.getTargetGridId());
+		});
 	}
 
 	@Test
