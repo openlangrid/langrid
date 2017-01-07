@@ -105,8 +105,11 @@ public class ServiceInvoker {
 		
 		try{
 			int status;
+			long delta = 0;
 			try {
+				long start = System.currentTimeMillis();
 				status = client.executeMethod(method);
+				delta = System.currentTimeMillis() - start;
 			} catch (SocketTimeoutException e) {
 				status = HttpServletResponse.SC_REQUEST_TIMEOUT;
 			}
@@ -127,15 +130,15 @@ public class ServiceInvoker {
 				String value = h.getValue();
 				output.addHeader(name, value);
 			}
-			String v = selfGridId;
+			String gt = selfGridId + ":" + delta;
 			if(gridTrack.length() > 0){
 				if(gridTrack.charAt(0) == '('){
-					v = v + gridTrack;
+					gt += gridTrack;
 				} else{
-					v = v + " -> " + gridTrack;
+					gt += " -> " + gridTrack;
 				}
 			}
-			output.addHeader(LangridConstants.HTTPHEADER_GRIDTRACK, v);
+			output.addHeader(LangridConstants.HTTPHEADER_GRIDTRACK, gt);
 
 			if(status == 200){
 				OutputStream os = output.getOutputStream();
