@@ -31,32 +31,27 @@ public class DepthFirstSearch<K, V> implements GraphSearch<K, V>{
 			Set<K> visited, Map<K, List<V>> cache){
 		visited.add(source);
 		try{
-			List<V> cached = cache.get(source);
-			if(cached != null){
-				return cached;
-			}
-			List<V> curPath = Collections.emptyList();
+			List<V> shortestPath = Collections.emptyList();
 			for(Map.Entry<K, V> entry : graph.getOrDefault(source, Collections.emptyMap()).entrySet()){
 				K next = entry.getKey();
-				V nextValue = entry.getValue();
+				V nextEdge = entry.getValue();
 				if(visited.contains(next)) continue;
+				List<V> newPath = null;
 				if(next.equals(target)){
-					curPath = Arrays.asList(nextValue);
-					continue;
-				} else {
+					newPath = Arrays.asList(nextEdge);
+				} else{
 					List<V> can = searchShortestPath(graph, next, target, visited, cache);
 					if(can.size() > 0){
-						List<V> r = new ArrayList<>();
-						r.add(nextValue);
-						r.addAll(can);
-						if(curPath.size() == 0 || comparator.compare(r, curPath) < 0){
-							curPath = r;
-						}
+						newPath = new ArrayList<>();
+						newPath.add(nextEdge);
+						newPath.addAll(can);
 					}
 				}
+				if(newPath != null && (shortestPath.size() == 0 || comparator.compare(newPath, shortestPath) < 0)){
+					shortestPath = newPath;
+				}
 			}
-			cache.put(source, curPath);
-			return curPath;
+			return shortestPath;
 		} finally{
 			visited.remove(source);
 		}
