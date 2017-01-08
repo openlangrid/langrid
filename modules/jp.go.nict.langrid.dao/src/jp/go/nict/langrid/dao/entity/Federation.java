@@ -247,6 +247,12 @@ extends UpdateManagedEntity
 	public void setShortcut(boolean shortcut) {
 		this.shortcut = shortcut;
 	}
+	public double getAveOverhead() {
+		return aveOverhead == null ? 1 : aveOverhead;
+	}
+	public void setAveOverhead(double aveOverhead) {
+		this.aveOverhead = aveOverhead;
+	}
 
 	@Id
 	private String sourceGridId;
@@ -273,4 +279,5 @@ extends UpdateManagedEntity
 	private Boolean symmetric = false;
 	private Boolean backwardTransitive = false;
 	private Boolean shortcut = false;
+	private Double aveOverhead;
 }

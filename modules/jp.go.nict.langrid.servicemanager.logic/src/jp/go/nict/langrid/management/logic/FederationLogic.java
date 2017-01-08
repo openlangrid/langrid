@@ -26,8 +26,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import jp.go.nict.langrid.commons.lang.StringUtil;
+import jp.go.nict.langrid.commons.util.Quartet;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.FederationDao;
 import jp.go.nict.langrid.dao.FederationNotFoundException;
@@ -35,10 +37,9 @@ import jp.go.nict.langrid.dao.entity.Federation;
 import jp.go.nict.langrid.management.logic.federation.FederationGraph;
 import jp.go.nict.langrid.management.logic.federation.GenericBackwardFederationGraph;
 import jp.go.nict.langrid.management.logic.federation.GenericForwardFederationGraph;
-import jp.go.nict.langrid.management.logic.federation.graph.BreathFirstSearch;
+import jp.go.nict.langrid.management.logic.federation.graph.DijkstraSearch;
 
 /**
- * 
  * 
  * @author Takao Nakaguchi
  * @author $Author:nakaguchi $
@@ -121,15 +122,18 @@ public class FederationLogic extends AbstractLogic{
 	public FederationGraph buildGraph()
 	throws DaoException{
 		return new GenericForwardFederationGraph(getFederationDao().listFromOldest(),
-				new BreathFirstSearch<>());
+				new DijkstraSearch<>(costFunc));
 	}
 
 	@DaoTransaction
 	public FederationGraph buildReverseGraph()
 	throws DaoException{
 		return new GenericBackwardFederationGraph(getFederationDao().listFromOldest(),
-				new BreathFirstSearch<>());
+				new DijkstraSearch<>(costFunc));
 	}
+
+	private Function<Quartet<String, Integer, String, Federation>, Integer> costFunc = 
+			q -> (int)(q.getSecond() + q.getFourth().getAveOverhead() + 1);
 
 	@DaoTransaction
 	public boolean isReachable(String sourceGridId, String targetGridId)
