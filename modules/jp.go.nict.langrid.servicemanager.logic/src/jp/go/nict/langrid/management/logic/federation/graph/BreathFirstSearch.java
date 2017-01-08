@@ -15,6 +15,10 @@ import java.util.Set;
 import jp.go.nict.langrid.commons.util.Pair;
 
 public class BreathFirstSearch<K, V> implements GraphSearch<K, V>{
+	public BreathFirstSearch() {
+		this((l, r) -> l.size() - r.size());
+	}
+
 	public BreathFirstSearch(Comparator<List<V>> comparator){
 		this.comparator = comparator;
 	}

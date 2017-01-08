@@ -78,9 +78,7 @@ public class DijkstraSearch<K, V> implements GraphSearch<K, V>{
 
 	@Override
 	public Collection<K> listTargets(Map<K, Map<K, V>> graph, K source) {
-		return new BreathFirstSearch<K, V>(
-				(l, r) -> l.size() - r.size()
-				).listTargets(graph, source);
+		return new BreathFirstSearch<K, V>().listTargets(graph, source);
 	}
 
 	private Function<Quartet<K, Integer, K, V>, Integer> costFunc;

@@ -122,7 +122,7 @@ public class FederationLogic extends AbstractLogic{
 	throws DaoException{
 //		return new ForwardFederationGraph(getFederationDao().listFromOldest());
 		return new GenericForwardFederationGraph(getFederationDao().listFromOldest(),
-				new BreathFirstSearch<>((l, r) -> l.size() - r.size()));
+				new BreathFirstSearch<>());
 	}
 
 	@DaoTransaction

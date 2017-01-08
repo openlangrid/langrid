@@ -13,6 +13,10 @@ import java.util.Map;
 import java.util.Set;
 
 public class DepthFirstSearch<K, V> implements GraphSearch<K, V>{
+	public DepthFirstSearch() {
+		this((l, r) -> l.size() - r.size());
+	}
+
 	public DepthFirstSearch(Comparator<List<V>> comparator){
 		this.comparator = comparator;
 	}
