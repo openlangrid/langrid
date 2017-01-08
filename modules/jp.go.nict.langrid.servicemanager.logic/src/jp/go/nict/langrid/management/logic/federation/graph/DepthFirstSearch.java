@@ -13,52 +13,69 @@ import java.util.Map;
 import java.util.Set;
 
 public class DepthFirstSearch<K, V> implements GraphSearch<K, V>{
-	@Override
-	public List<V> searchShortestPath(Map<K, Map<K, V>> graph, K source, K target,
-			Set<K> visited,
-			Comparator<List<V>> comparator){
-		return search(source, source, target, graph, new HashMap<>(), new HashSet<>(visited), comparator);
+	public DepthFirstSearch(Comparator<List<V>> comparator){
+		this.comparator = comparator;
 	}
-	private List<V> search(
-			K sgid, K cgid, K tgid,
-			Map<K, Map<K, V>> graph,
-			Map<K, List<V>> cache, Set<K> visited,
-			Comparator<List<V>> comparator){
-		visited.add(cgid);
+
+	@Override
+	public List<V> searchShortestPath(
+			Map<K, Map<K, V>> graph, K source, K target, Set<K> visited){
+		return searchShortestPath(graph, source, target, new HashSet<>(visited), new HashMap<>());
+	}
+	private List<V> searchShortestPath(
+			Map<K, Map<K, V>> graph, K source, K target,
+			Set<K> visited, Map<K, List<V>> cache){
+		visited.add(source);
 		try{
-			if(cgid.equals(tgid)) return Arrays.asList();
-			List<V> cached = cache.get(cgid);
+			List<V> cached = cache.get(source);
 			if(cached != null){
 				return cached;
 			}
 			List<V> curPath = Collections.emptyList();
-			Map<K, V> feds = graph.get(cgid);
-			if(feds != null){
-				for(Map.Entry<K, V> entry : feds.entrySet()){
-					K nextGid = entry.getKey();
-					V nextFederation = entry.getValue();
-					if(visited.contains(nextGid)) continue;
-					if(nextGid.equals(tgid)){
-						curPath = Arrays.asList(nextFederation);
-						continue;
-					} else {
-						List<V> can = search(sgid, nextGid, tgid, graph, cache, visited,
-								comparator);
-						if(can.size() > 0){
-							List<V> r = new ArrayList<>();
-							r.add(nextFederation);
-							r.addAll(can);
-							if(curPath.size() == 0 || comparator.compare(r, curPath) < 0){
-								curPath = r;
-							}
+			for(Map.Entry<K, V> entry : graph.getOrDefault(source, Collections.emptyMap()).entrySet()){
+				K next = entry.getKey();
+				V nextValue = entry.getValue();
+				if(visited.contains(next)) continue;
+				if(next.equals(target)){
+					curPath = Arrays.asList(nextValue);
+					continue;
+				} else {
+					List<V> can = searchShortestPath(graph, next, target, visited, cache);
+					if(can.size() > 0){
+						List<V> r = new ArrayList<>();
+						r.add(nextValue);
+						r.addAll(can);
+						if(curPath.size() == 0 || comparator.compare(r, curPath) < 0){
+							curPath = r;
 						}
 					}
 				}
 			}
-			cache.put(cgid, curPath);
+			cache.put(source, curPath);
 			return curPath;
 		} finally{
-			visited.remove(cgid);
+			visited.remove(source);
+		}
+	}
+
+	@Override
+	public boolean isReachable(Map<K, Map<K, V>> graph, K source, K target) {
+		return isReachable(graph, source, target, new HashSet<>());
+	}
+	private boolean isReachable(Map<K, Map<K, V>> graph, K source, K target, Set<K> visited) {
+		visited.add(source);
+		try{
+			for(K next : graph.getOrDefault(source, Collections.emptyMap()).keySet()){
+				if(visited.contains(next)) continue;
+				if(next.equals(target)){
+					return true;
+				} else {
+					if(isReachable(graph, next, target, visited)) return true;
+				}
+			}
+			return false;
+		} finally{
+			visited.remove(source);
 		}
 	}
 
@@ -66,37 +83,18 @@ public class DepthFirstSearch<K, V> implements GraphSearch<K, V>{
 	public Collection<K> listTargets(Map<K, Map<K, V>> graph, K source) {
 		Set<K> visited = new LinkedHashSet<>();
 		visited.add(source);
-		listAllReachableGridIdsFrom1st(graph, source, visited);
+		listTargets(graph, source, visited);
 		visited.remove(source);
 		return visited;
 	}
-
-	private void listAllReachableGridIdsFrom1st(Map<K, Map<K, V>> graph, K source, Set<K> ids){
-		Map<K, V> targets = graph.get(source);
-		if(targets == null) return;
-		List<K> addedAndTransitive = new ArrayList<>();
-		for(Map.Entry<K, V> entry : targets.entrySet()){
-			K next = entry.getKey();
-			if(!ids.contains(next)){
-				ids.add(next);
-				addedAndTransitive.add(next);
-			}
-		}
-		for(K gid : addedAndTransitive){
-			listAllReachableGridIdsFromDeeper(graph, gid, ids);
-		}
-	}
-
-	private void listAllReachableGridIdsFromDeeper(
-			Map<K, Map<K, V>> graph, K source, Set<K> ids){
-		Map<K, V> targets = graph.get(source);
-		if(targets == null) return;
-		for(Map.Entry<K, V> entry : targets.entrySet()){
-			K next = entry.getKey();
-			if(!ids.contains(next)){
-				ids.add(next);
-				listAllReachableGridIdsFromDeeper(graph, next, ids);
+	private void listTargets(Map<K, Map<K, V>> graph, K source, Set<K> ret){
+		for(K next : graph.getOrDefault(source, Collections.emptyMap()).keySet()){
+			if(!ret.contains(next)){
+				ret.add(next);
+				listTargets(graph, next, ret);
 			}
 		}
 	}
+
+	private Comparator<List<V>> comparator;
 }

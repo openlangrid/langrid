@@ -10,6 +10,7 @@ import jp.go.nict.langrid.management.logic.federation.graph.BreathFirstSearch;
 public class DFSFederationGraphTest extends AbstractFederationGraphTest {
 	@Override
 	protected FederationGraph getGraph(Collection<Federation> federations) {
-		return new GenericForwardFederationGraph(federations, new BreathFirstSearch<>());
+		return new GenericForwardFederationGraph(federations,
+				new BreathFirstSearch<>((l, r) -> l.size() - r.size()));
 	}
 }

@@ -45,8 +45,7 @@ public class GenericBackwardFederationGraph implements FederationGraph{
 		Federation f = directConnections.getOrDefault(sourceGridId, Collections.emptyMap())
 			.get(targetGridId);
 		if(f != null) return Arrays.asList(f);
-		return alg.searchShortestPath(transitiveGraph, sourceGridId, targetGridId, ignores,
-				(l, r) -> l.size() - r.size());
+		return alg.searchShortestPath(transitiveGraph, sourceGridId, targetGridId, ignores);
 	}
 
 	@Override
