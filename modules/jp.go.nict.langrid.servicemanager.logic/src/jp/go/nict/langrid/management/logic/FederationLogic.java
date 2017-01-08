@@ -33,8 +33,8 @@ import jp.go.nict.langrid.dao.FederationDao;
 import jp.go.nict.langrid.dao.FederationNotFoundException;
 import jp.go.nict.langrid.dao.entity.Federation;
 import jp.go.nict.langrid.management.logic.federation.FederationGraph;
+import jp.go.nict.langrid.management.logic.federation.GenericBackwardFederationGraph;
 import jp.go.nict.langrid.management.logic.federation.GenericForwardFederationGraph;
-import jp.go.nict.langrid.management.logic.federation.ReverseFederationGraph;
 import jp.go.nict.langrid.management.logic.federation.graph.BreathFirstSearch;
 
 /**
@@ -120,7 +120,6 @@ public class FederationLogic extends AbstractLogic{
 	@DaoTransaction
 	public FederationGraph buildGraph()
 	throws DaoException{
-//		return new ForwardFederationGraph(getFederationDao().listFromOldest());
 		return new GenericForwardFederationGraph(getFederationDao().listFromOldest(),
 				new BreathFirstSearch<>());
 	}
@@ -128,7 +127,8 @@ public class FederationLogic extends AbstractLogic{
 	@DaoTransaction
 	public FederationGraph buildReverseGraph()
 	throws DaoException{
-		return new ReverseFederationGraph(getFederationDao().listFromOldest());
+		return new GenericBackwardFederationGraph(getFederationDao().listFromOldest(),
+				new BreathFirstSearch<>());
 	}
 
 	@DaoTransaction
