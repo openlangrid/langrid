@@ -50,7 +50,6 @@ public class DijkstraSearch<K, V> implements GraphSearch<K, V>{
 		while(!queue.isEmpty()){
 			Pair<K, Integer> uPair = queue.poll();
 			for(Map.Entry<K, V> vEntry : graph.getOrDefault(uPair.getFirst(), Collections.emptyMap()).entrySet()){
-				
 				int cost = costFunc.apply(Quartet.create(
 						uPair.getFirst(), uPair.getSecond(), vEntry.getKey(), vEntry.getValue()
 						));
@@ -74,6 +73,11 @@ public class DijkstraSearch<K, V> implements GraphSearch<K, V>{
 			ret.add(0, entry.getThird());
 		}
 		return ret;
+	}
+
+	@Override
+	public boolean isReachable(Map<K, Map<K, V>> graph, K source, K target) {
+		return new BreathFirstSearch<K, V>().isReachable(graph, source, target);
 	}
 
 	@Override

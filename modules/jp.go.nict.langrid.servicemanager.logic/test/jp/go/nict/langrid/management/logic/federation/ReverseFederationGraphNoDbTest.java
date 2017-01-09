@@ -1,4 +1,4 @@
-package jp.go.nict.langrid.servicemanager.logic.federation;
+package jp.go.nict.langrid.management.logic.federation;
 
 import java.util.Arrays;
 import java.util.HashSet;

@@ -7,7 +7,6 @@ import jp.go.nict.langrid.dao.DaoContext;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.GenericHandler;
 import jp.go.nict.langrid.management.logic.FederationLogic;
-import jp.go.nict.langrid.management.logic.federation.FederationGraph;
 import jp.go.nict.langrid.p2pgridbasis.controller.ControllerException;
 import jp.go.nict.langrid.p2pgridbasis.controller.P2PGridController;
 import jp.go.nict.langrid.p2pgridbasis.controller.jxta.JXTAController;
@@ -62,8 +61,7 @@ implements DataDao{
 	throws DataDaoException{
 		try{
 			String self = this.getController().getSelfGridId();
-			FederationGraph g = getGraph();
-			return g.isReachable(self, gridId);
+			return getFederationLogic().isReachable(self, gridId);
 		} catch (ControllerException e) {
 			throw new DataDaoException(e);
 		} catch (DaoException e) {
@@ -75,9 +73,8 @@ implements DataDao{
 	throws DataDaoException{
 		try{
 			String self = this.getController().getSelfGridId();
-			FederationGraph g = getGraph();
-			return g.isReachable(self, gridId)
-					|| g.isReachable(gridId, self);
+			return getFederationLogic().isReachable(self, gridId)
+					|| getFederationLogic().isReachable(gridId, self);
 		} catch (ControllerException e) {
 			throw new DataDaoException(e);
 		} catch (DaoException e) {
@@ -85,17 +82,15 @@ implements DataDao{
 		}
 	}
 
-	private static synchronized FederationGraph getGraph()
+	protected synchronized FederationLogic getFederationLogic()
 	throws DaoException{
-		if(graph == null || (System.currentTimeMillis() - graphTime) > 1000 * 60 * 30){
-			graph = new FederationLogic().buildGraph();
-			graphTime = System.currentTimeMillis();
+		if(fl == null){
+			fl = new FederationLogic();
 		}
-		return graph;
+		return fl;
 	}
 
-	private static FederationGraph graph;
-	private static long graphTime;
+	private static FederationLogic fl;
 
 	private P2PGridController controller;
 	private DaoContext dc;

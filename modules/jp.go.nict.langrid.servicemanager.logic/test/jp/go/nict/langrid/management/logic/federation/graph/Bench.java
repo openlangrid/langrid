@@ -1,4 +1,4 @@
-package jp.go.nict.langrid.servicemanager.logic.federation.graph;
+package jp.go.nict.langrid.management.logic.federation.graph;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,9 +33,6 @@ import jp.go.nict.langrid.commons.io.StreamUtil;
 import jp.go.nict.langrid.commons.lang.StringUtil;
 import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.dao.DaoException;
-import jp.go.nict.langrid.management.logic.federation.graph.BreathFirstSearch;
-import jp.go.nict.langrid.management.logic.federation.graph.DijkstraSearch;
-import jp.go.nict.langrid.management.logic.federation.graph.GraphSearch;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
 
 public class Bench {
@@ -44,7 +41,12 @@ public class Bench {
 	public static final int edgeSkipWidth = 10;
 	private static Map<String, Map<String, String>> graph;
 	@SuppressWarnings("unchecked")
-	private GraphSearch<String, String>[] algs = new GraphSearch[]{
+	private GraphSearch<String, String>[] getShortestPathAlgs = new GraphSearch[]{
+			new BreathFirstSearch<String, String>(),
+			new DijkstraSearch<String, String>()
+	};
+	@SuppressWarnings("unchecked")
+	private GraphSearch<String, String>[]isReachableAlgs = new GraphSearch[]{
 //			new DepthFirstSearch<String, String>(),
 			new BreathFirstSearch<String, String>(),
 			new DijkstraSearch<String, String>()
@@ -125,13 +127,13 @@ public class Bench {
 	}
 
 	@Test
-	public void bench() throws Throwable{
+	public void benchGetShortestPath() throws Throwable{
 		int warmup = 20, repeat = 50;
 		MemoryMXBean mb = ManagementFactory.getMemoryMXBean();
-		for(GraphSearch<String, String> alg : algs){
+		for(GraphSearch<String, String> alg : getShortestPathAlgs){
 			mb.gc();
-			measure(graph, alg, warmup);
-			Pair<Double, Double> r = measure(graph, alg, repeat);
+			measureGetShortestPath(graph, alg, warmup);
+			Pair<Double, Double> r = measureGetShortestPath(graph, alg, repeat);
 			System.out.printf(
 					"%s: %.3f(%.3f), %d%n",
 					alg.getClass().getSimpleName(), r.getFirst(), r.getSecond(),
@@ -139,7 +141,7 @@ public class Bench {
 		}
 	}
 
-	private <V> Pair<Double, Double> measure(Map<String, Map<String, V>> graph,
+	private <V> Pair<Double, Double> measureGetShortestPath(Map<String, Map<String, V>> graph,
 			GraphSearch<String, V> alg, int repeatCount){
 		LongAdder la = new LongAdder();
 		LongAdder lac = new LongAdder();
@@ -172,16 +174,49 @@ public class Bench {
 			}
 		}
 		System.out.printf("found: %d, notFound: %d, maxLen: %d, maxPath: %s%n",
-				found.longValue(), notFound.longValue(), maxLen, maxPath);
+				found.longValue() / repeatCount,
+				notFound.longValue() / repeatCount, maxLen, maxPath);
 		double time = elapse.doubleValue() / repeatCount;
 		double len = la.doubleValue() / lac.longValue();
 		return Pair.create(time, len);
 	}
 
 	@Test
+	public void benchIsReachable() throws Throwable{
+		int warmup = 20, repeat = 50;
+		MemoryMXBean mb = ManagementFactory.getMemoryMXBean();
+		for(GraphSearch<String, String> alg : isReachableAlgs){
+			mb.gc();
+			measureIsReachable(graph, alg, warmup);
+			double r = measureIsReachable(graph, alg, repeat);
+			System.out.printf(
+					"%s: %.3f, %,d%n",
+					alg.getClass().getSimpleName(), r,
+					mb.getHeapMemoryUsage().getUsed());
+		}
+	}
+
+	private <V> double measureIsReachable(Map<String, Map<String, V>> graph,
+			GraphSearch<String, V> alg, int repeatCount){
+		LongAdder elapse = new LongAdder();
+		for(int r = 0; r < repeatCount; r++){
+			for(int i = 0; i < nodeCount; i++){
+				for(int j = 0; j < nodeCount; j++){
+					if(i == j) continue;
+					long start = System.currentTimeMillis();
+					alg.isReachable(graph, "node" + i, "node" + j);
+					elapse.add(System.currentTimeMillis() - start);
+				}
+			}
+		}
+		double time = elapse.doubleValue() / repeatCount;
+		return time;
+	}
+
+	@Test
 	public void test() throws Throwable{
-		List<List<String>> p0 = findPaths(graph, algs[0]);
-		List<List<String>> p1 = findPaths(graph, algs[1]);
+		List<List<String>> p0 = findPaths(graph, getShortestPathAlgs[0]);
+		List<List<String>> p1 = findPaths(graph, getShortestPathAlgs[1]);
 		compare("p0 and p1", p0, p1);
 	}
 
@@ -217,7 +252,7 @@ public class Bench {
 	public void comparePath() throws Throwable{
 		String source = "node99";
 		String target = "node0";
-		for(GraphSearch<String, String> alg : algs){
+		for(GraphSearch<String, String> alg : getShortestPathAlgs){
 			System.out.println(
 					alg.getClass().getSimpleName() + ": " +
 					alg.searchShortestPath(graph, source, target, Collections.emptySet()));
@@ -242,7 +277,6 @@ public class Bench {
 			StringBuilder sb = new StringBuilder(getClass().getSimpleName());
 			sb.append("[").append(getType()).append("]");
 			return sb.toString();
+		}
 	}
-}
-
 }

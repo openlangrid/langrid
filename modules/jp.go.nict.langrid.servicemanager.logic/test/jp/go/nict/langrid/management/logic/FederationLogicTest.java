@@ -1,4 +1,4 @@
-package jp.go.nict.langrid.servicemanager.logic;
+package jp.go.nict.langrid.management.logic;
 
 import org.junit.Assert;
 import org.junit.Before;

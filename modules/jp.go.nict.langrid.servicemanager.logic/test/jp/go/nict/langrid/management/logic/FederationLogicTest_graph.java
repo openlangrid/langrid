@@ -1,4 +1,4 @@
-package jp.go.nict.langrid.servicemanager.logic.federation;
+package jp.go.nict.langrid.management.logic;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,7 +19,7 @@ import jp.go.nict.langrid.dao.entity.Federation;
 import jp.go.nict.langrid.management.logic.FederationLogic;
 import jp.go.nict.langrid.management.logic.federation.FederationGraph;
 
-public class FederationGraphTest {
+public class FederationLogicTest_graph {
 	@Before
 	public void setUp() throws Throwable{
 		DaoFactory df = DaoFactory.createInstance();

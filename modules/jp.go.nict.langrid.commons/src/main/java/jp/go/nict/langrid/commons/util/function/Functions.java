@@ -20,6 +20,7 @@ package jp.go.nict.langrid.commons.util.function;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class Functions {
 	public static <T> Consumer<T> nullComsumer(){
@@ -49,6 +50,23 @@ public class Functions {
 			public void run() {
 				try{
 					r.run();
+				} catch(Throwable e){
+					throw new SoftenedException(e);
+				}
+			}
+		};
+	}
+
+	public static interface SupplierWithException<T, E extends Throwable>{
+		T get() throws E;
+	}
+	public static <T, E extends Throwable> Supplier<T> soften(
+			final SupplierWithException<T, E> s){
+		return new Supplier<T>(){
+			@Override
+			public T get() {
+				try{
+					return s.get();
 				} catch(Throwable e){
 					throw new SoftenedException(e);
 				}

@@ -27,9 +27,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import jp.go.nict.langrid.commons.lang.StringUtil;
 import jp.go.nict.langrid.commons.util.Quartet;
+import jp.go.nict.langrid.commons.util.function.Functions;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.FederationDao;
 import jp.go.nict.langrid.dao.FederationNotFoundException;
@@ -69,13 +71,13 @@ public class FederationLogic extends AbstractLogic{
 
 	@DaoTransaction
 	public Collection<String> listAllReachableGridIdsFrom(String sourceGridId) throws DaoException{
-		FederationGraph fg = buildGraph();
+		FederationGraph fg = forwardGraph.get();
 		return fg.listAllReachableGridIds(sourceGridId);
 	}
 
 	@DaoTransaction
 	public Collection<String> listAllReachableGridIdsTo(String targetGridId) throws DaoException{
-		FederationGraph fg = buildReverseGraph();
+		FederationGraph fg = backwardGraph.get();
 		return fg.listAllReachableGridIds(targetGridId);
 	}
 
@@ -105,11 +107,11 @@ public class FederationLogic extends AbstractLogic{
 	throws FederationNotFoundException, DaoException{
 		getFederationDao().deleteFederation(sourceGridId, targetGridId);
 	}
-	
+
 	@DaoTransaction
 	public void setRequesting(String sourceGridId, String targetGridId, boolean isRequesting)
 	throws DaoException{
-	   getFederationDao().setRequesting(sourceGridId, targetGridId, isRequesting);
+		getFederationDao().setRequesting(sourceGridId, targetGridId, isRequesting);
 	}
 
 	@DaoTransaction
@@ -118,15 +120,13 @@ public class FederationLogic extends AbstractLogic{
 		getFederationDao().setConnected(sourceGridId, targetGridId, isConnected);
 	}
 
-	@DaoTransaction
-	public FederationGraph buildGraph()
+	FederationGraph buildGraph()
 	throws DaoException{
 		return new GenericForwardFederationGraph(getFederationDao().listFromOldest(),
 				new DijkstraSearch<>(costFunc));
 	}
 
-	@DaoTransaction
-	public FederationGraph buildReverseGraph()
+	FederationGraph buildReverseGraph()
 	throws DaoException{
 		return new GenericBackwardFederationGraph(getFederationDao().listFromOldest(),
 				new DijkstraSearch<>(costFunc));
@@ -138,7 +138,9 @@ public class FederationLogic extends AbstractLogic{
 	@DaoTransaction
 	public boolean isReachable(String sourceGridId, String targetGridId)
 	throws DaoException{
-		return getShortestPath(sourceGridId, targetGridId, Collections.emptySet()).size() > 0;
+		Federation f = getReachableFederation(sourceGridId, targetGridId);
+		if(f != null) return true;
+		return forwardGraph.get().isReachable(sourceGridId, targetGridId);
 	}
 
 	@DaoTransaction
@@ -191,7 +193,7 @@ public class FederationLogic extends AbstractLogic{
 				return ret;
 			}
 		}
-		return buildGraph().getShortestPath(sourceGridId, targetGridId, visited);
+		return forwardGraph.get().getShortestPath(sourceGridId, targetGridId, visited);
 	}
 
 	@DaoTransaction
@@ -199,5 +201,28 @@ public class FederationLogic extends AbstractLogic{
 	throws DaoException{
 		Federation f = getFederationDao().getFederation(sourceGridId, targetGridId);
 		cons.accept(f);
+	}
+
+	private Cache<FederationGraph> forwardGraph = new Cache<>(
+			Functions.soften(() -> buildGraph()), 30*60*1000);
+	private Cache<FederationGraph> backwardGraph = new Cache<>(
+			Functions.soften(() -> buildReverseGraph()), 30*60*1000);
+
+	private static class Cache<T>{
+		public Cache(Supplier<T> supplier, long lifeMillis){
+			this.supplier = supplier;
+			this.lifeMillis = lifeMillis;
+		}
+		public synchronized T get(){
+			if(instance == null || (System.currentTimeMillis() - birth) > lifeMillis){
+				instance = supplier.get();
+				birth = System.currentTimeMillis();
+			}
+			return instance;
+		}
+		private Supplier<T> supplier;
+		private long lifeMillis;
+		private T instance;
+		private long birth;
 	}
 }

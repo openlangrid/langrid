@@ -1,6 +1,5 @@
 package jp.go.nict.langrid.management.logic.federation;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,10 +41,16 @@ public class GenericBackwardFederationGraph implements FederationGraph{
 	@Override
 	public List<Federation> getShortestPath(String sourceGridId, String targetGridId,
 			Set<String> ignores) {
+		Map<String, Map<String, Federation>> g = transitiveGraph;
 		Federation f = directConnections.getOrDefault(sourceGridId, Collections.emptyMap())
 			.get(targetGridId);
-		if(f != null) return Arrays.asList(f);
-		return alg.searchShortestPath(transitiveGraph, sourceGridId, targetGridId, ignores);
+		if(f != null && !transitiveGraph.getOrDefault(sourceGridId, Collections.emptyMap()).containsKey(targetGridId)){
+			g = new LinkedHashMap<>(transitiveGraph);
+			Map<String, Federation> d = new HashMap<>();
+			d.put(targetGridId, f);
+			g.put(sourceGridId, d);
+		}
+		return alg.searchShortestPath(g, sourceGridId, targetGridId, ignores);
 	}
 
 	@Override

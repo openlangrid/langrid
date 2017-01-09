@@ -1,6 +1,7 @@
-package jp.go.nict.langrid.servicemanager.logic.federation;
+package jp.go.nict.langrid.management.logic.federation;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -12,12 +13,13 @@ import org.junit.Test;
 import jp.go.nict.langrid.commons.test.CollectionFixture;
 import jp.go.nict.langrid.dao.entity.Federation;
 import jp.go.nict.langrid.management.logic.federation.FederationGraph;
-import jp.go.nict.langrid.management.logic.federation.ForwardFederationGraph;
 
-public class ForwardFederationGraphNoDbTest {
+public abstract class AbstractFederationGraphTest {
+	protected abstract FederationGraph getGraph(Collection<Federation> federations);
+
 	@Test
 	public void test_isReachable() throws Throwable{
-		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+		FederationGraph fg = getGraph(Arrays.asList(
 				newFederation("grid1", "grid2", true, true),
 				newFederation("grid2", "grid3", true, true)
 				));
@@ -26,7 +28,7 @@ public class ForwardFederationGraphNoDbTest {
 
 	@Test
 	public void test_isReachable_2() throws Throwable{
-		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+		FederationGraph fg = getGraph(Arrays.asList(
 				newFederation("grid1", "grid2", false, true),
 				newFederation("grid2", "grid3", false, true)
 				));
@@ -35,7 +37,7 @@ public class ForwardFederationGraphNoDbTest {
 
 	@Test
 	public void test_isReachable_false() throws Throwable{
-		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+		FederationGraph fg = getGraph(Arrays.asList(
 				newFederation("grid1", "grid2", true, true),
 				newFederation("grid2", "grid3", true, false)
 				));
@@ -44,7 +46,7 @@ public class ForwardFederationGraphNoDbTest {
 
 	@Test
 	public void test_getShortestPath() throws Throwable{
-		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+		FederationGraph fg = getGraph(Arrays.asList(
 				newFederation("grid1", "grid2", false, true),
 				newFederation("grid2", "grid3", false, true),
 				newFederation("grid3", "grid4", false, true),
@@ -59,7 +61,7 @@ public class ForwardFederationGraphNoDbTest {
 
 	@Test
 	public void test_getShortestPath_2() throws Throwable{
-		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+		FederationGraph fg = getGraph(Arrays.asList(
 				newFederation("grid1", "grid2"),
 				newFederation("grid2", "grid3"),
 				newFederation("grid3", "grid4"),
@@ -83,7 +85,7 @@ public class ForwardFederationGraphNoDbTest {
 
 	@Test
 	public void test_getShortestPath_symmetric() throws Throwable{
-		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+		FederationGraph fg = getGraph(Arrays.asList(
 				newFederation("grid1", "grid2", false, true),
 				newFederation("grid3", "grid2", true, true),
 				newFederation("grid3", "grid4", false, true)
@@ -107,7 +109,7 @@ public class ForwardFederationGraphNoDbTest {
 
 	@Test
 	public void test_getShortestPath_null() throws Throwable{
-		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+		FederationGraph fg = getGraph(Arrays.asList(
 				newRequestingFederation("grid1", "grid2", true, true),
 				newRequestingFederation("grid2", "grid3", true, true),
 				newRequestingFederation("grid3", "grid4", true, true),
@@ -118,7 +120,7 @@ public class ForwardFederationGraphNoDbTest {
 
 	@Test
 	public void test_getShortestPath_unreachable() throws Throwable{
-		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+		FederationGraph fg = getGraph(Arrays.asList(
 				newFederation("grid1", "grid2", true),
 				newFederation("grid3", "grid4")
 				));
@@ -127,7 +129,7 @@ public class ForwardFederationGraphNoDbTest {
 
 	@Test
 	public void test_getShortestPath_unreachable_2() throws Throwable{
-		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+		FederationGraph fg = getGraph(Arrays.asList(
 				newFederation("grid1", "grid2", true),
 				newFederation("grid2", "grid3", true),
 				newFederation("grid3", "grid4")
@@ -137,7 +139,7 @@ public class ForwardFederationGraphNoDbTest {
 
 	@Test
 	public void test_getShortestPath_unreachable_3() throws Throwable{
-		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+		FederationGraph fg = getGraph(Arrays.asList(
 				newFederation("grid1", "grid2", true),
 				newFederation("grid2", "grid3", true),
 				newFederation("grid3", "grid4")
@@ -148,7 +150,7 @@ public class ForwardFederationGraphNoDbTest {
 
 	@Test
 	public void test_getShortestPath_1hop() throws Throwable{
-		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+		FederationGraph fg = getGraph(Arrays.asList(
 				newFederation("grid1", "grid2")
 				));
 		CollectionFixture<Federation> p = new CollectionFixture<>(fg.getShortestPath("grid1", "grid2"));
@@ -159,7 +161,7 @@ public class ForwardFederationGraphNoDbTest {
 
 	@Test
 	public void test_getShortestPath_1hop_2() throws Throwable{
-		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+		FederationGraph fg = getGraph(Arrays.asList(
 				newFederation("grid1", "grid2", true, false)
 				));
 		CollectionFixture<Federation> p = new CollectionFixture<>(fg.getShortestPath("grid1", "grid2"));
@@ -171,7 +173,7 @@ public class ForwardFederationGraphNoDbTest {
 
 	@Test
 	public void test_getShortestPath_2hop_1() throws Throwable{
-		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+		FederationGraph fg = getGraph(Arrays.asList(
 				newFederation("grid1", "grid2"),
 				newFederation("grid2", "grid3", false, true)
 				));
@@ -180,7 +182,7 @@ public class ForwardFederationGraphNoDbTest {
 
 	@Test
 	public void test_getShortestPath_2hop_2() throws Throwable{
-		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+		FederationGraph fg = getGraph(Arrays.asList(
 				newFederation("grid1", "grid2"),
 				newFederation("grid3", "grid1", false, true),
 				newFederation("grid2", "grid3", false, true)
@@ -190,7 +192,7 @@ public class ForwardFederationGraphNoDbTest {
 
 	@Test
 	public void test_getShortestPath_not_backwardTransitive() throws Throwable{
-		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+		FederationGraph fg = getGraph(Arrays.asList(
 				newFederation("grid1", "grid2", true, false, false),
 				newFederation("grid3", "grid2", true, false, false)
 				));
@@ -199,7 +201,7 @@ public class ForwardFederationGraphNoDbTest {
 
 	@Test
 	public void test_getShortestPath_2hop_unreachable_1() throws Throwable{
-		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+		FederationGraph fg = getGraph(Arrays.asList(
 				newFederation("grid1", "grid2", true),
 				new Federation("grid2", "grid3")
 				));
@@ -208,7 +210,7 @@ public class ForwardFederationGraphNoDbTest {
 
 	@Test
 	public void test_getShortestPath_2hop_unreachable_2() throws Throwable{
-		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+		FederationGraph fg = getGraph(Arrays.asList(
 				newFederation("grid1", "grid2", true),
 				newFederation("grid3", "grid2")
 				));
@@ -217,7 +219,7 @@ public class ForwardFederationGraphNoDbTest {
 
 	@Test
 	public void test_getShortestPath_3hop() throws Throwable{
-		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+		FederationGraph fg = getGraph(Arrays.asList(
 				newFederation("grid1", "grid2", true, true),
 				newFederation("grid2", "grid3", true, true),
 				newFederation("grid2", "grid4", true, false),
@@ -228,7 +230,7 @@ public class ForwardFederationGraphNoDbTest {
 
 	@Test
 	public void test_getShortestPath_3hop_unreachable() throws Throwable{
-		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+		FederationGraph fg = getGraph(Arrays.asList(
 				newFederation("grid1", "grid2", true, true),
 				newFederation("grid2", "grid3", true, false),
 				newFederation("grid3", "grid4", true, true)
@@ -238,23 +240,22 @@ public class ForwardFederationGraphNoDbTest {
 
 	@Test
 	public void test_listAllReachableGridIds_1() throws Throwable{
-		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+		FederationGraph fg = getGraph(Arrays.asList(
 				newFederation("grid1", "grid2", true, true),
 				newFederation("grid2", "grid3", true, true),
 				newFederation("grid3", "grid4", true, true)
 				));
-		Set<String> ids = new TreeSet<>();
-		ids.addAll(fg.listAllReachableGridIds("grid1"));
-		Iterator<String> it = ids.iterator();
-		Assert.assertEquals("grid2", it.next());
-		Assert.assertEquals("grid3", it.next());
-		Assert.assertEquals("grid4", it.next());
-		Assert.assertFalse(it.hasNext());
+		CollectionFixture<String> ids = new CollectionFixture<>(new TreeSet<>(
+				fg.listAllReachableGridIds("grid1")));
+		ids.assertNextEquals("grid2");
+		ids.assertNextEquals("grid3");
+		ids.assertNextEquals("grid4");
+		ids.assertNotHasNext();
 	}
 
 	@Test
 	public void test_listAllReachableGridIds_2() throws Throwable{
-		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+		FederationGraph fg = getGraph(Arrays.asList(
 				newFederation("grid1", "grid2"),
 				newFederation("grid2", "grid3"),
 				newFederation("grid3", "grid8"),
@@ -277,7 +278,7 @@ public class ForwardFederationGraphNoDbTest {
 
 	@Test
 	public void test_listAllReachableGridIds_3() throws Throwable{
-		FederationGraph fg = new ForwardFederationGraph(Arrays.asList(
+		FederationGraph fg = getGraph(Arrays.asList(
 				newFederation("grid1", "grid2"),
 				newFederation("grid2", "grid3"),
 				newFederation("grid3", "grid8"),

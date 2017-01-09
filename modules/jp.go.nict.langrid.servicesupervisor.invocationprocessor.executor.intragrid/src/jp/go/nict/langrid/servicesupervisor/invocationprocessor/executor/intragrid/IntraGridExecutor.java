@@ -170,7 +170,7 @@ implements Executor {
 			User sourceUser = userDao.getUser(sourceGridId, source.getOperatorUserId());
 			User targetUser = userDao.getUser(targetGridId, target.getOperatorUserId());
 			if(sourceUser == null || targetUser == null) break;
-			boolean sym = new FederationLogic().buildGraph().isReachable(targetGridId, sourceGridId);
+			boolean sym = new FederationLogic().isReachable(targetGridId, sourceGridId);
 			String token = FederationLogic.newToken();
 			federationDao.addFederation(new Federation(
 					sourceGridId, source.getGridName(), sourceUser.getUserId(), sourceUser.getOrganization(),

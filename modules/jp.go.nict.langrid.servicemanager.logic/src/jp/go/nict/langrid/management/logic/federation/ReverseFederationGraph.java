@@ -6,7 +6,8 @@ import java.util.Map;
 
 import jp.go.nict.langrid.dao.entity.Federation;
 
-public class ReverseFederationGraph extends AbstractFederationGraph {
+@Deprecated
+class ReverseFederationGraph extends AbstractFederationGraph {
 	public ReverseFederationGraph(Collection<Federation> federations){
 		for(jp.go.nict.langrid.dao.entity.Federation f : federations){
 			if(!f.isConnected() || f.isRequesting()) continue;

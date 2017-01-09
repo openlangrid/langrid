@@ -6,7 +6,8 @@ import java.util.Map;
 
 import jp.go.nict.langrid.dao.entity.Federation;
 
-public class ForwardFederationGraph extends AbstractFederationGraph {
+@Deprecated
+class ForwardFederationGraph extends AbstractFederationGraph {
 	public ForwardFederationGraph(Collection<Federation> federations){
 		for(jp.go.nict.langrid.dao.entity.Federation f : federations){
 			if(!f.isConnected() || f.isRequesting()) continue;

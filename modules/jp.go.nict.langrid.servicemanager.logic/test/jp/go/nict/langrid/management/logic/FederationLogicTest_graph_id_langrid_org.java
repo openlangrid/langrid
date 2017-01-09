@@ -1,4 +1,4 @@
-package jp.go.nict.langrid.servicemanager.logic.federation;
+package jp.go.nict.langrid.management.logic;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -11,7 +11,7 @@ import org.junit.Test;
 import jp.go.nict.langrid.management.logic.FederationLogic;
 import jp.go.nict.langrid.management.logic.federation.FederationGraph;
 
-public class FederationGraphTest_id_langrid_org {
+public class FederationLogicTest_graph_id_langrid_org {
 	@Before
 	public void setUp() throws Throwable{
 		System.setProperty("jp.go.nict.langrid.dao.hibernate.LangridSessionFactory.hibernate.cfg",
