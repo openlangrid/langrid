@@ -253,6 +253,12 @@ extends UpdateManagedEntity
 	public void setAveOverhead(double aveOverhead) {
 		this.aveOverhead = aveOverhead;
 	}
+	public long getInvocationCount() {
+		return invocationCount;
+	}
+	public void setInvocationCount(long invocationCount) {
+		this.invocationCount = invocationCount;
+	}
 
 	@Id
 	private String sourceGridId;
@@ -279,5 +285,6 @@ extends UpdateManagedEntity
 	private Boolean symmetric = false;
 	private Boolean backwardTransitive = false;
 	private Boolean shortcut = false;
+	private long invocationCount;
 	private Double aveOverhead;
 }

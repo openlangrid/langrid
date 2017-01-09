@@ -130,15 +130,9 @@ public class ServiceInvoker {
 				String value = h.getValue();
 				output.addHeader(name, value);
 			}
-			String gt = selfGridId + ":" + delta;
-			if(gridTrack.length() > 0){
-				if(gridTrack.charAt(0) == '('){
-					gt += gridTrack;
-				} else{
-					gt += " -> " + gridTrack;
-				}
-			}
-			output.addHeader(LangridConstants.HTTPHEADER_GRIDTRACK, gt);
+			output.addHeader(
+					LangridConstants.HTTPHEADER_GRIDTRACK,
+					GridTrackUtil.append(selfGridId, delta, gridTrack));
 
 			if(status == 200){
 				OutputStream os = output.getOutputStream();

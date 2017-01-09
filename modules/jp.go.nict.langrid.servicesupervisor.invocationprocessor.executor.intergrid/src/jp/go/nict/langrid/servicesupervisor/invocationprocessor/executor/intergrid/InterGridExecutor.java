@@ -22,7 +22,10 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +52,8 @@ import jp.go.nict.langrid.management.logic.FederationLogic;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.AbstractExecutor;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.Executor;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.ExecutorParams;
+import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.GridTrackUtil;
+import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.GridTrackUtil.GridTrack;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.NoValidEndpointsException;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.ProcessFailedException;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.ServiceInvoker;
@@ -169,6 +174,19 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 				, connectionTimeout, readTimeout
 				);
 
+		// affect gridTrack to Federation
+		String gridTrack = response.getHeader(LangridConstants.HTTPHEADER_GRIDTRACK);
+		if(gridTrack != null){
+			daoContext.beginTransaction();
+			try{
+				updateFederationDelay(selfGridId, GridTrackUtil.decode(gridTrack));
+			} finally{
+				try{
+					daoContext.commitTransaction();
+				} catch(DaoException e){}
+			}
+		}
+
 		// remove shortcut if removed at destination grid.
 		if(selfGridId.equals(sourceGridId) &&
 					serviceContext.getRequestMimeHeaders().getHeader(
@@ -221,6 +239,34 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 			// remove unnecessary headers for client
 //			response.setHeader(LangridConstants.HTTPHEADER_FEDERATEDCALL_SHORTCUTRESULT, null);
 		}
+	}
+
+	private void updateFederationDelay(String selfGridId, Collection<GridTrack> gts)
+	throws DaoException{
+		Iterator<GridTrack> it = gts.iterator();
+		updateFederationDelay(selfGridId, it);
+	}
+	private GridTrack updateFederationDelay(String selfGridId, Iterator<GridTrack> it)
+	throws DaoException{
+		if(!it.hasNext()) return null;
+		GridTrack cur = it.next();
+		GridTrack next = updateFederationDelay(selfGridId, it);
+		if(next == null) return cur;
+		long d = cur.getProcessMillis() - next.getProcessMillis();
+		Federation f = federationLogic.getReachableFederation(cur.getGridId(), next.getGridId());
+		if(f != null){
+			long c = f.getInvocationCount();
+			double o = f.getAveOverhead();
+			long nc = c + 1;
+			double no = (o * c + d) / nc;
+			f.setInvocationCount(nc);
+			f.setAveOverhead(no);
+			if(f.getSourceGridId().equals(selfGridId)){
+				f.setUpdatedDateTime(Calendar.getInstance());
+			}
+		}
+		updateFederationDelay(selfGridId, cur.getChildren());
+		return cur;
 	}
 
 	private FederationLogic federationLogic;
