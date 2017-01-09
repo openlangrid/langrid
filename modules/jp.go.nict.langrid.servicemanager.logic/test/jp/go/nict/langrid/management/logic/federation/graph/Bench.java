@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -217,13 +218,12 @@ public class Bench {
 	}
 
 	@Test
-	public void test() throws Throwable{
+	public void compareGetShortestPath() throws Throwable{
 		List<List<String>> p0 = findPaths(graph, getShortestPathAlgs[0]);
 		List<List<String>> p1 = findPaths(graph, getShortestPathAlgs[1]);
-		compare("p0 and p1", p0, p1);
+		compareGetShortestPath("p0 and p1", p0, p1);
 	}
-
-	private void compare(String name, List<List<String>> left, List<List<String>> right){
+	private void compareGetShortestPath(String name, List<List<String>> left, List<List<String>> right){
 		System.out.println("compare " + name);
 		int c = 0;
 		for(int i = 0; i < nodeCount; i++){
@@ -260,6 +260,62 @@ public class Bench {
 					alg.getClass().getSimpleName() + ": " +
 					alg.searchShortestPath(graph, source, target, Collections.emptySet()));
 		}
+	}
+
+	@Test
+	public void compareIsReachable() throws Throwable{
+		compareIsReachable(isReachableAlgs[0], isReachableAlgs[1]);
+		compareIsReachable(isReachableAlgs[1], isReachableAlgs[2]);
+	}
+	private void compareIsReachable(GraphSearch<String, String> a1, GraphSearch<String, String> a2){
+		System.out.println("compare " + a1.getClass().getSimpleName() + " with " +
+				a2.getClass().getSimpleName());
+		int c = 0;
+		for(int i = 0; i < nodeCount; i++){
+			for(int j = 0; j < nodeCount; j++){
+				if(i == j) continue;
+				String source = "node" + i;
+				String target = "node" + j;
+				boolean r1 = a1.isReachable(graph, source, target);
+				boolean r2 = a2.isReachable(graph, source, target);
+				if(r1 != r2){
+					System.out.println(c + ": " + r1 + " <> " + r2);
+				}
+				c++;
+			}
+		}
+		System.out.println("done.");
+	}
+
+	@Test
+	public void compareListTargets() throws Throwable{
+		compareListTargets(getShortestPathAlgs[0], getShortestPathAlgs[1]);
+	}
+	private void compareListTargets(GraphSearch<String, String> a1, GraphSearch<String, String> a2){
+		System.out.println("compare " + a1.getClass().getSimpleName() + " with " +
+				a2.getClass().getSimpleName());
+		int c = 0;
+		for(int i = 0; i < nodeCount; i++){
+			String source = "node" + i;
+			System.out.println(source);
+			Collection<String> r1 = a1.listTargets(graph, source);
+			Collection<String> r2 = a2.listTargets(graph, source);
+			if(r1.size() != r2.size()){
+				System.out.println(c + "[size]: " + r1.size() + " <> " + r2.size());
+			} else{
+				Iterator<String> it1 = r1.iterator();
+				Iterator<String> it2 = r2.iterator();
+				for(int j = 0; j < r1.size(); j++){
+					String e1 = it1.next();
+					String e2 = it2.next();
+					if(e1 != e2){
+						System.out.println(c + "[" + j + "th]: " + e1 + " <> " + e2);
+					}
+				}
+				c++;
+			}
+		}
+		System.out.println("done.");
 	}
 
 	// originally from JSONIC
