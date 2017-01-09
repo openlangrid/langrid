@@ -57,25 +57,27 @@ public class DepthFirstSearch<K, V> implements GraphSearch<K, V>{
 		}
 	}
 
-	@Override
-	public boolean isReachable(Map<K, Map<K, V>> graph, K source, K target) {
-		return isReachable(graph, source, target, new HashSet<>());
-	}
-	private boolean isReachable(Map<K, Map<K, V>> graph, K source, K target, Set<K> visited) {
-		visited.add(source);
-		try{
-			for(K next : graph.getOrDefault(source, Collections.emptyMap()).keySet()){
+	static class IsReachable<V, E>{
+		public IsReachable(Map<V, Map<V, E>> graph, V target) {
+			this.graph = graph;
+			this.target = target;
+		}
+		public boolean run(V source){
+			visited.add(source);
+			for(V next : graph.getOrDefault(source, Collections.emptyMap()).keySet()){
 				if(visited.contains(next)) continue;
-				if(next.equals(target)){
-					return true;
-				} else {
-					if(isReachable(graph, next, target, visited)) return true;
-				}
+				if(next.equals(target)) return true;
+				else if(run(next)) return true;
 			}
 			return false;
-		} finally{
-			visited.remove(source);
 		}
+		private Map<V, Map<V, E>> graph;
+		private V target;
+		private Set<V> visited = new HashSet<>();
+	}
+	@Override
+	public boolean isReachable(Map<K, Map<K, V>> graph, K source, K target) {
+		return new IsReachable<K, V>(graph, target).run(source);
 	}
 
 	@Override

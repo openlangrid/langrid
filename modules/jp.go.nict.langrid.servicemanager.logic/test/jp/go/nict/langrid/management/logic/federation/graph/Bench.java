@@ -43,13 +43,13 @@ public class Bench {
 	@SuppressWarnings("unchecked")
 	private GraphSearch<String, String>[] getShortestPathAlgs = new GraphSearch[]{
 			new BreathFirstSearch<String, String>(),
-			new DijkstraSearch<String, String>()
+			new DijkstraSearch<String, String>(),
 	};
 	@SuppressWarnings("unchecked")
 	private GraphSearch<String, String>[]isReachableAlgs = new GraphSearch[]{
-//			new DepthFirstSearch<String, String>(),
 			new BreathFirstSearch<String, String>(),
-			new DijkstraSearch<String, String>()
+			new DijkstraSearch<String, String>(),
+			new DepthFirstSearch<String, String>(),
 	};
 
 	@BeforeClass
@@ -185,14 +185,17 @@ public class Bench {
 	public void benchIsReachable() throws Throwable{
 		int warmup = 20, repeat = 50;
 		MemoryMXBean mb = ManagementFactory.getMemoryMXBean();
-		for(GraphSearch<String, String> alg : isReachableAlgs){
-			mb.gc();
-			measureIsReachable(graph, alg, warmup);
-			double r = measureIsReachable(graph, alg, repeat);
-			System.out.printf(
-					"%s: %.3f, %,d%n",
-					alg.getClass().getSimpleName(), r,
-					mb.getHeapMemoryUsage().getUsed());
+		for(int i = 0; i < 2; i++){
+			for(GraphSearch<String, String> alg : isReachableAlgs){
+				mb.gc();
+				measureIsReachable(graph, alg, warmup);
+				mb.gc();
+				double r = measureIsReachable(graph, alg, repeat);
+				System.out.printf(
+						"%s: %.3f, %,d%n",
+						alg.getClass().getSimpleName(), r,
+						mb.getHeapMemoryUsage().getUsed());
+			}
 		}
 	}
 

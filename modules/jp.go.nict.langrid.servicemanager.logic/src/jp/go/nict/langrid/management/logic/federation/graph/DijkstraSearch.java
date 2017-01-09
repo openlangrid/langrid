@@ -77,7 +77,7 @@ public class DijkstraSearch<K, V> implements GraphSearch<K, V>{
 
 	@Override
 	public boolean isReachable(Map<K, Map<K, V>> graph, K source, K target) {
-		return new BreathFirstSearch<K, V>().isReachable(graph, source, target);
+		return new DepthFirstSearch<K, V>().isReachable(graph, source, target);
 	}
 
 	@Override
