@@ -54,6 +54,7 @@ import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.Executo
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.ExecutorParams;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.GridTrackUtil;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.GridTrackUtil.GridTrack;
+import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.GridTrackUtil.Invocation;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.NoValidEndpointsException;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.ProcessFailedException;
 import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.ServiceInvoker;
@@ -265,7 +266,9 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 				f.setUpdatedDateTime(Calendar.getInstance());
 			}
 		}
-		updateFederationDelay(selfGridId, cur.getChildren());
+		for(Invocation i : cur.getInvocations()){
+			updateFederationDelay(selfGridId, i.getGridTrack());
+		}
 		return cur;
 	}
 
