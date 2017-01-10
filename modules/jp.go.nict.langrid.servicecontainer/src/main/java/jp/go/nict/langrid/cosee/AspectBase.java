@@ -258,10 +258,10 @@ public class AspectBase{
 		Collection<Pair<String, String>> gridTracks = (Collection<Pair<String, String>>)
 				properties.get("gridTracks");
 		if(gridTracks.size() > 0){
-			String v = "(" + StringUtil.join(
+			String v = "{" + StringUtil.join(
 					gridTracks.toArray(new Pair[]{}),
-					p -> p.getFirst() + ":" + p.getSecond(),
-					",") + ")";
+					p -> p.getFirst() + ":[" + p.getSecond() + "]",
+					",") + "}";
 			mimeHeaders.addHeader(LangridConstants.HTTPHEADER_GRIDTRACK, v);
 		}
 

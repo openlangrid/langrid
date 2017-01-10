@@ -180,7 +180,7 @@ public class InterGridExecutor extends AbstractExecutor implements Executor {
 		if(gridTrack != null){
 			daoContext.beginTransaction();
 			try{
-				updateFederationDelay(selfGridId, GridTrackUtil.decode(gridTrack));
+				updateFederationDelay(selfGridId, GridTrackUtil.decode("[" + gridTrack + "]"));
 			} finally{
 				try{
 					daoContext.commitTransaction();

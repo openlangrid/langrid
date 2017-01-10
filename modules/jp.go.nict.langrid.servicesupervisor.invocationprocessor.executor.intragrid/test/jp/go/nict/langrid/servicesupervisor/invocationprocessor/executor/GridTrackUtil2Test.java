@@ -8,9 +8,9 @@ import java.util.List;
 import org.junit.Test;
 
 import jp.go.nict.langrid.commons.test.CollectionFixture;
-import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.GridTrackUtil.GridTrack;
+import jp.go.nict.langrid.servicesupervisor.invocationprocessor.executor.GridTrackUtil2.GridTrack;
 
-public class GridTrackUtilTest {
+public class GridTrackUtil2Test {
 	private static <T> CollectionFixture<T> fixture(Collection<T> c){
 		return new CollectionFixture<T>(c);
 	}
@@ -25,20 +25,14 @@ public class GridTrackUtilTest {
 	}
 	@Test
 	public void test() throws Throwable{
-		List<GridTrack> actual = GridTrackUtil.decode(
-				"["
-				+ "[kyoto1.langrid,100],"
-				+ "[usa1.openlangrid,200,{"
-					+ "MorphPL:["
-						+ "[usa1.openlangrid,200],"
-						+ "[kyotooplg,128,"
-							+ "{MorphPL2:[[kyotooplg,200]]}"
-						+ "]"
-					+ "],"
-					+ "TransPL:[[kyotooplg,300]]"
-				+ "}],"
-				+ "[kyoto0.langrid,164]"
-				+ "]");
+		List<GridTrack> actual = GridTrackUtil2.decode(
+				"kyoto1.langrid:100 ->"
+				+ " usa1.openlangrid:200("
+					+ "MorphPL:usa1.openlangrid:200 ->"
+					+ " kyotooplg:128(MorphPL2:kyotooplg:200),"
+					+ "TransPL:kyotooplg:300"
+					+ ") ->"
+				+ " kyoto0.langrid:164");
 		fixture(actual)
 			.next(t -> {
 				assertEquals("kyoto1.langrid", t.getGridId());
@@ -98,7 +92,7 @@ public class GridTrackUtilTest {
 
 	@Test
 	public void test_scan1() throws Throwable{
-		fixture(GridTrackUtil.decode("[[kyoto1.langrid,100]]"))
+		fixture(GridTrackUtil2.decode("kyoto1.langrid:100"))
 			.next(t -> {
 				equals("kyoto1.langrid", t.getGridId());
 				equals(100, t.getProcessMillis());
@@ -109,7 +103,7 @@ public class GridTrackUtilTest {
 
 	@Test
 	public void test_scan2() throws Throwable{
-		fixture(GridTrackUtil.decode("[[kyoto1.langrid,100],[kyoto0.langrid,128]]"))
+		fixture(GridTrackUtil2.decode("kyoto1.langrid:100 -> kyoto0.langrid:128"))
 			.next(t -> {
 				equals("kyoto1.langrid", t.getGridId());
 				equals(100, t.getProcessMillis());
@@ -124,40 +118,9 @@ public class GridTrackUtilTest {
 	}
 
 	@Test
-	public void test_scan2_2() throws Throwable{
-//		fixture(decode(newScanner("[{kyoto1.langrid,100,[{PL1, [{g1,128},{g2,256}]}]},{kyoto0.langrid,128}]")))
-		List<GridTrack> gt = GridTrackUtil.decode("[[kyoto1.langrid,100,{PL1:[[g1,128],[g2,256]]}]]");
-		//"kyoto1.langrid:100(PL1:g1:128(PL2:g2:256))"
-		fixture(gt)
-			.next(t -> {
-				equals("kyoto1.langrid", t.getGridId());
-				equals(100, t.getProcessMillis());
-				fixture(t.getInvocations())
-					.next(i -> {
-						equals("PL1", i.getInvocationName());
-						fixture(i.getGridTrack())
-							.next(t2 -> {
-								equals("g1", t2.getGridId());
-								equals(128, t2.getProcessMillis());
-								empty(t2.getInvocations());
-							})
-							.next(t2 -> {
-								equals("g2", t2.getGridId());
-								equals(256, t2.getProcessMillis());
-								empty(t2.getInvocations());
-							})
-							.assertNotHasNext();
-					})
-					.assertNotHasNext();
-			})
-			.assertNotHasNext();
-	}
-
-	@Test
 	public void test_scan3() throws Throwable{
 //		fixture(decode(newScanner("[{kyoto1.langrid,100,[{PL1, [{g1,128},{g2,256}]}]},{kyoto0.langrid,128}]")))
-		List<GridTrack> gt = GridTrackUtil.decode("[[kyoto1.langrid,100,{PL1:[[g1,128,{PL2:[[g2,256]]}]]}]]");
-		//"kyoto1.langrid:100(PL1:g1:128(PL2:g2:256))"
+		List<GridTrack> gt = GridTrackUtil2.decode("kyoto1.langrid:100(PL1:g1:128(PL2:g2:256))");
 		fixture(gt)
 			.next(t -> {
 				equals("kyoto1.langrid", t.getGridId());
@@ -192,11 +155,7 @@ public class GridTrackUtilTest {
 	@Test
 	public void test_scan4() throws Throwable{
 //		fixture(decode(newScanner("[{kyoto1.langrid,100,[{PL1, [{g1,128},{g2,256}]}]},{kyoto0.langrid,128}]")))
-		fixture(GridTrackUtil.decode(
-				"["
-				+ "[kyoto1.langrid,100,{PL1:[[g1,128],[g2,256]]}],"
-				+ "[kyoto0.langrid,128]"
-				+ "]"))
+		fixture(GridTrackUtil2.decode("kyoto1.langrid:100(PL1:g1:128 -> g2:256) -> kyoto0.langrid:128"))
 			.next(t -> {
 				equals("kyoto1.langrid", t.getGridId());
 				equals(100, t.getProcessMillis());
@@ -229,7 +188,7 @@ public class GridTrackUtilTest {
 	@Test
 	public void test_scan5() throws Throwable{
 //		fixture(decode(newScanner("[{kyoto1.langrid,100,[{PL1, [{g1,128},{g2,256}]}]},{kyoto0.langrid,128}]")))
-		fixture(GridTrackUtil.decode("[[kyoto1.langrid,100,{PL1:[[g1,128],[g2,256]],PL2:[[g3,512]]}]]"))
+		fixture(GridTrackUtil2.decode("kyoto1.langrid:100(PL1:g1:128 -> g2:256,PL2:g3:512)"))
 			.next(t -> {
 				equals("kyoto1.langrid", t.getGridId());
 				equals(100, t.getProcessMillis());
@@ -280,7 +239,7 @@ public class GridTrackUtilTest {
 			+ " -> "
 			+ "kyoto0.langrid:164";
 
-		Scanner s = GridTrackUtil.newScanner(gt);
+		Scanner s = GridTrackUtil2.newScanner(gt);
 		while(s.next()){
 			System.out.println("tok: " + s.getToken());
 			System.out.println("del: " + s.getDelim());
