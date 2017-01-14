@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
+import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSONException;
 
 public class GridTrackUtil {
 	public static String append(String gridId, long processTime, String current){
@@ -96,7 +97,11 @@ public class GridTrackUtil {
 	]
 */
 	public static List<GridTrack> decode(String text){
-		return decodeGridTracks(JSON.decode(text));
+		try{
+			return decodeGridTracks(JSON.decode(text));
+		} catch(JSONException e){
+			return Collections.emptyList();
+		}
 	}
 	private static List<GridTrack> decodeGridTracks(Object v){
 		List<GridTrack> ret = new ArrayList<>();
