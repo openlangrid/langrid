@@ -3,6 +3,8 @@
 	<name>org.langrid.webapps.rproxytest</name>
 	<comment></comment>
 	<projects>
+		<project>jp.go.nict.langrid.dao.hibernate</project>
+		<project>jp.go.nict.langrid.dao</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -4,10 +4,47 @@
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/test/java"/>
         <dependent-module archiveName="jp.go.nict.langrid.servlet.filter-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servlet.filter/jp.go.nict.langrid.servlet.filter">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.commons-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.commons/jp.go.nict.langrid.commons">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.servlet.filter.auth.langrid-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.servlet.filter.auth.langrid/jp.go.nict.langrid.servlet.filter.auth.langrid">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.dao.hibernate.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.dao.hibernate/jp.go.nict.langrid.dao.hibernate">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jp.go.nict.langrid.dao.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.dao/jp.go.nict.langrid.dao">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="hibernate3.3.2.patched.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/hibernate/hibernate3.3.2.patched.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="hibernate-annotations.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/hibernate/hibernate-annotations.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jdbc2_0-stdext.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/hibernate/jdbc2_0-stdext.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="jta-1.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/hibernate/jta-1.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="hibernate-commons-annotations.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/hibernate/hibernate-commons-annotations.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="javassist-3.9.0.GA.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/hibernate/javassist-3.9.0.GA.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="dom4j-1.6.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/hibernate/dom4j-1.6.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ejb3-persistence.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/hibernate/ejb3-persistence.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="antlr-2.7.6.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/hibernate/antlr-2.7.6.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="context-root" value="org.langrid.webapps.rproxytest"/>

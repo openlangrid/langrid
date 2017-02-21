@@ -4,4 +4,38 @@
 
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
+
+  <filter>
+    <filter-name>LangridAuthenticator</filter-name>
+    <filter-class>jp.go.nict.langrid.servlet.filter.auth.langrid.LangridAuthenticator</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>LangridAuthenticator</filter-name>
+    <url-pattern>/auth/*</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>SentinelAuthenticator</filter-name>
+    <filter-class>jp.go.nict.langrid.servlet.filter.auth.SentinelAuthenticator</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>SentinelAuthenticator</filter-name>
+    <url-pattern>/auth/*</url-pattern>
+  </filter-mapping>
+
+  <servlet>
+    <servlet-name>ReverseProxy</servlet-name>
+    <servlet-class>jp.go.nict.langrid.servlet.filter.ReverseProxyServlet</servlet-class>
+    <init-param>
+      <param-name>mapping</param-name>
+      <param-value>p,http://www.yahoo.co.jp</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ReverseProxy</servlet-name>
+    <url-pattern>/auth/p</url-pattern>
+  </servlet-mapping>
+
+
+
 </web-app>
