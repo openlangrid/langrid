@@ -7,7 +7,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.commons.protobufrpc"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.client.ws_1_2.protobuf"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.commons"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.cosee"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.service.language_1_2"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.service.common_1_2"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.servicecontainer"/>
