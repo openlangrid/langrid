@@ -3,7 +3,7 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-  <display-name>Archetype Created Web Application</display-name>
+  <display-name>Reverse Proxy Sample Web Application</display-name>
 
   <filter>
     <filter-name>LangridAuthenticator</filter-name>
@@ -11,7 +11,7 @@
   </filter>
   <filter-mapping>
     <filter-name>LangridAuthenticator</filter-name>
-    <url-pattern>/auth/*</url-pattern>
+    <url-pattern>/*</url-pattern>
   </filter-mapping>
 
   <filter>
@@ -20,22 +20,31 @@
   </filter>
   <filter-mapping>
     <filter-name>SentinelAuthenticator</filter-name>
-    <url-pattern>/auth/*</url-pattern>
+    <url-pattern>/*</url-pattern>
   </filter-mapping>
 
   <servlet>
     <servlet-name>ReverseProxy</servlet-name>
-    <servlet-class>jp.go.nict.langrid.servlet.filter.ReverseProxyServlet</servlet-class>
+    <servlet-class>jp.go.nict.langrid.servlet.langrid.AuthenticatingReverseProxyServlet</servlet-class>
     <init-param>
-      <param-name>mapping</param-name>
-      <param-value>p,http://www.yahoo.co.jp</param-value>
+      <param-name>mappings</param-name>
+      <param-value>
+        /,http://host/path/to/galaxy
+      </param-value>
+    </init-param>
+    <init-param>
+      <param-name>passRemoteUser</param-name>
+      <param-value>true</param-value>
+    </init-param>
+    <init-param>
+      <param-name>additionalHeaders</param-name>
+      <param-value>
+        GX_SECRET:SECRET_HERE
+      </param-value>
     </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>ReverseProxy</servlet-name>
-    <url-pattern>/auth/p</url-pattern>
+    <url-pattern>/*</url-pattern>
   </servlet-mapping>
-
-
-
 </web-app>

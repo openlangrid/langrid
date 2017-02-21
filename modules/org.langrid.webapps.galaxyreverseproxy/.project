@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.langrid.webapps.rproxytest</name>
+	<name>org.langrid.webapps.galaxyreverseproxy</name>
 	<comment></comment>
 	<projects>
 		<project>jp.go.nict.langrid.dao.hibernate</project>

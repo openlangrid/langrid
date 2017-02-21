@@ -97,6 +97,16 @@ public class URLUtil {
 	}
 
 	/**
+	 * returns string after context in URL.
+	 * @param url
+	 * @return
+	 */
+	public static String getLocalUriString(String uri){
+		String[] p = uri.split("/", 3);
+		return p[2];
+	}
+
+	/**
 	 * 
 	 * 
 	 */
