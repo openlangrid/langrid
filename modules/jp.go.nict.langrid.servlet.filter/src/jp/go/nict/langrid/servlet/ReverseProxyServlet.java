@@ -61,20 +61,24 @@ public class ReverseProxyServlet extends HttpServlet{
 
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+//		System.out.println("start for " + req.getRequestURI());
 //		String requestline = req.getMethod() + " " + req.getRequestURI();
 		String local = "/" + URLUtil.getLocalUriString(req.getRequestURI());
 		for(Pair<String, String> map : mappings){
 			if(!local.startsWith(map.getFirst())) continue;
 			String url = map.getSecond() + local.substring(map.getFirst().length());
+//			System.out.println("connecting to " + url);
 			HttpURLConnection.setFollowRedirects(false);
 			HttpURLConnection con = (HttpURLConnection)new URL(url).openConnection();
 			try{
 				if(passRemoteUser){
+//					System.out.print("resolving user..  ");
 					String ru = getRemoteUserName(req);
-					System.out.println(ru);
+//					System.out.println(ru);
 					con.setRequestProperty("REMOTE_USER", ru);
 				}
 				// copy request header
+//				System.out.println("copying headers..");
 				Enumeration<?> hns = req.getHeaderNames();
 				while(hns.hasMoreElements()){
 					String name = hns.nextElement().toString();
@@ -87,6 +91,7 @@ public class ReverseProxyServlet extends HttpServlet{
 				if(req.getMethod().equalsIgnoreCase("POST")){
 					con.setDoOutput(true);
 					// transfer
+//					System.out.println("transfering request content..");
 					StreamUtil.transfer(req.getInputStream(), con.getOutputStream());
 /*				try{
 						es.execute(Functions.soften(() -> {
@@ -98,7 +103,9 @@ public class ReverseProxyServlet extends HttpServlet{
 */
 				}
 				// copy response header
+//				System.out.print("getting response code.. ");
 				int rc = con.getResponseCode();
+//				System.out.println(rc);
 				res.setStatus(rc);
 				for(Map.Entry<String, List<String>> entry : con.getHeaderFields().entrySet()){
 					String h = entry.getKey();
@@ -110,6 +117,7 @@ public class ReverseProxyServlet extends HttpServlet{
 					}
 				}
 				// transfer
+//				System.out.println("transfering response content");
 				if(200 <= rc && rc < 400){
 					StreamUtil.transfer(con.getInputStream(), res.getOutputStream());
 				} else{
@@ -123,8 +131,10 @@ public class ReverseProxyServlet extends HttpServlet{
 //				System.out.println(requestline + "  ->  " + con.getResponseCode() + " " + con.getResponseMessage());
 				con.disconnect();
 			}
+//			System.out.println("done");
 			return;
 		}
+//		System.out.println("ignored.");
 		super.service(req, res);
 	}
 
