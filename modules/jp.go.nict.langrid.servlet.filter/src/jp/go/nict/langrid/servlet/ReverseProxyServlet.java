@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import jp.go.nict.langrid.commons.io.StreamUtil;
-import jp.go.nict.langrid.commons.net.URLUtil;
 import jp.go.nict.langrid.commons.parameter.ParameterContext;
 import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.commons.ws.param.ServletConfigParameterContext;
@@ -52,6 +51,7 @@ public class ReverseProxyServlet extends HttpServlet{
 			return ret;
 		});
 		passRemoteUser = pc.getBoolean("passRemoteUser", false);
+		debugPrint = pc.getBoolean("debugPrint", false);
 		super.init(config);
 	}
 
@@ -61,24 +61,26 @@ public class ReverseProxyServlet extends HttpServlet{
 
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-//		System.out.println("start for " + req.getRequestURI());
-//		String requestline = req.getMethod() + " " + req.getRequestURI();
-		String local = "/" + URLUtil.getLocalUriString(req.getRequestURI());
+		StringBuilder b = new StringBuilder();
+		String local = req.getPathInfo();
+		String qs = req.getQueryString();
+		if(qs != null) qs = "?" + qs;
+		else qs = "";
+		if(debugPrint) b.append(req.getMethod() + " " + local + qs);
 		for(Pair<String, String> map : mappings){
 			if(!local.startsWith(map.getFirst())) continue;
-			String url = map.getSecond() + local.substring(map.getFirst().length());
-//			System.out.println("connecting to " + url);
+			String url = map.getSecond() + local.substring(map.getFirst().length()) + qs;
+			if(debugPrint) b.append(", to: " + url);
 			HttpURLConnection.setFollowRedirects(false);
 			HttpURLConnection con = (HttpURLConnection)new URL(url).openConnection();
+			con.setRequestMethod(req.getMethod());
 			try{
 				if(passRemoteUser){
-//					System.out.print("resolving user..  ");
 					String ru = getRemoteUserName(req);
-//					System.out.println(ru);
 					con.setRequestProperty("REMOTE_USER", ru);
+					if(debugPrint) b.append(", user: " + ru);
 				}
 				// copy request header
-//				System.out.println("copying headers..");
 				Enumeration<?> hns = req.getHeaderNames();
 				while(hns.hasMoreElements()){
 					String name = hns.nextElement().toString();
@@ -88,24 +90,14 @@ public class ReverseProxyServlet extends HttpServlet{
 				for(Pair<String, String> h : additionalHeaders){
 					con.addRequestProperty(h.getFirst(), h.getSecond());
 				}
-				if(req.getMethod().equalsIgnoreCase("POST")){
+				if(!req.getMethod().equalsIgnoreCase("GET") && req.getContentLength() != 0){
 					con.setDoOutput(true);
 					// transfer
-//					System.out.println("transfering request content..");
 					StreamUtil.transfer(req.getInputStream(), con.getOutputStream());
-/*				try{
-						es.execute(Functions.soften(() -> {
-							StreamUtil.transfer(req.getInputStream(), con.getOutputStream());
-						}));
-					} catch(SoftenedException e){
-						e.printStackTrace();
-					}
-*/
 				}
 				// copy response header
-//				System.out.print("getting response code.. ");
 				int rc = con.getResponseCode();
-//				System.out.println(rc);
+				if(debugPrint) b.append(", status: " + rc);
 				res.setStatus(rc);
 				for(Map.Entry<String, List<String>> entry : con.getHeaderFields().entrySet()){
 					String h = entry.getKey();
@@ -117,7 +109,6 @@ public class ReverseProxyServlet extends HttpServlet{
 					}
 				}
 				// transfer
-//				System.out.println("transfering response content");
 				if(200 <= rc && rc < 400){
 					StreamUtil.transfer(con.getInputStream(), res.getOutputStream());
 				} else{
@@ -126,20 +117,18 @@ public class ReverseProxyServlet extends HttpServlet{
 			} catch(FileNotFoundException e){
 				res.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			} catch(IOException e){
-				
 			} finally{
-//				System.out.println(requestline + "  ->  " + con.getResponseCode() + " " + con.getResponseMessage());
 				con.disconnect();
+				if(debugPrint) System.out.println(b);
 			}
-//			System.out.println("done");
 			return;
 		}
-//		System.out.println("ignored.");
 		super.service(req, res);
 	}
 
 	private List<Pair<String, String>> mappings = new ArrayList<>();
 	private List<Pair<String, String>> additionalHeaders = new ArrayList<>();
 	private boolean passRemoteUser;
+	private boolean debugPrint;
 	private static final long serialVersionUID = -3586649747617765152L;
 }
