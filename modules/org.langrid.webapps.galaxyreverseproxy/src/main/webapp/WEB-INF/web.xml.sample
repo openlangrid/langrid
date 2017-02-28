@@ -42,6 +42,10 @@
         GX_SECRET:SECRET_HERE
       </param-value>
     </init-param>
+    <init-param>
+      <param-name>debugPrint</param-name>
+      <param-value>false</param-value>
+    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>ReverseProxy</servlet-name>
