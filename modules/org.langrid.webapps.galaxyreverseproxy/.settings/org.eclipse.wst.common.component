@@ -38,9 +38,6 @@
         <dependent-module archiveName="jp.go.nict.langrid.dao.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.dao/jp.go.nict.langrid.dao">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="dom4j-1.6.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/hibernate/dom4j-1.6.1.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <property name="java-output-path" value="/org.langrid.webapps.galaxyreverseproxy/target/classes"/>
         <property name="context-root" value="org.langrid.webapps.galaxyreverseproxy"/>
     </wb-module>
