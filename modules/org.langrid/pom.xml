@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.langrid</groupId>
   <artifactId>servicegrid</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.10</version>
   <packaging>pom</packaging>
   <name>Root Artifact</name>
   <description>Root artifact for all artifacts.</description>
@@ -131,10 +131,11 @@
   </build>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <SERVICEGRID_VERSION>1.0-SNAPSHOT</SERVICEGRID_VERSION>
+    <SERVICEGRID_VERSION>1.0.10</SERVICEGRID_VERSION>
   </properties>
   <modules>
     <module>../jp.go.nict.langrid.commons/pom.xml</module>
+    <module>../jp.go.nict.langrid.commons.test/pom.xml</module>
     <module>../jp.go.nict.langrid.commons.protobufrpc/pom.xml</module>
     <module>../jp.go.nict.langrid.language/pom.xml</module>
     <module>../jp.go.nict.langrid.service.common_1_2/pom.xml</module>
