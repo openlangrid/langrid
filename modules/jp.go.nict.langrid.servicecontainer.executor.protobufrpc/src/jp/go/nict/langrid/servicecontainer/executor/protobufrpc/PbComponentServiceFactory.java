@@ -28,18 +28,20 @@ import java.util.logging.Logger;
 import jp.go.nict.langrid.client.protobufrpc.PbClientFactory;
 import jp.go.nict.langrid.commons.io.CloseIgnoringFilterOutputStream;
 import jp.go.nict.langrid.cosee.Endpoint;
-import jp.go.nict.langrid.servicecontainer.executor.CachingClientFactoryServiceExecutor;
 import jp.go.nict.langrid.servicecontainer.executor.ClientFactoryServiceExecutor;
+import jp.go.nict.langrid.servicecontainer.executor.factory.AbstractClientFactoryComponentServiceFactory;
 import jp.go.nict.langrid.servicecontainer.service.ComponentServiceFactory;
-import jp.go.nict.langrid.servicecontainer.service.component.AbstractComponentServiceFactory;
 
 /**
  * 
  * 
  */
 public class PbComponentServiceFactory
-extends AbstractComponentServiceFactory
+extends AbstractClientFactoryComponentServiceFactory
 implements ComponentServiceFactory{
+	public PbComponentServiceFactory() {
+		super(new PbClientFactory());
+	}
 	/**
 	 * 
 	 * 
@@ -49,25 +51,11 @@ implements ComponentServiceFactory{
 			, Endpoint endpoint, Class<T> interfaceClass){
 		try{
 			Constructor<?> ctor = getExecutor(interfaceClass);
-			if(ctor == null){
-				PbClientFactory f = new PbClientFactory();
-				if(logExecution){
-					f.setDumpStream(new CloseIgnoringFilterOutputStream(System.out));
-				}
-				return (T)Proxy.newProxyInstance(
-						Thread.currentThread().getContextClassLoader()
-						, new Class<?>[]{interfaceClass}
-						, isCacheEnabled() ?
-						new CachingClientFactoryServiceExecutor(
-								invocationName, invocationId, endpoint, interfaceClass,
-								f, getCache()
-								) :
-						new ClientFactoryServiceExecutor(
-								invocationName, invocationId, endpoint, interfaceClass,
-								f));
+			if(ctor != null){
+				return (T)ctor.newInstance(
+						invocationName, invocationId, endpoint);
 			}
-			return (T)ctor.newInstance(
-					invocationName, invocationId, endpoint);
+			return super.getService(invocationName, invocationId, endpoint, interfaceClass);
 		} catch(InvocationTargetException e){
 			throw new RuntimeException(e);
 		} catch (IllegalArgumentException e) {

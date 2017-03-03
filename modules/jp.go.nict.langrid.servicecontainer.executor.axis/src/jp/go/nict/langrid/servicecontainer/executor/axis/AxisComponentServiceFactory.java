@@ -31,7 +31,6 @@ import jp.go.nict.langrid.client.soap.SoapClientFactory;
 import jp.go.nict.langrid.client.ws_1_2.impl.axis.LangridAxisClientFactory;
 import jp.go.nict.langrid.cosee.Endpoint;
 import jp.go.nict.langrid.service_1_2.translation.TranslationService;
-import jp.go.nict.langrid.servicecontainer.executor.CachingClientFactoryServiceExecutor;
 import jp.go.nict.langrid.servicecontainer.executor.ClientFactoryServiceExecutor;
 import jp.go.nict.langrid.servicecontainer.service.ComponentServiceFactory;
 import jp.go.nict.langrid.servicecontainer.service.component.AbstractComponentServiceFactory;
@@ -61,12 +60,8 @@ implements ComponentServiceFactory{
 			return (T)Proxy.newProxyInstance(
 					Thread.currentThread().getContextClassLoader()
 					, new Class<?>[]{interfaceClass}
-					, isCacheEnabled() ?
-							new CachingClientFactoryServiceExecutor(invocationName, invocationId
-									, endpoint, interfaceClass, umbrellaClientFactory
-									, getCache()) :
-							new ClientFactoryServiceExecutor(invocationName, invocationId
-							, endpoint, interfaceClass, umbrellaClientFactory)
+					, new ClientFactoryServiceExecutor(invocationName, invocationId,
+						endpoint, interfaceClass, umbrellaClientFactory)
 					);
 		} catch(InvocationTargetException e){
 			throw new RuntimeException(e);

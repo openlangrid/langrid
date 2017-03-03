@@ -53,33 +53,6 @@ public class UmbrellaComponentServiceFactory
 extends AbstractComponentServiceFactory
 implements ComponentServiceFactory{
 	@Override
-	public void setCacheEnabled(boolean cacheEnabled) {
-		this.cacheEnabled = cacheEnabled;
-		for(AbstractComponentServiceFactory f : factories.values()){
-			f.setCacheEnabled(cacheEnabled);
-		}
-		if(defaultServiceFactory != null) defaultServiceFactory.setCacheEnabled(cacheEnabled);
-	}
-
-	@Override
-	public void setCacheCapacity(int cacheCapacity) {
-		this.cacheCapacity = cacheCapacity;
-		for(AbstractComponentServiceFactory f : factories.values()){
-			f.setCacheCapacity(cacheCapacity);
-		}
-		if(defaultServiceFactory != null) defaultServiceFactory.setCacheCapacity(cacheCapacity);
-	}
-
-	@Override
-	public void setCacheTtlSec(int cacheTtlSec) {
-		this.cacheTtlSec = cacheTtlSec;
-		for(AbstractComponentServiceFactory f : factories.values()){
-			f.setCacheTtlSec(cacheTtlSec);
-		}
-		if(defaultServiceFactory != null) defaultServiceFactory.setCacheTtlSec(cacheTtlSec);
-	}
-
-	@Override
 	public <T> T getService(String invocationName, Class<T> interfaceClass) {
 		try{
 			Pair<Long, Endpoint> value = getInvocationIdAndEndpoint(invocationName);
@@ -114,11 +87,6 @@ implements ComponentServiceFactory{
 
 	public void setFactories(Map<String, AbstractComponentServiceFactory> factories) {
 		this.factories = factories;
-		for(AbstractComponentServiceFactory f : factories.values()){
-			f.setCacheCapacity(cacheCapacity);
-			f.setCacheTtlSec(cacheTtlSec);
-			f.setCacheEnabled(cacheEnabled);
-		}
 	}
 
 	AbstractComponentServiceFactory getFactory(String protocol){
@@ -217,15 +185,7 @@ implements ComponentServiceFactory{
 		putFactoryIfAvailable(
 				"JAVA_WITH_FE_CALL",
 				"jp.go.nict.langrid.servicecontainer.executor.java.JavaComponentServiceFactory");
-		for(AbstractComponentServiceFactory f : factories.values()){
-			f.setCacheCapacity(cacheCapacity);
-			f.setCacheTtlSec(cacheTtlSec);
-			f.setCacheEnabled(cacheEnabled);
-		}
 		defaultServiceFactory = factories.get(Protocols.SOAP_RPCENCODED);
-		defaultServiceFactory.setCacheCapacity(cacheCapacity);
-		defaultServiceFactory.setCacheTtlSec(cacheTtlSec);
-		defaultServiceFactory.setCacheEnabled(cacheEnabled);
 	}
 
 	private void putFactoryIfAvailable(String protocol, String className){
@@ -248,9 +208,6 @@ implements ComponentServiceFactory{
 	private EndpointRewriter[] rewriters;
 	private Map<String, AbstractComponentServiceFactory> factories
 			= new HashMap<String, AbstractComponentServiceFactory>();
-	private boolean cacheEnabled;
-	private int cacheTtlSec;
-	private int cacheCapacity;
 
 	private static Logger logger = Logger.getLogger(UmbrellaComponentServiceFactory.class.getName());
 }

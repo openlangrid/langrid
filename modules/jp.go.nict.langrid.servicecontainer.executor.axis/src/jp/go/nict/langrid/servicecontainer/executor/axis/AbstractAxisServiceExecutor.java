@@ -32,7 +32,7 @@ import jp.go.nict.langrid.commons.ws.soap.SoapHeaderRpcHeadersAdapter;
 import jp.go.nict.langrid.cosee.Endpoint;
 import jp.go.nict.langrid.service_1_2.ServiceNotActiveException;
 import jp.go.nict.langrid.service_1_2.transformer.StringToPartOfSpeechTransformer;
-import jp.go.nict.langrid.servicecontainer.service.component.AbstractServiceExecutor;
+import jp.go.nict.langrid.servicecontainer.executor.AbstractServiceExecutor;
 
 import org.apache.axis.Message;
 import org.apache.axis.client.Stub;

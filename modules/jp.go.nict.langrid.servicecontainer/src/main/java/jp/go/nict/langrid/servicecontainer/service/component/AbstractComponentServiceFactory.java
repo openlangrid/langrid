@@ -17,11 +17,6 @@
  */
 package jp.go.nict.langrid.servicecontainer.service.component;
 
-import java.util.concurrent.TimeUnit;
-
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-
 import jp.go.nict.langrid.cosee.AppAuthEndpointRewriter;
 import jp.go.nict.langrid.cosee.DynamicBindingRewriter;
 import jp.go.nict.langrid.cosee.Endpoint;
@@ -50,43 +45,6 @@ implements ComponentServiceFactory{
 		this.rewriters = rewriters;
 	}
 
-	public boolean isCacheEnabled() {
-		return cacheEnabled;
-	}
-
-	public void setCacheEnabled(boolean cacheEnabled) {
-		this.cacheEnabled = cacheEnabled;
-		if(cacheEnabled){
-			if(cache == null){
-				cache = CacheBuilder.newBuilder().build();
-			}
-		} else{
-			cache = null;
-		}
-	}
-
-	public Cache<String, Object> getCache() {
-		return cache;
-	}
-
-	public int getCacheTtlSec() {
-		return cacheTtlSec;
-	}
-
-	public void setCacheTtlSec(int cacheTtlSec){
-		this.cacheTtlSec = cacheTtlSec;
-		if(cacheEnabled) initCache();
-	}
-
-	public int getCacheCapacity() {
-		return cacheCapacity;
-	}
-
-	public void setCacheCapacity(int capacity){
-		this.cacheCapacity = capacity;
-		if(cacheEnabled) initCache();
-	}
-
 	@Override
 	public <T> T getService(String invocationName, final Class<T> interfaceClass) {
 		long iid = RIProcessor.newInvocationId();
@@ -105,16 +63,5 @@ implements ComponentServiceFactory{
 			String invocationName, long invocationId, Endpoint endpoint
 			, Class<T> interfaceClass);
 
-	private void initCache(){
-		cache = CacheBuilder.newBuilder()
-				.expireAfterAccess(cacheTtlSec, TimeUnit.SECONDS)
-				.maximumSize(cacheCapacity)
-				.build();
-	}
-
 	private EndpointRewriter[] rewriters;
-	private boolean cacheEnabled;
-	private Cache<String, Object> cache;
-	private int cacheTtlSec = 600;
-	private int cacheCapacity = 100;
 }

@@ -17,5 +17,6 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.servicecontainer.executor"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

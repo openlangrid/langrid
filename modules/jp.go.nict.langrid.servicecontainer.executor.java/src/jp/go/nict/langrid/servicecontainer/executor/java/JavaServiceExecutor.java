@@ -33,8 +33,8 @@ import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.commons.util.Trio;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.cosee.Endpoint;
+import jp.go.nict.langrid.servicecontainer.executor.AbstractServiceExecutor;
 import jp.go.nict.langrid.servicecontainer.handler.RIProcessor;
-import jp.go.nict.langrid.servicecontainer.service.component.AbstractServiceExecutor;
 
 public class JavaServiceExecutor<T>
 extends AbstractServiceExecutor

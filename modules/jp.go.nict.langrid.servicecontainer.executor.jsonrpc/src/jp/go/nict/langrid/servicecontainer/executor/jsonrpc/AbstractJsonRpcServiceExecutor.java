@@ -29,7 +29,7 @@ import jp.go.nict.langrid.commons.rpc.RpcFault;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.cosee.Endpoint;
-import jp.go.nict.langrid.servicecontainer.service.component.AbstractServiceExecutor;
+import jp.go.nict.langrid.servicecontainer.executor.AbstractServiceExecutor;
 
 /**
  * 

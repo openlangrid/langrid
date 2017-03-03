@@ -148,6 +148,8 @@
     <module>../jp.go.nict.langrid.client.ws_1_2/pom.xml</module>
     <module>../jp.go.nict.langrid.servicecontainer/pom.xml</module>
     <module>../jp.go.nict.langrid.servicecontainer.decorator.cache/pom.xml</module>
+    <module>../jp.go.nict.langrid.servicecontainer.executor/pom.xml</module>
+    <module>../jp.go.nict.langrid.servicecontainer.executor.soap/pom.xml</module>
     <module>../jp.go.nict.langrid.servicecontainer.handler.axis/pom.xml</module>
     <module>../jp.go.nict.langrid.servicecontainer.handler.protobufrpc/pom.xml</module>
     <module>../jp.go.nict.langrid.serviceexecutor.db.bilingualdictionary/pom.xml</module>

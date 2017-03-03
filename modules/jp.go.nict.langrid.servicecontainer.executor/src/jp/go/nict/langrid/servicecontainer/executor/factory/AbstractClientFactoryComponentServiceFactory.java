@@ -16,55 +16,33 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package jp.go.nict.langrid.servicecontainer.executor.jsonrpc;
+package jp.go.nict.langrid.servicecontainer.executor.factory;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.Map;
 
 import jp.go.nict.langrid.client.ClientFactory;
-import jp.go.nict.langrid.client.jsonrpc.JsonRpcClientFactory;
 import jp.go.nict.langrid.cosee.Endpoint;
-import jp.go.nict.langrid.servicecontainer.executor.CachingClientFactoryServiceExecutor;
 import jp.go.nict.langrid.servicecontainer.executor.ClientFactoryServiceExecutor;
 import jp.go.nict.langrid.servicecontainer.service.ComponentServiceFactory;
 import jp.go.nict.langrid.servicecontainer.service.component.AbstractComponentServiceFactory;
 
-/**
- * 
- * 
- */
-public class JsonRpcComponentServiceFactory
+public abstract class AbstractClientFactoryComponentServiceFactory
 extends AbstractComponentServiceFactory
 implements ComponentServiceFactory{
-	/**
-	 * 
-	 */
+	public AbstractClientFactoryComponentServiceFactory(ClientFactory factory){
+		this.factory = factory;
+	}
+
 	@SuppressWarnings("unchecked")
 	public <T> T getService(String invocationName, long invocationId
 			, Endpoint endpoint, Class<T> interfaceClass){
 		try{
-			Constructor<?> ctor = factories.get(interfaceClass);
-			if(ctor == null){
-				ClientFactory f = new JsonRpcClientFactory();
-				return (T)Proxy.newProxyInstance(
-						Thread.currentThread().getContextClassLoader()
-						, new Class<?>[]{interfaceClass}
-						, isCacheEnabled() ?
-						new CachingClientFactoryServiceExecutor(
-								invocationName, invocationId, endpoint, interfaceClass,
-								f, getCache()
-								) :
-						new ClientFactoryServiceExecutor(
-								invocationName, invocationId, endpoint, interfaceClass,
-								f));
-			}
-			return (T)ctor.newInstance(
-					invocationName, invocationId, endpoint);
-		} catch(InvocationTargetException e){
-			throw new RuntimeException(e.getTargetException());
+			return (T)Proxy.newProxyInstance(
+					Thread.currentThread().getContextClassLoader()
+					, new Class<?>[]{interfaceClass}
+					, new ClientFactoryServiceExecutor(
+							invocationName, invocationId, endpoint, interfaceClass,
+							factory));
 		} catch(RuntimeException e){
 			throw e;
 		} catch(Exception e){
@@ -72,6 +50,5 @@ implements ComponentServiceFactory{
 		}
 	}
 
-	private static Map<Class<?>, Constructor<?>> factories
-		= new HashMap<Class<?>, Constructor<?>>( ) ;
+	private ClientFactory factory;
 }

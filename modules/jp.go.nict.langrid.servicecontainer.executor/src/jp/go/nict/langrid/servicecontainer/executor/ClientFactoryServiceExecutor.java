@@ -34,7 +34,6 @@ import jp.go.nict.langrid.commons.ws.util.MimeHeadersUtil;
 import jp.go.nict.langrid.cosee.Endpoint;
 import jp.go.nict.langrid.servicecontainer.executor.StreamingNotifier;
 import jp.go.nict.langrid.servicecontainer.executor.StreamingReceiver;
-import jp.go.nict.langrid.servicecontainer.service.component.AbstractServiceExecutor;
 
 /**
  * 

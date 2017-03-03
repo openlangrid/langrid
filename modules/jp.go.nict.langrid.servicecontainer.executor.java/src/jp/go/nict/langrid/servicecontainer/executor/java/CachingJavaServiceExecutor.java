@@ -34,8 +34,8 @@ import jp.go.nict.langrid.commons.util.Trio;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.cosee.Endpoint;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
+import jp.go.nict.langrid.servicecontainer.executor.AbstractServiceExecutor;
 import jp.go.nict.langrid.servicecontainer.handler.RIProcessor;
-import jp.go.nict.langrid.servicecontainer.service.component.AbstractServiceExecutor;
 
 import com.google.common.cache.Cache;
 

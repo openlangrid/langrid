@@ -1,7 +1,7 @@
 /*
  * This is a program for Language Grid Core Node. This combines multiple
  * language resources and provides composite language services.
- * Copyright (C) 2010 NICT Language Grid Project.
+ * Copyright (C) 2010-2017 NICT Language Grid Project.
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -16,38 +16,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package jp.go.nict.langrid.servicecontainer.executor.java;
+package jp.go.nict.langrid.servicecontainer.executor.soap;
 
-import java.lang.reflect.Proxy;
-
-import jp.go.nict.langrid.cosee.Endpoint;
+import jp.go.nict.langrid.client.soap.SoapClientFactory;
+import jp.go.nict.langrid.servicecontainer.executor.factory.AbstractClientFactoryComponentServiceFactory;
 import jp.go.nict.langrid.servicecontainer.service.ComponentServiceFactory;
-import jp.go.nict.langrid.servicecontainer.service.component.AbstractComponentServiceFactory;
 
 /**
  * 
  * 
- * @author Takao Nakaguchi
  */
-public class JavaComponentServiceFactory
-extends AbstractComponentServiceFactory
+public class SoapComponentServiceFactory
+extends AbstractClientFactoryComponentServiceFactory
 implements ComponentServiceFactory{
-	/**
-	 * 
-	 * 
-	 */
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T getService(String invocationName, long invocationId,
-			Endpoint endpoint, Class<T> interfaceClass) {
-		try{
-			return (T)Proxy.newProxyInstance(getClass().getClassLoader()
-					, new Class<?>[]{interfaceClass}
-					, new JavaServiceExecutor<T>(
-							invocationName, invocationId, endpoint, interfaceClass)
-			);
-		} catch (IllegalArgumentException e) {
-			throw new RuntimeException(e);
-		}
+	public SoapComponentServiceFactory() {
+		super(new SoapClientFactory());
 	}
 }
