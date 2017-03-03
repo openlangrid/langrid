@@ -84,6 +84,6 @@
     </dependency>
   </dependencies>
   <build>
-    <finalName>org.langrid.webapps.rproxytest</finalName>
+    <finalName>org.langrid.webapps.galaxyreverseproxy</finalName>
   </build>
 </project>
