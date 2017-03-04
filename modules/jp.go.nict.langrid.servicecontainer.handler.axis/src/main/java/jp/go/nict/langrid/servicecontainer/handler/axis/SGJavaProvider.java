@@ -25,22 +25,13 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
-
-import jp.go.nict.langrid.commons.rpc.intf.Parameter;
-import jp.go.nict.langrid.commons.rpc.intf.Service;
-import jp.go.nict.langrid.commons.ws.HttpServletRequestUtil;
-import jp.go.nict.langrid.commons.ws.ServiceContext;
-import jp.go.nict.langrid.commons.ws.axis.AxisServiceContext;
-import jp.go.nict.langrid.commons.ws.soap.SoapHeaderRpcHeadersAdapter;
-import jp.go.nict.langrid.cosee.axis.AxisSoapHeaderElementFactory;
-import jp.go.nict.langrid.servicecontainer.handler.RIProcessor;
-import jp.go.nict.langrid.servicecontainer.handler.ServiceFactory;
-import jp.go.nict.langrid.servicecontainer.handler.ServiceLoader;
+import javax.xml.namespace.QName;
 
 import org.apache.axis.AxisFault;
 import org.apache.axis.Handler;
@@ -55,6 +46,17 @@ import org.apache.axis.providers.BasicProvider;
 import org.apache.axis.providers.java.RPCProvider;
 import org.apache.axis.transport.http.HTTPConstants;
 import org.apache.axis.utils.bytecode.ParamNameExtractor;
+
+import jp.go.nict.langrid.commons.rpc.intf.Parameter;
+import jp.go.nict.langrid.commons.rpc.intf.Service;
+import jp.go.nict.langrid.commons.ws.HttpServletRequestUtil;
+import jp.go.nict.langrid.commons.ws.ServiceContext;
+import jp.go.nict.langrid.commons.ws.axis.AxisServiceContext;
+import jp.go.nict.langrid.commons.ws.soap.SoapHeaderRpcHeadersAdapter;
+import jp.go.nict.langrid.cosee.axis.AxisSoapHeaderElementFactory;
+import jp.go.nict.langrid.servicecontainer.handler.RIProcessor;
+import jp.go.nict.langrid.servicecontainer.handler.ServiceFactory;
+import jp.go.nict.langrid.servicecontainer.handler.ServiceLoader;
 
 /**
  * 
@@ -151,6 +153,12 @@ public class SGJavaProvider extends RPCProvider{
 				}
 			} catch (SecurityException e) {
 			}
+		}
+		// let service desc sort operations beforehand to avoid ConcurrentModificationException at run-time.
+		for (Iterator<?> i = serviceDescription.getOperations().iterator(); i.hasNext();) {
+			OperationDesc operationDesc = (OperationDesc) i.next();
+			QName qname = operationDesc.getElementQName();
+			serviceDescription.getOperationsByQName(qname);
 		}
 	}
 
