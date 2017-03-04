@@ -84,27 +84,26 @@ public class SGAxisServlet extends AxisServlet {
 		String mappings = pc.getString("wsddBeanNamespaceMappings", "");
 		initNamespaceMappings(mappings);
 		this.defaultLoaders = ServicesUtil.getServiceFactoryLoaders(getClass());
-		updateServiceDeployment();
+		try{
+			updateServiceDeployment();
+		} catch(IOException e){
+			throw new ServletException(e);
+		}
 	}
 
 	protected ServiceFactoryLoader[] getDefaultServiceFactoryLoaders(){
 		return defaultLoaders;
 	}
 
-
-	private synchronized void updateServiceDeployment() throws ServletException{
+	private synchronized void updateServiceDeployment()
+	throws AxisFault, IOException{
 		lastUpdate = System.currentTimeMillis();
-		try{
-			EngineConfiguration config = getEngine(this).getConfig();
-			if(!(config instanceof WSDDEngineConfiguration)) return;
-			loadServicesFromServicesPath(
-					((WSDDEngineConfiguration)config).getDeployment()
-					, new ServiceLoader(new ServletConfigServiceContext(getServletConfig()), getDefaultServiceFactoryLoaders())
-					);
-		} catch(AxisFault e){
-		} catch(IOException e){
-			throw new ServletException(e);
-		}
+		EngineConfiguration config = getEngine(this).getConfig();
+		if(!(config instanceof WSDDEngineConfiguration)) return;
+		loadServicesFromServicesPath(
+				((WSDDEngineConfiguration)config).getDeployment()
+				, new ServiceLoader(new ServletConfigServiceContext(getServletConfig()), getDefaultServiceFactoryLoaders())
+				);
 	}
 
 	private void loadServicesFromServicesPath(WSDDDeployment deployment, ServiceLoader loader)
@@ -166,25 +165,12 @@ public class SGAxisServlet extends AxisServlet {
 					updateServiceDeployment();
 				}
 			}
-			// First execution must be completed before other executions start in order
-			// to prevent ConcurrentModificationException caused in axis library.
-			boolean done = false;
-			synchronized(SGAxisServlet.class){
-				if(first){
-					super.service(req, resp);
-					first = false;
-					done = true;
-				}
-			}
-			if(!done){
-				super.service(req, resp);
-			}
+			super.service(req, resp);
 		} finally{
 			currentServiceLoader.remove();
 			currentServletConfig.remove();
 		}
 	}
-	private static boolean first = true;
 
 	private void initNamespaceMappings(String mappings){
 		for(String m : mappings.split("\\n")){
@@ -278,8 +264,8 @@ public class SGAxisServlet extends AxisServlet {
 			if(!qnameSet){
 				m.setQName(new QName("uri:" + packageName + "/"	, simpleName));
 			}
-	        m.setSerializer(WSDDConstants.BEAN_SERIALIZER_FACTORY);
-	        m.setDeserializer(WSDDConstants.BEAN_DESERIALIZER_FACTORY);
+			m.setSerializer(WSDDConstants.BEAN_SERIALIZER_FACTORY);
+			m.setDeserializer(WSDDConstants.BEAN_DESERIALIZER_FACTORY);
 			service.addTypeMapping(m);
 
 			clazz = clazz.getSuperclass();
