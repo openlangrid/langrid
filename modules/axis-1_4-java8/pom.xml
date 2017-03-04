@@ -56,8 +56,8 @@
 						</goals>
 						<configuration>
 							<target>
-								<copy overwrite="true" file="lib/axis.jar" tofile="target/axis-java8-1.4.jar"/>
-								<jar update="true" basedir="target/classes" destfile="target/axis-java8-1.4.jar" />
+								<copy overwrite="true" file="lib/axis.jar" tofile="target/axis-java8-${project.version}.jar"/>
+								<jar update="true" basedir="target/classes" destfile="target/axis-java8-${project.version}.jar" />
 							</target>
 						</configuration>
 					</execution>
