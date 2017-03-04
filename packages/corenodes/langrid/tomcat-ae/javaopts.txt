@@ -1,0 +1,1 @@
+ -Xmx512m -XX:MaxPermSize=128m -Djavax.xml.soap.MessageFactory=org.apache.axis.soap.MessageFactoryImpl -Djavax.xml.soap.SOAPFactory=org.apache.axis.soap.SOAPFactoryImpl

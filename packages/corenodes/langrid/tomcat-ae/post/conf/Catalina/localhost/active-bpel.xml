@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context
+  reloadable="false"
+  displayName="ActiveBPEL Business Process Server - Web Services"
+  path="/active-bpel"
+>
+	<Parameter name="fromCoreNode.appAuth.authIps" value="${CORE_TOMCAT_IPADDRESS}" />
+	<Parameter name="fromCoreNode.appAuth.authKey" value="${CORE_TO_AE_APPAUTHKEY}" />
+</Context>

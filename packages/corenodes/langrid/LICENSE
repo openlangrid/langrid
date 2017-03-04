@@ -1,0 +1,11 @@
+The Lesser General Public License (LGPL) is applied to every source code except for the following source and binary.
+
+In projects/jp.go.nict.langrid.aspect.ae/src/jp/go/nict/langrid/aspect/ae directory;
+ - AeServiceContext.java
+ - AeUserOverrideingEndpointReference.java
+ - InvokeAspect.aj 
+
+In tomcat/shared/lib directory;
+ - ae_rtaxisbpel_rtbpel_rtbpelsvr.jar
+
+Meanwhile, the above codes are covered by the GNU General Public License (GPL).
