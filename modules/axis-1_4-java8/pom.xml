@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.langrid</groupId>
 	<artifactId>axis-java8</artifactId>
-	<version>1.4</version>
+	<version>1.4-patch.2</version>
 	<name>Axis1.4 Java8</name>
 	<description>Axis1.4 patched for Java8 bytecodes.</description>
 	<url>http://langrid.org/</url>
