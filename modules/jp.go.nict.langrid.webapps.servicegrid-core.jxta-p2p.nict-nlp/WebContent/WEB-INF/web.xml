@@ -65,6 +65,14 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
   <filter>
+    <filter-name>LangridEmailAuthenticator</filter-name>
+    <filter-class>jp.go.nict.langrid.servlet.filter.auth.langrid.LangridEmailAuthenticator</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>LangridEmailAuthenticator</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <filter>
     <filter-name>SimpleAppAuth</filter-name>
     <filter-class>jp.go.nict.langrid.servlet.filter.auth.ApplicationAuthenticator</filter-class>
     <init-param>
