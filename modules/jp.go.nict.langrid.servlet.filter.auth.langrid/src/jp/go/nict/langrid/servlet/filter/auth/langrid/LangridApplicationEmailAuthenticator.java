@@ -48,30 +48,27 @@ extends ApplicationAuthenticator{
 			setInitializationException(new ServletException(e));
 		}
 	}
-	
-	private UserDao userDao;
 
 	@Override
 	protected String resolveUser(ServiceContext context, String authUser) {
-		System.out.print("[email] try to auth with " + authUser);
+		if(authUser.indexOf('@') == -1) return authUser;
 		String selfGridId = context.getSelfGridId();
 		try {
 			List<User> users = userDao.getUsersByEmail(selfGridId, authUser);
 			if(users.size() == 0){
-				System.out.println("  failed");
 				System.err.println("no user for " + authUser);
 				return authUser;
 			}
 			if(users.size() > 1){
-				System.out.println("  failed");
 				System.err.println("cannot determine user for " + authUser);
 				return authUser;
 			}
-			System.out.println("  passed");
 			return users.get(0).getUserId();
 		} catch (DaoException e) {
 			e.printStackTrace();
 			return authUser;
 		}
 	}
+
+	private UserDao userDao;
 }

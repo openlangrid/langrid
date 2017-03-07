@@ -39,22 +39,17 @@ public class LangridAuthenticator extends AbstractLangridBasicAuthenticator{
 	protected boolean doAuthenticate(
 			ServletServiceContext context
 			, ServletRequest request, String authUser, String authPass)
-	throws UserNotFoundException, DaoException
-	{
-		System.out.print("[userId] try to auth with " + authUser);
+	throws UserNotFoundException, DaoException{
 		String authDigestedPass = MessageDigestUtil.digestBySHA512(authPass);
 		String selfGridId = context.getSelfGridId();
 		User u = getUserDao().getUser(selfGridId, authUser);
 		if(u.getPassword().equals(authDigestedPass)){
 			context.setAuthorized(selfGridId, authUser, authPass);
-			System.out.println("  passed");
 			return true;
 		}else if(u.getPassword().equals(authPass)){
 			context.setAuthorized(selfGridId, authUser, authPass);
-			System.out.println("  passed");
 			return true;
 		}
-		System.out.println("  failed");
 		return false;
 	}
 }
