@@ -100,6 +100,7 @@ public final class LangridLanguageTags {
 	 */
 	public static final Language pt_BR = Language.get(ISO639_1.PT, ISO3166.BR);
 
+	
 	/**
 	 * 
 	 * 

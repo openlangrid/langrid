@@ -140,9 +140,9 @@ implements DataDao, UserDao {
 	}
 
 	@Override
-	public User getUserByEmail(String userGridId, String email) throws DaoException,
+	public List<User> getUsersByEmail(String userGridId, String email) throws DaoException,
 			UserNotFoundException {
-		return dao.getUserByEmail(userGridId, email);
+		return dao.getUsersByEmail(userGridId, email);
 	}
 
 	@Override

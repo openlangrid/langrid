@@ -234,22 +234,18 @@ implements UserDao
 		}
 	}
 
-	public User getUserByEmail(String userGridId, String email)
+	public List<User> getUsersByEmail(String userGridId, String email)
 	throws DaoException, UserNotFoundException{
-		return transact(new DaoBlockR<User>(){
+		return transact(new DaoBlockR<List<User>>(){
+			@SuppressWarnings("unchecked")
 			@Override
-			public User execute(Session session) throws DaoException {
-				@SuppressWarnings("unchecked")
-				List<User> users = (List<User>)CriteriaUtil.getList(
+			public List<User> execute(Session session) throws DaoException {
+				return (List<User>)CriteriaUtil.getList(
 						session.createCriteria(User.class)
 								.add(Property.forName("gridId").eq(userGridId))
 								.add(Property.forName("emailAddress").eq(email))
 						, 0, 1, new Order[]{}
 						);
-				if(users.size() > 0){
-					return users.get(0);
-				}
-				return null;
 			}
 		});
 	}

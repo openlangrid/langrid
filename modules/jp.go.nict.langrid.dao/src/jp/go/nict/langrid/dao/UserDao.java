@@ -103,7 +103,7 @@ public interface UserDao{
 	User getUser(String userGridId, String userId)
 	throws DaoException, UserNotFoundException;
 
-	User getUserByEmail(String userGridId, String email)
+	List<User> getUsersByEmail(String userGridId, String email)
 	throws DaoException, UserNotFoundException;
 
 	/**

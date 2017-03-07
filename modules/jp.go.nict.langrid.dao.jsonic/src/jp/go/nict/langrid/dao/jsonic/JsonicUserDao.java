@@ -137,7 +137,7 @@ public class JsonicUserDao implements UserDao {
 	}
 
 	@Override
-	public User getUserByEmail(String userGridId, String email) throws DaoException,
+	public List<User> getUsersByEmail(String userGridId, String email) throws DaoException,
 			UserNotFoundException {
 		throw new UnsupportedOperationException();
 	}

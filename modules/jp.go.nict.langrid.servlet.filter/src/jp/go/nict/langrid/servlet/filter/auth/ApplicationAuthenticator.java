@@ -34,6 +34,7 @@ import jp.go.nict.langrid.commons.parameter.ParameterContext;
 import jp.go.nict.langrid.commons.transformer.StringSplittingTransformer;
 import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.commons.ws.BasicAuthUtil;
+import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.commons.ws.ServletServiceContext;
 import jp.go.nict.langrid.commons.ws.param.FilterConfigParameterContext;
 import jp.go.nict.langrid.commons.ws.servlet.AbstractHttpFilter;
@@ -103,17 +104,21 @@ public class ApplicationAuthenticator extends AbstractHttpFilter{
 		Pair<String, String> basicAuthUserAndPassword = context.getBasicAuthUserAndPassword();
 		if(basicAuthUserAndPassword == null) return false;
 		String authPass = basicAuthUserAndPassword.getFirst();
-		String langridId = basicAuthUserAndPassword.getSecond();
+		String langridId = resolveUser(context, basicAuthUserAndPassword.getSecond());
 		String accessAddress = request.getRemoteAddr();
 		if(!authPass.equals(authKey)) return false;
 		if(langridId.length() == 0) return false;
 		for(String ip : ips){
 			if(accessAddress.startsWith(ip)){
-				context.setAuthorized(null, langridId, "");
+				context.setAuthorized(context.getSelfGridId(), langridId, "");
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	protected String resolveUser(ServiceContext context, String authUser){
+		return authUser;
 	}
 
 	private String[] ips;

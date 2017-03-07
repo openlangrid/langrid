@@ -48,4 +48,9 @@
 
 	<Parameter name="appAuth.simpleApp.authIps" value="127.0.0.1" />
 	<Parameter name="appAuth.simpleApp.authKey" value="${AE_TO_CORE_APPAUTHKEY}" />
+
+<!-- for galaxy
+	<Parameter name="appAuth.galaxy.authIps" value="127.0.0.1" />
+	<Parameter name="appAuth.galaxy.authKey" value="${GALAXY_TO_CORE_APPAUTHKEY}" />
+-->
 </Context>

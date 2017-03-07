@@ -19,13 +19,17 @@
  */
 package jp.go.nict.langrid.servlet.filter.auth.langrid;
 
-import javax.servlet.ServletRequest;
+import java.util.List;
 
-import jp.go.nict.langrid.commons.security.MessageDigestUtil;
-import jp.go.nict.langrid.commons.ws.ServletServiceContext;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+
+import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.dao.DaoException;
-import jp.go.nict.langrid.dao.UserNotFoundException;
+import jp.go.nict.langrid.dao.DaoFactory;
+import jp.go.nict.langrid.dao.UserDao;
 import jp.go.nict.langrid.dao.entity.User;
+import jp.go.nict.langrid.servlet.filter.auth.ApplicationAuthenticator;
 
 /**
  * 
@@ -34,27 +38,40 @@ import jp.go.nict.langrid.dao.entity.User;
  * @author $Author: t-nakaguchi $
  * @version $Revision: 307 $
  */
-public class LangridAuthenticator extends AbstractLangridBasicAuthenticator{
-	@Override
-	protected boolean doAuthenticate(
-			ServletServiceContext context
-			, ServletRequest request, String authUser, String authPass)
-	throws UserNotFoundException, DaoException
-	{
-		System.out.print("[userId] try to auth with " + authUser);
-		String authDigestedPass = MessageDigestUtil.digestBySHA512(authPass);
-		String selfGridId = context.getSelfGridId();
-		User u = getUserDao().getUser(selfGridId, authUser);
-		if(u.getPassword().equals(authDigestedPass)){
-			context.setAuthorized(selfGridId, authUser, authPass);
-			System.out.println("  passed");
-			return true;
-		}else if(u.getPassword().equals(authPass)){
-			context.setAuthorized(selfGridId, authUser, authPass);
-			System.out.println("  passed");
-			return true;
+public class LangridApplicationEmailAuthenticator
+extends ApplicationAuthenticator{
+	public void init(FilterConfig config) throws ServletException {
+		super.init(config);
+		try{
+			userDao = DaoFactory.createInstance().createUserDao();
+		} catch(DaoException e){
+			setInitializationException(new ServletException(e));
 		}
-		System.out.println("  failed");
-		return false;
+	}
+	
+	private UserDao userDao;
+
+	@Override
+	protected String resolveUser(ServiceContext context, String authUser) {
+		System.out.print("[email] try to auth with " + authUser);
+		String selfGridId = context.getSelfGridId();
+		try {
+			List<User> users = userDao.getUsersByEmail(selfGridId, authUser);
+			if(users.size() == 0){
+				System.out.println("  failed");
+				System.err.println("no user for " + authUser);
+				return authUser;
+			}
+			if(users.size() > 1){
+				System.out.println("  failed");
+				System.err.println("cannot determine user for " + authUser);
+				return authUser;
+			}
+			System.out.println("  passed");
+			return users.get(0).getUserId();
+		} catch (DaoException e) {
+			e.printStackTrace();
+			return authUser;
+		}
 	}
 }
