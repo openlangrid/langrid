@@ -254,7 +254,7 @@ extends UpdateManagedEntity
 		this.aveOverhead = aveOverhead;
 	}
 	public long getInvocationCount() {
-		return invocationCount;
+		return invocationCount == null ? 0 : invocationCount;
 	}
 	public void setInvocationCount(long invocationCount) {
 		this.invocationCount = invocationCount;
@@ -285,6 +285,6 @@ extends UpdateManagedEntity
 	private Boolean symmetric = false;
 	private Boolean backwardTransitive = false;
 	private Boolean shortcut = false;
-	private long invocationCount;
+	private Long invocationCount;
 	private Double aveOverhead;
 }
