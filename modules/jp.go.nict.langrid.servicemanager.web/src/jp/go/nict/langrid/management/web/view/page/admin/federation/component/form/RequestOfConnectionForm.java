@@ -120,17 +120,18 @@ public abstract class RequestOfConnectionForm extends AbstractForm<String> {
 			String url, String userId, String password)
 	throws ServiceManagerException, HttpException, IOException, ProcessFailedException{
 		String token = FederationLogic.newToken();
-		
+
 		String inputedUrl = url;
 		String[] hostAndPort = inputedUrl.split("/", 4)[2].split(":");
-		
-		String host = hostAndPort[0];
-		int port = 1 < hostAndPort.length ? Integer.valueOf(hostAndPort[1]) : 80;
-		
+
 		String requestUrl = inputedUrl.endsWith("/") ? inputedUrl : inputedUrl + "/";
 		requestUrl += "federation/request";
-		
-		HttpClient hc = HttpClientUtil.createHttpClientWithHostConfig(new URL(requestUrl));
+		URL rurl = new URL(requestUrl);
+
+		String host = hostAndPort[0];
+		int port = 1 < hostAndPort.length ? Integer.valueOf(hostAndPort[1]) : rurl.getDefaultPort();
+
+		HttpClient hc = HttpClientUtil.createHttpClientWithHostConfig(rurl);
 		SimpleHttpConnectionManager manager = new SimpleHttpConnectionManager(true);
 		manager.getParams().setConnectionTimeout(20000);
 		manager.getParams().setSoTimeout(20000);
