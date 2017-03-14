@@ -21,9 +21,11 @@ import jp.go.nict.langrid.management.web.view.page.admin.federation.AllOperators
 import jp.go.nict.langrid.management.web.view.page.user.component.form.validator.FormRegistUserValidator;
 import jp.go.nict.langrid.management.web.view.page.user.component.text.RequiredUserIdField;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
+import jp.go.nict.langrid.service_1_2.ProcessFailedException;
 
 import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
@@ -79,63 +81,8 @@ public abstract class RequestOfDisconnectionForm extends AbstractForm<String> {
 			@Override
 			public void onSubmit() {
 				try {
-					DisconnectRequest dr = new DisconnectRequest();
-					dr.setGridId(gridId);
-					dr.setRequestUserId(targetUserId);
-					dr.setToken(accessToken);
-					
-					String host = targetUrl.split("/", 4)[2];
-					String[] urls = host.split(":");
-					host = urls[0];
-					int port = 1 < urls.length ? Integer.valueOf(urls[1]) : 80;
-					
-					HttpClient hc = HttpClientUtil.createHttpClientWithHostConfig(new URL(targetUrl));
-					PostMethod pm = new PostMethod(targetUrl);
-					pm.setParameter("request", JSON.encode(dr));
-					pm.setParameter("requestType", RequestType.DISCONNECT.name());
-					pm.addRequestHeader(
-							LangridConstants.HTTPHEADER_FEDERATEDCALL_FEDERATIONRESPONSE,
-							Boolean.TRUE.toString());
-					pm.setDoAuthentication(true);
-					hc.getState().setCredentials(
-						new AuthScope(host, port, null)
-						,new UsernamePasswordCredentials(
-							userId.getModelObject(), password.getModelObject())
-						);
-					hc.getParams().setAuthenticationPreemptive(true);
-					int code = hc.executeMethod(pm);
-					if(code == HttpStatus.SC_OK) {
-						String res = pm.getResponseBodyAsString();
-						if(res != null) {
-							DisconnectResponse dres = JSON.decode(res, DisconnectResponse.class);
-							try {
-								FederationService fs = ServiceFactory.getInstance().getFederationService(gridId);
-								
-								FederationModel fm = fs.get(gridId, targetGridId);
-								fs.delete(fm);
-								
-								GridService gs = ServiceFactory.getInstance().getGridService();
-								GridModel gm = gs.get(targetGridId);
-								gs.delete(gm);
-								
-							} catch (ServiceManagerException e) {
-								doErrorProcess(e);
-							}
-						}
-					} else if(code == HttpStatus.SC_INTERNAL_SERVER_ERROR
-						|| code == HttpStatus.SC_NOT_FOUND
-						|| code == HttpStatus.SC_FORBIDDEN
-						|| code == HttpStatus.SC_UNAUTHORIZED
-						|| code == HttpStatus.SC_SERVICE_UNAVAILABLE)
-					{
-						String res = pm.getResponseBodyAsString();
-						if(res != null) {
-							error(code + ": " + res);
-						} else {
-							error(code + ": Unknown error response.");
-						}
-						setIsValidateError(true);
-					}
+					disconnectFederation(targetUrl, gridId, targetGridId, accessToken, targetUserId,
+							userId.getModelObject(), password.getModelObject());
 				} catch(MalformedURLException e) {
 					doErrorProcess(new ServiceManagerException(e, getClass()));
 				} catch(ConnectTimeoutException e) {
@@ -144,9 +91,71 @@ public abstract class RequestOfDisconnectionForm extends AbstractForm<String> {
 				} catch(IOException e) {
 					error("Connection failed to target service grid: '" + targetUrl + "'");
 					setIsValidateError(true);
+				} catch (ServiceManagerException e) {
+					doErrorProcess(e);
+				} catch(ProcessFailedException e){
+					error(e.getDescription());
+					setIsValidateError(true);
 				}
 			}
 		});
+	}
+
+	private static void disconnectFederation(
+			String targetUrl, String selfGridId, String targetGridId,
+			String accessToken, String targetUserId,
+			String userId, String password) throws HttpException, IOException, ServiceManagerException, ProcessFailedException
+	{
+		DisconnectRequest dr = new DisconnectRequest();
+		dr.setGridId(selfGridId);
+		dr.setRequestUserId(targetUserId);
+		dr.setToken(accessToken);
+		
+		URL turl = new URL(targetUrl);
+		int port = turl.getPort() != -1 ? turl.getPort() : turl.getDefaultPort();
+	
+		HttpClient hc = HttpClientUtil.createHttpClientWithHostConfig(turl);
+		PostMethod pm = new PostMethod(targetUrl);
+		pm.setParameter("request", JSON.encode(dr));
+		pm.setParameter("requestType", RequestType.DISCONNECT.name());
+		pm.addRequestHeader(
+				LangridConstants.HTTPHEADER_FEDERATEDCALL_FEDERATIONRESPONSE,
+				Boolean.TRUE.toString());
+		pm.setDoAuthentication(true);
+		hc.getState().setCredentials(
+			new AuthScope(turl.getHost(), port, null)
+			,new UsernamePasswordCredentials(
+				userId, password)
+			);
+		hc.getParams().setAuthenticationPreemptive(true);
+		int code = hc.executeMethod(pm);
+		if(code == HttpStatus.SC_OK) {
+			String res = pm.getResponseBodyAsString();
+			if(res != null) {
+				DisconnectResponse dres = JSON.decode(res, DisconnectResponse.class);
+				FederationService fs = ServiceFactory.getInstance().getFederationService(selfGridId);
+				
+				FederationModel fm = fs.get(selfGridId, targetGridId);
+				fs.delete(fm);
+				
+				GridService gs = ServiceFactory.getInstance().getGridService();
+				GridModel gm = gs.get(targetGridId);
+				gs.delete(gm);
+					
+			}
+		} else if(code == HttpStatus.SC_INTERNAL_SERVER_ERROR
+			|| code == HttpStatus.SC_NOT_FOUND
+			|| code == HttpStatus.SC_FORBIDDEN
+			|| code == HttpStatus.SC_UNAUTHORIZED
+			|| code == HttpStatus.SC_SERVICE_UNAVAILABLE)
+		{
+			String res = pm.getResponseBodyAsString();
+			if(res != null) {
+				throw new ProcessFailedException(code + ": " + res);
+			} else {
+				throw new ProcessFailedException(code + ": Unknown error response.");
+			}
+		}
 	}
 
 	@Override
