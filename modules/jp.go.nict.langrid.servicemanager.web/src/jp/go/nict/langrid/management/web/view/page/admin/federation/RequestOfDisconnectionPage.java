@@ -95,14 +95,12 @@ public class RequestOfDisconnectionPage extends ServiceManagerPage {
 						String res = "";
 						try {
 							// create http client
-							String host = requestUrl.split("/", 4)[2];
-							String[] urls = host.split(":");
-							host = urls[0];
-							int port = 1 < urls.length ? Integer.valueOf(urls[1]) : 80;
+							URL rurl = new URL(requestUrl);
+							int port = rurl.getPort() != -1 ? rurl.getPort() : rurl.getDefaultPort();
 							
-							HttpClient hc = HttpClientUtil.createHttpClientWithHostConfig(new URL(requestUrl));
+							HttpClient hc = HttpClientUtil.createHttpClientWithHostConfig(rurl);
 							hc.getState().setCredentials(
-								new AuthScope(host, port, null)
+								new AuthScope(rurl.getHost(), port, null)
 								, new UsernamePasswordCredentials(getSelfGridId(), accessToken)
 							);
 							hc.getParams().setAuthenticationPreemptive(true);
