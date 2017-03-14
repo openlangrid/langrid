@@ -75,7 +75,7 @@ public abstract class RequestOfConnectionForm extends AbstractForm<String> {
 			@Override
 			public void onSubmit() {
 				try{
-					requestFederation(
+					targetGridId = requestFederation(
 							gridId,
 							url.getModelObject(), userId.getModelObject(),
 							password.getModelObject());
