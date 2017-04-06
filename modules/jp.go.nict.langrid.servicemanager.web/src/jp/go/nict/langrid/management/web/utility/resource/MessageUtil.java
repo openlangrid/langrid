@@ -38,6 +38,9 @@ public class MessageUtil {
 	public static final void setContext(ServletContext context)
 			throws ParameterRequiredException {
 		new ParameterLoader().load(cm, new ServletContextParameterContext(context));
+		if(!cm.getCorenodeUrl().endsWith("/")){
+			cm.setCorenodeUrl(cm.getCorenodeUrl() + "/");
+		}
 	}
 
 	// get from context

@@ -630,6 +630,7 @@ public class AbstractLangridService {
 				"langrid.activeBpelDeployBinding", "RPC");
 		coreNodeUrl = p.getString(
 				"langrid.node.url", "");
+		if(!coreNodeUrl.endsWith("/")) coreNodeUrl = coreNodeUrl + "/";
 		try{
 			serviceLogic = new ServiceLogic(activeBpelServicesUrl, "", "", activeBpelDeployBinding);
 			userLogic = new UserLogic();
