@@ -183,7 +183,7 @@ public class SoapResponseParser {
 	private static <T> T nodeToType(XPathWorkspace w, Node node, Class<T> clazz, Converter converter)
 	throws InstantiationException, IllegalAccessException, IllegalArgumentException
 	, InvocationTargetException, ConversionException, DOMException, ParseException{
-		if(clazz.isPrimitive()){
+		if(clazz.isPrimitive() || clazz.getName().startsWith("java.lang.")){
 			return converter.convert(resolveHref(w, node).getTextContent(), clazz);
 		} else if(clazz.equals(String.class)){
 			return clazz.cast(resolveHref(w, node).getTextContent());
@@ -214,7 +214,9 @@ public class SoapResponseParser {
 				if(!(child instanceof Element)) continue;
 				String nn = child.getLocalName();
 				Method setter = ClassUtil.findSetter(clazz, nn);
-				setter.invoke(instance, nodeToType(w, resolveHref(w, child), setter.getParameterTypes()[0], converter));
+				if(setter != null){
+					setter.invoke(instance, nodeToType(w, resolveHref(w, child), setter.getParameterTypes()[0], converter));
+				}
 			}
 			return instance;
 		}
