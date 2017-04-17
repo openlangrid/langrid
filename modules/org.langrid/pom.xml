@@ -136,6 +136,7 @@
   <modules>
     <module>../jp.go.nict.langrid.commons/pom.xml</module>
     <module>../jp.go.nict.langrid.commons.protobufrpc/pom.xml</module>
+    <module>../jp.go.nict.langrid.commons.test/pom.xml</module>
     <module>../jp.go.nict.langrid.language/pom.xml</module>
     <module>../jp.go.nict.langrid.service.common_1_2/pom.xml</module>
     <module>../jp.go.nict.langrid.service.language_1_2/pom.xml</module>
