@@ -2,8 +2,8 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jp.go.nict.langrid.commons.test</artifactId>
   <packaging>jar</packaging>
-  <name>Common Library</name>
-  <description>Common and utility library for the Service Grid Server Software and java web services.</description>
+  <name>Common Library for testing</name>
+  <description>Common and utility library for testing.</description>
   <url>http://langrid.org/</url>
   <licenses>
     <license>
