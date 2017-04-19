@@ -687,7 +687,7 @@ implements AccessRightDao
 		"        where gridid=u.gridid and rolename='langridadmin')\n" +
 		"      and u.userid in (\n" +
 		"        select userid from userroles\n" +
-		"        where gridid=u.gridid and rolename='langriduser')\n" +
+		"        where gridid=u.gridid and rolename in ('langriduser', 'langridserviceuser'))\n" +
 		"      %s %s %s\n" +
 		"    ) as l\n" +
 		"  left join accessright ar on l.ugid=ar.usergridid and ar.userid='*'\n" +
@@ -704,7 +704,7 @@ implements AccessRightDao
 		"      where gridid=u.gridid and rolename='langridadmin')" +
 		"    and u.userid in (" +
 		"      select userid from userroles" +
-		"      where gridid=u.gridid and rolename='langriduser')" +
+		"      where gridid=u.gridid and rolename in ('langriduser', 'langridserviceuser'))" +
 		"    %s %s %s";
 	private static String adjustGridDefaultInsertQuery =
 		"insert into accessright\n" +
@@ -733,7 +733,7 @@ implements AccessRightDao
 		"    )\n" +
 		"    and u.userid in (\n" +
 		"      select userid from userroles\n" +
-		"      where gridid=u.gridid and rolename='langriduser'\n" +
+		"      where gridid=u.gridid and rolename in ('langriduser', 'langridserviceuser')\n" +
 		"    )" +
 		"    and (u.gridId<>:serviceGridId or u.userid<>:ownerUserId) ";
 	private static String adjustUserDeleteQuery =
