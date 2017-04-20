@@ -66,6 +66,7 @@ public class ServiceManagerPage extends BasePage {
 				"SessionOperate", !userRoles.isEmpty(), session.getUserId()));
 		add(new Label("ServiceManagerCopyright"
 			, MessageUtil.getServiceManagerCopyright()).setEscapeModelStrings(false));
+		add(new Label("Version", MessageUtil.VERSION));
 		ServiceFactory sf =ServiceFactory.getInstance();
 		
 		try {

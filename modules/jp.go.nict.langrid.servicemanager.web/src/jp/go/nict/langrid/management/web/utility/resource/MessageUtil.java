@@ -116,4 +116,5 @@ public class MessageUtil {
 	public static final String MANUAL_DIR = MessageManager
 			.getMessage("Manual.file.Dir");
 	public static final String ISO_LANGUAGE_CODE_URL = "http://www.loc.gov/standards/iso639-2/php/code_list.php";
+	public static final String VERSION = MessageManager.getMessage("version");
 }
