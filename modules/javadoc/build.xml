@@ -49,7 +49,7 @@
 					windowtitle="Language Grid API" locale="@{locale}"
 					encoding="UTF-8" docencoding="UTF-8"
 					packagenames="jp.go.nict.langrid.*" charset="UTF-8"
-					source="1.6"
+					source="1.8"
 					protected="true"
 					useexternalfile="yes"
 					maxmemory="256m"

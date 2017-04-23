@@ -8,18 +8,12 @@ jp.go.nict.langrid.client.ws_1_2
 jp.go.nict.langrid.client.ws_1_2.management
 jp.go.nict.langrid.client.ws_1_2.protobuf
 jp.go.nict.langrid.commons
-jp.go.nict.langrid.commons.beanutils
-jp.go.nict.langrid.commons.cs
 jp.go.nict.langrid.commons.jxpath
 jp.go.nict.langrid.commons.protobufrpc
 jp.go.nict.langrid.commons.validator
-jp.go.nict.langrid.commons.ws
-jp.go.nict.langrid.commons.ws.axis
 jp.go.nict.langrid.commons.ws.axis2
-jp.go.nict.langrid.cosee
 jp.go.nict.langrid.cosee.ae.3.0.3
 jp.go.nict.langrid.cosee.ae.5.0.2
-jp.go.nict.langrid.cosee.axis
 jp.go.nict.langrid.custominvoke.workflowsupport
 jp.go.nict.langrid.custominvoke.workflowsupport.ae_3_0_3
 jp.go.nict.langrid.custominvoke.workflowsupport.ae_5_0_2
@@ -41,9 +35,9 @@ jp.go.nict.langrid.servicecontainer.executor.java
 jp.go.nict.langrid.servicecontainer.executor.javaWithFE
 jp.go.nict.langrid.servicecontainer.executor.jsonrpc
 jp.go.nict.langrid.servicecontainer.executor.protobufrpc
+jp.go.nict.langrid.servicecontainer.executor.soap
 jp.go.nict.langrid.servicecontainer.executor.umbrella
 jp.go.nict.langrid.servicecontainer.handler.axis
-jp.go.nict.langrid.servicecontainer.handler.jsonrpc
 jp.go.nict.langrid.servicecontainer.handler.protobufrpc
 jp.go.nict.langrid.serviceexecutor.db.bilingualdictionary
 jp.go.nict.langrid.serviceexecutor.mocks
@@ -51,6 +45,7 @@ jp.go.nict.langrid.servicemanager.api_1_2
 jp.go.nict.langrid.servicemanager.logic
 jp.go.nict.langrid.servicemanager.web
 jp.go.nict.langrid.servicesupervisor
+jp.go.nict.langrid.servicesupervisor.advancedcontrol
 jp.go.nict.langrid.servicesupervisor.frontend
 jp.go.nict.langrid.servicesupervisor.frontend.accesslimitcheck
 jp.go.nict.langrid.servicesupervisor.frontend.processors
@@ -61,5 +56,4 @@ jp.go.nict.langrid.servlet.filter
 jp.go.nict.langrid.servlet.filter.auth.langrid
 jp.go.nict.langrid.servlet.initialize
 jp.go.nict.langrid.wrapper.common
-jp.go.nict.langrid.wrapper.common.db
 jp.go.nict.langrid.wrapper.workflowsupport
