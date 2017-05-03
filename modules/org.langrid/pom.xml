@@ -135,19 +135,20 @@
   </properties>
   <modules>
     <module>../jp.go.nict.langrid.commons/pom.xml</module>
+    <module>../jp.go.nict.langrid.language/pom.xml</module>
+    <module>../jp.go.nict.langrid.client/pom.xml</module>
+    <module>../jp.go.nict.langrid.servicecontainer/pom.xml</module>
+<!--
     <module>../jp.go.nict.langrid.commons.protobufrpc/pom.xml</module>
     <module>../jp.go.nict.langrid.commons.test/pom.xml</module>
-    <module>../jp.go.nict.langrid.language/pom.xml</module>
     <module>../jp.go.nict.langrid.service.common_1_2/pom.xml</module>
     <module>../jp.go.nict.langrid.service.language_1_2/pom.xml</module>
     <module>../jp.go.nict.langrid.service.management_1_2/pom.xml</module>
-    <module>../jp.go.nict.langrid.client/pom.xml</module>
     <module>../jp.go.nict.langrid.client.test/pom.xml</module>
     <module>../jp.go.nict.langrid.client.axis/pom.xml</module>
     <module>../jp.go.nict.langrid.client.protobufrpc/pom.xml</module>
     <module>../jp.go.nict.langrid.client.soap/pom.xml</module>
     <module>../jp.go.nict.langrid.client.ws_1_2/pom.xml</module>
-    <module>../jp.go.nict.langrid.servicecontainer/pom.xml</module>
     <module>../jp.go.nict.langrid.servicecontainer.decorator.cache/pom.xml</module>
     <module>../jp.go.nict.langrid.servicecontainer.executor/pom.xml</module>
     <module>../jp.go.nict.langrid.servicecontainer.executor.soap/pom.xml</module>
@@ -157,5 +158,6 @@
     <module>../jp.go.nict.langrid.wrapper.common/pom.xml</module>
     <module>../jp.go.nict.langrid.wrapper.workflowsupport/pom.xml</module>
     <module>../org.langrid.service.api.lapps_nlp/pom.xml</module>
+-->
   </modules>
 </project>
