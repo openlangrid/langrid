@@ -24,19 +24,19 @@ import java.util.Iterator;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.soap.MimeHeaders;
+
+import org.apache.axiom.soap.SOAPHeaderBlock;
+import org.apache.axis2.context.MessageContext;
+import org.apache.axis2.description.AxisService;
+import org.apache.axis2.transport.http.HTTPConstants;
 
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.commons.ws.BasicAuthUtil;
 import jp.go.nict.langrid.commons.ws.FilePersistentProperties;
 import jp.go.nict.langrid.commons.ws.HttpServletRequestUtil;
+import jp.go.nict.langrid.commons.ws.MimeHeaders;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
-
-import org.apache.axiom.soap.SOAPHeaderBlock;
-import org.apache.axis2.context.MessageContext;
-import org.apache.axis2.description.AxisService;
-import org.apache.axis2.transport.http.HTTPConstants;
 
 /**
  * 
