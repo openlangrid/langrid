@@ -62,6 +62,13 @@ public class MimeHeadersUtil {
 		else return StringUtil.join(values, ",");
 	}
 
+	public static String getJoinedValue(jp.go.nict.langrid.commons.ws.soap.MimeHeaders headers, String name){
+		String[] values = headers.getHeader(name);
+		if(values == null) return null;
+		if(values.length == 0) return "";
+		else return StringUtil.join(values, ",");
+	}
+
 	/**
 	 * 
 	 * 

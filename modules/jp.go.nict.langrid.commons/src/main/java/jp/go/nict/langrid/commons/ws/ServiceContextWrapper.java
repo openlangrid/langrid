@@ -20,6 +20,7 @@ package jp.go.nict.langrid.commons.ws;
 import java.net.URL;
 
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
+import jp.go.nict.langrid.commons.ws.soap.MimeHeaders;
 
 /**
  * 

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
+import jp.go.nict.langrid.commons.ws.soap.MimeHeaders;
 
 /**
  * 

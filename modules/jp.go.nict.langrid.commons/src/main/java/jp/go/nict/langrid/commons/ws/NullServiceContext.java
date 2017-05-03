@@ -21,6 +21,7 @@ import java.net.URL;
 import java.util.Collections;
 
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
+import jp.go.nict.langrid.commons.ws.soap.MimeHeaders;
 
 /**
  * 

@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.util.Pair;
+import jp.go.nict.langrid.commons.ws.soap.MimeHeaders;
 
 /**
  * 

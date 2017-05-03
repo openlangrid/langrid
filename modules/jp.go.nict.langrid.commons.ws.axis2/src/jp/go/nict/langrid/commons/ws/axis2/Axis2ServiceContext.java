@@ -35,8 +35,8 @@ import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.commons.ws.BasicAuthUtil;
 import jp.go.nict.langrid.commons.ws.FilePersistentProperties;
 import jp.go.nict.langrid.commons.ws.HttpServletRequestUtil;
-import jp.go.nict.langrid.commons.ws.MimeHeaders;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
+import jp.go.nict.langrid.commons.ws.soap.MimeHeaders;
 
 /**
  * 
