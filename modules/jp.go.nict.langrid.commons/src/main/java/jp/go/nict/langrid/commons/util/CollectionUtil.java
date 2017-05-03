@@ -32,8 +32,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
+
+import jp.go.nict.langrid.commons.transformer.Transformer;
+import jp.go.nict.langrid.commons.util.function.Function;
+import jp.go.nict.langrid.commons.util.function.Predicate;
 
 /**
  * 
@@ -150,6 +152,13 @@ public class CollectionUtil {
 		return r;
 	}
 
+	public static <T, U> List<U> collect(
+			Iterator<T> iterator, Transformer<T, U> mapper){
+		List<U> r = new ArrayList<U>();
+		collect(iterator, r, mapper);
+		return r;
+	}
+
 	/**
 	 * 
 	 * 
@@ -168,6 +177,13 @@ public class CollectionUtil {
 			Iterator<T> iterator, Collection<U> target, Function<T, U> mapper){
 		while(iterator.hasNext()){
 			target.add(mapper.apply(iterator.next()));
+		}
+	}
+
+	public static <T, U> void collect(
+			Iterator<T> iterator, Collection<U> target, Transformer<T, U> mapper){
+		while(iterator.hasNext()){
+			target.add(mapper.transform(iterator.next()));
 		}
 	}
 

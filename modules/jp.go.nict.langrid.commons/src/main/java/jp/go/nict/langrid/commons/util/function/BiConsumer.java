@@ -17,7 +17,6 @@
  */
 package jp.go.nict.langrid.commons.util.function;
 
-@Deprecated
 public interface BiConsumer<T, U> {
 	void accept(T value1, U value2);
 }

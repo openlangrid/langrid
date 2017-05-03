@@ -1,6 +1,6 @@
 package jp.go.nict.langrid.commons.util;
 
-import java.util.function.LongConsumer;
+import jp.go.nict.langrid.commons.util.function.Consumer;
 
 /*
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
@@ -31,7 +31,7 @@ public class LapTimer {
 		return d;
 	}
 
-	public void lapNanos(LongConsumer consumer){
+	public void lapNanos(Consumer<Long> consumer){
 		consumer.accept(lapNanos());
 		lap = System.nanoTime();
 	}
@@ -40,7 +40,7 @@ public class LapTimer {
 		return lapNanos() / 1000000;
 	}
 
-	public void lapMillis(LongConsumer consumer){
+	public void lapMillis(Consumer<Long> consumer){
 		consumer.accept(lapMillis());
 		lap = System.nanoTime();
 	}

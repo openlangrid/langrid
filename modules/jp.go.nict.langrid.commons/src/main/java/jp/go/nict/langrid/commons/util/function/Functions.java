@@ -17,10 +17,6 @@
  */
 package jp.go.nict.langrid.commons.util.function;
 
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public class Functions {
 	public static <T> Consumer<T> nullComsumer(){
@@ -94,9 +90,9 @@ public class Functions {
 	public static interface BiConsumerWithException<T, U, E extends Throwable>{
 		void accept(T value1, U value2) throws E;
 	}
-	public static <T, U, E extends Throwable> java.util.function.BiConsumer<T, U> soften(
+	public static <T, U, E extends Throwable> BiConsumer<T, U> soften(
 			final BiConsumerWithException<T, U, E> c){
-		return new java.util.function.BiConsumer<T, U>(){
+		return new BiConsumer<T, U>(){
 			@Override
 			public void accept(T value1, U value2) {
 				try{
@@ -128,9 +124,9 @@ public class Functions {
 	public static interface BiFunctionWithException<T, U, R, E extends Throwable>{
 		R apply(T value1, U value2) throws E;
 	}
-	public static <T, U, R, E extends Throwable> java.util.function.BiFunction<T, U, R> soften(
+	public static <T, U, R, E extends Throwable> BiFunction<T, U, R> soften(
 			final BiFunctionWithException<T, U, R, E> f){
-		return new java.util.function.BiFunction<T, U, R>(){
+		return new BiFunction<T, U, R>(){
 			@Override
 			public R apply(T value1, U value2) {
 				try{
@@ -152,11 +148,15 @@ public class Functions {
 
 	@SuppressWarnings("unchecked")
 	public static <P, E extends Throwable> void tunnelingExecute(
-			Consumer<Consumer<P>> term, ConsumerWithException<P, E> process)
+			Consumer<Consumer<P>> term, final ConsumerWithException<P, E> process)
 	throws E{
 		try{
 			term.accept(Functions.soften(
-					(ConsumerWithException<P, E>)(pr -> process.accept(pr))));
+					new ConsumerWithException<P, E>(){
+						public void accept(P value) throws E {
+							process.accept(value);
+						}
+					}));
 		} catch(SoftenedException e){
 			throw (E)e.getCause();
 		}

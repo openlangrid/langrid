@@ -17,7 +17,6 @@
  */
 package jp.go.nict.langrid.commons.util.function;
 
-@Deprecated
 public interface BiFunction<T, U, R> {
 	R apply(T v1, U v2);
 }

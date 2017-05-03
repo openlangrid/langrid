@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.Function;
 
 import jp.go.nict.langrid.commons.codec.URLCodec;
 import jp.go.nict.langrid.commons.lang.StringUtil;
@@ -34,6 +33,7 @@ import jp.go.nict.langrid.commons.transformer.TransformationException;
 import jp.go.nict.langrid.commons.transformer.Transformer;
 import jp.go.nict.langrid.commons.util.CollectionUtil;
 import jp.go.nict.langrid.commons.util.Pair;
+import jp.go.nict.langrid.commons.util.function.Function;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSONException;
 
@@ -51,7 +51,7 @@ public class DynamicBindingUtil {
 	public static String encodeDefaults(Map<String, String> bindings){
 		return StringUtil.join(
 				CollectionUtil
-					.collect(bindings.entrySet(), defaultBindingToString)
+					.collect(bindings.entrySet().iterator(), defaultBindingToString)
 					.toArray(new String[]{})
 				, ",");
 	}
@@ -71,7 +71,7 @@ public class DynamicBindingUtil {
 	public static String encodeOverrides(Map<String, Map<String, String>> bindings){
 		return StringUtil.join(
 				CollectionUtil
-					.collect(filter(bindings).entrySet(), bindingOverrideToString)
+					.collect(filter(bindings).entrySet().iterator(), bindingOverrideToString)
 					.toArray(new String[]{})
 				, ",");
 	}
@@ -163,27 +163,36 @@ public class DynamicBindingUtil {
 	}
 
 	private static Transformer<Map.Entry<String, String>, String> defaultBindingToString =
-		value -> value.getKey() + ":" + URLCodec.encode(value.getValue());
+			new Transformer<Map.Entry<String,String>, String>() {
+				public String transform(Map.Entry<String,String> value) throws TransformationException {
+					return value.getKey() + ":" + URLCodec.encode(value.getValue());
+				}
+			};
 
 	private static Transformer<String, Pair<String, String>> stringToDefaultBinding =
-		value -> {
-				String[] values = value.split(":");
-				if(values.length != 2){
-					throw new TransformationException(
-							"value format is invalid. \"" + value + "\""
-							);		
+			new Transformer<String, Pair<String,String>>() {
+				public Pair<String,String> transform(String value) throws TransformationException {
+					String[] values = value.split(":");
+					if(values.length != 2){
+						throw new TransformationException(
+								"value format is invalid. \"" + value + "\""
+								);		
+					}
+					return Pair.create(values[0], URLCodec.decode(values[1]));
 				}
-				return Pair.create(values[0], URLCodec.decode(values[1]));
-			}
-		;
+			};
 
 	private static Transformer<Map.Entry<String, Map<String, String>>, String> bindingOverrideToString =
-		value -> StringUtil.join(
-						CollectionUtil.collect(value.getValue().entrySet()
-								, new BindingOverrideEntryToString(value.getKey())
-						).toArray(new String[]{})
-						, ","
-						);
+			new Transformer<Map.Entry<String,Map<String,String>>, String>() {
+				public String transform(Map.Entry<String,Map<String,String>> value) throws TransformationException {
+					return StringUtil.join(
+							CollectionUtil.collect(value.getValue().entrySet()
+									, new BindingOverrideEntryToString(value.getKey())
+							).toArray(new String[]{})
+							, ","
+							);
+				}
+			};
 	private static class BindingOverrideEntryToString
 	implements Function<Map.Entry<String, String>, String>{
 		/**

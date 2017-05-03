@@ -19,7 +19,6 @@
  */
 package jp.go.nict.langrid.commons.parameter;
 
-import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,6 +32,7 @@ import jp.go.nict.langrid.commons.transformer.StringToIntegerTransformer;
 import jp.go.nict.langrid.commons.transformer.StringToLongTransformer;
 import jp.go.nict.langrid.commons.transformer.TransformationException;
 import jp.go.nict.langrid.commons.transformer.Transformer;
+import jp.go.nict.langrid.commons.util.function.Supplier;
 
 /**
  * 

@@ -26,12 +26,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import jp.go.nict.langrid.commons.lang.StringUtil;
+import jp.go.nict.langrid.commons.util.function.Function;
 
 public class GenericsUtilTest {
 	@SuppressWarnings("serial")
@@ -94,9 +94,20 @@ public class GenericsUtilTest {
 		Type[] ptypes = m.getGenericParameterTypes();
 		for(int i = 0; i < ptypes.length; i++){
 			Type type = ptypes[i];
-			Function<Type, String> conv = t -> t + ": " + (t instanceof Class) + ": " + t.getClass().getName() +
-					" extends " + t.getClass().getGenericSuperclass().getTypeName() +
-					" implements " + StringUtil.join(t.getClass().getGenericInterfaces(), it -> it.getTypeName(), ", ");
+			Function<Type, String> conv = new Function<Type, String>(){
+				public String apply(Type t) {
+					return t + ": " + (t instanceof Class) + ": " + t.getClass().getName() +
+							" extends " + t.getClass().getGenericSuperclass().toString() +
+							" implements " + StringUtil.join(
+									t.getClass().getGenericInterfaces(),
+									new Function<Type, String>() {
+										public String apply(Type it) {
+											return it.toString();
+										};
+									},
+									", ");
+				}
+			};
 			System.out.println(conv.apply(type));
 			if(type instanceof ParameterizedType){
 				System.out.println("  " + conv.apply(((ParameterizedType)type).getRawType()));
@@ -108,7 +119,7 @@ public class GenericsUtilTest {
 			Class<?> clz = pclasses[i];
 			if(clz instanceof GenericDeclaration){
 				for(TypeVariable<?> tv : ((GenericDeclaration)clz).getTypeParameters()){
-					System.out.println(tv.getTypeName() + ": " + tv.getGenericDeclaration().getClass());
+					System.out.println(tv.toString() + ": " + tv.getGenericDeclaration().getClass());
 				}
 			}
 		}

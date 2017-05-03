@@ -19,8 +19,6 @@
  */
 package jp.go.nict.langrid.commons.transformer;
 
-import java.util.function.Function;
-
 /**
  * 
  * 
@@ -28,10 +26,6 @@ import java.util.function.Function;
  * @author $Author: t-nakaguchi $
  * @version $Revision: 182 $
  */
-public interface Transformer<T, U> extends Function<T, U>{
+public interface Transformer<T, U>{
 	U transform(T value) throws TransformationException;
-
-	default U apply(T value) throws TransformationException{
-		return transform(value);
-	}
 }

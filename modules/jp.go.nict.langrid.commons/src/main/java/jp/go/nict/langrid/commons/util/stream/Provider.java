@@ -17,7 +17,6 @@
  */
 package jp.go.nict.langrid.commons.util.stream;
 
-@Deprecated
 public interface Provider<T> {
 	T next();
 }

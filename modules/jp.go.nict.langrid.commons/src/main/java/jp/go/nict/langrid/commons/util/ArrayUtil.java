@@ -26,13 +26,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import jp.go.nict.langrid.commons.lang.ClassUtil;
 import jp.go.nict.langrid.commons.lang.reflect.GenericsUtil;
+import jp.go.nict.langrid.commons.transformer.TransformationException;
+import jp.go.nict.langrid.commons.transformer.Transformer;
+import jp.go.nict.langrid.commons.util.function.Function;
+import jp.go.nict.langrid.commons.util.function.Predicate;
+import jp.go.nict.langrid.commons.util.function.Supplier;
+import jp.go.nict.langrid.commons.util.stream.IteratorProvider;
+import jp.go.nict.langrid.commons.util.stream.Stream;
 
 /**
  * 
@@ -107,10 +110,10 @@ public class ArrayUtil {
 	 * 
 	 */
 	public static String toString(Object array){
-		Function<Object, String> transformer
+		Transformer<Object, String> transformer
 			= primitiveArrayTransformers.get(array.getClass());
 		if(transformer != null){
-			return transformer.apply(array);
+			return transformer.transform(array);
 		} else if(Object[].class.isAssignableFrom(array.getClass())){
 			return Arrays.toString((Object[])array);
 		} else{
@@ -257,6 +260,17 @@ public class ArrayUtil {
 		return r;
 	}
 
+	@SuppressWarnings("unchecked")
+	public static <T, U> U[] collect(
+			T[] elements, Class<U> clazz, Transformer<T, U> mapper)
+	{
+		U[] r = (U[])Array.newInstance(clazz, elements.length);
+		for(int i = 0; i < elements.length; i++){
+			r[i] = mapper.transform(elements[i]);
+		}
+		return r;
+	}
+
 	/**
 	 * 
 	 * 
@@ -275,6 +289,24 @@ public class ArrayUtil {
 		U[] r = (U[])Array.newInstance(types[1], elements.length);
 		for(int i = 0; i < elements.length; i++){
 			r[i] = mapper.apply(elements[i]);
+		}
+		return r;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T, U> U[] collect(
+			T[] elements, Transformer<T, U> mapper)
+	{
+		Class<?>[] types = GenericsUtil.getTypeArgumentClasses(
+				mapper.getClass(), Function.class);
+		if(types == null || types[1] == null){
+			throw new IllegalArgumentException(
+					"failed to resolve target class"
+					);
+		}
+		U[] r = (U[])Array.newInstance(types[1], elements.length);
+		for(int i = 0; i < elements.length; i++){
+			r[i] = mapper.transform(elements[i]);
 		}
 		return r;
 	}
@@ -339,7 +371,7 @@ public class ArrayUtil {
 	}
 
 	public static <T> Stream<T> stream(T[] array){
-		return Arrays.stream(array);
+		return new Stream<T>(new IteratorProvider<T>(Arrays.asList(array).iterator()));
 	}
 
 	public static <T> void fill(T[] array, Supplier<T> sup){
@@ -349,33 +381,73 @@ public class ArrayUtil {
 	}
 
 	private static String[] emptyStrings_ = new String[]{};
-	private static Map<Class<?>, Function<Object, String>>
-		primitiveArrayTransformers = new HashMap<Class<?>, Function<Object,String>>(); 
+	private static Map<Class<?>, Transformer<Object, String>>
+		primitiveArrayTransformers = new HashMap<Class<?>, Transformer<Object,String>>(); 
 
 	static{
 		primitiveArrayTransformers.put(
 				boolean[].class
-				, value -> Arrays.toString((boolean[])value));
+				, new Transformer<Object, String>(){
+					@Override
+					public String transform(Object value) throws TransformationException {
+						return Arrays.toString((boolean[])value);
+					}
+				});
 		primitiveArrayTransformers.put(
 				byte[].class
-				, value -> Arrays.toString((byte[])value));
+				, new Transformer<Object, String>(){
+					@Override
+					public String transform(Object value) throws TransformationException {
+						return Arrays.toString((byte[])value);
+					}
+				});
 		primitiveArrayTransformers.put(
 				char[].class
-				, value -> Arrays.toString((char[])value));
+				, new Transformer<Object, String>(){
+					@Override
+					public String transform(Object value) throws TransformationException {
+						return Arrays.toString((char[])value);
+					}
+				});
 		primitiveArrayTransformers.put(
 				double[].class
-				, value -> Arrays.toString((double[])value));
+				, new Transformer<Object, String>(){
+					@Override
+					public String transform(Object value) throws TransformationException {
+						return Arrays.toString((double[])value);
+					}
+				});
 		primitiveArrayTransformers.put(
 				float[].class
-				, value -> Arrays.toString((float[])value));
+				, new Transformer<Object, String>(){
+					@Override
+					public String transform(Object value) throws TransformationException {
+						return Arrays.toString((float[])value);
+					}
+				});
 		primitiveArrayTransformers.put(
 				int[].class
-				, value -> Arrays.toString((int[])value));
+				, new Transformer<Object, String>(){
+					@Override
+					public String transform(Object value) throws TransformationException {
+						return Arrays.toString((int[])value);
+					}
+				});
 		primitiveArrayTransformers.put(
 				long[].class
-				, value -> Arrays.toString((long[])value));
+				, new Transformer<Object, String>(){
+					@Override
+					public String transform(Object value) throws TransformationException {
+						return Arrays.toString((long[])value);
+					}
+				});
 		primitiveArrayTransformers.put(
 				short[].class
-				, value -> Arrays.toString((short[])value));
+				, new Transformer<Object, String>(){
+					@Override
+					public String transform(Object value) throws TransformationException {
+						return Arrays.toString((short[])value);
+					}
+				});
 	}
 }

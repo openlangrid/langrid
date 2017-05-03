@@ -23,7 +23,8 @@ import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+
+import jp.go.nict.langrid.commons.util.function.Function;
 
 /**
  * 

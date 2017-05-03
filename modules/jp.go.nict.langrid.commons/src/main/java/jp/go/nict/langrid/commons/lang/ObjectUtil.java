@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jp.go.nict.langrid.commons.lang.reflect.MethodUtil;
+import jp.go.nict.langrid.commons.transformer.Transformer;
 import jp.go.nict.langrid.commons.util.ArrayUtil;
 
 /**
@@ -127,8 +128,13 @@ public class ObjectUtil {
 	throws IllegalAccessException, InvocationTargetException
 	, NoSuchMethodException
 	{
+		@SuppressWarnings("rawtypes")
 		Class<?>[] parameterTypes = ArrayUtil.collect(
-				parameters, Class.class, value -> value.getClass());
+				parameters, Class.class, new Transformer<Object, Class>(){
+					public Class<?> transform(Object value){
+						return value.getClass();
+					}
+				});
 		NoSuchMethodException nsme = null;
 		try{
 			return invokeSafely(instance, clazz.getMethod(methodName, parameterTypes), parameters);

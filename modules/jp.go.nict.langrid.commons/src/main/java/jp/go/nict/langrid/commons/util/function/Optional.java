@@ -19,7 +19,6 @@ package jp.go.nict.langrid.commons.util.function;
 
 import java.util.NoSuchElementException;
 
-@Deprecated
 public abstract class Optional<T> {
 	public static class Present<U> extends Optional<U>{
 		public Present(U value) {

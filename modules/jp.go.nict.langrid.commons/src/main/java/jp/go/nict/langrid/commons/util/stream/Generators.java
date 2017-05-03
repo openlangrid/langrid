@@ -17,10 +17,15 @@
  */
 package jp.go.nict.langrid.commons.util.stream;
 
-import java.util.stream.IntStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Generators {
-	public static IntStream intRange(final int begin, final int end){
-		return IntStream.iterate(begin, v -> v + 1).limit(end);
+	public static Stream<Integer> intRange(final int begin, final int end){
+		List<Integer> list = new ArrayList<>();
+		for(int i = begin; i < end; i++){
+			list.add(i);
+		}
+		return new Stream<Integer>(new IteratorProvider<>(list.iterator()));
 	}
 }

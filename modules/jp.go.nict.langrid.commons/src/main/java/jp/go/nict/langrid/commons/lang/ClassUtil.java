@@ -35,13 +35,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
 import jp.go.nict.langrid.commons.util.Pair;
+import jp.go.nict.langrid.commons.util.function.Optional;
 
 /**
  * 
