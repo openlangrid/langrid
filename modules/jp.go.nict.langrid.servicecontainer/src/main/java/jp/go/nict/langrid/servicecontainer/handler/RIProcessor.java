@@ -33,8 +33,6 @@ import jp.go.nict.langrid.cosee.AspectBase;
 import jp.go.nict.langrid.cosee.DynamicBindingRewriter;
 import jp.go.nict.langrid.cosee.Endpoint;
 import jp.go.nict.langrid.cosee.EndpointRewriter;
-import jp.go.nict.langrid.cosee.SoapHeaderElementFactory;
-import jp.go.nict.langrid.cosee.ws.DefaultSoapHeaderElementFactory;
 
 /**
  * The processor for receiving and replying request and invocating component services.
@@ -62,14 +60,6 @@ public class RIProcessor {
 	 * 
 	 */
 	public static RIProcessorContext start(ServiceContext context){
-		return start(context, new DefaultSoapHeaderElementFactory());
-	}
-
-	/**
-	 * 
-	 * 
-	 */
-	public static RIProcessorContext start(ServiceContext context, SoapHeaderElementFactory soapHeaderElementFactory){
 		long pid = pidGen.incrementAndGet();
 		RIProcessorContext c = new RIProcessorContext(
 				context, pid, new HeaderMessageHandler()

@@ -1,4 +1,4 @@
-package jp.go.nict.langrid.cosee.ws;
+package jp.go.nict.langrid.commons.xml.soap;
 
 import java.util.List;
 
