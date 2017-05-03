@@ -32,18 +32,6 @@ import java.util.logging.Logger;
 
 import javax.xml.soap.SOAPException;
 
-import jp.go.nict.langrid.commons.io.StreamUtil;
-import jp.go.nict.langrid.commons.rpc.RpcHeader;
-import jp.go.nict.langrid.commons.ws.ServiceContext;
-import jp.go.nict.langrid.commons.ws.soap.SoapFaultRpcFaultAdapter;
-import jp.go.nict.langrid.commons.ws.soap.SoapHeaderRpcHeadersAdapter;
-import jp.go.nict.langrid.cosee.AppAuthEndpointRewriter;
-import jp.go.nict.langrid.cosee.AspectBase;
-import jp.go.nict.langrid.cosee.BasicAuthEndpointRewriter;
-import jp.go.nict.langrid.cosee.DynamicBindingRewriter;
-import jp.go.nict.langrid.cosee.Endpoint;
-import jp.go.nict.langrid.cosee.EndpointRewriter;
-
 import org.activebpel.rt.axis.bpel.handlers.AeBpelHandler;
 import org.activebpel.rt.axis.bpel.handlers.AeHTTPSender;
 import org.activebpel.rt.axis.bpel.invokers.AeAxisInvokeContext;
@@ -62,6 +50,18 @@ import org.apache.axis.MessageContext;
 import org.apache.axis.client.Call;
 import org.apache.axis.message.SOAPHeaderElement;
 import org.apache.axis.transport.http.HTTPConstants;
+
+import jp.go.nict.langrid.commons.io.StreamUtil;
+import jp.go.nict.langrid.commons.rpc.RpcHeader;
+import jp.go.nict.langrid.commons.ws.ServiceContext;
+import jp.go.nict.langrid.commons.xml.soap.SoapFaultRpcFaultAdapter;
+import jp.go.nict.langrid.commons.xml.soap.SoapHeaderRpcHeadersAdapter;
+import jp.go.nict.langrid.cosee.AppAuthEndpointRewriter;
+import jp.go.nict.langrid.cosee.AspectBase;
+import jp.go.nict.langrid.cosee.BasicAuthEndpointRewriter;
+import jp.go.nict.langrid.cosee.DynamicBindingRewriter;
+import jp.go.nict.langrid.cosee.Endpoint;
+import jp.go.nict.langrid.cosee.EndpointRewriter;
 
 /**
  * 

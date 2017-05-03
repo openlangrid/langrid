@@ -15,17 +15,10 @@
  * You should have received a copy of the GNU General Public License 
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package jp.go.nict.langrid.cosee.ws;
+package jp.go.nict.langrid.commons.xml.soap;
 
-import javax.xml.soap.SOAPHeaderElement;
+import javax.xml.soap.SOAPHeaderElement;;
 
-import jp.go.nict.langrid.cosee.SoapHeaderElementFactory;
-
-public class DefaultSoapHeaderElementFactory
-implements SoapHeaderElementFactory{
-	@Override
-	public SOAPHeaderElement create(String namespace, String localPart,
-			Object value) {
-		return new SoapHeaderElementImpl(namespace, localPart, value);
-	}
+public interface SoapHeaders {
+	void append(SOAPHeaderElement header);
 }

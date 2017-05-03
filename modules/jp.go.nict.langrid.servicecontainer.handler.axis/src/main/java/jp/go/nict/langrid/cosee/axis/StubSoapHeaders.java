@@ -19,9 +19,9 @@ package jp.go.nict.langrid.cosee.axis;
 
 import javax.xml.soap.SOAPHeaderElement;
 
-import jp.go.nict.langrid.cosee.SoapHeaders;
-
 import org.apache.axis.client.Stub;
+
+import jp.go.nict.langrid.commons.xml.soap.SoapHeaders;
 
 public class StubSoapHeaders implements SoapHeaders{
 	public StubSoapHeaders(Stub stub){

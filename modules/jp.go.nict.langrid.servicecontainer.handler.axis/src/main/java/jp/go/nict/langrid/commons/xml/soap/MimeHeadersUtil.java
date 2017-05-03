@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package jp.go.nict.langrid.commons.ws.axis;
+package jp.go.nict.langrid.commons.xml.soap;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;

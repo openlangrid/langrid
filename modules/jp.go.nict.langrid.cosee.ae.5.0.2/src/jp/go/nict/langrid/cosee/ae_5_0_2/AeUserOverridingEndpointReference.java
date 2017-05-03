@@ -25,10 +25,9 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import jp.go.nict.langrid.cosee.Endpoint;
-
-
 import org.activebpel.wsio.IAeWebServiceEndpointReference;
+
+import jp.go.nict.langrid.cosee.Endpoint;
 
 /**
  * 

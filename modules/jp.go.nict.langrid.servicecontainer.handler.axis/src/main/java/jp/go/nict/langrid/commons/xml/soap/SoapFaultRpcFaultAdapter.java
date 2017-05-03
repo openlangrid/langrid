@@ -1,4 +1,4 @@
-package jp.go.nict.langrid.commons.ws.soap;
+package jp.go.nict.langrid.commons.xml.soap;
 
 import javax.xml.soap.SOAPFault;
 

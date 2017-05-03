@@ -19,7 +19,7 @@ package jp.go.nict.langrid.cosee.axis;
 
 import javax.xml.soap.SOAPHeaderElement;
 
-import jp.go.nict.langrid.cosee.SoapHeaderElementFactory;
+import jp.go.nict.langrid.commons.xml.soap.SoapHeaderElementFactory;
 
 public class AxisSoapHeaderElementFactory
 implements SoapHeaderElementFactory{

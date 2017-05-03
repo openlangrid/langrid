@@ -15,10 +15,35 @@
  * You should have received a copy of the GNU General Public License 
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package jp.go.nict.langrid.cosee;
+package jp.go.nict.langrid.commons.xml.soap;
 
-import javax.xml.soap.SOAPHeaderElement;;
+import javax.xml.soap.SOAPHeaderElement;
 
-public interface SoapHeaders {
-	void append(SOAPHeaderElement header);
+import jp.go.nict.langrid.commons.ws.soap.SoapHeaderElementAdapter;
+
+public class SoapHeaderElementImpl
+extends SoapHeaderElementAdapter
+implements SOAPHeaderElement{
+	public SoapHeaderElementImpl(String namespace, String localPart, Object value){
+		this.namespace = namespace;
+		this.localPart = localPart;
+		this.value = value;
+	}
+
+	@Override
+	public String getNamespaceURI() {
+		return namespace;
+	}
+
+	public String getLocalPart() {
+		return localPart;
+	}
+
+	public String getValue() {
+		return value.toString();
+	}
+
+	private String namespace;
+	private String localPart;
+	private Object value;
 }
