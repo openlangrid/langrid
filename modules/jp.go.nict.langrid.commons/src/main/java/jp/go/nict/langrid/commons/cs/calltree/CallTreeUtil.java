@@ -24,11 +24,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.xml.soap.MimeHeaders;
-
 import jp.go.nict.langrid.commons.codec.URLCodec;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.ws.LangridConstants;
+import jp.go.nict.langrid.commons.ws.soap.MimeHeaders;
 import jp.go.nict.langrid.commons.ws.util.MimeHeadersUtil;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSONException;

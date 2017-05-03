@@ -22,6 +22,7 @@ package jp.go.nict.langrid.commons.ws.util;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -42,6 +43,17 @@ public class MimeHeadersUtil {
 	 * 
 	 */
 	public static boolean isTrue(MimeHeaders headers, String name){
+		String[] values = headers.getHeader(name);
+		if(values == null) return false;
+		if(values.length == 0) return false;
+		for(String v : values){
+			if(!v.equals("true")) return false;
+		}
+		return true;
+	}
+
+
+	public static boolean isTrue(jp.go.nict.langrid.commons.ws.soap.MimeHeaders headers, String name){
 		String[] values = headers.getHeader(name);
 		if(values == null) return false;
 		if(values.length == 0) return false;
@@ -87,6 +99,20 @@ public class MimeHeadersUtil {
 		}
 	}
 
+	public static String getJoinedAndDecodedValue(
+			jp.go.nict.langrid.commons.ws.soap.MimeHeaders headers, String name){
+		String[] values = headers.getHeader(name);
+		if(values == null) return null;
+		else try{
+			return URLDecoder.decode(
+					StringUtil.join(values, ",")
+					, "UTF-8"
+					);
+		} catch(UnsupportedEncodingException e){
+			throw new RuntimeException(e);
+		}
+	}
+
 	/**
 	 * 
 	 * 
@@ -114,6 +140,16 @@ public class MimeHeadersUtil {
 		while(i.hasNext()){
 			MimeHeader h = (MimeHeader)i.next();
 			response.addHeader(h.getName(), h.getValue());
+		}
+	}
+
+	public static void setToHttpServletResponse(jp.go.nict.langrid.commons.ws.soap.MimeHeaders headers, HttpServletResponse response){
+		Iterator<Map.Entry<String, List<String>>> i = headers.getAllHeaders();
+		while(i.hasNext()){
+			Map.Entry<String, List<String>> h = i.next();
+			for(String v : h.getValue()){
+				response.addHeader(h.getKey(), v);
+			}
 		}
 	}
 

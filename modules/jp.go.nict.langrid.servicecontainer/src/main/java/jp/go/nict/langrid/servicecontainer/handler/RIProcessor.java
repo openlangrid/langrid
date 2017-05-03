@@ -25,11 +25,10 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.xml.soap.MimeHeaders;
-
 import jp.go.nict.langrid.commons.rpc.RpcFault;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
+import jp.go.nict.langrid.commons.ws.soap.MimeHeaders;
 import jp.go.nict.langrid.cosee.AspectBase;
 import jp.go.nict.langrid.cosee.DynamicBindingRewriter;
 import jp.go.nict.langrid.cosee.Endpoint;

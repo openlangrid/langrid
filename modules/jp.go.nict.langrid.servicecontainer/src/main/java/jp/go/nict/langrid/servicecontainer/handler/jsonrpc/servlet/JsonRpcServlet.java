@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -30,10 +31,12 @@ import java.lang.reflect.TypeVariable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -66,7 +69,6 @@ import jp.go.nict.langrid.commons.transformer.UTF8ByteArrayToStringTransformer;
 import jp.go.nict.langrid.commons.util.ArrayUtil;
 import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.commons.util.Trio;
-import jp.go.nict.langrid.commons.util.function.Functions;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.commons.ws.ServletConfigServiceContext;
 import jp.go.nict.langrid.commons.ws.ServletServiceContext;
@@ -97,19 +99,23 @@ public class JsonRpcServlet extends HttpServlet {
 		this.dumpRequests = ct.getBoolean("dumpRequests", false);
 		this.displayProcessTime = ct.getBoolean("displayProcessTime", false);
 		this.getMethodEnabled = ct.getBoolean("getMethodEnabled", true);
-		this.additionalResponseHeaders = Arrays.stream(
-				ct.getStrings("additionalResponseHeaders", new String[]{})
-				)
-				.map(Functions.soften(value -> {
-					return URLDecoder.decode(value, "UTF-8").split(":", 2);
-				}))
-				.filter(value -> {
-					if(value.length != 2){
-						logger.warning("invalid additional response header: " + value[0]);
-						return false;
-					}
-					return true;
-				}).toArray(n -> new String[n][]);
+		List<String[]> vh = new ArrayList<>();
+		String[] headers = ct.getStrings("additionalResponseHeaders", new String[]{});
+		for(String h : headers){
+			String[] kv;
+			try {
+				kv = URLDecoder.decode(h, "UTF-8").split(":", 2);
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+				continue;
+			}
+			if(kv.length != 2){
+				logger.warning("invalid additional response header: " + kv[0]);
+				continue;
+			}
+			vh.add(headers);
+		}
+		this.additionalResponseHeaders = vh.toArray(new String[][]{});
 		this.defaultLoaders = ServicesUtil.getServiceFactoryLoaders(getClass());
 		String mapping = ct.getString("mapping", "");
 		for(String s : mapping.split(",")){

@@ -30,8 +30,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.soap.MimeHeaders;
-
 import jp.go.nict.langrid.commons.cs.calltree.CallNode;
 import jp.go.nict.langrid.commons.cs.calltree.CallTreeUtil;
 import jp.go.nict.langrid.commons.lang.StringUtil;
@@ -39,8 +37,10 @@ import jp.go.nict.langrid.commons.rpc.RpcFault;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.rpc.TransportHeader;
 import jp.go.nict.langrid.commons.util.Pair;
+import jp.go.nict.langrid.commons.util.function.Function;
 import jp.go.nict.langrid.commons.ws.LangridConstants;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
+import jp.go.nict.langrid.commons.ws.soap.MimeHeaders;
 import jp.go.nict.langrid.commons.ws.util.MimeHeadersUtil;
 
 /**
@@ -238,7 +238,7 @@ public class AspectBase{
 	 * 
 	 * 
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected void appendResponseHeaders(long processId
 			, MimeHeaders mimeHeaders, Collection<RpcHeader> rpcHeaders){
 		Map<String, Object> properties = idToProperties.get(processId);
@@ -260,7 +260,11 @@ public class AspectBase{
 		if(gridTracks.size() > 0){
 			String v = "{" + StringUtil.join(
 					gridTracks.toArray(new Pair[]{}),
-					p -> p.getFirst() + ":[" + p.getSecond() + "]",
+					new Function<Pair, String>() {
+						public String apply(Pair p) {
+							return p.getFirst() + ":[" + p.getSecond() + "]";
+						}
+					},
 					",") + "}";
 			mimeHeaders.addHeader(LangridConstants.HTTPHEADER_GRIDTRACK, v);
 		}

@@ -1,6 +1,7 @@
 package jp.go.nict.langrid.commons.ws.soap;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,10 @@ public class MimeHeaders {
 			headers.put(name, v);
 		}
 		v.add(value);
+	}
+	
+	public Iterator<Map.Entry<String, List<String>>> getAllHeaders(){
+		return headers.entrySet().iterator();
 	}
 
 	private Map<String, List<String>> headers = new LinkedHashMap<>();
