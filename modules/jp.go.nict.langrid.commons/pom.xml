@@ -14,7 +14,7 @@
   <parent>
     <groupId>org.langrid</groupId>
     <artifactId>servicegrid</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.11-android</version>
   </parent>
   <dependencies>
   	<dependency>
