@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.go.nict.langrid.commons.transformer.Transformer;
 import jp.go.nict.langrid.commons.util.function.Function;
 
 /**
@@ -184,10 +185,33 @@ public final class StringUtil {
 		return join(elements, textizer, separator, 0, elements.length);
 	}
 
+	public static <T> String join(
+			T[] elements, final Transformer<T, String> textizer, String separator)
+	{
+		return join(elements, new Function<T, String>(){
+			@Override
+			public String apply(T value) {
+				return textizer.transform(value);
+			}
+		}, separator, 0, elements.length);
+	}
+
 	/**
 	 * 
 	 * 
 	 */
+	public static <T> String join(
+			T[] elements, final Transformer<T, String> textizer, String separator
+			, int begin, int end)
+	{
+		return join(elements, new Function<T, String>(){
+			@Override
+			public String apply(T value) {
+				return textizer.transform(value);
+			}
+		}, separator, begin, end);
+	}
+
 	public static <T> String join(
 			T[] elements, Function<T, String> textizer, String separator
 			, int begin, int end)
