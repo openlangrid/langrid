@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.soap.MimeHeader;
-import javax.xml.soap.MimeHeaders;
 
 import jp.go.nict.langrid.commons.lang.StringUtil;
 
@@ -38,21 +36,6 @@ import jp.go.nict.langrid.commons.lang.StringUtil;
  * @version $Revision: 1121 $
  */
 public class MimeHeadersUtil {
-	/**
-	 * 
-	 * 
-	 */
-	public static boolean isTrue(MimeHeaders headers, String name){
-		String[] values = headers.getHeader(name);
-		if(values == null) return false;
-		if(values.length == 0) return false;
-		for(String v : values){
-			if(!v.equals("true")) return false;
-		}
-		return true;
-	}
-
-
 	public static boolean isTrue(jp.go.nict.langrid.commons.ws.soap.MimeHeaders headers, String name){
 		String[] values = headers.getHeader(name);
 		if(values == null) return false;
@@ -63,40 +46,11 @@ public class MimeHeadersUtil {
 		return true;
 	}
 
-	/**
-	 * 
-	 * 
-	 */
-	public static String getJoinedValue(MimeHeaders headers, String name){
-		String[] values = headers.getHeader(name);
-		if(values == null) return null;
-		if(values.length == 0) return "";
-		else return StringUtil.join(values, ",");
-	}
-
 	public static String getJoinedValue(jp.go.nict.langrid.commons.ws.soap.MimeHeaders headers, String name){
 		String[] values = headers.getHeader(name);
 		if(values == null) return null;
 		if(values.length == 0) return "";
 		else return StringUtil.join(values, ",");
-	}
-
-	/**
-	 * 
-	 * 
-	 */
-	public static String getJoinedAndDecodedValue(
-			MimeHeaders headers, String name){
-		String[] values = headers.getHeader(name);
-		if(values == null) return null;
-		else try{
-			return URLDecoder.decode(
-					StringUtil.join(values, ",")
-					, "UTF-8"
-					);
-		} catch(UnsupportedEncodingException e){
-			throw new RuntimeException(e);
-		}
 	}
 
 	public static String getJoinedAndDecodedValue(
@@ -113,36 +67,6 @@ public class MimeHeadersUtil {
 		}
 	}
 
-	/**
-	 * 
-	 * 
-	 */
-	public static String getJoinedAndDecodedValue(
-			MimeHeaders headers, String name, String separator){
-		String[] values = headers.getHeader(name);
-		if(values == null) return null;
-		else try{
-			return URLDecoder.decode(
-					StringUtil.join(values, separator)
-					, "UTF-8"
-					);
-		} catch(UnsupportedEncodingException e){
-			throw new RuntimeException(e);
-		}
-	}
-
-	/**
-	 * 
-	 * 
-	 */
-	public static void setToHttpServletResponse(MimeHeaders headers, HttpServletResponse response){
-		Iterator<?> i = headers.getAllHeaders();
-		while(i.hasNext()){
-			MimeHeader h = (MimeHeader)i.next();
-			response.addHeader(h.getName(), h.getValue());
-		}
-	}
-
 	public static void setToHttpServletResponse(jp.go.nict.langrid.commons.ws.soap.MimeHeaders headers, HttpServletResponse response){
 		Iterator<Map.Entry<String, List<String>>> i = headers.getAllHeaders();
 		while(i.hasNext()){
@@ -151,31 +75,5 @@ public class MimeHeadersUtil {
 				response.addHeader(h.getKey(), v);
 			}
 		}
-	}
-
-	/**
-	 * 
-	 * 
-	 */
-	public static MimeHeaders fromStringObjectMap(Map<String, Object> source){
-		MimeHeaders ret = new MimeHeaders();
-		for(Map.Entry<String, Object> entry : source.entrySet()){
-			String name = entry.getKey();
-			Object value = entry.getValue();
-			if(value instanceof String){
-				ret.addHeader(name, value.toString());
-			} else if(value instanceof String[]){
-				for(String v : (String[])value){
-					ret.addHeader(name, v);
-				}
-			} else if(value instanceof Iterable){
-				for(Object v : (Iterable<?>)value){
-					ret.addHeader(name, v.toString());
-				}
-			} else{
-				ret.addHeader(name, value.toString());
-			}
-		}
-		return ret;
 	}
 }
