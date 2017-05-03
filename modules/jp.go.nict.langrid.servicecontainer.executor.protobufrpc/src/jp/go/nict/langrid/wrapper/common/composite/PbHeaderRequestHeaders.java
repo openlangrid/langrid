@@ -24,7 +24,7 @@ import java.util.List;
 import javax.xml.soap.SOAPHeaderElement;
 
 import jp.go.nict.langrid.client.protobuf.proto.CommonProtos.Header;
-import jp.go.nict.langrid.cosee.SoapHeaders;
+import jp.go.nict.langrid.commons.xml.soap.SoapHeaders;
 
 public class PbHeaderRequestHeaders
 implements SoapHeaders{

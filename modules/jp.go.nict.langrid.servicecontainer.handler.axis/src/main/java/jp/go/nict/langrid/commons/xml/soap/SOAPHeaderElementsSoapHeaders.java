@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.xml.soap.SOAPHeaderElement;
 
-import jp.go.nict.langrid.cosee.SoapHeaders;
-
 public class SOAPHeaderElementsSoapHeaders implements SoapHeaders{
 	public SOAPHeaderElementsSoapHeaders(List<SOAPHeaderElement> elements){
 		this.elements = elements;

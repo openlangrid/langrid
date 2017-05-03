@@ -19,8 +19,6 @@ package jp.go.nict.langrid.commons.xml.soap;
 
 import javax.xml.soap.SOAPHeaderElement;
 
-import jp.go.nict.langrid.cosee.SoapHeaderElementFactory;
-
 public class DefaultSoapHeaderElementFactory
 implements SoapHeaderElementFactory{
 	@Override

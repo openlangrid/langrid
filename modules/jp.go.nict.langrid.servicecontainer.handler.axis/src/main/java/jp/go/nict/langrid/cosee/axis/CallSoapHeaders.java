@@ -19,9 +19,9 @@ package jp.go.nict.langrid.cosee.axis;
 
 import javax.xml.soap.SOAPHeaderElement;
 
-import jp.go.nict.langrid.cosee.SoapHeaders;
-
 import org.apache.axis.client.Call;
+
+import jp.go.nict.langrid.commons.xml.soap.SoapHeaders;
 
 public class CallSoapHeaders implements SoapHeaders{
 	public CallSoapHeaders(Call call){
