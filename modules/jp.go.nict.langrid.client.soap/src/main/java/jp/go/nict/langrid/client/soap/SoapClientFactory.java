@@ -173,7 +173,7 @@ public class SoapClientFactory implements ClientFactory {
 
 	private <T> T create(Class<T> interfaceClass, AxisStublessInvocationHandler h){
 		return interfaceClass.cast(Proxy.newProxyInstance(
-				Thread.currentThread().getContextClassLoader()
+				interfaceClass.getClassLoader()
 				, new Class<?>[]{interfaceClass, SoapRequestAttributes.class, ResponseAttributes.class}
 				, h
 				));

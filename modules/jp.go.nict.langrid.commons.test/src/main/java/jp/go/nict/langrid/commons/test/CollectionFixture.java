@@ -6,7 +6,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.function.Consumer;
+
+import jp.go.nict.langrid.commons.util.function.Consumer;
 
 public class CollectionFixture<T> {
 	public CollectionFixture(Collection<T> collection){
