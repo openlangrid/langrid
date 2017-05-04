@@ -260,7 +260,7 @@ public class JsonRpcClientFactory implements ClientFactory{
 
 	private <T> T createAsync(Class<T> interfaceClass, AsyncInvocationHandler handler){
 		return interfaceClass.cast(Proxy.newProxyInstance(
-				Thread.currentThread().getContextClassLoader()
+				interfaceClass.getClassLoader()
 				, new Class<?>[]{interfaceClass, RequestAttributes.class, ResponseAttributes.class,
 					AsyncInvocationHandler.class}
 				, handler
