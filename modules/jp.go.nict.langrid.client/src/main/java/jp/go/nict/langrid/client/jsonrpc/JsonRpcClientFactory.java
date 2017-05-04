@@ -252,7 +252,7 @@ public class JsonRpcClientFactory implements ClientFactory{
 
 	private <T> T create(Class<T> interfaceClass, InvocationHandler handler){
 		return interfaceClass.cast(Proxy.newProxyInstance(
-				Thread.currentThread().getContextClassLoader()
+				interfaceClass.getClassLoader()
 				, new Class<?>[]{interfaceClass, RequestAttributes.class, ResponseAttributes.class}
 				, handler
 				));
