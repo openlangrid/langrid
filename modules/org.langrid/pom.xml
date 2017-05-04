@@ -30,16 +30,16 @@
     </repository>
   </distributionManagement>
   <scm>
-    <url>http://svn.code.sf.net/p/servicegrid/code/servicegrid-server/trunk</url>
-    <connection>scm:svn:http://svn.code.sf.net/p/servicegrid/code/servicegrid-server/trunk</connection>
-    <developerConnection>scm:svn:https://svn.code.sf.net/p/servicegrid/code/servicegrid-server/trunk</developerConnection>
+    <url>https://github.com/openlangrid/langrid</url>
+    <connection>scm:git:https://github.com/openlangrid/langrid</connection>
+    <developerConnection>scm:git:https://github.com/openlangrid/langrid</developerConnection>
   </scm>
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.11</version>
+        <version>4.12</version>
       </dependency>
       <dependency>
         <groupId>opensymphony</groupId>
