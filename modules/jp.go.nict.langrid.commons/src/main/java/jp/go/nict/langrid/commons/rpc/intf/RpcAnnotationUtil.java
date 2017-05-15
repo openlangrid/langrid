@@ -68,7 +68,7 @@ public class RpcAnnotationUtil {
 	
 	public static int getMethodMaxReturnObjectDepth(java.lang.reflect.Method method){
 		Method ma = method.getAnnotation(Method.class);
-		if(ma == null) return 4;
+		if(ma == null) return 16;
 		return ma.maxReturnObjectDepth();
 	}
 
