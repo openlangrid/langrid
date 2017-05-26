@@ -49,8 +49,6 @@ import jp.go.nict.langrid.servicecontainer.handler.ServiceFactory;
 import jp.go.nict.langrid.servicecontainer.handler.ServiceLoader;
 
 /**
- * 
- * 
  * @author Takao Nakaguchi
  */
 public class JsonRpcDynamicHandler extends AbstractJsonRpcHandler implements JsonRpcHandler{
@@ -101,26 +99,7 @@ public class JsonRpcDynamicHandler extends AbstractJsonRpcHandler implements Jso
 					}
 					Object service = f.createService(cl, sc, clazz);
 					// Currently only array("[]") is supported, while JsonRpc accepts Object("{}")
-					Type[] ptypes = method.getGenericParameterTypes();
-					Object[] params = req.getParams();
-					Object[] args = new Object[ptypes.length];
-					for(int i = 0; i < args.length; i++){
-						if(params[i].equals("")){
-							if(ptypes[i] instanceof Class){
-								Class<?> clz = (Class<?>) ptypes[i];
-								if(clz.isPrimitive()){
-									args[i] = ClassUtil.getDefaultValueForPrimitive(clz);
-								} else{
-									args[i] = null;
-								}
-							} else{
-								args[i] = null;
-							}
-						} else{
-							args[i] = converter.convert(params[i], ptypes[i]);
-						}
-					}
-					result = method.invoke(service, args);
+					result = invokeMethod(service, method, req.getParams(), converter);
 				} finally{
 					MimeHeaders resMimeHeaders = new MimeHeaders();
 					RIProcessor.finish(resMimeHeaders, resHeaders);
@@ -170,6 +149,27 @@ public class JsonRpcDynamicHandler extends AbstractJsonRpcHandler implements Jso
 			response.setStatus(500);
 			logger.log(Level.WARNING, "IOException occurred.", e);
 		}
+	}
+
+	static Object invokeMethod(Object instance, Method method, Object[] params, Converter converter)
+	throws IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+		Type[] ptypes = method.getGenericParameterTypes();
+		Object[] args = new Object[ptypes.length];
+		for(int i = 0; i < args.length; i++){
+			if(params[i].equals("")){
+				if(ptypes[i].equals(String.class)){
+					args[i] = "";
+				} else if(ptypes[i] instanceof Class){
+					Class<?> clz = (Class<?>)ptypes[i];
+					if(clz.isPrimitive()){
+						args[i] = ClassUtil.getDefaultValueForPrimitive(clz);
+					}
+				}
+			} else{
+				args[i] = converter.convert(params[i], ptypes[i]);
+			}
+		}
+		return method.invoke(instance, args);
 	}
 
 	private Converter converter = new ConverterForJsonRpc();
