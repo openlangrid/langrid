@@ -103,9 +103,9 @@ public privileged aspect AeAspect extends AspectBase{
 	 * 
 	 * 
 	 */
-	long around()
-	: execution(long AeInMemoryProcessManager.getNextProcessId())
-	{
+	pointcut receiveRequest(): execution(long AeInMemoryProcessManager.getNextProcessId());
+
+	long around() : receiveRequest(){
 		long processId = proceed();
 		beginProcess(serviceContext, processId);
 		return processId;
@@ -115,11 +115,10 @@ public privileged aspect AeAspect extends AspectBase{
 	 * 
 	 * 
 	 */
-	Call around(AeInvokeContext context)
-		:
+	pointcut determineEndpoint(AeInvokeContext context) :
 		execution(Call org.activebpel.rt.axis.bpel.AeAxisInvokeHandler.createCall(AeInvokeContext))
-		&& args(context)
-	{
+		&& args(context);
+	Call around(AeInvokeContext context) : determineEndpoint(context){
 		Call ret = proceed(context);
 		IAeEndpointReference ref = context.getEndpoint();
 		IAeInvoke invoke = context.getInvoke();
@@ -156,11 +155,12 @@ public privileged aspect AeAspect extends AspectBase{
 	 * 
 	 * 
 	 */
-	@SuppressWarnings("unchecked")
-	void around(final AeAxisInvokeContext context):
+	pointcut sendRequest(AeAxisInvokeContext context) :
 		execution(void AeRpcStyleInvoker.invokeRpcCall(AeAxisInvokeContext))
-		&& args(context)
-	{
+		&& args(context);
+
+	@SuppressWarnings("unchecked")
+	void around(final AeAxisInvokeContext context) : sendRequest(context){
 		IAeInvoke invoke = context.getInvoke();
 		String partnerLinkName = makePartnerLinkName(invoke.getPartnerLink());
 		Call c = context.getCall();
