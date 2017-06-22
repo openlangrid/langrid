@@ -79,7 +79,7 @@ implements InvocationHandler{
 	throws Throwable {
 		Map<String, Object> mimeHeaders = new HashMap<String, Object>();
 		final List<RpcHeader> rpcHeaders = new ArrayList<RpcHeader>();
-		Pair<Endpoint, Long> r = preprocessJsonRpc(mimeHeaders, rpcHeaders);
+		Pair<Endpoint, Long> r = preprocessJsonRpc(mimeHeaders, rpcHeaders, method, args);
 		Endpoint ep = r.getFirst();
 		long s = System.currentTimeMillis();
 		HttpURLConnection con = null;

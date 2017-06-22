@@ -42,7 +42,7 @@ extends AbstractAxisServiceExecutor
 implements AsyncTranslationService{
 	public AxisAsyncTranslationServiceExecutor(
 			String invocationName, long iid, Endpoint endpoint){
-		super(invocationName, iid, endpoint);
+		super(AsyncTranslationService.class, invocationName, iid, endpoint);
 	}
 
 	@Override
@@ -52,7 +52,7 @@ implements AsyncTranslationService{
 			localhost.jp_go_nict_langrid_webapps_mock.services.AsyncTranslation.AsyncTranslationService port =
 					transLocator.getAsyncTranslation();
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub, sourceLang, targetLang, sources);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				return port.startTranslation(sourceLang, targetLang, sources);
@@ -81,7 +81,7 @@ implements AsyncTranslationService{
 			localhost.jp_go_nict_langrid_webapps_mock.services.AsyncTranslation.AsyncTranslationService port =
 					transLocator.getAsyncTranslation();
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub, token);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				return convert(
@@ -113,7 +113,7 @@ implements AsyncTranslationService{
 			localhost.jp_go_nict_langrid_webapps_mock.services.AsyncTranslation.AsyncTranslationService port =
 					transLocator.getAsyncTranslation();
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub, token);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				port.terminate(token);

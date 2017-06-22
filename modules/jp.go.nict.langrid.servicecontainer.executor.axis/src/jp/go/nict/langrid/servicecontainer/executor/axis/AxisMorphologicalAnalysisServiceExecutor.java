@@ -50,7 +50,7 @@ extends AbstractAxisServiceExecutor
 implements MorphologicalAnalysisService{
 	public AxisMorphologicalAnalysisServiceExecutor(
 			String invocationName, long iid, Endpoint endpoint){
-		super(invocationName, iid, endpoint);
+		super(MorphologicalAnalysisService.class, invocationName, iid, endpoint);
 	}
 
 	@Override
@@ -63,7 +63,7 @@ implements MorphologicalAnalysisService{
 		try{
 			MorphologicalAnalysis_PortType port = locator.getMorphologicalAnalysis();
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub, language, text);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				return convert(

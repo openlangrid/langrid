@@ -55,7 +55,7 @@ extends AbstractAxisServiceExecutor
 implements BilingualDictionaryWithLongestMatchSearchService{
 	public AxisBilingualDictionaryWithLongestMatchSearchServiceExecutor(
 			String invocationName, long iid, Endpoint endpoint){
-		super(invocationName, iid, endpoint);
+		super(BilingualDictionaryWithLongestMatchSearchService.class, invocationName, iid, endpoint);
 	}
 	
 	@Override
@@ -71,7 +71,7 @@ implements BilingualDictionaryWithLongestMatchSearchService{
 		try{
 			BilingualDictionaryWithLongestMatchSearch port = locator.getBilingualDictionaryWithLongestMatchSearch();
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub, headLang, targetLang, headWord, matchingMethod);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				return convert(
@@ -107,7 +107,7 @@ implements BilingualDictionaryWithLongestMatchSearchService{
 		try{
 			BilingualDictionaryWithLongestMatchSearch port = locator.getBilingualDictionaryWithLongestMatchSearch();
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub, headLang, targetLang, morphemes);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				return convert(

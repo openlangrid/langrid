@@ -40,11 +40,9 @@ implements EndpointRewriter {
 		this.eapDao = eapDao;
 	}
 
-	public Endpoint rewrite(
-			Endpoint original, Map<String, Object> properties
-			, URI processNamespace, String partnerLinkName, URI serviceNamespace
-			)
-	{
+	@Override
+	public Endpoint rewrite(Endpoint original, Map<String, Object> properties, URI processNamespace,
+			String partnerLinkName, URI serviceNamespace, String methodName, String[] paramNames, Object[] args){
 		if(original.getServiceId() != null){
 			Endpoint ret = new Endpoint(original);
 			ret.setProtocol(getProtocolForServiceId(original.getServiceId()));

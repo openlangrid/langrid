@@ -50,7 +50,7 @@ extends AbstractAxisServiceExecutor
 implements BackTranslationService{
 	public AxisBackTranslationServiceExecutor(
 			String invocationName, long iid, Endpoint endpoint){
-		super(invocationName, iid, endpoint);
+		super(BackTranslationService.class, invocationName, iid, endpoint);
 	}
 
 	@Override
@@ -65,7 +65,7 @@ implements BackTranslationService{
 		try{
 			BackTranslation_PortType port = backTransLocator.getBackTranslation();
 			Stub stub = (Stub)port;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub, sourceLang, intermediateLang, source);
 			long s = System.currentTimeMillis();
 			try{
 				return convert(

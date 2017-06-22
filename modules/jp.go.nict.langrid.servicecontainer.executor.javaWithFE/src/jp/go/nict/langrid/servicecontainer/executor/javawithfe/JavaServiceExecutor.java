@@ -80,7 +80,7 @@ implements InvocationHandler{
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args)
 	throws Throwable {
-		Trio<ServiceContext, String, Long> r = preprocessJava();
+		Trio<ServiceContext, String, Long> r = preprocessJava(method, args);
 		long deltaTime = -1;
 		int status = 500;
 		int reqLen = ObjectUtil.getSize(args);
@@ -124,11 +124,11 @@ implements InvocationHandler{
 		}
 	}
 
-	protected Trio<ServiceContext, String, Long> preprocessJava()
+	protected Trio<ServiceContext, String, Long> preprocessJava(Method method, Object[] args)
 	throws ServiceNotActiveException, ServiceNotFoundException{
 		Map<String, Object> mimeHeaders = new HashMap<String, Object>();
 		List<RpcHeader> headers = new ArrayList<RpcHeader>();
-		Pair<Endpoint, Long> r = preprocess(mimeHeaders, headers);
+		Pair<Endpoint, Long> r = preprocess(mimeHeaders, headers, method, args);
 
 		String query = r.getFirst().getServiceId( ) ;
 		if( query == null ) {

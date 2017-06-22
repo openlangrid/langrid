@@ -15,14 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package jp.go.nict.langrid.servicecontainer.executor.axis;
+package jp.go.nict.langrid.servicecontainer.executor;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.soap.MimeHeaders;
+
+import com.google.common.cache.Cache;
 
 import jp.go.nict.langrid.client.ClientFactory;
 import jp.go.nict.langrid.client.RequestAttributes;
@@ -31,63 +36,71 @@ import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.commons.ws.util.MimeHeadersUtil;
 import jp.go.nict.langrid.cosee.Endpoint;
+import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
 import jp.go.nict.langrid.servicecontainer.executor.AbstractServiceExecutor;
-import jp.go.nict.langrid.servicecontainer.executor.StreamingNotifier;
-import jp.go.nict.langrid.servicecontainer.executor.StreamingReceiver;
 
 /**
  * 
  * 
+ * @author Takao Nakaguchi
  */
-public class ClientFactoryServiceExecutor
+public class CachingClientFactoryServiceExecutor
 extends AbstractServiceExecutor
 implements InvocationHandler{
-	public ClientFactoryServiceExecutor(
+	public CachingClientFactoryServiceExecutor(
 			String invocationName, long invocationId, Endpoint endpoint
-			, Class<?> interfaceClass, ClientFactory clientFactory){
+			, Class<?> interfaceClass, ClientFactory clientFactory
+			, Cache<String, Object> cache){
 		super(invocationName, invocationId, endpoint);
 		this.clientFactory = clientFactory;
 		this.interfaceClass = interfaceClass;
+		this.cache = cache;
 	}
 
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args)
 			throws Throwable {
-		if(StreamingNotifier.class.isAssignableFrom(method.getDeclaringClass())){
-			if(method.getName().equals("setReceiver") && method.getParameterTypes().length == 1
-					&& method.getParameterTypes()[0].equals(StreamingReceiver.class)){
-				// Axis Service Executor not support StreamingNotifier
-				return null;
-			}
-		}
 		Map<String, Object> httpHeaders = new Hashtable<String, Object>();
 		List<RpcHeader> headers = new ArrayList<RpcHeader>();
-		Pair<Endpoint, Long> r = preprocess(httpHeaders, headers);
+		Pair<Endpoint, Long> r = preprocess(httpHeaders, headers, method, args);
 
 		Endpoint endpoint = r.getFirst();
 		long iid = r.getSecond();
 
-		Object client = clientFactory.create(interfaceClass, endpoint.getAddress().toURL());
-		RequestAttributes reqAttrs = (RequestAttributes)client;
-		reqAttrs.setUserId(endpoint.getUserName());
-		reqAttrs.setPassword(endpoint.getPassword());
-		reqAttrs.addRequestMimeHeaders(httpHeaders);
-		for(RpcHeader h : headers){
-			reqAttrs.addRequestRpcHeader(h.getNamespace(), h.getName(), h.getValue());
-		}
+		URL url = endpoint.getAddress().toURL();
+		String key = url.getProtocol() + "://" + url.getAuthority() + url.getPath()
+				+ "##" + method.getName() + "(" + JSON.encode(args) + ")";
 		long s = System.currentTimeMillis();
-		try{
-			return method.invoke(client,  args);
-		} finally{
-			ResponseAttributes resAttrs = (ResponseAttributes)client;
-			postprocess(iid, System.currentTimeMillis() - s
-					, MimeHeadersUtil.fromStringObjectMap(resAttrs.getResponseMimeHeaders())
-					, resAttrs.getResponseRpcHeaders()
-					, resAttrs.getResponseRpcFault()
-					);
+		Object ret = cache.getIfPresent(key);
+		if(ret != null){
+			postprocess(iid, System.currentTimeMillis() - s, new MimeHeaders()
+				, new ArrayList<RpcHeader>(), null);
+			return ret;
+		} else{
+			Object client = clientFactory.create(interfaceClass, endpoint.getAddress().toURL());
+			RequestAttributes reqAttrs = (RequestAttributes)client;
+			reqAttrs.setUserId(endpoint.getUserName());
+			reqAttrs.setPassword(endpoint.getPassword());
+			reqAttrs.addRequestMimeHeaders(httpHeaders);
+			for(RpcHeader h : headers){
+				reqAttrs.addRequestRpcHeader(h.getNamespace(), h.getName(), h.getValue());
+			}
+			try{
+				Object result = method.invoke(client,  args);
+				cache.put(key, result);
+				return result;
+			} finally{
+				ResponseAttributes resAttrs = (ResponseAttributes)client;
+				postprocess(iid, System.currentTimeMillis() - s
+						, MimeHeadersUtil.fromStringObjectMap(resAttrs.getResponseMimeHeaders())
+						, resAttrs.getResponseRpcHeaders()
+						, resAttrs.getResponseRpcFault()
+						);
+			}
 		}
 	}
 
 	private ClientFactory clientFactory;
 	private Class<?> interfaceClass;
+	private Cache<String, Object> cache;
 }

@@ -49,7 +49,7 @@ extends AbstractAxisServiceExecutor
 implements SimilarityCalculationService{
 	public AxisSimilarityCalculationServiceExecutor(
 			String invocationName, long iid, Endpoint endpoint){
-		super(invocationName, iid, endpoint);
+		super(SimilarityCalculationService.class, invocationName, iid, endpoint);
 	}
 
 	@Override
@@ -63,7 +63,7 @@ implements SimilarityCalculationService{
 		try{
 			SimilarityCalculation_PortType port = locator.getSimilarityCalculation();
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub, language, text1, text2);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				return port.calculate(language, text1, text2);

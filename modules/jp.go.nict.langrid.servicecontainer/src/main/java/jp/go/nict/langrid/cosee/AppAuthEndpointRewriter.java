@@ -41,11 +41,9 @@ public class AppAuthEndpointRewriter extends AbstractEndpointRewriter{
 	}
 
 	@Override
-	public Endpoint rewrite(
-			Endpoint original, Map<String, Object> properties
-			, URI processNamespace, String partnerLinkName, URI serviceNamespace
-			)
-	{
+	public Endpoint rewrite(Endpoint original, Map<String, Object> properties,
+			URI processNamespace, String partnerLinkName, URI serviceNamespace,
+			String methodName, String[] paramNames, Object[] args) {
 		if(original.getUserName() != null && original.getUserName().length() > 0) return original;
 		String key = (String)properties.get(prefix + ".key");
 		String userId = (String)properties.get(prefix + ".userId");

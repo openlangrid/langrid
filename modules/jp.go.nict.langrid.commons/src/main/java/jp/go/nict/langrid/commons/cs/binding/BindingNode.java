@@ -62,7 +62,22 @@ implements Serializable
 		this.serviceId = serviceId;
 	}
 
-	/**
+	public BindingNode(String invocationName, Condition[] conditions, String serviceId){
+		this.invocationName = invocationName;
+		this.conditions = conditions;
+		this.serviceId = serviceId;
+	}
+
+	public BindingNode(String invocationName, String paramName, String op, String value, String serviceId){
+		this.invocationName = invocationName;
+		this.conditions = new Condition[]{
+				new Condition(paramName, op, value)
+		};
+		this.serviceId = serviceId;
+	}
+
+
+ 	/**
 	 * 
 	 * 
 	 */
@@ -110,6 +125,14 @@ implements Serializable
 		this.serviceId = serviceId;
 	}
 
+	public Condition[] getConditions() {
+		return conditions;
+	}
+
+	public void setConditions(Condition[] conditions) {
+		this.conditions = conditions;
+	}
+
 	public List<TransportHeader> getTransportHeaders() {
 		return transportHeaders;
 	}
@@ -154,6 +177,7 @@ implements Serializable
 	private String invocationName;
 	private String gridId;
 	private String serviceId;
+	private Condition[] conditions;
 	private List<TransportHeader> transportHeaders = new ArrayList<TransportHeader>();
 	private List<RpcHeader> rpcHeaders = new ArrayList<RpcHeader>();
 	private List<BindingNode> children = new ArrayList<BindingNode>();

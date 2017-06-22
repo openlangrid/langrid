@@ -1,5 +1,8 @@
 package jp.go.nict.langrid.servicecontainer.executor.factory;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -25,19 +28,45 @@ extends AbstractComponentServiceFactory
 implements ComponentServiceFactory{
 	@Override
 	public <T> T getService(String invocationName, Class<T> interfaceClass) {
-		Pair<Long, Endpoint> value = getInvocationIdAndEndpoint(invocationName);
-		if("AbstractService".equals(value.getSecond().getServiceId())) return null;
-		return getFactory(value.getSecond().getProtocol()).getService(
-				invocationName, value.getFirst(), value.getSecond(), interfaceClass);
+		return interfaceClass.cast(Proxy.newProxyInstance(
+				Thread.currentThread().getContextClassLoader(),
+				new Class<?>[]{interfaceClass},
+				new InvocationHandler() {
+					@Override
+					public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+						Pair<Long, Endpoint> value = getInvocationIdAndEndpoint(
+								invocationName, method, args);
+						if("AbstractService".equals(value.getSecond().getServiceId())){
+							throw new RuntimeException(invocationName + " must be binded.");
+						}
+						return method.invoke(
+								getFactory(value.getSecond().getProtocol()).getService(
+										invocationName, value.getFirst(), value.getSecond(), interfaceClass)
+								, args);
+					}
+				}));
 	}
 
 	@Override
 	public <T> T getService(String invocationName, long invocationId, Endpoint endpoint
 			, Class<T> interfaceClass) {
-		Pair<Long, Endpoint> value = getInvocationIdAndEndpoint(invocationName, endpoint);
-		if("AbstractService".equals(value.getSecond().getServiceId())) return null;
-		return getFactory(value.getSecond().getProtocol()).getService(
-				invocationName, value.getFirst(), value.getSecond(), interfaceClass);
+		return interfaceClass.cast(Proxy.newProxyInstance(
+				Thread.currentThread().getContextClassLoader(),
+				new Class<?>[]{interfaceClass},
+				new InvocationHandler() {
+					@Override
+					public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+						Pair<Long, Endpoint> value = getInvocationIdAndEndpoint(
+								invocationName, endpoint, method, args);
+						if("AbstractService".equals(value.getSecond().getServiceId())){
+							throw new RuntimeException(invocationName + " must be binded.");
+						}
+						return method.invoke(
+								getFactory(value.getSecond().getProtocol()).getService(
+										invocationName, value.getFirst(), value.getSecond(), interfaceClass)
+								, args);
+					}
+				}));
 	}
 
 	public Map<String, AbstractComponentServiceFactory> getFactories() {
@@ -71,17 +100,22 @@ implements ComponentServiceFactory{
 		return f;
 	}
 
-	private Pair<Long, Endpoint> getInvocationIdAndEndpoint(String invocationName){
+	private Pair<Long, Endpoint> getInvocationIdAndEndpoint(
+			String invocationName, Method method, Object[] args){
 		long iid = RIProcessor.newInvocationId();
 		Endpoint endpoint = RIProcessor.rewriteEndpoint(iid, invocationName
-				, getEndpointRewriters(RIProcessor.getCurrentServiceContext()));
+				, getEndpointRewriters(RIProcessor.getCurrentServiceContext()),
+				method, args);
 		return Pair.create(iid, endpoint);
 	}
 
-	private Pair<Long, Endpoint> getInvocationIdAndEndpoint(String invocationName, Endpoint original){
+	private Pair<Long, Endpoint> getInvocationIdAndEndpoint(
+			String invocationName, Endpoint original
+			, Method method, Object[] args){
 		long iid = RIProcessor.newInvocationId();
 		Endpoint endpoint = RIProcessor.rewriteEndpoint(iid, invocationName
-				, getEndpointRewriters(RIProcessor.getCurrentServiceContext()), original);
+				, getEndpointRewriters(RIProcessor.getCurrentServiceContext()), original,
+				method, args);
 		return Pair.create(iid, endpoint);
 	}
 

@@ -17,6 +17,7 @@
  */
 package jp.go.nict.langrid.servicecontainer.executor.axis;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -25,6 +26,11 @@ import java.util.Map;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPFault;
 
+import org.apache.axis.Message;
+import org.apache.axis.client.Stub;
+import org.apache.axis.transport.http.HTTPConstants;
+
+import jp.go.nict.langrid.commons.lang.ClassUtil;
 import jp.go.nict.langrid.commons.rpc.RpcFault;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.util.Pair;
@@ -34,30 +40,36 @@ import jp.go.nict.langrid.service_1_2.ServiceNotActiveException;
 import jp.go.nict.langrid.service_1_2.transformer.StringToPartOfSpeechTransformer;
 import jp.go.nict.langrid.servicecontainer.executor.AbstractServiceExecutor;
 
-import org.apache.axis.Message;
-import org.apache.axis.client.Stub;
-import org.apache.axis.transport.http.HTTPConstants;
-
 /**
  * 
  * 
  */
 public abstract class AbstractAxisServiceExecutor extends AbstractServiceExecutor{
-	public AbstractAxisServiceExecutor(String invocationName){
-		super(invocationName);
+	public AbstractAxisServiceExecutor(
+			Class<?> interfaceClass, String invocationName, long invocationId, Endpoint endpoint
+			){
+		super(invocationName, invocationId, endpoint);
+		this.interfaceClass = interfaceClass;
 	}
 
-	public AbstractAxisServiceExecutor(
-			String invocationName, long invocationId, Endpoint endpoint){
-		super(invocationName, invocationId, endpoint);
+	private Method getCallerInterfaceMethod(){
+		try{
+			for(StackTraceElement ste : Thread.currentThread().getStackTrace()){
+				Class<?> clazz = Class.forName(ste.getClassName());
+				if(interfaceClass.isAssignableFrom(clazz)){
+					return ClassUtil.findMethod(clazz, ste.getMethodName());
+				}
+			}
+		} catch(ClassNotFoundException e){}
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")
-	protected long preprocessSoap(Stub stub)
+	protected long preprocessSoap(Stub stub, Object... args)
 	throws ServiceNotActiveException{
 		Map<String, Object> httpHeaders = new Hashtable<String, Object>();
 		List<RpcHeader> headers = new ArrayList<RpcHeader>();
-		Pair<Endpoint, Long> r = preprocess(httpHeaders, headers);
+		Pair<Endpoint, Long> r = preprocess(httpHeaders, headers, getCallerInterfaceMethod(), args);
 
 		Endpoint endpoint = r.getFirst();
 		stub._setProperty(Stub.ENDPOINT_ADDRESS_PROPERTY, endpoint.getAddress().toString());
@@ -94,6 +106,7 @@ public abstract class AbstractAxisServiceExecutor extends AbstractServiceExecuto
 		return converter.convert(value, targetClass);
 	}
 
+	private Class<?> interfaceClass;
 	private static jp.go.nict.langrid.commons.beanutils.Converter converter;
 	static{
 		converter = new jp.go.nict.langrid.commons.beanutils.Converter();
