@@ -207,8 +207,7 @@ public class Converter{
 		return (Collection<T>)ret;
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> T[] convertCollectionToArray(Collection<?> value, Class<T> componentType)
+	public Object convertCollectionToArray(Collection<?> value, Class<?> componentType)
 	throws ConversionException{
 		if(value == null) return null;
 
@@ -223,7 +222,7 @@ public class Converter{
 				throw new ConversionException(e);
 			}
 		}
-		return (T[])array;
+		return array;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -295,15 +294,18 @@ public class Converter{
 	public <T> T convert(Object value, Class<T> target)
 	throws ConversionException{
 		if(value == null) return null;
-		if(target.isAssignableFrom(value.getClass())) return (T)value;
 		Class<?> alias = aliases.get(target);
 		if(alias != null){
 			target = (Class<T>)alias;
 		}
 		if(target.isPrimitive()) target = (Class<T>)ClassUtil.getWrapperClass(target.getName());
+		if(target.isAssignableFrom(value.getClass())) return (T)value;
 
 		// transformer
 		Transformer<Object, T> transformer = (Transformer<Object, T>)transformers.get(value.getClass(), target);
+		if(transformer == null){
+			transformer = (Transformer<Object, T>)commonTransformers.get(value.getClass(), target);
+		}
 		if(transformer != null){
 			try{
 				return (T)transformer.transform(value);
@@ -423,6 +425,7 @@ public class Converter{
 	}
 
 	private Transformers transformers = new Transformers();
+	private static Transformers commonTransformers = new Transformers();
 	private Map<Class<?>, Class<?>> aliases = new HashMap<Class<?>, Class<?>>();
 	private static Map<Class<?>, Constructor<?>> primitiveToWrapperConstructor
 			= MapUtil.newHashMap();
@@ -461,6 +464,13 @@ public class Converter{
 			stringToWrapperMethods.put(long.class, Long.class.getMethod("parseLong", String.class));
 			stringToWrapperMethods.put(float.class, Float.class.getMethod("parseFloat", String.class));
 			stringToWrapperMethods.put(double.class, Double.class.getMethod("parseDouble", String.class));
+			commonTransformers.addTransformer(String.class, Character.class, v -> {
+				if(v.length() != 1) throw new TransformationException("String must has a single character.");
+				return v.charAt(0);
+			});
+			commonTransformers.addTransformer(String.class, char[].class, v -> v.toCharArray());
+			commonTransformers.addTransformer(Number.class, Byte.class, v -> v.byteValue());
+//			commonTransformers.addTransformer(Number.class, Float.class, v -> v.floatValue());
 		} catch(NoSuchMethodException e){
 			throw new RuntimeException(e);
 		}
