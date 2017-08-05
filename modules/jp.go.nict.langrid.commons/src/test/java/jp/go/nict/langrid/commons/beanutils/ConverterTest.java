@@ -32,12 +32,18 @@ import jp.go.nict.langrid.commons.transformer.Transformer;
 public class ConverterTest {
 	@Test
 	public void test_BigDecimal_byte() throws Exception{
-		Assert.assertEquals((byte)1, (byte)new Converter().convert(new BigDecimal("1"), byte.class));
+		Assert.assertEquals((byte)128, (byte)new Converter().convert(new BigDecimal("128"), byte.class));
+		Assert.assertEquals((byte)-128, (byte)new Converter().convert(new BigDecimal("-128"), byte.class));
 	}
 
 	@Test
-	public void test_string_byte() throws Exception{
-		Assert.assertEquals((Byte)(byte)1, new Converter().convert("1", Byte.class));
+	public void test_string_Byte() throws Exception{
+		Assert.assertEquals((Byte)(byte)128, new Converter().convert("128", Byte.class));
+	}
+
+	@Test
+	public void test_string_char() throws Exception{
+		Assert.assertEquals((Character)(char)'A', new Converter().convert("A", char.class));
 	}
 
 	@Test
@@ -71,6 +77,10 @@ public class ConverterTest {
 	@Test
 	public void test_enum_String() throws Exception{
 		Assert.assertEquals("enum1", new Converter().convert(EN.enum1, String.class));
+	}
+	@Test
+	public void test_string_enum() throws Exception{
+		Assert.assertEquals(EN.enum1, new Converter().convert("enum1", EN.class));
 	}
 
 	public static class TestClass{

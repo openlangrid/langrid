@@ -229,6 +229,10 @@ public class ClassUtil {
 		return nameToPrimitiveClass.containsKey(className);
 	}
 
+	public static boolean isWrapper(Class<?> clazz){
+		return wrapperToPrimitive.containsKey(clazz);
+	}
+
 	/**
 	 * 
 	 * 
@@ -260,6 +264,10 @@ public class ClassUtil {
 	 * 
 	 * 
 	 */
+	public static Class<?> getWrapperClass(Class<?> primitiveClass) {
+		return primitiveToWrapperClass.get(primitiveClass.getName());
+	}
+
 	public static Class<?> getWrapperClass(String primitiveName) {
 		return primitiveToWrapperClass.get(primitiveName);
 	}
