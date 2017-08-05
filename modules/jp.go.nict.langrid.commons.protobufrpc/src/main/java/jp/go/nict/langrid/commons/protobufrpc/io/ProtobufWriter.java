@@ -30,10 +30,11 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import com.google.protobuf.ByteString;
+import com.google.protobuf.CodedOutputStream;
+
 import jp.go.nict.langrid.commons.rpc.RpcFault;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
-
-import com.google.protobuf.CodedOutputStream;
 
 /**
  * @author Takao Nakaguchi
@@ -113,9 +114,13 @@ public class ProtobufWriter {
 		}
 		Class<?> clazz = result.getClass();
 		if(clazz.isArray()){
-			int n = Array.getLength(result);
-			for(int i = 0; i < n; i++){
-				writeObject(cos, 3, Array.get(result,  i));
+			if (clazz.equals(byte[].class)) {
+				cos.writeBytes(3, ByteString.copyFrom((byte[])result));
+			} else {
+				int n = Array.getLength(result);
+				for(int i = 0; i < n; i++){
+					writeObject(cos, 3, Array.get(result,  i));
+				}
 			}
 		} else{
 			writeObject(cos, 3, result);
@@ -168,10 +173,12 @@ public class ProtobufWriter {
 	throws IOException, IllegalAccessException, InvocationTargetException
 	{
 		Class<?> clazz = value.getClass();
-		if(value instanceof Number){
-			writeNumber(cos, fieldNum, value, clazz);
+		if(value instanceof Boolean){
+			cos.writeInt32(fieldNum, ((Boolean)value) ? 1 : 0);
 		} else if(value instanceof Character){
 			cos.writeInt32(fieldNum, (Character)value);
+		} else if(value instanceof Number){
+			writeNumber(cos, fieldNum, value, clazz);
 		} else if(value instanceof String){
 			writeString(cos, fieldNum, (String)value);
 		} else if(value instanceof Calendar){
@@ -181,9 +188,13 @@ public class ProtobufWriter {
 				writeObject(cos, fieldNum, o);
 			}
 		} else if(clazz.isArray()){
-			int n = Array.getLength(value);
-			for(int i = 0; i < n; i++){
-				writeObject(cos, fieldNum, Array.get(value,  i));
+			if (clazz.getComponentType().equals(byte.class)) {
+				cos.writeBytes(fieldNum, ByteString.copyFrom((byte[])value));
+			} else{
+				int n = Array.getLength(value);
+				for(int i = 0; i < n; i++){
+					writeObject(cos, fieldNum, Array.get(value,  i));
+				}
 			}
 		} else if(clazz.isEnum()){
 			writeEnum(cos, fieldNum, (Enum<?>)value);

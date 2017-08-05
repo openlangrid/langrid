@@ -31,13 +31,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.google.protobuf.CodedInputStream;
+
+import jp.go.nict.langrid.commons.lang.ClassUtil;
 import jp.go.nict.langrid.commons.rpc.ArrayElementsReceiver;
 import jp.go.nict.langrid.commons.rpc.RpcFault;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.commons.util.Trio;
-
-import com.google.protobuf.CodedInputStream;
 
 /**
  * @author Takao Nakaguchi
@@ -58,11 +59,7 @@ public class ProtobufParser {
 			} else if(index < parameterTypes.length){
 				Class<?> clazz = parameterTypes[index];
 				if(clazz.isArray() && !clazz.equals(byte[].class)){
-					Collection<Object> elements = arrayFields.get(index);
-					if(elements == null){
-						elements = new ArrayList<Object>();
-						arrayFields.put(index, elements);
-					}
+					Collection<Object> elements = arrayFields.computeIfAbsent(index, ArrayList::new);
 					elements.add((Object)read(cis, clazz.getComponentType()));
 				} else{
 					values[index] = read(cis, parameterTypes[index]);
@@ -73,8 +70,19 @@ public class ProtobufParser {
 		}
 		for(Map.Entry<Integer, Collection<Object>> entry : arrayFields.entrySet()){
 			int index = entry.getKey();
-			Class<?> clazz = parameterTypes[index];
-			Object value = entry.getValue().toArray((Object[])Array.newInstance(clazz.getComponentType(), 0));
+			Object value = null;
+			Class<?> componentType = parameterTypes[index].getComponentType();
+			if (componentType.isPrimitive()) {
+				int length = entry.getValue().size();
+				int idx = 0;
+				value = Array.newInstance(componentType, length);
+				for (Object o : entry.getValue()) {
+					Array.set(value, idx++, o);
+				}
+			} else{
+				value = entry.getValue().toArray(
+						(Object[])Array.newInstance(componentType, 0));
+			}
 			values[index] = value;
 		}
 		return new Pair<Collection<RpcHeader>, Object[]>(headers, values);
@@ -116,7 +124,16 @@ public class ProtobufParser {
 			}
 		}
 		if(isArray){
-			result = (T)arrayResult.toArray((Object[])Array.newInstance(componentType, 0));
+			if(componentType.isPrimitive()){
+				int length = arrayResult.size();
+				int idx = 0;
+				result = (T)Array.newInstance(componentType, length);
+				for (Object o : arrayResult) {
+					Array.set(result, idx++, o);
+				}
+			}else{
+				result = (T)arrayResult.toArray((Object[])Array.newInstance(componentType, 0));
+			}
 		}
 		return new Trio<Collection<RpcHeader>, RpcFault, T>(headers, fault, result);
 	}
@@ -189,13 +206,16 @@ public class ProtobufParser {
 	private static <T> T read(CodedInputStream cis, Class<T> type)
 	throws IOException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 		if(type.isPrimitive()){
-			return readPrimitive(cis, type);
-		} else if(type.equals(String.class)){
-			return (T)cis.readString();
-		} else if(Number.class.isAssignableFrom(type)){
-			return readNumber(cis, type);
+			type = (Class<T>)ClassUtil.getWrapperClass(type);
+		}
+		if(type.equals(Boolean.class)){
+			return (T)(Boolean)(cis.readInt32() == 1);
 		} else if(type.equals(Character.class)){
 			return (T)(Character)(char)cis.readInt32();
+		} else if(Number.class.isAssignableFrom(type)){
+			return readNumber(cis, type);
+		} else if(type.equals(String.class)){
+			return (T)cis.readString();
 		} else if(type.equals(Calendar.class)){
 			Calendar c = Calendar.getInstance();
 			c.setTimeInMillis(cis.readInt64());
@@ -214,40 +234,14 @@ public class ProtobufParser {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T> T readPrimitive(CodedInputStream cis, Class<T> type)
-	throws IOException{
-		if(type.equals(int.class)){
-			return (T)(Integer)cis.readInt32();
-		} else if(type.equals(boolean.class)){
-			return (T)(Boolean)cis.readBool();
-		} else if(type.equals(byte.class)){
-			return (T)(Byte)(byte)cis.readInt32();
-		} else if(type.equals(char.class)){
-			return (T)(Character)(char)cis.readInt32();
-		} else if(type.equals(short.class)){
-			return (T)(Short)(short)cis.readInt32();
-		} else if(type.equals(long.class)){
-			return (T)(Long)cis.readInt64();
-		} else if(type.equals(float.class)){
-			return (T)(Float)cis.readFloat();
-		} else if(type.equals(double.class)){
-			return (T)(Double)cis.readDouble();
-		} else{
-			throw new IOException("unknown primitive type " + type);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
 	private static <T> T readNumber(CodedInputStream cis, Class<T> type)
 	throws IOException{
-		if(type.equals(Integer.class)){
-			return (T)(Integer)cis.readInt32();
-		} else if(type.equals(Boolean.class)){
-			return (T)(Boolean)cis.readBool();
-		} else if(type.equals(Byte.class)){
+		if(type.equals(Byte.class)){
 			return (T)(Byte)(byte)cis.readInt32();
 		} else if(type.equals(Short.class)){
 			return (T)(Short)(short)cis.readInt32();
+		} else if(type.equals(Integer.class)){
+			return (T)(Integer)cis.readInt32();
 		} else if(type.equals(Long.class)){
 			return (T)(Long)cis.readInt64();
 		} else if(type.equals(Float.class)){
@@ -299,17 +293,9 @@ public class ProtobufParser {
 			int n = entry.getValue().size();
 			Object value = Array.newInstance(clazz.getComponentType(), n);
 			Iterator<Object> it = entry.getValue().iterator();
-//*
-			Object[] src = new Object[n];
-			for(int i = 0; i < n; i++){
-				src[i] = it.next();
-			}
-			System.arraycopy(src, 0, value, 0, n);
-/*/
 			for(int i = 0; i < n; i++){
 				Array.set(value, i, it.next());
 			}
-//*/
 			setter.invoke(obj, value);
 		}
 		cis.checkLastTagWas(0);
