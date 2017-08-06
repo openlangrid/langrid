@@ -72,11 +72,19 @@ public class DynamicBindingRewriter extends AbstractEndpointRewriter{
 
 	public Endpoint rewrite(
 			Endpoint original, Map<String, Object> properties
-			, URI processNamespace, String partnerLinkName, URI serviceNamespace
+			, URI processNamespace, String partnerLinkName, URI serviceNamespace,
+			String methodName, String[] paramNames, Object[] args
 			)
 	{
 		TreeBindings tb = (TreeBindings)properties.get("treeBindings");
-		String serviceId = tb.getBindingFor(partnerLinkName);
+		String serviceId = null;
+		BindingNode node = tb.getBindingNodeFor(partnerLinkName, methodName, paramNames, args);
+		if(node != null){
+			serviceId = node.getServiceId();
+			if(serviceId != null && node.getGridId() != null){
+				serviceId = node.getGridId() + ":" + serviceId;
+			}
+		}
 		if(serviceId == null || serviceId.trim().length() == 0){
 			return original;
 		}
@@ -98,11 +106,11 @@ public class DynamicBindingRewriter extends AbstractEndpointRewriter{
 	@Override
 	public void adjustProperties(
 			Map<String, Object> properties
-			, String partnerLinkName)
+			, String partnerLinkName, String methodName, String[] paramNames, Object[] args)
 	{
-		super.adjustProperties(properties, partnerLinkName);
+		super.adjustProperties(properties, partnerLinkName, methodName, paramNames, args);
 		TreeBindings tb = (TreeBindings)properties.get("treeBindings");
-		BindingNode node = tb.getBindingNodeFor(partnerLinkName);
+		BindingNode node = tb.getBindingNodeFor(partnerLinkName, methodName, paramNames, args);
 		if(node == null) return;
 
 		{

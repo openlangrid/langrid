@@ -50,7 +50,7 @@ extends AbstractAxisServiceExecutor
 implements TranslationWithTemporalDictionaryService{
 	public AxisTranslationWithTemporalDictionaryServiceExecutor(
 			String invocationName, long iid, Endpoint endpoint){
-		super(invocationName, iid, endpoint);
+		super(TranslationWithTemporalDictionaryService.class, invocationName, iid, endpoint);
 	}
 
 	@Override
@@ -66,7 +66,7 @@ implements TranslationWithTemporalDictionaryService{
 		try{
 			TranslationWithTemporalDictionary port = locator.getTranslationWithTemporalDictionary();
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub, sourceLang, targetLang, source);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				return port.translate(sourceLang, targetLang, source

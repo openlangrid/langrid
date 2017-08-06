@@ -49,7 +49,7 @@ extends AbstractAxisServiceExecutor
 implements SpeechRecognitionService{
 	public AxisSpeechRecognitionServiceExecutor(
 			String invocationName, long iid, Endpoint endpoint){
-		super(invocationName, iid, endpoint);
+		super(SpeechRecognitionService.class, invocationName, iid, endpoint);
 	}
 
 	@Override
@@ -62,7 +62,7 @@ implements SpeechRecognitionService{
 		try{
 			SpeechRecognition port = locator.getSpeechRecognition();
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub, language, speech);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				return port.recognize(language

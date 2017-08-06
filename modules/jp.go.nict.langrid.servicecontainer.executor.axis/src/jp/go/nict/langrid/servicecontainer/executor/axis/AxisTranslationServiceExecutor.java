@@ -49,7 +49,7 @@ extends AbstractAxisServiceExecutor
 implements TranslationService{
 	public AxisTranslationServiceExecutor(
 			String invocationName, long iid, Endpoint endpoint){
-		super(invocationName, iid, endpoint);
+		super(TranslationService.class, invocationName, iid, endpoint);
 	}
 
 	@Override
@@ -63,7 +63,7 @@ implements TranslationService{
 		try{
 			Translation_PortType port = transLocator.getTranslation( ) ;
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub, sourceLang, targetLang, source);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				return port.translate(sourceLang, targetLang, source);

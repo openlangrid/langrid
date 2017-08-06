@@ -49,7 +49,7 @@ extends AbstractAxisServiceExecutor
 implements TextToSpeechService{
 	public AxisTextToSpeechServiceExecutor(
 			String invocationName, long iid, Endpoint endpoint){
-		super(invocationName, iid, endpoint);
+		super(TextToSpeechService.class, invocationName, iid, endpoint);
 	}
 
 	@Override
@@ -63,7 +63,7 @@ implements TextToSpeechService{
 		try{
 			TextToSpeech.nlp.nict.servicetype.TextToSpeechService port = locator.getTextToSpeech();
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub, language, text, voiceType, audioType);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				return convert(

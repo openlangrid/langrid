@@ -141,11 +141,20 @@ public privileged aspect AeAspect extends AspectBase{
 		try{
 			URI processUri = new URI(invoke.getProcessName().getNamespaceURI());
 			Endpoint ep = makeEndpoint(ref);
+			Map<String, Object> msg = invoke.getInputMessageData().getMessageData();
+			String[] names = new String[msg.size()];
+			Object[] values = new Object[msg.size()];
+			int i = 0;
+			for(Map.Entry<String, Object> e : msg.entrySet()){
+				names[i] = e.getKey();
+				values[i] = e.getValue().toString();
+			}
 			ep = rewriteEndpoint(
 					processId, processUri
 					, invoke.getLocationId()
 					, makePartnerLinkName(invoke.getPartnerLink())
-					, serviceNamespace, ep
+					, serviceNamespace, ep,
+					invoke.getOperation(), names, values
 					);
 			prevEndpoint.set(ep);
 //			logger_.info("rewrite endpoint to " + ep.getAddress()
@@ -207,9 +216,19 @@ public privileged aspect AeAspect extends AspectBase{
 		Call c = context.getCall();
 		Map<String, Object> httpHeaders = new Hashtable<String, Object>();
 		List<RpcHeader> rpcHeaders = new ArrayList<RpcHeader>();
+		Map<String, Object> msg = invoke.getInputMessageData().getMessageData();
+		String[] names = new String[msg.size()];
+		Object[] values = new Object[msg.size()];
+		int i = 0;
+		for(Map.Entry<String, Object> e : msg.entrySet()){
+			names[i] = e.getKey();
+			values[i] = e.getValue().toString();
+		}
 		appendInvocationHeaders(
 				invoke.getProcessId(), invoke.getLocationId()
-				, partnerLinkName, httpHeaders, rpcHeaders
+				, partnerLinkName,
+				invoke.getOperation(), names, values,
+				httpHeaders, rpcHeaders
 				);
 		Map<String, Object> headers = (Map<String, Object>)
 				c.getProperty(HTTPConstants.REQUEST_HEADERS);

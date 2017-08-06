@@ -48,7 +48,8 @@ public interface EndpointRewriter {
 			, Map<String, Object> properties
 			, URI processNamespace
 			, String partnerLinkName
-			, URI serviceNamespace
+			, URI serviceNamespace,
+			String methodName, String[] paramNames, Object[] args
 			);
 
 	/**
@@ -57,5 +58,6 @@ public interface EndpointRewriter {
 	 */
 	void adjustProperties(
 			Map<String, Object> properties
-			, String partnerLinkName);
+			, String partnerLinkName,
+			String methodName, String[] paramNames, Object[] args);
 }

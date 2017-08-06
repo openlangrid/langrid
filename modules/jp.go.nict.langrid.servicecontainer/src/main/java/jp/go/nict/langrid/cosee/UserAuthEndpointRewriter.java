@@ -57,11 +57,9 @@ public class UserAuthEndpointRewriter extends AbstractEndpointRewriter{
 	}
 
 	@Override
-	public Endpoint rewrite(
-			Endpoint original, Map<String, Object> properties
-			, URI processNamespace, String partnerLinkName, URI serviceNamespace
-			)
-	{
+	public Endpoint rewrite(Endpoint original, Map<String, Object> properties,
+			URI processNamespace, String partnerLinkName, URI serviceNamespace,
+			String methodName, String[] paramNames, Object[] args) {
 		String userName = (String)properties.get(prefix + ".userName");
 		String password = (String)properties.get(prefix + ".password");
 		if(userName == null) return original;
