@@ -1,3 +1,6 @@
+[日本語](/READMEja.md), English
+---------------------------------
+
 This repository is mirror of https://sourceforge.net/p/servicegrid/git/ci/master/tree/
 
 See http://langrid.org/ for the details of Language Grid and Service Grid Server Software.
