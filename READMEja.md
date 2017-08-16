@@ -1,6 +1,8 @@
 日本語, [English](/README.md)
 ---------------------------------
-# 言語グリッド概要
+# 言語グリッド
+[![ServiceManager](https://github.com/openlangrid/langrid/raw/images/screenshots/language-grid-servicemanager_s2.jpg "Service manager")](https://github.com/openlangrid/langrid/raw/images/screenshots/language-grid-servicemanager.jpg)
+[![Toolbox](https://github.com/openlangrid/langrid/raw/images/screenshots/language-grid-toolbox_s3.jpg "Toolbox")](https://github.com/openlangrid/langrid/raw/images/screenshots/language-grid-toolbox.jpg)
 
 言語グリッドは，世界中の言語サービスの蓄積と共有を行うWebサービスプラットフォームです．
 現在，以下の機能が提供されています．
