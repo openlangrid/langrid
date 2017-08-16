@@ -39,6 +39,13 @@
 詳しくは，言語グリッドOSSプロジェクトを参照ください．
 * 言語グリッドOSSプロジェクト：http://langrid.org/oss-project/jp/index.html
 
+# 言語グリッドを利用して開発された多言語ツール
+言語グリッドを利用して作成された多言語ツールを紹介します．
+* [言語グリッドPlayground](http://langrid.org/playground/)
+ ：言語グリッドに登録されたサービスを呼び出して試すことができます．
+* [言語グリッドToolbox](http://langrid.org/tools/toolbox/)
+ ：言語グリッドに登録されたサービスを使って多言語Webサイトを作成するためのツールです．
+
 # ライセンス
 GNU Library or Lesser General Public License version 2.0 (LGPLv2)
 
