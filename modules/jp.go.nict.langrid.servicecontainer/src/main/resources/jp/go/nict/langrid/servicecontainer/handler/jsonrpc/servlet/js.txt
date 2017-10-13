@@ -133,7 +133,9 @@ var prettyPrint = (function(){
 				if (cell.nodeType) {
 					/* IsDomElement */
 					td.appendChild(cell);
-				} else {
+				} else if(cell.toString().startsWith('<img')){
+					td.innerHTML = cell.toString();
+				} else{
 					/* IsString */
 					td.innerHTML = util.shorten(cell.toString(), prettyPrintThis.settings.maxStringLength);
 				}
@@ -532,32 +534,38 @@ var prettyPrint = (function(){
 					return util.common.depthReached(obj, settings);
 				}
 				
-				var table = util.table(['Object', null],'object'),
-					isEmpty = true;
-				
-				for (var i in obj) {
-					if (!obj.hasOwnProperty || obj.hasOwnProperty(i)) {
-						var item = obj[i],
-							type = util.type(item);
-						isEmpty = false;
-						try {
-							table.addRow([i, typeDealer[ type ](item, depth+1, i)], type);
-//							table.addRow([i, '<pre>'+item+'</pre>'], type);
-						} catch(e) {
-							/* Security errors are thrown on certain Window/DOM properties */
-							if (window.console && window.console.log) {
-								console.log(e.message);
+				if(obj.mimeType && obj.body){
+					var table = util.table(['File', null],'object');
+					table.addRow(['filename', obj.filename], 'string');
+					table.addRow(['mimeType', obj.mimeType], 'string');
+					table.addRow(['body', '<img src="data:' + obj.mimeType + ';base64,'+obj.body+'"></img>'], 'string');
+				} else{
+					var table = util.table(['Object', null],'object'),
+						isEmpty = true;
+					
+					for (var i in obj) {
+						if (!obj.hasOwnProperty || obj.hasOwnProperty(i)) {
+							var item = obj[i],
+								type = util.type(item);
+							isEmpty = false;
+							try {
+								table.addRow([i, typeDealer[ type ](item, depth+1, i)], type);
+	//							table.addRow([i, '<pre>'+item+'</pre>'], type);
+							} catch(e) {
+								/* Security errors are thrown on certain Window/DOM properties */
+								if (window.console && window.console.log) {
+									console.log(e.message);
+								}
 							}
 						}
 					}
-				}
-				
-				if (isEmpty) {
-					table.addRow(['<small>[empty]</small>']);
-				} else {
-					table.thead.appendChild(
-						util.hRow(['key','value'], 'colHeader')
-					);
+					if (isEmpty) {
+						table.addRow(['<small>[empty]</small>']);
+					} else {
+						table.thead.appendChild(
+							util.hRow(['key','value'], 'colHeader')
+						);
+					}
 				}
 				
 				var ret = (settings.expanded || hasRunOnce) ? table.node : util.expander(
@@ -815,91 +823,90 @@ var ppcfg = {maxArray: 1000, maxDepth: 100, maxStringLength: 4096,
   } };
 //*
 function invokeMethod(fn, text, sn, mn){
-  var f = document.getElementById(fn);
-  var n = f.elements.length;
-  var s = "";
-  var p = new Promise((resolve, reject) => {
-    resolve(0);
-  });
-  function getBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-  });
-}
-  for(i = 0; i < n; i++){
-    p = p.then(i => {
-      return new Promise((resolve, reject) => {
-        var e = f.elements[i];
-        if(s.length > 0){
-          s += ",";
-        }
-        if(e.files){
-          const fr = new FileReader();
-          fr.onload = (e) => {
-            var b64 = e.target.result.split("base64,")[1];
-            console.log(b64);
-            s += '"' + b64 + '"';
-            resolve(i + 1);
-          };
-          fr.readAsDataURL(e.files[0]);
-        } else{
-          var v = e.value;
-          if(v[0] == '{' || v[0] == '['){
-            s += v.replace(/%/, "%25").replace(/\+/g, "%2B").replace(/\r/g, "\\r").replace(/\n/g, "\\n");
-          } else{
-            s += '"' + v.replace(/\"/g, "\\\"").replace(/\r/g, "\\r").replace(/\n/g, "\\n") + '"';
-          }
-          resolve(i + 1);
-        }
-      });
-    });
-  }
-  p.then(i => {
-  var req = '{"method": "' + mn + '", "params": [' + s + ']}';
-  var start = new Date();
-  $.ajax({
-    type: "POST",
-    beforeSend: function(req) {
-        req.setRequestHeader("Accept", "application/json-rpc");
-    },
-    contentType: "application/json-rpc",
-    dataType: "text",
-    url: document.URL + "/" + sn,
-    data: req,
-    success: function(data, dataType) {
-      log = $("<div></div>");
-      t = $("#" + text);
-      if(t.children().length > 0){
-        $("<hr/>").insertBefore(t.children(":first"));
-        log.insertBefore(t.children(":first"));
-      } else{
-        t.append(log);
-      }
-      log.append("<b>" + start + ", " + (new Date().getTime() - start.getTime()) + "msec.</b>");
-      log.append(' <span class="info">[RAW]<span>request:<br/>' + req +
-        "<br/><br/>response:<br/>" + data.replace(/</g, "&lt;").replace(/>/g, "&gt;") +
-        "</span></span><br/>");
-      log.append("<b>request:</b><br/>");
-      log.append($(prettyPrint(jQuery.parseJSON(req), ppcfg)));
-      log.append("<b>response:</b><br/>");
-      log.append($(prettyPrint(jQuery.parseJSON(data), ppcfg)));
-//      log.css("display", "none");
-//      log.show("slide", {direction: "up"}, 1000);
-    },
-    error: function(XMLHttpRequest, textStatus, errorThrown){
-      var fb = "<font color=\"red\">";
-      var fe = "</font>";
-      $("#" + text).append(
-        start + ", " + (new Date().getTime() - start.getTime()) + "msec.<br/>　request: " + escapeHTML(req) +
-        "<br/>status: " +
-        fb + escapeHTML(textStatus) + fe + "<br/>error: " + fb + escapeHTML(errorThrown) + fe + "</font><hr/>"
-        );
-    }
-    });
-  });
+	var f = document.getElementById(fn);
+	var n = f.elements.length;
+	var s = "";
+	var p = new Promise((resolve, reject) => {
+		resolve(0);
+	});
+	for(i = 0; i < n; i++){
+		p = p.then(i => {
+			return new Promise((resolve, reject) => {
+				var e = f.elements[i];
+				if(s.length > 0) s += ",";
+				if(e.files){
+					const file = e.files[0];
+					const fr = new FileReader();
+					if(e.attributes['data-filecontent']){
+						fr.onload = function(filename, mimeType){ return (e) => {
+							var b64 = e.target.result.split("base64,")[1];
+							s += '{"filename":"' + filename + '","mimeType":"' + mimeType +
+								'","body":"' + b64 + '"}';
+							resolve(i + 1);
+						};}(file.name, file.type);
+					} else{
+						fr.onload = (e) => {
+							var b64 = e.target.result.split("base64,")[1];
+							s += '"' + b64 + '"';
+							resolve(i + 1);
+						};
+					}
+					fr.readAsDataURL(file);
+				} else {
+					var v = e.value;
+					if(v[0] == '{' || v[0] == '['){
+						s += v.replace(/%/, "%25").replace(/\+/g, "%2B").replace(/\r/g, "\\r").replace(/\n/g, "\\n");
+					} else{
+						s += '"' + v.replace(/\"/g, "\\\"").replace(/\r/g, "\\r").replace(/\n/g, "\\n") + '"';
+					}
+					resolve(i + 1);
+				}
+			});
+		});
+	}
+	p.then(i => {
+		var req = '{"method": "' + mn + '", "params": [' + s + ']}';
+		var start = new Date();
+		$.ajax({
+			type: "POST",
+			beforeSend: function(req) {
+				req.setRequestHeader("Accept", "application/json-rpc");
+			},
+			contentType: "application/json-rpc",
+			dataType: "text",
+			url: document.URL + "/" + sn,
+			data: req,
+			success: function(data, dataType) {
+				log = $("<div></div>");
+				t = $("#" + text);
+				if(t.children().length > 0){
+					$("<hr/>").insertBefore(t.children(":first"));
+					log.insertBefore(t.children(":first"));
+				} else{
+					t.append(log);
+				}
+				log.append("<b>" + start + ", " + (new Date().getTime() - start.getTime()) + "msec.</b>");
+				log.append(' <span class="info">[RAW]<span>request:<br/>' + req +
+					"<br/><br/>response:<br/>" + data.replace(/</g, "&lt;").replace(/>/g, "&gt;") +
+					"</span></span><br/>");
+				log.append("<b>request:</b><br/>");
+				log.append($(prettyPrint(jQuery.parseJSON(req), ppcfg)));
+				log.append("<b>response:</b><br/>");
+				log.append($(prettyPrint(jQuery.parseJSON(data), ppcfg)));
+//				log.css("display", "none");
+//				log.show("slide", {direction: "up"}, 1000);
+			},
+			error: function(XMLHttpRequest, textStatus, errorThrown){
+				var fb = "<font color=\"red\">";
+				var fe = "</font>";
+				$("#" + text).append(
+					start + ", " + (new Date().getTime() - start.getTime()) + "msec.<br/>　request: " + escapeHTML(req) +
+					"<br/>status: " +
+					fb + escapeHTML(textStatus) + fe + "<br/>error: " + fb + escapeHTML(errorThrown) + fe + "</font><hr/>"
+				);
+			}
+		});
+	});
 }
 /*/
 function invokeMethod(fn, text, sn, mn){

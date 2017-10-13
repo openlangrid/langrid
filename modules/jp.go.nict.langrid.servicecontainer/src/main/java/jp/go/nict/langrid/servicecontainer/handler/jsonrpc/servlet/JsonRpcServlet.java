@@ -58,6 +58,7 @@ import jp.go.nict.langrid.commons.lang.ClassUtil;
 import jp.go.nict.langrid.commons.net.URLUtil;
 import jp.go.nict.langrid.commons.parameter.ParameterContext;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
+import jp.go.nict.langrid.commons.rpc.intf.FileContent;
 import jp.go.nict.langrid.commons.rpc.intf.RpcAnnotationUtil;
 import jp.go.nict.langrid.commons.rpc.intf.Service;
 import jp.go.nict.langrid.commons.rpc.json.JsonRpcRequest;
@@ -472,13 +473,19 @@ public class JsonRpcServlet extends HttpServlet {
 			} else{
 				d = desc;
 			}
-			if(paramTypes[i].equals(byte[].class)) {
+			if(paramTypes[i].equals(FileContent.class)) {
+				if(d.length() > 0){
+					w.print("<span class=\"paramInfo\"><input type=\"file\" data-filecontent/><span>" + d + "</span></span>");
+				} else {
+					w.print("<input type=\"file\" data-filecontent/>");
+				}
+/*			} else if(paramTypes[i].equals(byte[].class)) {
 				if(d.length() > 0){
 					w.print("<span class=\"paramInfo\"><input type=\"file\" /><span>" + d + "</span></span>");
 				} else {
 					w.print("<input type=\"file\" />");
 				}
-			} else {
+*/			} else {
 				if(d.length() > 0){
 					w.print("<span class=\"paramInfo\"><textarea cols=\"4\" rows=\"1\" placeholder=\"" +
 							StringEscapeUtils.escapeHtml(d) + "\">" +
