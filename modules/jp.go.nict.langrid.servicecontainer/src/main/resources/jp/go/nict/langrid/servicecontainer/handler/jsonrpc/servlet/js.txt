@@ -818,18 +818,46 @@ function invokeMethod(fn, text, sn, mn){
   var f = document.getElementById(fn);
   var n = f.elements.length;
   var s = "";
+  var p = new Promise((resolve, reject) => {
+    resolve(0);
+  });
+  function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}
   for(i = 0; i < n; i++){
-    var e = f.elements[i];
-    if(s.length > 0){
-      s += ",";
-    }
-    var v = e.value;
-    if(v[0] == '{' || v[0] == '['){
-      s += v.replace(/%/, "%25").replace(/\+/g, "%2B").replace(/\r/g, "\\r").replace(/\n/g, "\\n");
-    } else{
-      s += '"' + v.replace(/\"/g, "\\\"").replace(/\r/g, "\\r").replace(/\n/g, "\\n") + '"';
-    }
+    p = p.then(i => {
+      return new Promise((resolve, reject) => {
+        var e = f.elements[i];
+        if(s.length > 0){
+          s += ",";
+        }
+        if(e.files){
+          const fr = new FileReader();
+          fr.onload = (e) => {
+            var b64 = e.target.result.split("base64,")[1];
+            console.log(b64);
+            s += '"' + b64 + '"';
+            resolve(i + 1);
+          };
+          fr.readAsDataURL(e.files[0]);
+        } else{
+          var v = e.value;
+          if(v[0] == '{' || v[0] == '['){
+            s += v.replace(/%/, "%25").replace(/\+/g, "%2B").replace(/\r/g, "\\r").replace(/\n/g, "\\n");
+          } else{
+            s += '"' + v.replace(/\"/g, "\\\"").replace(/\r/g, "\\r").replace(/\n/g, "\\n") + '"';
+          }
+          resolve(i + 1);
+        }
+      });
+    });
   }
+  p.then(i => {
   var req = '{"method": "' + mn + '", "params": [' + s + ']}';
   var start = new Date();
   $.ajax({
@@ -871,6 +899,7 @@ function invokeMethod(fn, text, sn, mn){
         );
     }
     });
+  });
 }
 /*/
 function invokeMethod(fn, text, sn, mn){

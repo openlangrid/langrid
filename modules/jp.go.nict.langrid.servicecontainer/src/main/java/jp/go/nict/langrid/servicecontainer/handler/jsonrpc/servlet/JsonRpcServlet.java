@@ -472,12 +472,20 @@ public class JsonRpcServlet extends HttpServlet {
 			} else{
 				d = desc;
 			}
-			if(d.length() > 0){
-				w.print("<span class=\"paramInfo\"><textarea cols=\"4\" rows=\"1\" placeholder=\"" +
-						StringEscapeUtils.escapeHtml(d) + "\">" +
-						sample + "</textarea><span>" + d + "</span></span>");
-			} else{
-				w.print("<textarea cols=\"4\" rows=\"1\">" + sample + "</textarea>");
+			if(paramTypes[i].equals(byte[].class)) {
+				if(d.length() > 0){
+					w.print("<span class=\"paramInfo\"><input type=\"file\" /><span>" + d + "</span></span>");
+				} else {
+					w.print("<input type=\"file\" />");
+				}
+			} else {
+				if(d.length() > 0){
+					w.print("<span class=\"paramInfo\"><textarea cols=\"4\" rows=\"1\" placeholder=\"" +
+							StringEscapeUtils.escapeHtml(d) + "\">" +
+							sample + "</textarea><span>" + d + "</span></span>");
+				} else{
+					w.print("<textarea cols=\"4\" rows=\"1\">" + sample + "</textarea>");
+				}
 			}
 		}
 
