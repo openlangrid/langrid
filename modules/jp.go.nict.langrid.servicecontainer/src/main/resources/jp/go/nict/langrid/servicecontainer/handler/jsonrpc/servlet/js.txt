@@ -854,8 +854,10 @@ function invokeMethod(fn, text, sn, mn){
 					fr.readAsDataURL(file);
 				} else {
 					var v = e.value;
-					if(v[0] == '{' || v[0] == '['){
+					if(v.length > 0 && (v[0] == '{' || v[0] == '[')){
 						s += v.replace(/%/, "%25").replace(/\+/g, "%2B").replace(/\r/g, "\\r").replace(/\n/g, "\\n");
+					} else if(v.match(/^([0-9]|\.)+$/)){
+						s += v;
 					} else{
 						s += '"' + v.replace(/\"/g, "\\\"").replace(/\r/g, "\\r").replace(/\n/g, "\\n") + '"';
 					}
@@ -919,10 +921,12 @@ function invokeMethod(fn, text, sn, mn){
       s += ",";
     }
     var v = e.value;
-    if(v[0] == '{' || v[0] == '['){
+    if(v.length > 0 && (v[0] == '{' || v[0] == '[')){
       s += v.replace(/%/g, "%25").replace(/\+/g, "%2B");
+    } else if(v.match(/^([0-9]|\.)+$/)){
+      s += v;
     } else{
-      s += '"' + e.value.replace(/\"/g, "\\\"") + '"';
+      s += '"' + v.replace(/\"/g, "\\\"") + '"';
     }
   }
   var req = '{"method": "' + mn + '", "params": [' + s + ']}';
