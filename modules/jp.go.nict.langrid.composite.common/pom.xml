@@ -26,5 +26,10 @@
       <artifactId>jp.go.nict.langrid.client.ws_1_2</artifactId>
       <version>1.0.16</version>
     </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>
