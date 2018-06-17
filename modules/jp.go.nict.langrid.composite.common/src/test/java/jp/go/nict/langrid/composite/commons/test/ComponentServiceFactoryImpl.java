@@ -28,6 +28,7 @@ implements ComponentServiceFactory{
 	public ComponentServiceFactoryImpl(){
 	}
 
+	@SafeVarargs
 	public ComponentServiceFactoryImpl(Pair<String, Object>... services){
 		for(Pair<String, Object> s : services){
 			this.services.put(s.getFirst(), s.getSecond());

@@ -17,10 +17,10 @@
  */
 package jp.go.nict.langrid.composite.commons.thread;
 
-import jp.go.nict.langrid.service_1_2.LangridException;
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
+
+import jp.go.nict.langrid.service_1_2.LangridException;
 
 public class TaskManagerTest {
 	@Test
