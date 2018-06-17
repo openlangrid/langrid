@@ -57,7 +57,7 @@ public class ServiceLoader {
 		ParameterContext pc = new ServiceContextParameterContext(serviceContext);
 		Arrays.stream(pc.getStrings("serviceFactoryLoaders", new String[]{}))
 			.map(s -> new StringToClassTransformer<ServiceFactoryLoader>(true).transform(s))
-			.filter(Filters.<Class<ServiceFactoryLoader>>nonNull())
+			.filter(s -> Filters.<Class<ServiceFactoryLoader>>nonNull().test(s))
 			.map(s -> new ClassToInstanceTransformer<ServiceFactoryLoader>().transform(s))
 			.forEach(v -> serviceFactoryLoaders.add(v));
 			;

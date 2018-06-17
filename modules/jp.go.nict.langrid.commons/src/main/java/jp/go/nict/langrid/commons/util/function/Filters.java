@@ -17,8 +17,6 @@
  */
 package jp.go.nict.langrid.commons.util.function;
 
-import java.util.function.Predicate;
-
 public class Filters {
 	public static <T> Predicate<T> nonNull(){
 		return new Predicate<T>() {
