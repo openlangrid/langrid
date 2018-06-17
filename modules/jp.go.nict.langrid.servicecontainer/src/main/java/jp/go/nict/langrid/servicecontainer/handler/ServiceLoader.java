@@ -56,9 +56,9 @@ public class ServiceLoader {
 		this.serviceFactoryLoaders = new ArrayList<ServiceFactoryLoader>(Arrays.asList(loaders));
 		ParameterContext pc = new ServiceContextParameterContext(serviceContext);
 		Arrays.stream(pc.getStrings("serviceFactoryLoaders", new String[]{}))
-			.map(new StringToClassTransformer<ServiceFactoryLoader>(true))
+			.map(s -> new StringToClassTransformer<ServiceFactoryLoader>(true).transform(s))
 			.filter(Filters.<Class<ServiceFactoryLoader>>nonNull())
-			.map(new ClassToInstanceTransformer<ServiceFactoryLoader>())
+			.map(s -> new ClassToInstanceTransformer<ServiceFactoryLoader>().transform(s))
 			.forEach(v -> serviceFactoryLoaders.add(v));
 			;
 		this.servicesPath = new ServiceContextFileResolver(serviceContext).resolve(
