@@ -14,7 +14,7 @@
   <parent>
     <groupId>org.langrid</groupId>
     <artifactId>servicegrid</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.16</version>
   </parent>
   <dependencies>
   	<dependency>
@@ -72,12 +72,12 @@
   	<dependency>
   		<groupId>org.langrid</groupId>
   		<artifactId>jp.go.nict.langrid.servicecontainer</artifactId>
-  		<version>1.0-SNAPSHOT</version>
+  		<version>1.0.16</version>
   	</dependency>
   	<dependency>
   		<groupId>org.langrid</groupId>
   		<artifactId>jp.go.nict.langrid.commons</artifactId>
-  		<version>1.0-SNAPSHOT</version>
+  		<version>1.0.16</version>
   	</dependency>
   </dependencies>
 </project>
