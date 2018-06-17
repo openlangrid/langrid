@@ -17,7 +17,6 @@
  */
 package jp.go.nict.langrid.commons.util.function;
 
-@Deprecated
 public interface Supplier<T> {
 	T get();
 }

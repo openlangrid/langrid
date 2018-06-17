@@ -23,7 +23,8 @@ import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+
+import jp.go.nict.langrid.commons.util.function.Function;
 
 /**
  * 
@@ -183,10 +184,7 @@ public final class StringUtil {
 		return join(elements, textizer, separator, 0, elements.length);
 	}
 
-	/**
-	 * 
-	 * 
-	 */
+
 	public static <T> String join(
 			T[] elements, Function<T, String> textizer, String separator
 			, int begin, int end)

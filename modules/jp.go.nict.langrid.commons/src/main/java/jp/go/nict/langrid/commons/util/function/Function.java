@@ -17,7 +17,6 @@
  */
 package jp.go.nict.langrid.commons.util.function;
 
-@Deprecated
 public interface Function<T, R> {
 	R apply(T value);
 }

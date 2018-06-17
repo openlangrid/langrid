@@ -19,7 +19,7 @@
  */
 package jp.go.nict.langrid.commons.transformer;
 
-import java.util.function.Function;
+import jp.go.nict.langrid.commons.util.function.Function;
 
 /**
  * 

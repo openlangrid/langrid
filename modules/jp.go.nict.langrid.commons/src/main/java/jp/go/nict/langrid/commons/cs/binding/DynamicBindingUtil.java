@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.Function;
 
 import jp.go.nict.langrid.commons.codec.URLCodec;
 import jp.go.nict.langrid.commons.lang.StringUtil;
@@ -34,6 +33,7 @@ import jp.go.nict.langrid.commons.transformer.TransformationException;
 import jp.go.nict.langrid.commons.transformer.Transformer;
 import jp.go.nict.langrid.commons.util.CollectionUtil;
 import jp.go.nict.langrid.commons.util.Pair;
+import jp.go.nict.langrid.commons.util.function.Function;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSONException;
 

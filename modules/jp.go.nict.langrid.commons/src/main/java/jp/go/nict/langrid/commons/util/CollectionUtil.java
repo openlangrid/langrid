@@ -32,8 +32,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
+
+import jp.go.nict.langrid.commons.util.function.Function;
+import jp.go.nict.langrid.commons.util.function.Predicate;
 
 /**
  * 
