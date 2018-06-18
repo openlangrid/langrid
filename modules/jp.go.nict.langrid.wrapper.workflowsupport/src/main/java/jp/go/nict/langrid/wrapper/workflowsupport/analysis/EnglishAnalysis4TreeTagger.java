@@ -26,16 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import jp.go.nict.langrid.service_1_2.AccessLimitExceededException;
-import jp.go.nict.langrid.service_1_2.InvalidParameterException;
-import jp.go.nict.langrid.service_1_2.LanguageNotUniquelyDecidedException;
-import jp.go.nict.langrid.service_1_2.NoAccessPermissionException;
-import jp.go.nict.langrid.service_1_2.NoValidEndpointsException;
-import jp.go.nict.langrid.service_1_2.ProcessFailedException;
-import jp.go.nict.langrid.service_1_2.ServerBusyException;
-import jp.go.nict.langrid.service_1_2.ServiceNotActiveException;
-import jp.go.nict.langrid.service_1_2.ServiceNotFoundException;
-import jp.go.nict.langrid.service_1_2.UnsupportedLanguageException;
 import jp.go.nict.langrid.service_1_2.bilingualdictionary.TranslationWithPosition;
 import jp.go.nict.langrid.service_1_2.morphologicalanalysis.Morpheme;
 import jp.go.nict.langrid.service_1_2.typed.PartOfSpeech;
@@ -49,13 +39,8 @@ import jp.go.nict.langrid.wrapper.workflowsupport.util.StringUtil;
  */
 public class EnglishAnalysis4TreeTagger implements Analysis {
 	@Override
-	public String doConstructSource(Morpheme[] morphemes)
-			throws AccessLimitExceededException, InvalidParameterException,
-			LanguageNotUniquelyDecidedException, NoAccessPermissionException,
-			NoValidEndpointsException, ProcessFailedException,
-			ServerBusyException, ServiceNotActiveException,
-			ServiceNotFoundException, UnsupportedLanguageException {
-		StringBuffer source = new StringBuffer(); 				// 文章生成
+	public String doConstructSource(Morpheme[] morphemes) {
+		StringBuilder source = new StringBuilder(); 				// 文章生成
 		int length = morphemes.length;
 		for (int i = 0; i < length; i++) {
 			source.append(morphemes[i].getWord());
@@ -111,14 +96,6 @@ public class EnglishAnalysis4TreeTagger implements Analysis {
 		return source.toString();
 	}
 
-	public SourceAndMorphemesAndCodes doConstructSMC(Morpheme[] morphemes, Map<Integer, TranslationWithPosition> positionMap)
-			throws AccessLimitExceededException, InvalidParameterException,
-			LanguageNotUniquelyDecidedException, NoAccessPermissionException,
-			NoValidEndpointsException, ProcessFailedException,
-			ServerBusyException, ServiceNotActiveException,
-			ServiceNotFoundException, UnsupportedLanguageException {
-		return invoke(morphemes, positionMap, false);
-	}
 	private static final Set<String> SPECIAL_SENTENCE = new HashSet<String>();
 	static {
 		SPECIAL_SENTENCE.add("'s");
@@ -136,16 +113,6 @@ public class EnglishAnalysis4TreeTagger implements Analysis {
 		ESCAPE_SENTENCE.put("&nbsp;", " ");
 		ESCAPE_SENTENCE.put("&amp;", "&");
 	}
-	public SourceAndMorphemesAndCodes doConstructSMCMarking(
-			Morpheme[] morphemes,
-			Map<Integer, TranslationWithPosition> positionMap)
-			throws AccessLimitExceededException, InvalidParameterException,
-			LanguageNotUniquelyDecidedException, NoAccessPermissionException,
-			NoValidEndpointsException, ProcessFailedException,
-			ServerBusyException, ServiceNotActiveException,
-			ServiceNotFoundException, UnsupportedLanguageException {
-		return invoke(morphemes, positionMap, true);
-	};
 
 	
 	/**
@@ -154,41 +121,27 @@ public class EnglishAnalysis4TreeTagger implements Analysis {
 	 * @param positionMap
 	 * @param marking
 	 * @return
-	 * @throws AccessLimitExceededException
-	 * @throws InvalidParameterException
-	 * @throws LanguageNotUniquelyDecidedException
-	 * @throws NoAccessPermissionException
-	 * @throws NoValidEndpointsException
-	 * @throws ProcessFailedException
-	 * @throws ServerBusyException
-	 * @throws ServiceNotActiveException
-	 * @throws ServiceNotFoundException
-	 * @throws UnsupportedLanguageException
 	 */
-	protected SourceAndMorphemesAndCodes invoke(Morpheme[] morphemes, Map<Integer, TranslationWithPosition> positionMap, boolean marking) 
-		throws AccessLimitExceededException, InvalidParameterException,
-		LanguageNotUniquelyDecidedException, NoAccessPermissionException,
-		NoValidEndpointsException, ProcessFailedException,
-		ServerBusyException, ServiceNotActiveException,
-		ServiceNotFoundException, UnsupportedLanguageException {
-		StringBuffer source = new StringBuffer(); 				// 文章生成
+	public SourceAndMorphemesAndCodes doConstructSMC(
+			Morpheme[] morphemes, Map<Integer, TranslationWithPosition> positionMap,
+			CodeGenerator codeGenerator) 
+		 {
+		StringBuilder source = new StringBuilder(); 				// 文章生成
 		List<String> codes = new ArrayList<String>();			// 中間コード配列
+		List<String> headWords = new ArrayList<String>();
 		List<String> targetWords = new ArrayList<String>();		// 対象ワード配列
 		List<Morpheme> morphemeResult = new ArrayList<Morpheme>(); // 形態素結果配列
-		int markingCount = 1;
 		int length = morphemes.length;
 		for (int i = 0; i < length; i++) {
 			TranslationWithPosition translation = positionMap.get(Integer.valueOf(i));
 			if (translation != null) {
 				String term = StringUtil.createWord(true, morphemes, translation.getStartIndex(), translation.getNumberOfMorphemes());
 				// 中間コード生成
-				String intermediateCode = StringUtil.generateCode(term, i);
-				if (marking) {
-					intermediateCode = StringUtil.markingWord(intermediateCode, markingCount++);
-				}
+				String intermediateCode = codeGenerator.generate(term, i);
 				source.append(intermediateCode);
 				// 中間コード配列追加
 				codes.add(intermediateCode);
+				headWords.add(translation.getTranslation().getHeadWord());
 				// 対象ワード配列追加
 				targetWords.add(translation.getTranslation().getTargetWords()[0]);
 				// 結果形態素配列追加
@@ -251,7 +204,7 @@ public class EnglishAnalysis4TreeTagger implements Analysis {
 			}
 		}
 		SourceAndMorphemesAndCodes smc = new SourceAndMorphemesAndCodes(
-				source.toString(), morphemeResult.toArray(new Morpheme[]{}), codes.toArray(new String[]{}), targetWords.toArray(new String[]{})); 
+				source.toString(), morphemeResult, codes, headWords, targetWords); 
 		return smc;
 	}
 

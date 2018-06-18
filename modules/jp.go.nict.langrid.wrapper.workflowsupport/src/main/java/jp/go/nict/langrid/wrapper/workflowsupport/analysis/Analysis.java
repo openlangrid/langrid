@@ -19,16 +19,6 @@ package jp.go.nict.langrid.wrapper.workflowsupport.analysis;
 
 import java.util.Map;
 
-import jp.go.nict.langrid.service_1_2.AccessLimitExceededException;
-import jp.go.nict.langrid.service_1_2.InvalidParameterException;
-import jp.go.nict.langrid.service_1_2.LanguageNotUniquelyDecidedException;
-import jp.go.nict.langrid.service_1_2.NoAccessPermissionException;
-import jp.go.nict.langrid.service_1_2.NoValidEndpointsException;
-import jp.go.nict.langrid.service_1_2.ProcessFailedException;
-import jp.go.nict.langrid.service_1_2.ServerBusyException;
-import jp.go.nict.langrid.service_1_2.ServiceNotActiveException;
-import jp.go.nict.langrid.service_1_2.ServiceNotFoundException;
-import jp.go.nict.langrid.service_1_2.UnsupportedLanguageException;
 import jp.go.nict.langrid.service_1_2.bilingualdictionary.TranslationWithPosition;
 import jp.go.nict.langrid.service_1_2.morphologicalanalysis.Morpheme;
 import jp.go.nict.langrid.service_1_2.workflowsupport.SourceAndMorphemesAndCodes;
@@ -37,25 +27,9 @@ import jp.go.nict.langrid.service_1_2.workflowsupport.SourceAndMorphemesAndCodes
  * @author Jun Koyama
  */
 public interface Analysis {
-	String doConstructSource(Morpheme[] morphemes)
-	throws AccessLimitExceededException, InvalidParameterException,
-	LanguageNotUniquelyDecidedException, NoAccessPermissionException,
-	NoValidEndpointsException, ProcessFailedException,
-	ServerBusyException, ServiceNotActiveException,
-	ServiceNotFoundException, UnsupportedLanguageException;
+	String doConstructSource(Morpheme[] morphemes);
 
-	SourceAndMorphemesAndCodes doConstructSMC(Morpheme[] morphemes, Map<Integer, TranslationWithPosition> positionMap)
-			throws AccessLimitExceededException, InvalidParameterException,
-			LanguageNotUniquelyDecidedException, NoAccessPermissionException,
-			NoValidEndpointsException, ProcessFailedException,
-			ServerBusyException, ServiceNotActiveException,
-			ServiceNotFoundException, UnsupportedLanguageException;
-	
-	SourceAndMorphemesAndCodes doConstructSMCMarking(Morpheme[] morphemes, Map<Integer, TranslationWithPosition> positionMap)
-			throws AccessLimitExceededException, InvalidParameterException,
-			LanguageNotUniquelyDecidedException, NoAccessPermissionException,
-			NoValidEndpointsException, ProcessFailedException,
-			ServerBusyException, ServiceNotActiveException,
-			ServiceNotFoundException, UnsupportedLanguageException;
-
+	SourceAndMorphemesAndCodes doConstructSMC(
+			Morpheme[] morphemes, Map<Integer, TranslationWithPosition> positionMap,
+			CodeGenerator codeGenerator);
 }

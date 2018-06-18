@@ -23,16 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import jp.go.nict.langrid.service_1_2.AccessLimitExceededException;
-import jp.go.nict.langrid.service_1_2.InvalidParameterException;
-import jp.go.nict.langrid.service_1_2.LanguageNotUniquelyDecidedException;
-import jp.go.nict.langrid.service_1_2.NoAccessPermissionException;
-import jp.go.nict.langrid.service_1_2.NoValidEndpointsException;
-import jp.go.nict.langrid.service_1_2.ProcessFailedException;
-import jp.go.nict.langrid.service_1_2.ServerBusyException;
-import jp.go.nict.langrid.service_1_2.ServiceNotActiveException;
-import jp.go.nict.langrid.service_1_2.ServiceNotFoundException;
-import jp.go.nict.langrid.service_1_2.UnsupportedLanguageException;
 import jp.go.nict.langrid.service_1_2.bilingualdictionary.TranslationWithPosition;
 import jp.go.nict.langrid.service_1_2.morphologicalanalysis.Morpheme;
 import jp.go.nict.langrid.service_1_2.typed.PartOfSpeech;
@@ -46,13 +36,8 @@ import jp.go.nict.langrid.wrapper.workflowsupport.util.StringUtil;
  */
 public class DefaultAnalysisWithSpace implements Analysis {
 	@Override
-	public String doConstructSource(Morpheme[] morphemes)
-			throws AccessLimitExceededException, InvalidParameterException,
-			LanguageNotUniquelyDecidedException, NoAccessPermissionException,
-			NoValidEndpointsException, ProcessFailedException,
-			ServerBusyException, ServiceNotActiveException,
-			ServiceNotFoundException, UnsupportedLanguageException {
-		StringBuffer source = new StringBuffer(); 				// 文章生成
+	public String doConstructSource(Morpheme[] morphemes) {
+		StringBuilder source = new StringBuilder(); 				// 文章生成
 		
 		int length = morphemes.length;
 		for (int i = 0; i < length; i++) {
@@ -74,77 +59,38 @@ public class DefaultAnalysisWithSpace implements Analysis {
 		return source.toString();
 	}
 
-	public SourceAndMorphemesAndCodes doConstructSMC(Morpheme[] morphemes, Map<Integer, TranslationWithPosition> positionMap)
-			throws AccessLimitExceededException, InvalidParameterException,
-			LanguageNotUniquelyDecidedException, NoAccessPermissionException,
-			NoValidEndpointsException, ProcessFailedException,
-			ServerBusyException, ServiceNotActiveException,
-			ServiceNotFoundException, UnsupportedLanguageException {
-		return invoke(morphemes, positionMap, false);
-	}
-
-	public SourceAndMorphemesAndCodes doConstructSMCMarking(
-			Morpheme[] morphemes,
-			Map<Integer, TranslationWithPosition> positionMap)
-			throws AccessLimitExceededException, InvalidParameterException,
-			LanguageNotUniquelyDecidedException, NoAccessPermissionException,
-			NoValidEndpointsException, ProcessFailedException,
-			ServerBusyException, ServiceNotActiveException,
-			ServiceNotFoundException, UnsupportedLanguageException {
-		return invoke(morphemes, positionMap, true);
-	}
-	
 	/**
 	 * invoke
 	 * @param morphemes
 	 * @param positionMap
 	 * @param marking
 	 * @return
-	 * @throws AccessLimitExceededException
-	 * @throws InvalidParameterException
-	 * @throws LanguageNotUniquelyDecidedException
-	 * @throws NoAccessPermissionException
-	 * @throws NoValidEndpointsException
-	 * @throws ProcessFailedException
-	 * @throws ServerBusyException
-	 * @throws ServiceNotActiveException
-	 * @throws ServiceNotFoundException
-	 * @throws UnsupportedLanguageException
 	 */
-	protected SourceAndMorphemesAndCodes invoke(Morpheme[] morphemes, Map<Integer, TranslationWithPosition> positionMap, boolean marking) 
-		throws AccessLimitExceededException, InvalidParameterException,
-		LanguageNotUniquelyDecidedException, NoAccessPermissionException,
-		NoValidEndpointsException, ProcessFailedException,
-		ServerBusyException, ServiceNotActiveException,
-		ServiceNotFoundException, UnsupportedLanguageException {
-		StringBuffer source = new StringBuffer(); 				// 文章生成
-		List<String> codes = new ArrayList<String>();			// 中間コード配列
-		List<String> targetWords = new ArrayList<String>();		// 対象ワード配列
-		List<Morpheme> morphemeResult = new ArrayList<Morpheme>(); // 形態素結果配列
+	public SourceAndMorphemesAndCodes doConstructSMC(
+			Morpheme[] morphemes, Map<Integer, TranslationWithPosition> positionMap,
+			CodeGenerator codeGenerator){
+		StringBuilder source = new StringBuilder();
+		List<String> codes = new ArrayList<String>();
+		List<String> headWords = new ArrayList<String>();
+		List<String> targetWords = new ArrayList<String>();
+		List<Morpheme> morphemeResult = new ArrayList<Morpheme>();
 		
 		int length = morphemes.length;
-		int markingCount = 1;
 		for (int i = 0; i < length; i++) {
 			TranslationWithPosition translation = positionMap.get(Integer.valueOf(i));
 			if (translation != null) {
 				String term = StringUtil.createWord(true, morphemes, translation.getStartIndex(), translation.getNumberOfMorphemes());
-				// 中間コード生成
-				String intermediateCode = StringUtil.generateCode(term, i);
-				if (marking) {
-					intermediateCode = StringUtil.markingWord(intermediateCode, markingCount++);
-				}
+				String intermediateCode = codeGenerator.generate(term, i);
 				source.append(intermediateCode);
-				// 中間コード配列追加
 				codes.add(intermediateCode);
-				// 対象ワード配列追加
+				headWords.add(translation.getTranslation().getHeadWord());
 				targetWords.add(translation.getTranslation().getTargetWords()[0]);
-				// 結果形態素配列追加
 				morphemeResult.add(new Morpheme(intermediateCode, intermediateCode, PartOfSpeech.noun.name()));
 				i = i + translation.getNumberOfMorphemes() - 1;
-				source.append(" "); // 半角スペース挿入
+				source.append(" ");
 				continue;
 			}
-			// 見出し語がない場合
+			// when no head words were found
 			source.append(morphemes[i].getWord());
 			morphemeResult.add(morphemes[i]);
 			source.append(" "); // 半角スペース挿入
@@ -162,7 +108,8 @@ public class DefaultAnalysisWithSpace implements Analysis {
 			}
 		}
 		SourceAndMorphemesAndCodes smc = new SourceAndMorphemesAndCodes(
-				source.toString(), morphemeResult.toArray(new Morpheme[]{}), codes.toArray(new String[]{}), targetWords.toArray(new String[]{})); 
+				source.toString(), morphemeResult,
+				headWords, codes, targetWords); 
 		return smc;
 	}
 

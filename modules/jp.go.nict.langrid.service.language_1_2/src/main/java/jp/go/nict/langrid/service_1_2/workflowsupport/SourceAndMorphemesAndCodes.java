@@ -1,8 +1,7 @@
 /*
- * $Id: SourceAndMorphemesAndCodes.java 749 2013-03-29 02:28:04Z t-nakaguchi $
- *
  * This is a program for Language Grid Core Node. This combines multiple language resources and provides composite language services.
  * Copyright (C) 2005-2008 NICT Language Grid Project.
+ * Copyright Language Grid Project.
  *
  * This program is free software: you can redistribute it and/or modify it 
  * under the terms of the GNU Lesser General Public License as published by 
@@ -20,29 +19,38 @@
 
 package jp.go.nict.langrid.service_1_2.workflowsupport;
 
-import jp.go.nict.langrid.service_1_2.morphologicalanalysis.Morpheme;
+import java.util.Collection;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import jp.go.nict.langrid.service_1_2.morphologicalanalysis.Morpheme;
+
 /**
- * 
- * 
- * @author koyama
- * @author $Author: t-nakaguchi $
- * @version $Revision: 749 $
+ * @author Jun Koyama
+ * @author Takao Nakaguchi
  */
 public class SourceAndMorphemesAndCodes {
 	/**
 	 * 
 	 * 
 	 */
-	public SourceAndMorphemesAndCodes(String source, Morpheme[] morphemes, String[] codes, String[] targetWords) {
+	public SourceAndMorphemesAndCodes(String source, Morpheme[] morphemes, String[] codes, String[] headWords, String[] targetWords) {
 		this.source = source;
 		this.morphemes = morphemes;
 		this.codes = codes;
+		this.headWords = headWords;
 		this.targetWords = targetWords;
+	}
+
+	public SourceAndMorphemesAndCodes(String source, Collection<Morpheme> morphemes, Collection<String> codes,
+			Collection<String> headWords, Collection<String> targetWords) {
+		this.source = source;
+		this.morphemes = morphemes.toArray(new Morpheme[]{});
+		this.codes = codes.toArray(new String[]{});
+		this.headWords = headWords.toArray(new String[]{});
+		this.targetWords = targetWords.toArray(new String[]{});
 	}
 
 	@Override
@@ -61,88 +69,49 @@ public class SourceAndMorphemesAndCodes {
 		return ToStringBuilder.reflectionToString(this);
 	}
 
-	/**
-	 * 
-	 * 
-	 */
 	public String getSource() {
 		return source;
 	}
 
-	/**
-	 * 
-	 * 
-	 */
 	public void setSource(String source) {
 		this.source = source;
 	}
 
-	/**
-	 * 
-	 * 
-	 */
 	public Morpheme[] getMorphemes() {
 		return morphemes;
 	}
 
-	/**
-	 * 
-	 * 
-	 */
 	public void setMorphemes(Morpheme[] morphemes) {
 		this.morphemes = morphemes;
 	}
 
-	/**
-	 * 
-	 * 
-	 */
 	public String[] getCodes() {
 		return codes;
 	}
 
-	/**
-	 * 
-	 * 
-	 */
 	public void setCodes(String[] codes) {
 		this.codes = codes;
 	}
 
-	/**
-	 * 
-	 * 
-	 */
+	public String[] getHeadWords() {
+		return headWords;
+	}
+
+	public void setHeadWords(String[] headWords) {
+		this.headWords = headWords;
+	}
+
 	public String[] getTargetWords() {
 		return targetWords;
 	}
 
-	/**
-	 * 
-	 * 
-	 */
 	public void setTargetWords(String[] targetWords) {
 		this.targetWords = targetWords;
 	}
 	
-	/**
-	 * 
-	 * 
-	 */
 	private String source;
-	/**
-	 * 
-	 * 
-	 */
 	private Morpheme[] morphemes;
-	/**
-	 * 
-	 * 
-	 */
 	private String[] codes;
-	/**
-	 * 
-	 * 
-	 */
+	private String[] headWords;
 	private String[] targetWords;
 }

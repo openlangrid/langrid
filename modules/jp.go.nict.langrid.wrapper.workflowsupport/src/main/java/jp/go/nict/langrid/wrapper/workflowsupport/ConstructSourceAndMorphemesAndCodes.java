@@ -46,6 +46,7 @@ import jp.go.nict.langrid.wrapper.workflowsupport.analysis.DefaultAnalysisWithSp
 import jp.go.nict.langrid.wrapper.workflowsupport.analysis.EnglishAnalysis4TreeTagger;
 import jp.go.nict.langrid.wrapper.workflowsupport.analysis.HangulAnalysis;
 import jp.go.nict.langrid.wrapper.workflowsupport.analysis.JapaneseAnalysis;
+import jp.go.nict.langrid.wrapper.workflowsupport.analysis.SimpleCodeGenerator;
 
 /**
  * 形態素配列より、中間コードに置き換え文章を作成する
@@ -74,8 +75,6 @@ implements ConstructSourceAndMorphemesAndCodesService{
 			NoValidEndpointsException, ProcessFailedException,
 			ServerBusyException, ServiceNotActiveException,
 			ServiceNotFoundException, UnsupportedLanguageException {
-//		long s = System.currentTimeMillis();
-//		logger.severe("doConstructSMC start:" + DATE_FORMAT.format(new Date()));
 		if (sourceLang == null) {
 			throw new InvalidParameterException("sorceLang", "sourceLang is null.");
 		} else if (morphemes == null) {
@@ -120,8 +119,9 @@ implements ConstructSourceAndMorphemesAndCodesService{
 				// 形態素間で空白を持たせる
 				analysis = new DefaultAnalysisWithSpace();
 			}
-			SourceAndMorphemesAndCodes smc = analysis.doConstructSMC(morphemes, positionMap);
-			// 全角アルファベット→半角アルファベット変換
+			SourceAndMorphemesAndCodes smc = analysis.doConstructSMC(
+					morphemes, positionMap, new SimpleCodeGenerator());
+			// 全角アルファベット→半角アルファベット変換?
 
 			return smc;
 		} catch (Exception e) {

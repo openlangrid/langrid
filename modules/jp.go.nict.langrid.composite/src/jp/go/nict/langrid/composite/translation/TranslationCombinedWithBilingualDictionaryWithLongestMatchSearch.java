@@ -219,6 +219,7 @@ implements TranslationWithTemporalDictionaryService{
 					secondSmc.getSource()
 					, secondSmc.getMorphemes()
 					, ArrayUtil.append(firstSmc.getCodes(), secondSmc.getCodes())
+					, ArrayUtil.append(firstSmc.getHeadWords(), secondSmc.getHeadWords())
 					, ArrayUtil.append(firstSmc.getTargetWords(), secondSmc.getTargetWords())
 			);
 			info("joining mrophemes and codes done(" +
