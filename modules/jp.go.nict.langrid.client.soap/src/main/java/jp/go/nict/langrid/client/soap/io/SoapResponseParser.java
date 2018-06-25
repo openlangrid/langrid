@@ -20,7 +20,6 @@ package jp.go.nict.langrid.client.soap.io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
@@ -37,15 +36,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import jp.go.nict.langrid.commons.beanutils.ConversionException;
-import jp.go.nict.langrid.commons.beanutils.Converter;
-import jp.go.nict.langrid.commons.io.CascadingIOException;
-import jp.go.nict.langrid.commons.lang.ClassUtil;
-import jp.go.nict.langrid.commons.rpc.RpcFault;
-import jp.go.nict.langrid.commons.rpc.RpcHeader;
-import jp.go.nict.langrid.commons.util.Trio;
-import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
-
 import org.apache.commons.codec.binary.Base64;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
@@ -53,6 +43,16 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import jp.go.nict.langrid.commons.beanutils.ConversionException;
+import jp.go.nict.langrid.commons.beanutils.Converter;
+import jp.go.nict.langrid.commons.io.CascadingIOException;
+import jp.go.nict.langrid.commons.lang.ClassUtil;
+import jp.go.nict.langrid.commons.rpc.RpcFault;
+import jp.go.nict.langrid.commons.rpc.RpcHeader;
+import jp.go.nict.langrid.commons.util.ArrayUtil;
+import jp.go.nict.langrid.commons.util.Trio;
+import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
 
 public class SoapResponseParser {
 	public static <T> Trio<Collection<RpcHeader>, RpcFault, T> parseSoapResponse(
@@ -180,6 +180,7 @@ public class SoapResponseParser {
 		return n;
 	}
 
+	@SuppressWarnings({ "unchecked" })
 	private static <T> T nodeToType(XPathWorkspace w, Node node, Class<T> clazz, Converter converter)
 	throws InstantiationException, IllegalAccessException, IllegalArgumentException
 	, InvocationTargetException, ConversionException, DOMException, ParseException{
@@ -200,13 +201,13 @@ public class SoapResponseParser {
 			return clazz.cast(c);
 		} else if(clazz.isArray()){
 			Class<?> ct = clazz.getComponentType();
-			List<Object> elements = new ArrayList<Object>();
+			List<T> elements = new ArrayList<>();
 			node = resolveHref(w, node);
 			for(Node child = node.getFirstChild(); child != null; child = child.getNextSibling()){
 				if(!(child instanceof Element)) continue;
-				elements.add(nodeToType(w, child, ct, converter));
+				elements.add((T)nodeToType(w, child, ct, converter));
 			}
-			return clazz.cast(elements.toArray((Object[])Array.newInstance(ct, elements.size())));
+			return (T)ArrayUtil.toArray(elements, ct);
 		} else{
 			T instance = clazz.newInstance();
 			node = resolveHref(w, node);

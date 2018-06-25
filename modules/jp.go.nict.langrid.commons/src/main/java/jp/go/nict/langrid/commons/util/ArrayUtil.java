@@ -148,6 +148,16 @@ public class ArrayUtil {
 		return array.toArray(a);
 	}
 
+	public static <T> Object toArray(Collection<T> elements, Class<?> componentType){
+		int n = elements.size();
+		Object array = Array.newInstance(componentType, n);
+		Iterator<T> it = elements.iterator();
+		for(int i = 0; i < n; i++){
+			Array.set(array, i, it.next());
+		}
+		return array;
+	}
+
 	/**
 	 * 
 	 * 
