@@ -83,6 +83,10 @@ public class ParameterLoader{
 		Queue<String> params = new LinkedList<String>();
 		params.addAll(noNamedParams);
 		Class<?> clazz = bean.getClass();
+		if(bean instanceof Class) {
+			clazz = (Class<?>)bean;
+			bean = null;
+		}
 		String prefix = "";
 		boolean loadAll = loadAllFields;
 		ParameterConfig pc = clazz.getAnnotation(ParameterConfig.class);
