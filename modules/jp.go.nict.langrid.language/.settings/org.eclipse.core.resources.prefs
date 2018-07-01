@@ -6,4 +6,5 @@ encoding//src/main/resources=UTF-8
 encoding//src/main/resources/jp/go/nict/langrid/language/Language.properties=UTF-8
 encoding//src/main/resources/jp/go/nict/langrid/language/Language_en.properties=UTF-8
 encoding//src/test/java=UTF-8
+encoding//src/test/resources=UTF-8
 encoding/<project>=UTF-8
