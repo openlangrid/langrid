@@ -43,7 +43,7 @@ import jp.go.nict.langrid.service_1_2.morphologicalanalysis.Morpheme;
  * @author $Author: t-nakaguchi $
  * @version $Revision: 587 $
  */
-@Service(namespace="servicegrid:servicetype:nict.nlp:BilingualDictionaryWithLongestMatchSearch")
+@Service(namespace="http://bilingualdictionary.ws_1_2.wrapper.langrid.nict.go.jp")
 public interface BilingualDictionaryWithLongestMatchSearchService
 extends BilingualDictionaryService
 {
