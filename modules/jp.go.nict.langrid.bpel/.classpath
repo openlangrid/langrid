@@ -12,21 +12,16 @@
 	<classpathentry kind="lib" path="/lib/axis/axis.jar" sourcepath="jp.go.nict.langrid.ae/C:/sources/axis-1_3/src"/>
 	<classpathentry kind="lib" path="/lib/commons/commons-jxpath-1.2.jar"/>
 	<classpathentry kind="lib" path="/lib/commons/commons-lang-2.4.jar" sourcepath="/sources/commons/commons-lang-2.4-sources.jar"/>
-	<classpathentry kind="lib" path="/lib/commons/commons-logging-1.0.4.jar"/>
 	<classpathentry kind="lib" path="/lib/groovy/groovy-all-1.5.6.jar" sourcepath="/sources/groovy/groovy-src-1.5.6.zip"/>
 	<classpathentry kind="lib" path="/lib/ws/jaxrpc.jar"/>
 	<classpathentry kind="lib" path="/lib/langrid/langrid-stub-DeployBPRService-ae-3.0.3.jar"/>
 	<classpathentry kind="lib" path="/lib/langrid/langrid-stub-UndeployBPRService-ae-3.0.3.jar"/>
 	<classpathentry kind="lib" path="/lib/ws/wsdl4j-1.5.1.jar" sourcepath="/sources/wsdl4j/wsdl4j-src-1.6.2.zip"/>
-	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v7.0">
-		<attributes>
-			<attribute name="owner.project.facets" value="jst.utility"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/lib/commons/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

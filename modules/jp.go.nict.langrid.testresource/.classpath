@@ -4,11 +4,14 @@
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.commons"/>
-	<classpathentry kind="lib" path="/lib/commons/commons-beanutils.jar" sourcepath="C:/sources/commons-beanutils-1.7.0-src/src/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
-	<classpathentry kind="lib" path="/lib/commons/commons-logging-1.0.4.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.service.common_1_2"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.service.language_1_2"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.service.management_1_2"/>
+	<classpathentry kind="lib" path="/lib/commons/commons-beanutils.jar" sourcepath="/jp.go.nict.langrid.dao/C:/sources/commons-beanutils-1.7.0-src/src/java">
+		<attributes>
+			<attribute name="javadoc_location" value="http://commons.apache.org/beanutils/api/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

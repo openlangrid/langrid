@@ -20,6 +20,7 @@ package jp.go.nict.langrid.composite.translation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import jp.go.nict.langrid.commons.util.ArrayUtil;
 import jp.go.nict.langrid.language.Language;
@@ -186,6 +187,7 @@ implements TranslationWithTemporalDictionaryService{
 				try{
 					if(s.bdict != null){
 						dictResult = s.bdict.searchLongestMatchingTerms(sl, dl, m);
+						dictResult = dropInvalidEntries(dictResult, m);
 					}
 				} catch(ServiceNotActiveException e){
 					if(!e.getServiceId().equals("AbstractService")){
@@ -265,6 +267,20 @@ implements TranslationWithTemporalDictionaryService{
 			throw new ProcessFailedException(t);
 		}
 	}
+
+	private TranslationWithPosition[] dropInvalidEntries(
+			TranslationWithPosition[] entries, Morpheme[] morphs) {
+		if(entries == null) return null;
+		List<TranslationWithPosition> r = new ArrayList<>();
+		for(TranslationWithPosition twp : entries) {
+			Morpheme m = morphs[twp.getStartIndex()];
+			if(!m.getPartOfSpeech().startsWith("noun") &&
+					!m.getPartOfSpeech().equals("unknown")) continue;
+			r.add(twp);
+		}
+		return r.toArray(new TranslationWithPosition[] {});
+	}
+
 
 	protected ConstructSourceAndMorphemesAndCodes getConstructSourceAndMorphemesAndCodes(){
 		return new ConstructSourceAndMorphemesAndCodes();

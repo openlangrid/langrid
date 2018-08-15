@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,7 +54,10 @@ import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.commons.ws.ServletConfigServiceContext;
 import jp.go.nict.langrid.commons.ws.ServletServiceContext;
+import jp.go.nict.langrid.commons.ws.axis.AxisServiceContext;
 import jp.go.nict.langrid.commons.ws.param.ServletConfigParameterContext;
+import jp.go.nict.langrid.cosee.axis.AxisSoapHeaderElementFactory;
+import jp.go.nict.langrid.servicecontainer.handler.RIProcessor;
 import jp.go.nict.langrid.servicecontainer.handler.ServiceFactory;
 import jp.go.nict.langrid.servicecontainer.handler.ServiceLoader;
 import jp.go.nict.langrid.servicecontainer.handler.annotation.ServicesUtil;
@@ -78,16 +82,19 @@ public class SGAxisServlet extends AxisServlet {
 	}
 
 	@Override
-	public void init() throws ServletException {
-		super.init();
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
 		ParameterContext pc = new ServletConfigParameterContext(getServletConfig(), true);
 		String mappings = pc.getString("wsddBeanNamespaceMappings", "");
 		initNamespaceMappings(mappings);
 		this.defaultLoaders = ServicesUtil.getServiceFactoryLoaders(getClass());
+		RIProcessor.start(new ServletConfigServiceContext(config), new AxisSoapHeaderElementFactory());
 		try{
 			updateServiceDeployment();
 		} catch(IOException e){
 			throw new ServletException(e);
+		} finally {
+			RIProcessor.finish();
 		}
 	}
 
