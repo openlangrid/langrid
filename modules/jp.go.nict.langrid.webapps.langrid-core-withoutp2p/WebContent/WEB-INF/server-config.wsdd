@@ -142,6 +142,7 @@
   <beanMapping languageSpecificType="java:jp.go.nict.langrid.service_1_2.foundation.servicemanagement.ServiceNotDeactivatableException" qname="ns92:ServiceNotDeactivatableException" xmlns:ns92="http://langrid.nict.go.jp/ws_1_2/foundation/servicemanagement/"/>
   <beanMapping languageSpecificType="java:jp.go.nict.langrid.service_1_2.foundation.servicemanagement.ServiceNotInactiveException" qname="ns93:ServiceNotInactiveException" xmlns:ns93="http://langrid.nict.go.jp/ws_1_2/foundation/servicemanagement/"/>
   <beanMapping languageSpecificType="java:jp.go.nict.langrid.service_1_2.foundation.servicemanagement.ServiceProfile" qname="ns94:ServiceProfile" xmlns:ns94="http://langrid.nict.go.jp/ws_1_2/foundation/servicemanagement/"/>
+  <beanMapping languageSpecificType="java:jp.go.nict.langrid.service_1_2.foundation.servicemanagement.QoS" qname="ns1000:QoS" xmlns:ns1000="http://langrid.nict.go.jp/ws_1_2/foundation/servicemanagement/"/>
  </service>
  <service name="Authentication" provider="java:RPC">
   <parameter name="allowedMethods" value="*"/>
