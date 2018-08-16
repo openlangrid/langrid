@@ -1,0 +1,3 @@
+langrid.management.url=https://langrid.org/service_manager/services/
+langrid.management.userId=userId
+langrid.management.password=password
