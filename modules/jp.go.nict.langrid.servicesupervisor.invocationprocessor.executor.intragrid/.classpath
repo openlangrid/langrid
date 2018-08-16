@@ -14,11 +14,6 @@
 	<classpathentry kind="lib" path="/lib/spring/org.springframework.test-3.0.6.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/lib/commons/commons-httpclient-3.1.jar" sourcepath="/sources/commons/commons-httpclient-3.1.zip"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v7.0">
-		<attributes>
-			<attribute name="owner.project.facets" value="#system#;jst.utility"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
@@ -27,5 +22,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.servicemanager.logic"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jp.go.nict.langrid.commons.test"/>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v7.0"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
