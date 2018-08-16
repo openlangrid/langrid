@@ -490,7 +490,7 @@ extends AbstractLogic{
 	throws DaoException, ServiceLogicException{
 		Map<String, QoSCalculator[]> calcs = new LinkedHashMap<>();
 		for(String s : serviceId) {
-			calcs.put(s, ArrayUtil.collect(qosTypes, t -> {
+			calcs.put(s, ArrayUtil.collect(qosTypes, QoSCalculator.class, t -> {
 				switch(t) {
 				case "AVAILABILITY": return new AvailabilityCalculator();
 				case "SUCCESS_RATE": return new SuccessRateCalculator();
@@ -515,7 +515,7 @@ extends AbstractLogic{
 		}
 		QoSResult[][] ret = new QoSResult[serviceId.length][qosTypes.length];
 		for(int i = 0; i < serviceId.length; i++) {
-			ret[i] = ArrayUtil.collect(calcs.get(serviceId[i]), c -> c.getResult());
+			ret[i] = ArrayUtil.collect(calcs.get(serviceId[i]), QoSResult.class, c -> c.getResult());
 		}
 		return ret;
 	}

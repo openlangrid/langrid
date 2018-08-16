@@ -304,7 +304,7 @@ implements ServiceManagementService
 			int n = r.getElements().length;
 			ServiceEntry[] entries = new ServiceEntry[n];
 			QoSResult[][] qos = getServiceLogic().getQoS(qosTypes, getGridId(),
-					ArrayUtil.collect(r.getElements(), s -> s.getServiceId()),
+					ArrayUtil.collect(r.getElements(), String.class, s -> s.getServiceId()),
 					qosBeginTime, qosEndTime);
 			for(int i = 0; i < n; i++){
 				Service s = r.getElements()[i];
@@ -321,7 +321,7 @@ implements ServiceManagementService
 				if(getCoreNodeUrl().length() > 0){
 					et.setEndpointUrl(getCoreNodeUrl() + "invoker/" + s.getGridId() + ":" + s.getServiceId());
 				}
-				et.setQos(ArrayUtil.collect(qos[i], q -> {
+				et.setQos(ArrayUtil.collect(qos[i], QoS.class, q -> {
 					return new QoS(q.getType().name(), q.getDenominator(), q.getValue());
 				}));
 				entries[i] = et;
