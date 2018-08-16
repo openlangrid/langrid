@@ -121,7 +121,7 @@ public class AxisStubRequestAttributes implements RequestAttributes{
 	}
 
 	@Override
-	public void setUserParam(Object param) {
+	public void setUserParam(String param) {
 		mightBeModified = true;
 		String key = LangridConstants.HTTPHEADER_SERVICEINVOCATION_USERPARAM;
 		if(param != null) {

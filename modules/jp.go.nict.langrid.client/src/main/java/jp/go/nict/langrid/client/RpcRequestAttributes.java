@@ -164,7 +164,7 @@ public class RpcRequestAttributes implements RequestAttributes{
 		}
 		if(userParam != null) {
 			con.addRequestProperty(LangridConstants.HTTPHEADER_SERVICEINVOCATION_USERPARAM,
-					JSON.encode(userParam));
+					userParam);
 		}
 		for(Map.Entry<String, Object> e : httpHeaders.entrySet()){
 			con.addRequestProperty(e.getKey(), e.getValue().toString());
@@ -191,8 +191,12 @@ public class RpcRequestAttributes implements RequestAttributes{
 		return ret;
 	}
 
+	public String getUserParam() {
+		return userParam;
+	}
+
 	@Override
-	public void setUserParam(Object param) {
+	public void setUserParam(String param) {
 		this.userParam = param;
 	}
 
@@ -210,5 +214,5 @@ public class RpcRequestAttributes implements RequestAttributes{
 	private List<BindingNode> bindings = new ArrayList<BindingNode>();
 	private Map<QName, Object> rpcHeaders = new HashMap<QName, Object>();
 	private String bindingsValue;
-	private Object userParam;
+	private String userParam;
 }
