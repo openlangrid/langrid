@@ -147,4 +147,10 @@ public interface ServiceMonitorService {
 		throws AccessLimitExceededException, InvalidParameterException
 		, NoAccessPermissionException, ServiceConfigurationException
 		, UnknownException;
+
+	void getServiceQoS(String serviceId, String[] qosTypes, Calendar startDateTime, Calendar endDateTime)
+			throws AccessLimitExceededException, InvalidParameterException
+			, NoAccessPermissionException, ServiceConfigurationException
+			, UnknownException;
+	
 }

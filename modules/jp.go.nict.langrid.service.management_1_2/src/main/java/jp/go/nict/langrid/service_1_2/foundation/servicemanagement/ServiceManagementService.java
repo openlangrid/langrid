@@ -19,6 +19,8 @@
  */
 package jp.go.nict.langrid.service_1_2.foundation.servicemanagement;
 
+import java.util.Calendar;
+
 import jp.go.nict.langrid.service_1_2.AccessLimitExceededException;
 import jp.go.nict.langrid.service_1_2.InvalidParameterException;
 import jp.go.nict.langrid.service_1_2.NoAccessPermissionException;
@@ -76,6 +78,14 @@ public interface ServiceManagementService {
 	ServiceEntrySearchResult searchServices(
 			int startIndex, int maxCount, MatchingCondition[] conditions
 			, Order[] orders, String scope)
+		throws AccessLimitExceededException, InvalidParameterException
+		, NoAccessPermissionException, ServiceConfigurationException
+		, UnknownException, UnsupportedMatchingMethodException;
+
+	ServiceEntrySearchResult searchServicesWithQos(
+			int startIndex, int maxCount, MatchingCondition[] conditions
+			, Order[] orders, String scope,
+			String[] qosTypes, Calendar qosBeginTime, Calendar qosEndTime)
 		throws AccessLimitExceededException, InvalidParameterException
 		, NoAccessPermissionException, ServiceConfigurationException
 		, UnknownException, UnsupportedMatchingMethodException;

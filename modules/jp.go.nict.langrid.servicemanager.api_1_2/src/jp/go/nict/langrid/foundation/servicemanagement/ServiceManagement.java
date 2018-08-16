@@ -39,6 +39,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -100,6 +101,7 @@ import jp.go.nict.langrid.language.InvalidLanguagePathException;
 import jp.go.nict.langrid.language.InvalidLanguageTagException;
 import jp.go.nict.langrid.language.Language;
 import jp.go.nict.langrid.language.util.LanguagePathUtil;
+import jp.go.nict.langrid.management.logic.QoSResult;
 import jp.go.nict.langrid.management.logic.ServiceNotActivatableException;
 import jp.go.nict.langrid.service_1_2.AccessLimitExceededException;
 import jp.go.nict.langrid.service_1_2.InvalidParameterException;
@@ -117,6 +119,7 @@ import jp.go.nict.langrid.service_1_2.foundation.servicemanagement.AttributeName
 import jp.go.nict.langrid.service_1_2.foundation.servicemanagement.CompositeServiceEntry;
 import jp.go.nict.langrid.service_1_2.foundation.servicemanagement.CompositeServiceEntrySearchResult;
 import jp.go.nict.langrid.service_1_2.foundation.servicemanagement.Invocation;
+import jp.go.nict.langrid.service_1_2.foundation.servicemanagement.QoS;
 import jp.go.nict.langrid.service_1_2.foundation.servicemanagement.ServiceAlreadyExistsException;
 import jp.go.nict.langrid.service_1_2.foundation.servicemanagement.ServiceEntry;
 import jp.go.nict.langrid.service_1_2.foundation.servicemanagement.ServiceEntrySearchResult;
@@ -242,6 +245,85 @@ implements ServiceManagementService
 				if(getCoreNodeUrl().length() > 0){
 					et.setEndpointUrl(getCoreNodeUrl() + "invoker/" + s.getGridId() + ":" + s.getServiceId());
 				}
+				entries[i] = et;
+			}
+			return new ServiceEntrySearchResult(
+					entries, r.getTotalCount(), r.isTotalCountFixed()
+					);
+		} catch(DaoException e){
+			throw convertException(e);
+		} catch(Throwable e){
+			throw ExceptionConverter.convertException(e);
+		}
+	}
+
+	@AccessRightValidatedMethod
+	@ValidatedMethod
+	@TransactionMethod
+	@Override
+	public ServiceEntrySearchResult searchServicesWithQos(
+			@IntNotNegative int startIndex
+			, @IntInRange(minimum=0, maximum=100) int maxCount
+			, @NotNull @EachElement
+			@ValidMatchingCondition(supportedMatchingMethods={
+					COMPLETE, PARTIAL, PREFIX, SUFFIX
+					, LANGUAGEPATH, IN, EQ, GT, GE, LT, LE
+			})
+			MatchingCondition[] conditions
+			, @NotNull @EachElement @ValidOrder Order[] orders
+			, @NotEmpty @ValidEnum(Scope.class) String scope,
+			@NotNull String[] qosTypes,
+			@NotNull Calendar qosBeginTime,
+			@NotNull Calendar qosEndTime)
+			throws AccessLimitExceededException, InvalidParameterException, NoAccessPermissionException,
+			ServiceConfigurationException, UnknownException, UnsupportedMatchingMethodException {
+		adjustDateFieldName(conditions);
+		jp.go.nict.langrid.dao.MatchingCondition[] conds = adjustCondsForSearch(conditions);
+		adjustDateFieldName(orders);
+		jp.go.nict.langrid.dao.Order[] ords = null;
+		try{
+			for(Order o : orders){
+				if(o.getFieldName().equals("serviceType")){
+					throw new InvalidParameterException(
+							"orders", "ordering by serviceType is not supported.");
+				}
+			}
+			ords = convert(orders, jp.go.nict.langrid.dao.Order[].class);
+		} catch(ConversionException e){
+			throw new InvalidParameterException(
+					"orders", e.getMessage()
+					);
+		}
+
+		try{
+			ServiceSearchResult r = getServiceLogic().searchServicesOverGrids(
+					startIndex, maxCount
+					, getGridId(), getUserChecker().getUserId()
+					, conds, ords, jp.go.nict.langrid.management.logic.Scope.valueOf(scope)
+					);
+			int n = r.getElements().length;
+			ServiceEntry[] entries = new ServiceEntry[n];
+			QoSResult[][] qos = getServiceLogic().getQoS(qosTypes, getGridId(),
+					ArrayUtil.collect(r.getElements(), s -> s.getServiceId()),
+					qosBeginTime, qosEndTime);
+			for(int i = 0; i < n; i++){
+				Service s = r.getElements()[i];
+				ServiceEntry et = convert(s, ServiceEntry.class);
+				if(!disableIntegridFunctionality){
+					et.setServiceId(s.getGridId() + ":" + s.getServiceId());
+					et.setOwnerUserId(s.getGridId() + ":" + et.getOwnerUserId());
+				}
+				et.setServiceTypeDomain(
+						Optional.ofNullable(s.getServiceTypeDomainId()).orElse("UNKNOWN"));
+				et.setServiceType(
+						Optional.ofNullable(s.getServiceTypeId()).orElse("OTHER").toUpperCase());
+				et.setSupportedLanguages(generateSupportedLanguages(s));
+				if(getCoreNodeUrl().length() > 0){
+					et.setEndpointUrl(getCoreNodeUrl() + "invoker/" + s.getGridId() + ":" + s.getServiceId());
+				}
+				et.setQos(ArrayUtil.collect(qos[i], q -> {
+					return new QoS(q.getType().name(), q.getDenominator(), q.getValue());
+				}));
 				entries[i] = et;
 			}
 			return new ServiceEntrySearchResult(

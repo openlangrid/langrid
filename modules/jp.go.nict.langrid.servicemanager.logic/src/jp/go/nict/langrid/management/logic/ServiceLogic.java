@@ -27,9 +27,14 @@ import java.net.URL;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.xml.sax.SAXException;
 
 import jp.go.nict.langrid.bpel.ProcessAnalysisException;
 import jp.go.nict.langrid.bpel.ProcessAnalyzer;
@@ -47,6 +52,8 @@ import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.commons.ws.Protocols;
 import jp.go.nict.langrid.commons.ws.util.InvalidLangridUriException;
 import jp.go.nict.langrid.commons.ws.util.LangridUriUtil;
+import jp.go.nict.langrid.dao.AccessLogDao;
+import jp.go.nict.langrid.dao.AccessLogSearchResult;
 import jp.go.nict.langrid.dao.DaoException;
 import jp.go.nict.langrid.dao.MatchingCondition;
 import jp.go.nict.langrid.dao.MatchingMethod;
@@ -56,6 +63,7 @@ import jp.go.nict.langrid.dao.ServiceDao;
 import jp.go.nict.langrid.dao.ServiceNotFoundException;
 import jp.go.nict.langrid.dao.ServiceSearchResult;
 import jp.go.nict.langrid.dao.ServiceTypeNotFoundException;
+import jp.go.nict.langrid.dao.entity.AccessLog;
 import jp.go.nict.langrid.dao.entity.BPELService;
 import jp.go.nict.langrid.dao.entity.ExternalService;
 import jp.go.nict.langrid.dao.entity.InstanceType;
@@ -70,14 +78,16 @@ import jp.go.nict.langrid.dao.util.BPELServiceInstanceReader;
 import jp.go.nict.langrid.dao.util.BPRBPELServiceInstanceReader;
 import jp.go.nict.langrid.dao.util.ExternalServiceInstanceReader;
 import jp.go.nict.langrid.dao.util.LobUtil;
+import jp.go.nict.langrid.management.logic.qos.AvailabilityCalculator;
+import jp.go.nict.langrid.management.logic.qos.QoSCalculator;
+import jp.go.nict.langrid.management.logic.qos.SuccessRateCalculator;
+import jp.go.nict.langrid.management.logic.qos.ThroughputCalculator;
 import jp.go.nict.langrid.management.logic.service.InvalidServiceInstanceException;
 import jp.go.nict.langrid.management.logic.service.ProcessDeployer;
 import jp.go.nict.langrid.management.logic.service.ServiceActivator;
 import jp.go.nict.langrid.management.logic.service.wsdlgenerator.WSDLGenerator;
 import jp.go.nict.langrid.servicesupervisor.frontend.processors.pre.AccessRightCheck;
 import jp.go.nict.langrid.servicesupervisor.frontend.processors.pre.FederatedUseCheck;
-
-import org.xml.sax.SAXException;
 
 /**
  * 
@@ -471,6 +481,152 @@ extends AbstractLogic{
 		s.setVisible(visible);
 		s.touchUpdatedDateTime();
 	}
+
+	@DaoTransaction
+	public QoSResult[][] getQoS(
+			String[] qosTypes,
+			String serviceGridId, String[] serviceId,
+			Calendar startDateTime, Calendar endDateTime)
+	throws DaoException, ServiceLogicException{
+		Map<String, QoSCalculator[]> calcs = new LinkedHashMap<>();
+		for(String s : serviceId) {
+			calcs.put(s, ArrayUtil.collect(qosTypes, t -> {
+				switch(t) {
+				case "AVAILABILITY": return new AvailabilityCalculator();
+				case "SUCCESS_RATE": return new SuccessRateCalculator();
+				case "THROUGHPUT": return new ThroughputCalculator();
+				}
+				return null;
+			}));
+		}
+		AccessLogDao aldao = getAccessLogDao();
+		int start = 0;
+		while(true) {
+			AccessLogSearchResult r = aldao.searchAccessLog(start, 100, null,  null,
+					serviceGridId, serviceId,
+					startDateTime, endDateTime,
+					new MatchingCondition[] {},
+					new Order[] {});
+			if(r.getElements() == null || r.getElements().length == 0) break;
+			for(AccessLog al : r.getElements()) {
+				for(QoSCalculator c : calcs.get(al.getServiceId())) c.addLog(al);
+			}
+			start += 100;
+		}
+		QoSResult[][] ret = new QoSResult[serviceId.length][qosTypes.length];
+		for(int i = 0; i < serviceId.length; i++) {
+			ret[i] = ArrayUtil.collect(calcs.get(serviceId[i]), c -> c.getResult());
+		}
+		return ret;
+	}
+
+	/**
+	 * スループットを求める。成功した呼び出しの所要時間から，秒間何リクエストに相当するかを計算する。
+	 */
+	@DaoTransaction
+	public QoSResult getThroughput(String serviceGridId, String serviceId,
+			Calendar startDateTime, Calendar endDateTime)
+					throws ServiceNotFoundException, DaoException, ServiceLogicException {
+		AccessLogDao aldao = getAccessLogDao();
+		int start = 0;
+		QoSCalculator c = new ThroughputCalculator();
+		while(true) {
+			AccessLogSearchResult r = aldao.searchAccessLog(start, 100, null,  null, serviceGridId, new String[] {serviceId},
+					startDateTime, endDateTime,
+					new MatchingCondition[] {new MatchingCondition("responseCode", 200, MatchingMethod.COMPLETE)},
+					new Order[] {});
+			if(r.getElements() == null || r.getElements().length == 0) break;
+			for(AccessLog al : r.getElements()) {
+				c.addLog(al);
+			}
+			start += 100;
+		}
+		return c.getResult();
+	}
+
+	/**
+	 * Success Rateを求める。正常呼び出し回数(アクセス制限違反やパラメータが不正などの使い方に問題が
+	 * ある呼び出しは含めない)で成功回数を割った数値。
+	 */
+	@DaoTransaction
+	public QoSResult getSuccessRate(String serviceGridId, String serviceId,
+			Calendar startDateTime, Calendar endDateTime)
+	throws ServiceNotFoundException, DaoException, ServiceLogicException {
+		AccessLogDao aldao = getAccessLogDao();
+		int start = 0;
+		QoSCalculator c = new SuccessRateCalculator();
+		while(true) {
+			AccessLogSearchResult r = aldao.searchAccessLog(start, 100, null,  null,
+					serviceGridId, new String[] {serviceId},
+					startDateTime, endDateTime,
+					new MatchingCondition[] {},
+					new Order[] {});
+			if(r.getElements() == null || r.getElements().length == 0) break;
+			for(AccessLog al : r.getElements()) {
+				c.addLog(al);
+			}
+			start += 100;
+		}
+		return c.getResult();
+	}
+
+	/**
+	 * Availabilityを求める。全呼び出し回数で通常呼び出し回数(成功した呼び出しとアクセス制限違反やパラメータが
+	 * 不正などの使い方に問題がある呼び出しを含む)を割った数値。
+	 */
+	@DaoTransaction
+	public QoSResult getAvailability(String serviceGridId, String serviceId,
+			Calendar startDateTime, Calendar endDateTime)
+					throws ServiceNotFoundException, DaoException, ServiceLogicException {
+		AccessLogDao aldao = getAccessLogDao();
+		int start = 0;
+		QoSCalculator c = new AvailabilityCalculator();
+		while(true) {
+			AccessLogSearchResult r = aldao.searchAccessLog(start, 100, null,  null,
+					serviceGridId, new String[] {serviceId},
+					startDateTime, endDateTime,
+					new MatchingCondition[] {},
+					new Order[] {});
+			if(r.getElements() == null || r.getElements().length == 0) break;
+			for(AccessLog al : r.getElements()) {
+				c.addLog(al);
+			}
+			start += 100;
+		}
+		return c.getResult();
+	}
+/*  TODO 
+	@DaoTransaction
+	public QoSResult getReputation(String serviceGridId, String serviceId,
+			Calendar startDateTime, Calendar endDateTime)
+					throws ServiceNotFoundException, DaoException, ServiceLogicException {
+		AccessLogDao aldao = getAccessLogDao();
+		int total = 0;
+		int start = 0;
+		int available = 0;
+		while(true) {
+			AccessLogSearchResult r = aldao.searchAccessLog(start, 100, null,  null,
+					serviceGridId, new String[] {serviceId},
+					startDateTime, endDateTime,
+					new MatchingCondition[] {},
+					new Order[] {});
+			if(r.getElements() == null || r.getElements().length == 0) break;
+			for(AccessLog al : r.getElements()) {
+				if(al.getResponseCode() == 200 ||
+						al.getFaultString().contains("InvalidParameterException") ||
+						al.getFaultString().contains("UnsupportLanguageException") ||
+						al.getFaultString().contains("UnsupportLanguagePairException") ||
+						al.getFaultString().contains("AccessLimitExceededException")) {
+					available++;
+				}
+				total++;
+			}
+			start += 100;
+		}
+		System.out.println("total: " + total);
+		return new QoSResult(QoSType.REPUTATION, total, 1.0 * available / total);
+	}
+*/
 
 	private ServiceSearchResult searchAllServices(
 			int startIndex, int maxCount

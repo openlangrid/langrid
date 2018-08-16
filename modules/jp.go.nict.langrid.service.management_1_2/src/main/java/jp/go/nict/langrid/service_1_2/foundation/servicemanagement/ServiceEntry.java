@@ -324,6 +324,13 @@ implements Serializable
 	public void setActive(boolean active){
 		this.active = active;
 	}
+	
+	public QoS[] getQos() {
+		return qos;
+	}
+	public void setQos(QoS[] qos) {
+		this.qos = qos;
+	}
 
 	private String serviceId = "";
 	private String serviceName = "";
@@ -337,6 +344,7 @@ implements Serializable
 	private Calendar registeredDate = CalendarUtil.MAX_VALUE_IN_EPOC;
 	private Calendar updatedDate = CalendarUtil.MAX_VALUE_IN_EPOC;
 	private boolean active = false;
+	private QoS[] qos;
 
 	private static final long serialVersionUID = 8286064981992474579L;
 }
