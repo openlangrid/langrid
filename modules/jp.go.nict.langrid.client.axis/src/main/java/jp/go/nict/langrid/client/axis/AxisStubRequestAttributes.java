@@ -120,6 +120,17 @@ public class AxisStubRequestAttributes implements RequestAttributes{
 		return bindings;
 	}
 
+	@Override
+	public void setUserParam(Object param) {
+		mightBeModified = true;
+		String key = LangridConstants.HTTPHEADER_SERVICEINVOCATION_USERPARAM;
+		if(param != null) {
+			headers.put(key, param);
+		} else {
+			headers.remove(key);
+		}
+	}
+
 	void setUpStub(){
 		if(mightBeModified){
 			AxisStubUtil.setMimeHeaders(stub, headers.entrySet());

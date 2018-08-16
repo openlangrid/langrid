@@ -60,7 +60,8 @@ implements Serializable
 			, String userGridId, String userId
 			, String serviceAndNodeGridId
 			, String serviceId, String nodeId
-			, int callNest, String callTree
+			, int callNest, String callTree,
+			String userParam
 			)
 	{
 		this.address = address;
@@ -83,6 +84,7 @@ implements Serializable
 		this.nodeId = nodeId;
 		this.callNest = callNest;
 		this.callTree = callTree;
+		this.userParam = userParam;
 	}
 
 	@Override
@@ -453,6 +455,13 @@ implements Serializable
 	public void setCallTree(String callTree) {
 		this.callTree = callTree;
 	}
+	
+	public String getUserParam() {
+		return userParam;
+	}
+	public void setUserParam(String userParam) {
+		this.userParam = userParam;
+	}
 
 	@Id
 	private int id;
@@ -479,6 +488,8 @@ implements Serializable
 	private int callNest;
 	@Type(type="text")
 	private String callTree;
+	@Type(type="text")
+	private String userParam;
 
 	private static final long serialVersionUID = -5130713163805744837L;
 }

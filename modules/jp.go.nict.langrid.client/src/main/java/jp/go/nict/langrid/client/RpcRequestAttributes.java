@@ -32,6 +32,7 @@ import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.ws.BasicAuthUtil;
 import jp.go.nict.langrid.commons.ws.Constants;
 import jp.go.nict.langrid.commons.ws.LangridConstants;
+import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
 
 /**
  * 
@@ -161,6 +162,10 @@ public class RpcRequestAttributes implements RequestAttributes{
 			con.addRequestProperty(Constants.HEADER_AUTHORIZATION
 					, BasicAuthUtil.encode(userId, password));
 		}
+		if(userParam != null) {
+			con.addRequestProperty(LangridConstants.HTTPHEADER_SERVICEINVOCATION_USERPARAM,
+					JSON.encode(userParam));
+		}
 		for(Map.Entry<String, Object> e : httpHeaders.entrySet()){
 			con.addRequestProperty(e.getKey(), e.getValue().toString());
 		}
@@ -186,6 +191,11 @@ public class RpcRequestAttributes implements RequestAttributes{
 		return ret;
 	}
 
+	@Override
+	public void setUserParam(Object param) {
+		this.userParam = param;
+	}
+
 	private String userId;
 	private String password;
 	private AuthMethod authMethod;
@@ -200,4 +210,5 @@ public class RpcRequestAttributes implements RequestAttributes{
 	private List<BindingNode> bindings = new ArrayList<BindingNode>();
 	private Map<QName, Object> rpcHeaders = new HashMap<QName, Object>();
 	private String bindingsValue;
+	private Object userParam;
 }

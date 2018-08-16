@@ -36,7 +36,8 @@ public class LogInfo {
 			, int responseCode, int responseBytes
 			, String protocolId
 			, String referer, String userAgent
-			, int callNest, String callTree)
+			, int callNest, String callTree,
+			String userParam)
 	{
 		this.remoteAddress = remoteAddress;
 		this.remoteHost = remoteHost;
@@ -51,6 +52,7 @@ public class LogInfo {
 		this.userAgent = userAgent;
 		this.callNest = callNest;
 		this.callTree = callTree;
+		this.userParam = userParam;
 	}
 
 	/**
@@ -163,6 +165,13 @@ public class LogInfo {
 		return callTree;
 	}
 
+	public String getUserParam() {
+		return userParam;
+	}
+	public void setUserParam(String userParam) {
+		this.userParam = userParam;
+	}
+
 	private String remoteAddress;
 	private String remoteHost;
 	private Calendar accessDateTime;
@@ -176,4 +185,5 @@ public class LogInfo {
 	private String userAgent;
 	private int callNest;
 	private String callTree;
+	private String userParam;
 }
