@@ -32,7 +32,6 @@ import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.ws.BasicAuthUtil;
 import jp.go.nict.langrid.commons.ws.Constants;
 import jp.go.nict.langrid.commons.ws.LangridConstants;
-import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
 
 /**
  * 
