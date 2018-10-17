@@ -10,7 +10,7 @@
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <springframework-version>3.0.7.RELEASE</springframework-version>
+    <springframework-version>[4.3.17,)</springframework-version>
     <servicegrid-version>1.0.8</servicegrid-version>
   </properties>
   <dependencies>

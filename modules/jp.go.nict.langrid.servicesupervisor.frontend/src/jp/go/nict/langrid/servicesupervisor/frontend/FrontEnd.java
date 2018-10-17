@@ -191,7 +191,8 @@ public class FrontEnd {
 				, protocolId
 				, request.getHeader("Referrer")
 				, request.getHeader("User-Agent")
-				, callNest, callTree
+				, callNest, callTree,
+				request.getHeader(LangridConstants.HTTPHEADER_SERVICEINVOCATION_USERPARAM)
 				);
 	}
 
@@ -221,8 +222,8 @@ public class FrontEnd {
 				, responseCode, responseBytes
 				, protocolId
 				, "", ""
-				, callNest, ""
-				);
+				, callNest, "",
+				"");
 	}
 
 	static String getCallTree(String protocolId, InputStream body)

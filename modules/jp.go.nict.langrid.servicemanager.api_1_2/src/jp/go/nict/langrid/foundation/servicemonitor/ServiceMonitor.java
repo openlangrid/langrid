@@ -289,6 +289,16 @@ public class ServiceMonitor
 		}
 	}
 
+	/**
+	 * 
+	 */
+	@Override
+	public void getServiceQoS(String serviceId, String[] qosTypes, Calendar startDateTime, Calendar endDateTime)
+			throws AccessLimitExceededException, InvalidParameterException, NoAccessPermissionException,
+			ServiceConfigurationException, UnknownException {
+		
+	}
+
 	private static Logger logger = Logger.getLogger(
 			ServiceMonitor.class.getName());
 }

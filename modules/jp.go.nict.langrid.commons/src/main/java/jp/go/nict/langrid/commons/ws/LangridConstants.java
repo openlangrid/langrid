@@ -192,4 +192,7 @@ public class LangridConstants {
 	// for backward compatibility
 	public static final String HTTPHEADER_TRANSFER_TO_ENDPOINT_OBSOLETE
 		= "X-Langrid-Service-";
+
+	public static final String HTTPHEADER_SERVICEINVOCATION_USERPARAM
+		= "X-ServiceGrid-ServiceInvocation-UserParam";
 }

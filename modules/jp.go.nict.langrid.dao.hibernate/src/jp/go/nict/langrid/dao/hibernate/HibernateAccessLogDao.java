@@ -397,9 +397,9 @@ extends HibernateCRUDDao<AccessLog> implements AccessLogDao
 	{
 		c.add(Property.forName("dateTime").ge(startDateTime));
 		c.add(Property.forName("dateTime").le(endDateTime));
-		if(userGridId.length() > 0){
+		if(userGridId != null && userGridId.length() > 0){
 			c.add(Property.forName("userGridId").eq(userGridId));
-			if(userId.length() > 0){
+			if(userId != null && userId.length() > 0){
 				c.add(Property.forName("userId").eq(userId));
 			}
 		}

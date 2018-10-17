@@ -59,5 +59,6 @@ public interface RequestAttributes {
 	void addRequestMimeHeaders(Map<String, Object> headers);
 	void addRequestRpcHeader(String namespace, String name, String value);
 	void addRequestRpcHeaders(Map<QName, Object> headers);
+	void setUserParam(String param);
 	Collection<BindingNode> getTreeBindings();
 }

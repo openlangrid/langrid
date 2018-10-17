@@ -56,7 +56,8 @@ public class AccessLog implements LogProcess{
 					, faultCode, faultString
 					, u.getGridId(), u.getUserId()
 					, s.getGridId(), s.getServiceId(), n.getNodeId()
-					, logInfo.getCallNest(), logInfo.getCallTree()
+					, logInfo.getCallNest(), logInfo.getCallTree(),
+					logInfo.getUserParam()
 					);
 			context.getAccessLogDao().addAccessLog(log);
 		} catch(DaoException e){
