@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 
 import jp.go.nict.langrid.commons.lang.ClassUtil;
 import jp.go.nict.langrid.commons.lang.reflect.GenericsUtil;
+import jp.go.nict.langrid.commons.util.function.Consumer;
 import jp.go.nict.langrid.commons.util.function.Function;
 import jp.go.nict.langrid.commons.util.function.Predicate;
 import jp.go.nict.langrid.commons.util.function.Supplier;
@@ -265,6 +266,17 @@ public class ArrayUtil {
 			r[i] = mapper.apply(elements[i]);
 		}
 		return r;
+	}
+	
+	public static <T, U> U[] map(
+			T[] elements, Class<U> clazz, Function<T, U> mapper)
+	{
+		return collect(elements, clazz, mapper);
+	}
+
+	public static <T> void forEach(
+			T[] elements, Consumer<T> cons) {
+		for(T e : elements) cons.accept(e);
 	}
 
 	/**
