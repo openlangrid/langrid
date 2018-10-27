@@ -32,18 +32,6 @@ import java.util.logging.Logger;
 
 import javax.xml.soap.SOAPException;
 
-import jp.go.nict.langrid.commons.io.StreamUtil;
-import jp.go.nict.langrid.commons.rpc.RpcHeader;
-import jp.go.nict.langrid.commons.ws.ServiceContext;
-import jp.go.nict.langrid.commons.ws.soap.SoapFaultRpcFaultAdapter;
-import jp.go.nict.langrid.commons.ws.soap.SoapHeaderRpcHeadersAdapter;
-import jp.go.nict.langrid.cosee.AppAuthEndpointRewriter;
-import jp.go.nict.langrid.cosee.AspectBase;
-import jp.go.nict.langrid.cosee.BasicAuthEndpointRewriter;
-import jp.go.nict.langrid.cosee.DynamicBindingRewriter;
-import jp.go.nict.langrid.cosee.Endpoint;
-import jp.go.nict.langrid.cosee.EndpointRewriter;
-
 import org.activebpel.rt.axis.bpel.handlers.AeBpelHandler;
 import org.activebpel.rt.axis.bpel.handlers.AeHTTPSender;
 import org.activebpel.rt.axis.bpel.invokers.AeAxisInvokeContext;
@@ -62,6 +50,18 @@ import org.apache.axis.MessageContext;
 import org.apache.axis.client.Call;
 import org.apache.axis.message.SOAPHeaderElement;
 import org.apache.axis.transport.http.HTTPConstants;
+
+import jp.go.nict.langrid.commons.io.StreamUtil;
+import jp.go.nict.langrid.commons.rpc.RpcHeader;
+import jp.go.nict.langrid.commons.ws.ServiceContext;
+import jp.go.nict.langrid.commons.ws.soap.SoapFaultRpcFaultAdapter;
+import jp.go.nict.langrid.commons.ws.soap.SoapHeaderRpcHeadersAdapter;
+import jp.go.nict.langrid.cosee.AppAuthEndpointRewriter;
+import jp.go.nict.langrid.cosee.AspectBase;
+import jp.go.nict.langrid.cosee.BasicAuthEndpointRewriter;
+import jp.go.nict.langrid.cosee.DynamicBindingRewriter;
+import jp.go.nict.langrid.cosee.Endpoint;
+import jp.go.nict.langrid.cosee.EndpointRewriter;
 
 /**
  * 
@@ -132,11 +132,20 @@ public privileged aspect AeAspect extends AspectBase{
 		try{
 			URI processUri = new URI(invoke.getProcessName().getNamespaceURI());
 			Endpoint ep = makeEndpoint(ref);
+			Map<String, Object> msg = invoke.getInputMessageData().getMessageData();
+			String[] names = new String[msg.size()];
+			Object[] values = new Object[msg.size()];
+			int i = 0;
+			for(Map.Entry<String, Object> e : msg.entrySet()){
+				names[i] = e.getKey();
+				values[i] = e.getValue().toString();
+			}
 			ep = rewriteEndpoint(
 					processId, processUri
 					, invoke.getLocationId()
 					, makePartnerLinkName(invoke.getPartnerLink())
-					, serviceNamespace, ep
+					, serviceNamespace, ep,
+					invoke.getOperation(), names, values
 					);
 			logger_.info("rewrite endpoint to " + ep.getAddress()
 					+ "[" + ep.getUserName() + ":****]");
@@ -166,9 +175,19 @@ public privileged aspect AeAspect extends AspectBase{
 		Call c = context.getCall();
 		Map<String, Object> httpHeaders = new Hashtable<String, Object>();
 		List<RpcHeader> rpcHeaders = new ArrayList<RpcHeader>();
+		Map<String, Object> msg = invoke.getInputMessageData().getMessageData();
+		String[] names = new String[msg.size()];
+		Object[] values = new Object[msg.size()];
+		int i = 0;
+		for(Map.Entry<String, Object> e : msg.entrySet()){
+			names[i] = e.getKey();
+			values[i] = e.getValue().toString();
+		}
 		appendInvocationHeaders(
 				invoke.getProcessId(), invoke.getLocationId()
-				, partnerLinkName, httpHeaders, rpcHeaders
+				, partnerLinkName,
+				invoke.getOperation(), names, values,
+				httpHeaders, rpcHeaders
 				);
 		Map<String, Object> headers = (Map<String, Object>)c.getProperty(HTTPConstants.REQUEST_HEADERS);
 		if(headers == null){

@@ -26,6 +26,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -207,8 +208,7 @@ public class Converter{
 		return (Collection<T>)ret;
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> T[] convertCollectionToArray(Collection<?> value, Class<T> componentType)
+	public Object convertCollectionToArray(Collection<?> value, Class<?> componentType)
 	throws ConversionException{
 		if(value == null) return null;
 
@@ -223,7 +223,7 @@ public class Converter{
 				throw new ConversionException(e);
 			}
 		}
-		return (T[])array;
+		return array;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -295,15 +295,18 @@ public class Converter{
 	public <T> T convert(Object value, Class<T> target)
 	throws ConversionException{
 		if(value == null) return null;
-		if(target.isAssignableFrom(value.getClass())) return (T)value;
 		Class<?> alias = aliases.get(target);
 		if(alias != null){
 			target = (Class<T>)alias;
 		}
 		if(target.isPrimitive()) target = (Class<T>)ClassUtil.getWrapperClass(target.getName());
+		if(target.isAssignableFrom(value.getClass())) return (T)value;
 
 		// transformer
 		Transformer<Object, T> transformer = (Transformer<Object, T>)transformers.get(value.getClass(), target);
+		if(transformer == null){
+			transformer = (Transformer<Object, T>)commonTransformers.get(value.getClass(), target);
+		}
 		if(transformer != null){
 			try{
 				return (T)transformer.transform(value);
@@ -333,16 +336,10 @@ public class Converter{
 		} else if(target.equals(byte[].class)){
 			return (T)Base64.decode(value.toString());
 		} else{
-			if(target.isPrimitive()){
+			if(stringToWrapperMethods.containsKey(target)){
 				try{
-					Constructor<?> c = primitiveToWrapperConstructor.get(target);
-					if(c != null && c.getParameterTypes()[0].isAssignableFrom(value.getClass())){
-						return (T)c.newInstance(value);
-					}
 					return (T)stringToWrapperMethods.get(target).invoke(null, value.toString());
 				} catch(IllegalAccessException e){
-					throw new ConversionException(e);
-				} catch(InstantiationException e){
 					throw new ConversionException(e);
 				} catch(InvocationTargetException e){
 					throw new ConversionException(e);
@@ -423,9 +420,8 @@ public class Converter{
 	}
 
 	private Transformers transformers = new Transformers();
+	private static Transformers commonTransformers = new Transformers();
 	private Map<Class<?>, Class<?>> aliases = new HashMap<Class<?>, Class<?>>();
-	private static Map<Class<?>, Constructor<?>> primitiveToWrapperConstructor
-			= MapUtil.newHashMap();
 	private static Map<Class<?>, Method> stringToWrapperMethods
 			= MapUtil.newHashMap();
 
@@ -445,22 +441,17 @@ public class Converter{
 
 	static{
 		try{
-			primitiveToWrapperConstructor.put(boolean.class, Boolean.class.getConstructor(boolean.class));
-			primitiveToWrapperConstructor.put(byte.class, Byte.class.getConstructor(byte.class));
-			primitiveToWrapperConstructor.put(char.class, Character.class.getConstructor(char.class));
-			primitiveToWrapperConstructor.put(short.class, Short.class.getConstructor(short.class));
-			primitiveToWrapperConstructor.put(int.class, Integer.class.getConstructor(int.class));
-			primitiveToWrapperConstructor.put(long.class, Long.class.getConstructor(long.class));
-			primitiveToWrapperConstructor.put(float.class, Float.class.getConstructor(float.class));
-			primitiveToWrapperConstructor.put(double.class, Double.class.getConstructor(double.class));
-			stringToWrapperMethods.put(boolean.class, Boolean.class.getMethod("parseBoolean", String.class));
-			stringToWrapperMethods.put(byte.class, Byte.class.getMethod("parseByte", String.class));
-			stringToWrapperMethods.put(char.class, CharacterParser.class.getMethod("parseCharacter", String.class));
-			stringToWrapperMethods.put(short.class, Short.class.getMethod("parseShort", String.class));
-			stringToWrapperMethods.put(int.class, Integer.class.getMethod("parseInt", String.class));
-			stringToWrapperMethods.put(long.class, Long.class.getMethod("parseLong", String.class));
-			stringToWrapperMethods.put(float.class, Float.class.getMethod("parseFloat", String.class));
-			stringToWrapperMethods.put(double.class, Double.class.getMethod("parseDouble", String.class));
+			stringToWrapperMethods.put(Boolean.class, Boolean.class.getMethod("parseBoolean", String.class));
+			stringToWrapperMethods.put(Byte.class, Byte.class.getMethod("parseByte", String.class));
+			stringToWrapperMethods.put(Character.class, CharacterParser.class.getMethod("parseCharacter", String.class));
+			stringToWrapperMethods.put(Short.class, Short.class.getMethod("parseShort", String.class));
+			stringToWrapperMethods.put(Integer.class, Integer.class.getMethod("parseInt", String.class));
+			stringToWrapperMethods.put(Long.class, Long.class.getMethod("parseLong", String.class));
+			stringToWrapperMethods.put(Float.class, Float.class.getMethod("parseFloat", String.class));
+			stringToWrapperMethods.put(Double.class, Double.class.getMethod("parseDouble", String.class));
+			commonTransformers.addTransformer(String.class, char[].class, v -> v.toCharArray());
+			commonTransformers.addTransformer(String.class, Byte.class, v -> new BigDecimal(v).byteValue());
+			commonTransformers.addTransformer(Number.class, Byte.class, v -> v.byteValue());
 		} catch(NoSuchMethodException e){
 			throw new RuntimeException(e);
 		}

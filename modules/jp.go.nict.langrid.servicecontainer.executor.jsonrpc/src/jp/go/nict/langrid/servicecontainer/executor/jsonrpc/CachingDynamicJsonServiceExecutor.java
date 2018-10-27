@@ -80,8 +80,9 @@ implements InvocationHandler{
 		this.cache = cache;
 	}
 
-	protected Pair<Endpoint, Long> preprocessJsonRpc(Map<String, Object> mimeHeaders, Collection<RpcHeader> rpcHeaders){
-		return preprocess(mimeHeaders, rpcHeaders);
+	protected Pair<Endpoint, Long> preprocessJsonRpc(Map<String, Object> mimeHeaders,
+			Collection<RpcHeader> rpcHeaders, Method method, Object[] args){
+		return preprocess(mimeHeaders, rpcHeaders, method, args);
 	}
 
 	@Override
@@ -89,7 +90,7 @@ implements InvocationHandler{
 	throws Throwable {
 		Map<String, Object> mimeHeaders = new HashMap<String, Object>();
 		final List<RpcHeader> rpcHeaders = new ArrayList<RpcHeader>();
-		Pair<Endpoint, Long> r = preprocessJsonRpc(mimeHeaders, rpcHeaders);
+		Pair<Endpoint, Long> r = preprocessJsonRpc(mimeHeaders, rpcHeaders, method, args);
 		long s = System.currentTimeMillis();
 		URL url = r.getFirst().getAddress().toURL();
 		final String key = url.getProtocol() + "://" + url.getAuthority() + url.getPath()

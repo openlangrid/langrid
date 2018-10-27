@@ -17,6 +17,7 @@
  */
 package jp.go.nict.langrid.servicecontainer.handler;
 
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import javax.xml.soap.MimeHeaders;
 
+import jp.go.nict.langrid.commons.lang.reflect.MethodUtil;
 import jp.go.nict.langrid.commons.rpc.RpcFault;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
@@ -154,8 +156,9 @@ public class RIProcessor {
 	 * 
 	 */
 	public static Endpoint rewriteEndpoint(long iid, String invocationName,
-			EndpointRewriter[] rewriters){
-		return rewriteEndpoint(iid, invocationName, rewriters, defaultEP);
+			EndpointRewriter[] rewriters, Method method, Object[] args){
+		return rewriteEndpoint(iid, invocationName, rewriters, defaultEP,
+				method, args);
 	}
 
 	/**
@@ -163,27 +166,30 @@ public class RIProcessor {
 	 * 
 	 */
 	public static Endpoint rewriteEndpoint(long iid, String invocationName,
-			EndpointRewriter[] rewriters, Endpoint original){
+			EndpointRewriter[] rewriters, Endpoint original,
+			Method method, Object[] args){
 		Stack<RIProcessorContext> stack = contexts.get();
 		if(stack.size() == 0){
 			throw new RuntimeException("invalid context.");
 		}
 		RIProcessorContext c = stack.peek();
 		Endpoint ep = c.getHeaderMessageHandler().rewriteEndpoint(
-				c.getProcessId(), processUri, iid, invocationName, serviceUri, original
-				, rewriters
+				c.getProcessId(), processUri, iid, invocationName, serviceUri, original,
+				method.getName(), MethodUtil.getParameterNames(method), args, rewriters
 				);
 		return ep ;
 	}
 
 	public static long appendInvocationHeaders(
-			long iid,
-			String invocationName, Map<String, Object> mimeHeaders, Collection<RpcHeader> rpcHeaders){
+			long iid, String invocationName,
+			Method method, Object[] args,
+			Map<String, Object> mimeHeaders, Collection<RpcHeader> rpcHeaders){
 		Stack<RIProcessorContext> stack = contexts.get();
 		if(stack.size() == 0) return iid;
 		RIProcessorContext c = stack.peek();
 		c.getHeaderMessageHandler().appendInvocationHeaders(
 				c.getProcessId(), iid, invocationName,
+				method.getName(), MethodUtil.getParameterNames(method), args,
 				mimeHeaders, rpcHeaders);
 		return iid;
 	}
@@ -222,25 +228,33 @@ public class RIProcessor {
 		@Override
 		public Endpoint rewriteEndpoint(long processId, URI processUri,
 				long invocationId, String partnerLinkName, URI serviceNamespace,
-				Endpoint original) {
+				Endpoint original,
+				String methodName, String[] paramNames, Object[] args) {
 			return super.rewriteEndpoint(processId, processUri, invocationId,
-					partnerLinkName, serviceNamespace, original);
+					partnerLinkName, serviceNamespace, original,
+					methodName, paramNames, args);
 		}
 
 		@Override
 		public Endpoint rewriteEndpoint(long processId, URI processUri,
 				long invocationId, String partnerLinkName, URI serviceNamespace,
-				Endpoint original, EndpointRewriter[] rewriters) {
+				Endpoint original,
+				String methodName, String[] paramNames, Object[] args,
+				EndpointRewriter[] rewriters
+				) {
 			return super.rewriteEndpoint(processId, processUri, invocationId,
-					partnerLinkName, serviceNamespace, original, rewriters);
+					partnerLinkName, serviceNamespace, original,
+					methodName, paramNames, args, rewriters);
 		}
 
 		@Override
 		public void appendInvocationHeaders(long processId, long invocationId,
-				String partnerLinkName, Map<String, Object> mimeHeaders,
+				String partnerLinkName,
+				String methodName, String[] paramNames, Object[] args,
+				Map<String, Object> mimeHeaders,
 				Collection<RpcHeader> rpcHeaders) {
 			super.appendInvocationHeaders(processId, invocationId, partnerLinkName,
-					mimeHeaders, rpcHeaders);
+					methodName, paramNames, args, mimeHeaders, rpcHeaders);
 		}
 
 		@Override

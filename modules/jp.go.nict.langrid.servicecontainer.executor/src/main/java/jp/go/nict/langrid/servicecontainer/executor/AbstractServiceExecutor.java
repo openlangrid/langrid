@@ -17,6 +17,7 @@
  */
 package jp.go.nict.langrid.servicecontainer.executor;
 
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
 
@@ -60,16 +61,18 @@ public abstract class AbstractServiceExecutor {
 	}
 
 	protected Pair<Endpoint, Long> preprocess(
-			Map<String, Object> mimeHeaders, Collection<RpcHeader> rpcHeaders
+			Map<String, Object> mimeHeaders, Collection<RpcHeader> rpcHeaders,
+			Method method, Object[] args
 			){
 		if(invocationId == -1){
 			invocationId = RIProcessor.newInvocationId();
 		}
 		if(endpoint == null){
-			endpoint = RIProcessor.rewriteEndpoint(invocationId, invocationName, rewriters);
+			endpoint = RIProcessor.rewriteEndpoint(invocationId, invocationName, rewriters,
+					method, args);
 		}
 		RIProcessor.appendInvocationHeaders(
-				invocationId, invocationName, mimeHeaders, rpcHeaders
+				invocationId, invocationName, method, args, mimeHeaders, rpcHeaders
 				);
 		return Pair.create(endpoint, invocationId);
 	}

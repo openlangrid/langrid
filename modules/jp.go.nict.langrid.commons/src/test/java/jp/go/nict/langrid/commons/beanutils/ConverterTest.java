@@ -17,17 +17,35 @@
  */
 package jp.go.nict.langrid.commons.beanutils;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.HashMap;
-
-import jp.go.nict.langrid.commons.transformer.TransformationException;
-import jp.go.nict.langrid.commons.transformer.Transformer;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
+import jp.go.nict.langrid.commons.transformer.TransformationException;
+import jp.go.nict.langrid.commons.transformer.Transformer;
+
 public class ConverterTest {
+	@Test
+	public void test_BigDecimal_byte() throws Exception{
+		Assert.assertEquals((byte)128, (byte)new Converter().convert(new BigDecimal("128"), byte.class));
+		Assert.assertEquals((byte)-128, (byte)new Converter().convert(new BigDecimal("-128"), byte.class));
+	}
+
+	@Test
+	public void test_string_Byte() throws Exception{
+		Assert.assertEquals((Byte)(byte)128, new Converter().convert("128", Byte.class));
+	}
+
+	@Test
+	public void test_string_char() throws Exception{
+		Assert.assertEquals((Character)(char)'A', new Converter().convert("A", char.class));
+	}
+
 	@Test
 	public void test_string_short() throws Exception{
 		Assert.assertEquals((Short)(short)1, new Converter().convert("1", Short.class));
@@ -48,10 +66,21 @@ public class ConverterTest {
 		Assert.assertEquals((Double)1.0, new Converter().convert("1", Double.class));
 	}
 
+	@Test
+	public void test_string_charArray() throws Exception{
+		Assert.assertArrayEquals(
+				new char[]{'a', 'b', 'c'},
+				new Converter().convert("abc", char[].class));
+	}
+
 	enum EN{enum1}
 	@Test
 	public void test_enum_String() throws Exception{
 		Assert.assertEquals("enum1", new Converter().convert(EN.enum1, String.class));
+	}
+	@Test
+	public void test_string_enum() throws Exception{
+		Assert.assertEquals(EN.enum1, new Converter().convert("enum1", EN.class));
 	}
 
 	public static class TestClass{
@@ -216,5 +245,148 @@ public class ConverterTest {
 		Assert.assertEquals(1, ret[0]);
 		Assert.assertEquals(2, ret[1]);
 		Assert.assertEquals(3, ret[2]);
+	}
+
+	@Test
+	public void assert_primitive_wrapper_assignable() throws Throwable{
+		Assert.assertFalse(char.class.isAssignableFrom(Character.class));
+		Assert.assertFalse(Character.class.isAssignableFrom(char.class));
+	}
+
+	@Test
+	public void test_array_byte_string() throws Throwable{
+		Converter c = new Converter();		Assert.assertArrayEquals(
+				new String[]{"1", "2", "3"},
+				c.convert(new byte[]{1, 2, 3}, String[].class));
+	}
+
+	@Test
+	public void test_array_string_byte() throws Throwable{
+		Converter c = new Converter();
+		Assert.assertArrayEquals(
+				new byte[]{1, 2, (byte)128, (byte)129},
+				c.convert(new String[]{"1", "2", "-128", "-127"}, byte[].class));
+	}
+
+	@Test
+	public void test_array_char_string() throws Throwable{
+		Converter c = new Converter();		Assert.assertArrayEquals(
+				new String[]{"1", "2", "3"},
+				c.convert(new char[]{'1', '2', '3'}, String[].class));
+	}
+
+	@Test
+	public void test_array_string_char() throws Throwable{
+		Converter c = new Converter();
+		Assert.assertArrayEquals(
+				new char[]{'1', '2', '3'},
+				c.convert(new String[]{"1", "2", "3"}, char[].class));
+	}
+
+	@Test
+	public void test_array_Character_string() throws Throwable{
+		Converter c = new Converter();		Assert.assertArrayEquals(
+				new String[]{"1", "2", "3"},
+				c.convert(new Character[]{'1', '2', '3'}, String[].class));
+	}
+
+	@Test
+	public void test_array_string_Character() throws Throwable{
+		Converter c = new Converter();
+		Assert.assertArrayEquals(
+				new Character[]{'1', '2', '3'},
+				c.convert(new String[]{"1", "2", "3"}, Character[].class));
+	}
+
+	@Test
+	public void test_array_string_float() throws Throwable{
+		Converter c = new Converter();
+		Assert.assertArrayEquals(
+				new float[]{1.1f, 2.2f, 3.3f},
+				c.convert(new String[]{"1.1", "2.2", "3.3"}, float[].class),
+				0.01f);
+	}
+
+	@Test
+	public void test_array_float_string() throws Throwable{
+		Converter c = new Converter();
+		Assert.assertArrayEquals(
+				new String[]{"1.1", "2.2", "3.3"},
+				c.convert(new float[]{1.1f, 2.2f, 3.3f}, String[].class));
+	}
+
+	@Test
+	public void test_array_string_double() throws Throwable{
+		Converter c = new Converter();
+		Assert.assertArrayEquals(
+				new double[]{1.1, 2.2, 3.3},
+				c.convert(new String[]{"1.1", "2.2", "3.3"}, double[].class),
+				0.01);
+	}
+
+	@Test
+	public void test_array_double_string() throws Throwable{
+		Converter c = new Converter();
+		Assert.assertArrayEquals(
+				new String[]{"1.1", "2.2", "3.3"},
+				c.convert(new double[]{1.1, 2.2, 3.3}, String[].class));
+	}
+
+	@Test
+	public void test_list_array_byte() throws Throwable{
+		Converter c = new Converter();
+		Assert.assertArrayEquals(
+				new byte[]{0x34, (byte)0x9f},
+				c.convert(Arrays.asList(0x34, (byte)0x9f), byte[].class));
+	}
+
+	@Test
+	public void test_list_array_char() throws Throwable{
+		Converter c = new Converter();
+		Assert.assertArrayEquals(
+				new char[]{'a', 'b'},
+				c.convert(Arrays.asList('a', 'b'), char[].class));
+	}
+
+	@Test
+	public void test_list_array_short() throws Throwable{
+		short[] expected = {1324, 32767};
+		Converter c = new Converter();
+		Assert.assertArrayEquals(expected, c.convert(Arrays.asList((short)1324, (short)32767), short[].class));
+	}
+
+	@Test
+	public void test_list_array_int() throws Throwable{
+		int[] expected = {2323, 40934, 29874};
+		Converter c = new Converter();
+		Assert.assertArrayEquals(expected, c.convert(Arrays.asList(2323, 40934, 29874), int[].class));
+	}
+
+	@Test
+	public void test_list_array_long() throws Throwable{
+		long[] expected = {34234, 23498493894L};
+		Converter c = new Converter();
+		Assert.assertArrayEquals(expected, c.convert(Arrays.asList(34234, 23498493894L), long[].class));
+	}
+
+	@Test
+	public void test_list_array_float() throws Throwable{
+		float[] expected = {1.1f, 2.2f};
+		Converter c = new Converter();
+		Assert.assertArrayEquals(expected, c.convert(Arrays.asList(1.1f, 2.2f), float[].class), 0.01f);
+	}
+
+	@Test
+	public void test_list_array_double() throws Throwable{
+		double[] expected = {1.1, 2.2};
+		Converter c = new Converter();
+		Assert.assertArrayEquals(expected, c.convert(Arrays.asList(1.1f, 2.2f), double[].class), 0.01);
+	}
+
+	@Test
+	public void test_byte_cast() throws Throwable{
+		byte b = (byte)0x80;
+		Assert.assertEquals(-128, b);
+		Assert.assertEquals(128, b & 0xff);
 	}
 }

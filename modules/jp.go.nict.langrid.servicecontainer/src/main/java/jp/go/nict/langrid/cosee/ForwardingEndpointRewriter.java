@@ -29,11 +29,10 @@ import java.util.Map;
  * @version $Revision: 1187 $
  */
 public class ForwardingEndpointRewriter extends AbstractEndpointRewriter{
-	public Endpoint rewrite(
-			Endpoint original, Map<String, Object> properties
-			, URI processNamespace, String partnerLinkName, URI serviceNamespace
-			)
-	{
+	@Override
+	public Endpoint rewrite(Endpoint original, Map<String, Object> properties,
+			URI processNamespace, String partnerLinkName, URI serviceNamespace,
+			String methodName, String[] paramNames, Object[] args) {
 		return original;
 	}
 }
