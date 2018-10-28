@@ -94,6 +94,7 @@ public class JapaneseAnalysis implements Analysis {
 		
 		StringBuffer source = new StringBuffer(); 				// 文章生成
 		List<String> codes = new ArrayList<String>();			// 中間コード配列
+		List<String> headWords = new ArrayList<String>();
 		List<String> targetWords = new ArrayList<String>();		// 対象ワード配列
 		List<Morpheme> morphemeResult = new ArrayList<Morpheme>(); // 形態素結果配列
 		int markingCount = 1;
@@ -110,6 +111,7 @@ public class JapaneseAnalysis implements Analysis {
 				source.append(intermediateCode);
 				// 中間コード配列追加
 				codes.add(intermediateCode);
+				headWords.add(translation.getTranslation().getHeadWord());
 				// 対象ワード配列追加
 				targetWords.add(translation.getTranslation().getTargetWords()[0]);
 				// 結果形態素配列追加
@@ -130,7 +132,10 @@ public class JapaneseAnalysis implements Analysis {
 			}
 		}
 		SourceAndMorphemesAndCodes smc = new SourceAndMorphemesAndCodes(
-				source.toString(), morphemeResult.toArray(new Morpheme[]{}), codes.toArray(new String[]{}), targetWords.toArray(new String[]{})); 
+				source.toString(), morphemeResult.toArray(new Morpheme[]{}),
+				codes.toArray(new String[]{}),
+				headWords.toArray(new String[]{}),
+				targetWords.toArray(new String[]{})); 
 		return smc;
 	}
 }
