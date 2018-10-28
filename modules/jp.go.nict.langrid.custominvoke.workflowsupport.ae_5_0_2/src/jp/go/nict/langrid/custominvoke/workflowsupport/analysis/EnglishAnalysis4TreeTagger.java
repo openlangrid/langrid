@@ -58,6 +58,7 @@ public class EnglishAnalysis4TreeTagger implements Analysis {
 			ServiceNotFoundException, UnsupportedLanguageException {
 		StringBuffer source = new StringBuffer(); 				// 文章生成
 		List<String> codes = new ArrayList<String>();			// 中間コード配列
+		List<String> headWords = new ArrayList<String>();
 		List<String> targetWords = new ArrayList<String>();		// 対象ワード配列
 		List<Morpheme> morphemeResult = new ArrayList<Morpheme>(); // 形態素結果配列
 		
@@ -71,6 +72,7 @@ public class EnglishAnalysis4TreeTagger implements Analysis {
 				source.append(intermediateCode);
 				// 中間コード配列追加
 				codes.add(intermediateCode);
+				headWords.add(translation.getTranslation().getHeadWord());
 				// 対象ワード配列追加
 				targetWords.add(translation.getTranslation().getTargetWords()[0]);
 				// 結果形態素配列追加
@@ -196,7 +198,10 @@ public class EnglishAnalysis4TreeTagger implements Analysis {
 			}
 		}
 		SourceAndMorphemesAndCodes smc = new SourceAndMorphemesAndCodes(
-				source.toString(), morphemeResult.toArray(new Morpheme[]{}), codes.toArray(new String[]{}), targetWords.toArray(new String[]{})); 
+				source.toString(), morphemeResult.toArray(new Morpheme[]{}),
+				codes.toArray(new String[]{}),
+				headWords.toArray(new String[]{}),
+				targetWords.toArray(new String[]{})); 
 		return smc;
 	}
 	private static final Set<String> SPECIAL_SENTENCE = new HashSet<String>();
