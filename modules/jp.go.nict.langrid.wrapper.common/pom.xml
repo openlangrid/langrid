@@ -12,12 +12,12 @@
     </license>
   </licenses>
   <properties>
-    <servicegrid-version>1.0-SNAPSHOT</servicegrid-version>
+    <servicegrid-version>1.0.17</servicegrid-version>
   </properties>
   <parent>
     <groupId>org.langrid</groupId>
     <artifactId>servicegrid</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.17</version>
   </parent>
   <dependencies>
     <dependency>
