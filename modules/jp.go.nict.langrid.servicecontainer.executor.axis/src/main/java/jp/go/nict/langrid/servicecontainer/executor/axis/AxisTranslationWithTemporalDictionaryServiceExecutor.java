@@ -23,6 +23,8 @@ import java.rmi.RemoteException;
 import javax.xml.rpc.ServiceException;
 import javax.xml.soap.SOAPException;
 
+import org.apache.axis.client.Stub;
+
 import jp.go.nict.langrid.cosee.Endpoint;
 import jp.go.nict.langrid.service_1_2.AccessLimitExceededException;
 import jp.go.nict.langrid.service_1_2.InvalidParameterException;
@@ -38,8 +40,6 @@ import jp.go.nict.langrid.service_1_2.bilingualdictionary.Translation;
 import jp.go.nict.langrid.service_1_2.translation.TranslationWithTemporalDictionaryService;
 import localhost.wrapper_mock_1_2.services.TranslationWithTemporalDictionary.TranslationWithTemporalDictionary;
 import localhost.wrapper_mock_1_2.services.TranslationWithTemporalDictionary.TranslationWithTemporalDictionaryServiceLocator;
-
-import org.apache.axis.client.Stub;
 
 /**
  * 
@@ -66,7 +66,10 @@ implements TranslationWithTemporalDictionaryService{
 		try{
 			TranslationWithTemporalDictionary port = locator.getTranslationWithTemporalDictionary();
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub,
+					getMethod(TranslationWithTemporalDictionaryService.class, "translate"),
+					sourceLang, targetLang, source, temporalDict, dictTargetLang
+);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				return port.translate(sourceLang, targetLang, source

@@ -65,7 +65,9 @@ implements BackTranslationService{
 		try{
 			BackTranslation_PortType port = backTransLocator.getBackTranslation();
 			Stub stub = (Stub)port;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub,
+					getMethod(BackTranslationService.class, "backTranslate"),
+					sourceLang, intermediateLang, source);
 			long s = System.currentTimeMillis();
 			try{
 				return convert(
