@@ -42,7 +42,8 @@ implements EndpointRewriter {
 
 	public Endpoint rewrite(
 			Endpoint original, Map<String, Object> properties
-			, URI processNamespace, String partnerLinkName, URI serviceNamespace
+			, URI processNamespace, String partnerLinkName, URI serviceNamespace,
+			String methodName, String[] paramNames, Object[] args
 			)
 	{
 		if(original.getServiceId() != null){

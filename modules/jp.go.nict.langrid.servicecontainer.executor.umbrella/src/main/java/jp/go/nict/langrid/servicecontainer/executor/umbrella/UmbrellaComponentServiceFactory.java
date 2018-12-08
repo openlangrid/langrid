@@ -18,6 +18,7 @@
  */
 package jp.go.nict.langrid.servicecontainer.executor.umbrella;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -55,7 +56,7 @@ implements ComponentServiceFactory{
 	@Override
 	public <T> T getService(String invocationName, Class<T> interfaceClass) {
 		try{
-			Pair<Long, Endpoint> value = getInvocationIdAndEndpoint(invocationName);
+			Pair<Long, Endpoint> value = getInvocationIdAndEndpoint(invocationName, null);
 			if("AbstractService".equals(value.getSecond().getServiceId())) return null;
 			return getFactory(value.getSecond().getProtocol()).getService(
 					invocationName, value.getFirst(), value.getSecond(), interfaceClass);
@@ -70,7 +71,8 @@ implements ComponentServiceFactory{
 	public <T> T getService(String invocationName, long invocationId, Endpoint endpoint
 			, Class<T> interfaceClass) {
 		try{
-			Pair<Long, Endpoint> value = getInvocationIdAndEndpoint(invocationName, endpoint);
+			Pair<Long, Endpoint> value = getInvocationIdAndEndpoint(invocationName, endpoint,
+					null);
 			if("AbstractService".equals(value.getSecond().getServiceId())) return null;
 			return getFactory(value.getSecond().getProtocol()).getService(
 					invocationName, value.getFirst(), value.getSecond(), interfaceClass);
@@ -112,19 +114,23 @@ implements ComponentServiceFactory{
 		return f;
 	}
 
-	Pair<Long, Endpoint> getInvocationIdAndEndpoint(String invocationName)
+	Pair<Long, Endpoint> getInvocationIdAndEndpoint(String invocationName,
+			Method method, Object... args)
 	throws DaoException{
 		long iid = RIProcessor.newInvocationId();
 		Endpoint endpoint = RIProcessor.rewriteEndpoint(iid, invocationName
-				, getEndpointRewriters(RIProcessor.getCurrentServiceContext()));
+				, getEndpointRewriters(RIProcessor.getCurrentServiceContext()),
+				method, args);
 		return Pair.create(iid, endpoint);
 	}
 
-	Pair<Long, Endpoint> getInvocationIdAndEndpoint(String invocationName, Endpoint original)
+	Pair<Long, Endpoint> getInvocationIdAndEndpoint(String invocationName, Endpoint original,
+			Method method, Object... args)
 	throws DaoException{
 		long iid = RIProcessor.newInvocationId();
 		Endpoint endpoint = RIProcessor.rewriteEndpoint(iid, invocationName
-				, getEndpointRewriters(RIProcessor.getCurrentServiceContext()), original);
+				, getEndpointRewriters(RIProcessor.getCurrentServiceContext()), original,
+				method, args);
 		return Pair.create(iid, endpoint);
 	}
 
