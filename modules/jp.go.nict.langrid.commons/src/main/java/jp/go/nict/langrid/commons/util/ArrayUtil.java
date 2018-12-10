@@ -26,14 +26,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import jp.go.nict.langrid.commons.lang.ClassUtil;
 import jp.go.nict.langrid.commons.lang.reflect.GenericsUtil;
-import jp.go.nict.langrid.commons.util.function.Consumer;
-import jp.go.nict.langrid.commons.util.function.Function;
-import jp.go.nict.langrid.commons.util.function.Predicate;
-import jp.go.nict.langrid.commons.util.function.Supplier;
 
 /**
  * 
