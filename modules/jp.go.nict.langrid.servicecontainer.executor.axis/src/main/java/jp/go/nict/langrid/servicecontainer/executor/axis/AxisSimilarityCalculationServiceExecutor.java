@@ -23,6 +23,8 @@ import java.rmi.RemoteException;
 import javax.xml.rpc.ServiceException;
 import javax.xml.soap.SOAPException;
 
+import org.apache.axis.client.Stub;
+
 import jp.go.nict.langrid.cosee.Endpoint;
 import jp.go.nict.langrid.service_1_2.AccessLimitExceededException;
 import jp.go.nict.langrid.service_1_2.InvalidParameterException;
@@ -37,8 +39,6 @@ import jp.go.nict.langrid.service_1_2.UnsupportedLanguageException;
 import jp.go.nict.langrid.service_1_2.similaritycalculation.SimilarityCalculationService;
 import localhost.wrapper_mock_1_2.services.SimilarityCalculation.SimilarityCalculation_PortType;
 import localhost.wrapper_mock_1_2.services.SimilarityCalculation.SimilarityCalculation_ServiceLocator;
-
-import org.apache.axis.client.Stub;
 
 /**
  * 
@@ -63,7 +63,10 @@ implements SimilarityCalculationService{
 		try{
 			SimilarityCalculation_PortType port = locator.getSimilarityCalculation();
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub,
+					getMethod(SimilarityCalculationService.class, "calculate"),
+					language, text1, text2
+					);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				return port.calculate(language, text1, text2);

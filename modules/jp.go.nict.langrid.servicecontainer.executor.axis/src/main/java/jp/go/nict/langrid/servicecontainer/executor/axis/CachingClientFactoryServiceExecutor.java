@@ -62,7 +62,7 @@ implements InvocationHandler{
 			throws Throwable {
 		Map<String, Object> httpHeaders = new Hashtable<String, Object>();
 		List<RpcHeader> headers = new ArrayList<RpcHeader>();
-		Pair<Endpoint, Long> r = preprocess(httpHeaders, headers);
+		Pair<Endpoint, Long> r = preprocess(httpHeaders, headers, method, args);
 
 		Endpoint endpoint = r.getFirst();
 		long iid = r.getSecond();

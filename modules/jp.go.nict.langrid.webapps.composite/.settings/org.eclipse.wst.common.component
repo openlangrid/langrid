@@ -5,9 +5,6 @@
         <dependent-module archiveName="activation.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/axis/activation.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="axis.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/axis/axis.jar">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module archiveName="mail.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/axis/mail.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
@@ -144,6 +141,9 @@
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="jp.go.nict.langrid.client.protobufrpc.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/jp.go.nict.langrid.client.protobufrpc/jp.go.nict.langrid.client.protobufrpc">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="axis-java8-1.4.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib/lib/axis/axis-java8-1.4.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="java-output-path"/>

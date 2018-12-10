@@ -71,7 +71,9 @@ implements BilingualDictionaryWithLongestMatchSearchService{
 		try{
 			BilingualDictionaryWithLongestMatchSearch port = locator.getBilingualDictionaryWithLongestMatchSearch();
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub,
+					getMethod(BilingualDictionaryWithLongestMatchSearchService.class, "search"),
+					headLang, targetLang, headWord, matchingMethod);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				return convert(
@@ -107,7 +109,9 @@ implements BilingualDictionaryWithLongestMatchSearchService{
 		try{
 			BilingualDictionaryWithLongestMatchSearch port = locator.getBilingualDictionaryWithLongestMatchSearch();
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub,
+					getMethod(BilingualDictionaryWithLongestMatchSearchService.class, "searchLongestMatchingTerms"),
+					headLang, targetLang, morphemes);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				return convert(
@@ -140,7 +144,8 @@ implements BilingualDictionaryWithLongestMatchSearchService{
 		try{
 			BilingualDictionaryWithLongestMatchSearch port = locator.getBilingualDictionaryWithLongestMatchSearch();
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub,
+					getMethod(BilingualDictionaryWithLongestMatchSearchService.class, "getSupportedLanguagePairs"));
 			long s = System.currentTimeMillis( ) ;
 			try{
 				return convert(
@@ -171,7 +176,9 @@ implements BilingualDictionaryWithLongestMatchSearchService{
 		try{
 			BilingualDictionaryWithLongestMatchSearch port = locator.getBilingualDictionaryWithLongestMatchSearch();
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub,
+					getMethod(BilingualDictionaryWithLongestMatchSearchService.class, "getSupportedMatchingMethods")
+					);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				return port.getSupportedMatchingMethods();
@@ -198,7 +205,9 @@ implements BilingualDictionaryWithLongestMatchSearchService{
 		try{
 			BilingualDictionaryWithLongestMatchSearch port = locator.getBilingualDictionaryWithLongestMatchSearch();
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub,
+					getMethod(BilingualDictionaryWithLongestMatchSearchService.class, "getLastUpdate")
+					);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				return port.getLastUpdate();

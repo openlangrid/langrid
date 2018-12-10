@@ -175,7 +175,8 @@ public class RIProcessor {
 		RIProcessorContext c = stack.peek();
 		Endpoint ep = c.getHeaderMessageHandler().rewriteEndpoint(
 				c.getProcessId(), processUri, iid, invocationName, serviceUri, original,
-				method.getName(), MethodUtil.getParameterNames(method), args, rewriters
+				method != null ? method.getName() : "",
+				method != null ? MethodUtil.getParameterNames(method) : new String[] {}, args, rewriters
 				);
 		return ep ;
 	}

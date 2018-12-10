@@ -17,6 +17,7 @@
  */
 package jp.go.nict.langrid.servicecontainer.executor.axis;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -25,6 +26,11 @@ import java.util.Map;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPFault;
 
+import org.apache.axis.Message;
+import org.apache.axis.client.Stub;
+import org.apache.axis.transport.http.HTTPConstants;
+
+import jp.go.nict.langrid.commons.lang.ClassUtil;
 import jp.go.nict.langrid.commons.rpc.RpcFault;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.util.Pair;
@@ -33,10 +39,6 @@ import jp.go.nict.langrid.cosee.Endpoint;
 import jp.go.nict.langrid.service_1_2.ServiceNotActiveException;
 import jp.go.nict.langrid.service_1_2.transformer.StringToPartOfSpeechTransformer;
 import jp.go.nict.langrid.servicecontainer.executor.AbstractServiceExecutor;
-
-import org.apache.axis.Message;
-import org.apache.axis.client.Stub;
-import org.apache.axis.transport.http.HTTPConstants;
 
 /**
  * 
@@ -52,12 +54,16 @@ public abstract class AbstractAxisServiceExecutor extends AbstractServiceExecuto
 		super(invocationName, invocationId, endpoint);
 	}
 
+	protected Method getMethod(Class<?> intfClass, String methodName) {
+		return ClassUtil.findMethod(intfClass, methodName);
+	}
+
 	@SuppressWarnings("unchecked")
-	protected long preprocessSoap(Stub stub)
+	protected long preprocessSoap(Stub stub, Method method, Object... args)
 	throws ServiceNotActiveException{
 		Map<String, Object> httpHeaders = new Hashtable<String, Object>();
 		List<RpcHeader> headers = new ArrayList<RpcHeader>();
-		Pair<Endpoint, Long> r = preprocess(httpHeaders, headers);
+		Pair<Endpoint, Long> r = preprocess(httpHeaders, headers, method, args);
 
 		Endpoint endpoint = r.getFirst();
 		stub._setProperty(Stub.ENDPOINT_ADDRESS_PROPERTY, endpoint.getAddress().toString());

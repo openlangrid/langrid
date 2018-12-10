@@ -23,6 +23,8 @@ import java.rmi.RemoteException;
 import javax.xml.rpc.ServiceException;
 import javax.xml.soap.SOAPException;
 
+import org.apache.axis.client.Stub;
+
 import jp.go.nict.langrid.cosee.Endpoint;
 import jp.go.nict.langrid.service_1_2.AccessLimitExceededException;
 import jp.go.nict.langrid.service_1_2.InvalidParameterException;
@@ -37,8 +39,6 @@ import jp.go.nict.langrid.service_1_2.speech.Speech;
 import jp.go.nict.langrid.service_1_2.speech.SpeechRecognitionService;
 import localhost.service_mock.services.SpeechRecognition.SpeechRecognition;
 import localhost.service_mock.services.SpeechRecognition.SpeechRecognitionServiceLocator;
-
-import org.apache.axis.client.Stub;
 
 /**
  * 
@@ -62,7 +62,10 @@ implements SpeechRecognitionService{
 		try{
 			SpeechRecognition port = locator.getSpeechRecognition();
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub,
+					getMethod(SpeechRecognitionService.class, "recognize"),
+					language, speech
+					);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				return port.recognize(language

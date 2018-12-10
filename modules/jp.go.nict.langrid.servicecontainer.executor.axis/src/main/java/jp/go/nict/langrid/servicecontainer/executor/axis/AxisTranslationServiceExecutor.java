@@ -23,6 +23,8 @@ import java.rmi.RemoteException;
 import javax.xml.rpc.ServiceException;
 import javax.xml.soap.SOAPException;
 
+import org.apache.axis.client.Stub;
+
 import jp.go.nict.langrid.cosee.Endpoint;
 import jp.go.nict.langrid.service_1_2.AccessLimitExceededException;
 import jp.go.nict.langrid.service_1_2.InvalidParameterException;
@@ -37,8 +39,6 @@ import jp.go.nict.langrid.service_1_2.UnsupportedLanguagePairException;
 import jp.go.nict.langrid.service_1_2.translation.TranslationService;
 import localhost.wrapper_mock_1_2.services.Translation.Translation_PortType;
 import localhost.wrapper_mock_1_2.services.Translation.Translation_ServiceLocator;
-
-import org.apache.axis.client.Stub;
 
 /**
  * 
@@ -63,7 +63,10 @@ implements TranslationService{
 		try{
 			Translation_PortType port = transLocator.getTranslation( ) ;
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub,
+					getMethod(TranslationService.class, "translate"),
+					sourceLang, targetLang, source
+					);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				return port.translate(sourceLang, targetLang, source);

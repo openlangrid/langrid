@@ -109,7 +109,7 @@ public class DefaultAnalysisWithSpace implements Analysis {
 		}
 		SourceAndMorphemesAndCodes smc = new SourceAndMorphemesAndCodes(
 				source.toString(), morphemeResult,
-				headWords, codes, targetWords); 
+				codes, headWords, targetWords); 
 		return smc;
 	}
 

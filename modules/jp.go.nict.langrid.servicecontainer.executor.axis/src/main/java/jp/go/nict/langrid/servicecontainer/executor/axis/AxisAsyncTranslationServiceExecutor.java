@@ -23,6 +23,8 @@ import java.rmi.RemoteException;
 import javax.xml.rpc.ServiceException;
 import javax.xml.soap.SOAPException;
 
+import org.apache.axis.client.Stub;
+
 import jp.go.nict.langrid.cosee.Endpoint;
 import jp.go.nict.langrid.service_1_2.InvalidParameterException;
 import jp.go.nict.langrid.service_1_2.ProcessFailedException;
@@ -30,8 +32,6 @@ import jp.go.nict.langrid.service_1_2.ServiceNotActiveException;
 import jp.go.nict.langrid.service_1_2.translation.AsyncTranslationResult;
 import jp.go.nict.langrid.service_1_2.translation.AsyncTranslationService;
 import localhost.jp_go_nict_langrid_webapps_mock.services.AsyncTranslation.AsyncTranslationServiceServiceLocator;
-
-import org.apache.axis.client.Stub;
 
 /**
  * 
@@ -52,7 +52,9 @@ implements AsyncTranslationService{
 			localhost.jp_go_nict_langrid_webapps_mock.services.AsyncTranslation.AsyncTranslationService port =
 					transLocator.getAsyncTranslation();
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub, 
+					getMethod(AsyncTranslationService.class, "startTranslation"),
+					sourceLang, targetLang, sources);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				return port.startTranslation(sourceLang, targetLang, sources);
@@ -81,7 +83,9 @@ implements AsyncTranslationService{
 			localhost.jp_go_nict_langrid_webapps_mock.services.AsyncTranslation.AsyncTranslationService port =
 					transLocator.getAsyncTranslation();
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub,
+					getMethod(AsyncTranslationService.class, "getCurrentResult"),
+					token);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				return convert(
@@ -113,7 +117,9 @@ implements AsyncTranslationService{
 			localhost.jp_go_nict_langrid_webapps_mock.services.AsyncTranslation.AsyncTranslationService port =
 					transLocator.getAsyncTranslation();
 			Stub stub = ( Stub )port ;
-			long iid = preprocessSoap(stub);
+			long iid = preprocessSoap(stub,
+					getMethod(AsyncTranslationService.class, "terminate"),
+					token);
 			long s = System.currentTimeMillis( ) ;
 			try{
 				port.terminate(token);

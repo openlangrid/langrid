@@ -3,6 +3,5 @@
         <wb-resource deploy-path="/" source-path="/src/main/resources"/>
         <wb-resource deploy-path="/" source-path="/src/main/java"/>
         <wb-resource deploy-path="/" source-path="/src/stubs/java"/>
-        <wb-resource deploy-path="/" source-path="/src/testwithserver/java"/>
 </wb-module>
 </project-modules>
