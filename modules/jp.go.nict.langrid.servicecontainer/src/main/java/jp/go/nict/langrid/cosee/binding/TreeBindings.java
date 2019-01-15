@@ -105,7 +105,8 @@ public class TreeBindings{
 				return node;
 			}
 		}
-		throw new NoBindingFoundException(invocationName);
+		return null;
+//		throw new NoBindingFoundException(invocationName);
 	}
 
 	private Map<String, List<BindingNode>> bindings =
