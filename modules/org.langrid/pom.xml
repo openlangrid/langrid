@@ -151,14 +151,13 @@
     <module>../jp.go.nict.langrid.servicecontainer/pom.xml</module>
     <module>../jp.go.nict.langrid.servicecontainer.decorator.cache/pom.xml</module>
     <module>../jp.go.nict.langrid.servicecontainer.executor/pom.xml</module>
+    <module>../jp.go.nict.langrid.servicecontainer.executor.axis/pom.xml</module>
     <module>../jp.go.nict.langrid.servicecontainer.executor.soap/pom.xml</module>
+    <module>../jp.go.nict.langrid.servicecontainer.executor.protobufrpc/pom.xml</module>
+    <module>../jp.go.nict.langrid.servicecontainer.executor.umbrella/pom.xml</module>
     <module>../jp.go.nict.langrid.servicecontainer.handler.axis/pom.xml</module>
     <module>../jp.go.nict.langrid.servicecontainer.handler.protobufrpc/pom.xml</module>
     <module>../jp.go.nict.langrid.serviceexecutor.db.bilingualdictionary/pom.xml</module>
-    <module>../jp.go.nict.langrid.serviceexecutor.executor</module>
-    <module>../jp.go.nict.langrid.serviceexecutor.executor.axis</module>
-    <module>../jp.go.nict.langrid.serviceexecutor.executor.protobufrpc</module>
-    <module>../jp.go.nict.langrid.serviceexecutor.executor.umbrella</module>
     <module>../jp.go.nict.langrid.servlet.filter</module>
     <module>../jp.go.nict.langrid.servlet.filter.auth.langrid</module>
     <module>../jp.go.nict.langrid.wrapper.common/pom.xml</module>
