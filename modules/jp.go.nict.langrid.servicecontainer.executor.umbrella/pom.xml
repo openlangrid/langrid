@@ -2,8 +2,8 @@
   <modelVersion>4.0.0</modelVersion>
   <packaging>jar</packaging>
   <artifactId>jp.go.nict.langrid.servicecontainer.executor.umbrella</artifactId>
-  <name>ProtobufRpc Service Executor</name>
-  <description>Service executor that uses protobuf.</description>
+  <name>Umbrella Service Executor</name>
+  <description>Service executor that combines other executors.</description>
   <url>http://langrid.org/</url>
   <licenses>
     <license>
