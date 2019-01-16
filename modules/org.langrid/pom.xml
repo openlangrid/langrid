@@ -158,8 +158,6 @@
     <module>../jp.go.nict.langrid.servicecontainer.handler.axis/pom.xml</module>
     <module>../jp.go.nict.langrid.servicecontainer.handler.protobufrpc/pom.xml</module>
     <module>../jp.go.nict.langrid.serviceexecutor.db.bilingualdictionary/pom.xml</module>
-    <module>../jp.go.nict.langrid.servlet.filter/pom.xml</module>
-    <module>../jp.go.nict.langrid.servlet.filter.auth.langrid/pom.xml</module>
     <module>../jp.go.nict.langrid.wrapper.common/pom.xml</module>
     <module>../jp.go.nict.langrid.wrapper.workflowsupport/pom.xml</module>
     <module>../org.langrid.service.api.lapps_nlp/pom.xml</module>

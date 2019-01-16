@@ -3,11 +3,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="/lib/axis/axis.jar" sourcepath="C:/sources/axis-1_3/src"/>
 	<classpathentry kind="lib" path="/lib/ws/jaxrpc.jar"/>
-	<classpathentry kind="lib" path="/lib/commons/commons-beanutils.jar" sourcepath="/sources/commons/commons-beanutils-1.7.0-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://commons.apache.org/beanutils/api/"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="/lib/google/guava-15.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v8.0">
 		<attributes>
