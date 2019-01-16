@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.langrid</groupId>
   <artifactId>servicegrid</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.18</version>
   <packaging>pom</packaging>
   <name>Root Artifact</name>
   <description>Root artifact for all artifacts.</description>
@@ -131,7 +131,7 @@
   </build>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <SERVICEGRID_VERSION>1.0-SNAPSHOT</SERVICEGRID_VERSION>
+    <SERVICEGRID_VERSION>1.0.18</SERVICEGRID_VERSION>
   </properties>
   <modules>
     <module>../jp.go.nict.langrid.commons/pom.xml</module>
@@ -158,8 +158,8 @@
     <module>../jp.go.nict.langrid.servicecontainer.handler.axis/pom.xml</module>
     <module>../jp.go.nict.langrid.servicecontainer.handler.protobufrpc/pom.xml</module>
     <module>../jp.go.nict.langrid.serviceexecutor.db.bilingualdictionary/pom.xml</module>
-    <module>../jp.go.nict.langrid.servlet.filter</module>
-    <module>../jp.go.nict.langrid.servlet.filter.auth.langrid</module>
+    <module>../jp.go.nict.langrid.servlet.filter/pom.xml</module>
+    <module>../jp.go.nict.langrid.servlet.filter.auth.langrid/pom.xml</module>
     <module>../jp.go.nict.langrid.wrapper.common/pom.xml</module>
     <module>../jp.go.nict.langrid.wrapper.workflowsupport/pom.xml</module>
     <module>../org.langrid.service.api.lapps_nlp/pom.xml</module>
