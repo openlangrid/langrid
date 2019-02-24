@@ -77,7 +77,7 @@ public class SoapResponseParser {
 				if(res.getLocalName().equals(methodName + "Response")){
 					for(Node ret = res.getFirstChild(); ret != null; ret = ret.getNextSibling()){
 						if(!(ret instanceof Element)) continue;
-						if(ret.getLocalName().equals(methodName + "Return")){
+						if(ret.getLocalName().equals(methodName + "Return") || ret.getLocalName().equals(methodName + "Result")){
 							try {
 								T r = nodeToType(w, ret, returnType, converter);
 								return new Trio<Collection<RpcHeader>, RpcFault, T>(
