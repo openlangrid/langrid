@@ -20,17 +20,18 @@ package jp.go.nict.langrid.client.soap.test;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.junit.Test;
+
 import jp.go.nict.langrid.client.ClientFactory;
 import jp.go.nict.langrid.client.RequestAttributes;
 import jp.go.nict.langrid.client.ResponseAttributes;
 import jp.go.nict.langrid.client.soap.SoapClientFactory;
+import jp.go.nict.langrid.client.soap.test.SoapTestContext;
 import jp.go.nict.langrid.commons.cs.binding.BindingNode;
 import jp.go.nict.langrid.commons.cs.calltree.CallTreeUtil;
 import jp.go.nict.langrid.service_1_2.backtranslation.BackTranslationService;
 import jp.go.nict.langrid.service_1_2.bilingualdictionary.Translation;
 import jp.go.nict.langrid.service_1_2.translation.TranslationWithTemporalDictionaryService;
-
-import org.junit.Test;
 
 public class SoapClientFactoryCompositeLanguageServiceTest{
 	@Test
