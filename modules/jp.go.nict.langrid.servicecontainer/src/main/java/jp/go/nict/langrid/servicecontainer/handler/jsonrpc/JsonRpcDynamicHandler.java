@@ -79,6 +79,7 @@ public class JsonRpcDynamicHandler extends AbstractJsonRpcHandler implements Jso
 					return;
 				}
 				RIProcessor.start(sc);
+				Object service = null;
 				Method method = null;
 				try{
 					Collection<Class<?>> interfaceClasses = f.getInterfaces();
@@ -97,7 +98,7 @@ public class JsonRpcDynamicHandler extends AbstractJsonRpcHandler implements Jso
 						response.setStatus(404);
 						return;
 					}
-					Object service = f.createService(cl, sc, clazz);
+					service = f.createService(cl, sc, clazz);
 					// Currently only array("[]") is supported, while JsonRpc accepts Object("{}")
 					result = invokeMethod(service, method, req.getParams(), converter);
 				} finally{
@@ -121,7 +122,8 @@ public class JsonRpcDynamicHandler extends AbstractJsonRpcHandler implements Jso
 						}
 					}
 					w.flush();
-					int depth = RpcAnnotationUtil.getMethodMaxReturnObjectDepth(method);
+					Method implMethod = service.getClass().getMethod(method.getName(), method.getParameterTypes());
+					int depth = RpcAnnotationUtil.getMethodMaxReturnObjectDepth(implMethod, method);
 					new JSON(depth + 1).format(res, w);
 					if(cb != null){
 						w.write(")");
