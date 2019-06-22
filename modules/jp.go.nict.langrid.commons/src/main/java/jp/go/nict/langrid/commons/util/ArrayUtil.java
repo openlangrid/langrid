@@ -202,6 +202,22 @@ public class ArrayUtil {
 		return list.toArray(elements);
 	}
 
+	public static <T> T[] delete(T[] elements, int index) {
+		if(elements.length <= index) return elements;
+		@SuppressWarnings("unchecked")
+		T[] ret = (T[])Array.newInstance(elements.getClass().getComponentType(),
+				elements.length - 1);
+		int i = 0;
+		for(; i < index; i++) {
+			ret[i] = elements[i];
+		}
+		i++;
+		for(; i < elements.length; i++) {
+			ret[i - 1] = elements[i];
+		}
+		return ret;
+	}
+
 	/**
 	 * 
 	 * 
