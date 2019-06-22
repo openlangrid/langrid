@@ -18,11 +18,9 @@
 package jp.go.nict.langrid.composite.translation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
-import jp.go.nict.langrid.commons.util.ArrayUtil;
+import jp.go.nict.langrid.composite.util.CompositeTranslationUtil;
 import jp.go.nict.langrid.language.Language;
 import jp.go.nict.langrid.language.LanguagePair;
 import jp.go.nict.langrid.service_1_2.AccessLimitExceededException;
@@ -109,19 +107,18 @@ implements TranslationWithTemporalDictionaryService{
 
 		try{
 			Services s = loadServices();
+			if(s.trans == null){
+				throw new ProcessFailedException("TranslationPL not binded.");
+			}
+
 			TemporalBilingualDictionaryWithLongestMatchSearch tempDictMatch = new TemporalBilingualDictionaryWithLongestMatchSearch();
 			ConstructSourceAndMorphemesAndCodes csmc = getConstructSourceAndMorphemesAndCodes();
 			ReplacementTerm rt = new ReplacementTerm();
 
 			Morpheme[] analyzeResult = null;
-			{
-				info("invoke MorphologicalAnalysis.analyze");
+			if(s.morph != null){
 				try{
-					if(s.morph != null){
-						log("calling service specified for MorphologicalAnalysisPL"
-								+ " with lang(%s) and text(length: %d).", sl, src.length());
-						analyzeResult = s.morph.analyze(sl, src);
-					}
+					analyzeResult = s.morph.analyze(sl, src);
 				} catch(ServiceNotActiveException e){
 					if(!e.getServiceId().equals("AbstractService")){
 						warning("service is not active: " + e.getServiceId());
@@ -129,132 +126,49 @@ implements TranslationWithTemporalDictionaryService{
 				} catch(Exception e){
 					warning("exception occurred at morphologicalanalysis.", e);
 				}
-				if(analyzeResult == null){
-					warning("analyze result is null. calling DefaultMorphologicalAnalysis.");
-					analyzeResult = new DefaultMorphologicalAnalysis().analyze(sl, src);
-				}
-				info("invoke MorphologicalAnalysis.analyze done(" + analyzeResult.length + "morphs)");
+			}
+			if(analyzeResult == null){
+				warning("analyze result is null. calling DefaultMorphologicalAnalysis.");
+				analyzeResult = new DefaultMorphologicalAnalysis().analyze(sl, src);
 			}
 
 			Collection<TranslationWithPosition> tempDictResult = new ArrayList<TranslationWithPosition>();
-			Morpheme[] analyzeResultAlternate = null;
-			{
-				info("prepare for TemporalBilingualDictionaryWithLongestMatchSearch.doSearchAllLongestMatchingTerms()");
-				analyzeResultAlternate = analyzeResult;
-				info("invoke TemporalBilingualDictionaryWithLongestMatchSearch.doSearchAllLongestMatchingTerms("
-						+ analyzeResultAlternate.length + " morphes["
-						+ (analyzeResultAlternate.length < 10
-								? Arrays.toString(analyzeResultAlternate)
-								: analyzeResultAlternate[0])
-						+ "], "
-						+ tempDict.length + " translations["
-						+ (tempDict.length < 10
-								? Arrays.toString(tempDict)
-										: tempDict[0])
-						+ "])");
-				try{
-					tempDictResult = tempDictMatch.doSearchAllLongestMatchingTerms(
-						pair.getSource(), analyzeResultAlternate, tempDict);
-				} catch(Exception e){
-					warning("exception occurred at tempdictmatch.", e);
-				}
-				info("invoke TemporalBilingualDictionaryWithLongestMatchSearch.doSearchAllLongestMatchingTerms done("
-						+ tempDictResult.size() + "translations)");
+			try{
+				tempDictResult = tempDictMatch.doSearchAllLongestMatchingTerms(
+					pair.getSource(), analyzeResult, tempDict);
+			} catch(Exception e){
+				warning("exception occurred at tempdictmatch.", e);
 			}
-			SourceAndMorphemesAndCodes firstSmc = null;
-			{
-				info("prepare for ConstructSourceAndMorphemesAndCodes.doConstructSMC()");
-				TranslationWithPosition[] bdictResult = tempDictResult.toArray(emptyTranslation);
-				info("invoke ConstructSourceAndMorphemesAndCodes.doConstructSMC("
-						+ bdictResult.length + "morphs,"
-						+ tempDict.length + "translations)");
-				firstSmc = csmc.doConstructSMC(sl, analyzeResultAlternate, bdictResult);
-				info("invoke ConstructSourceAndMorphemesAndCodes.doConstructSMC done(" +
-						+ firstSmc.getMorphemes().length + "morphs," +
-						+ firstSmc.getCodes().length + "codes,"
-						+ firstSmc.getTargetWords().length + "targetWords)");
-			}
+			SourceAndMorphemesAndCodes firstSmc = csmc.doConstructSMC(
+					sl, analyzeResult, tempDictResult.toArray(emptyTranslation));
+
 			TranslationWithPosition[] dictResult = new TranslationWithPosition[]{};
-			{
-				info("prepare for BilingualDictionaryWithLongestMatchSearchService.searchLongestMatchingTerms()");
-				Morpheme[] m = firstSmc.getMorphemes();
-				info("invoke BilingualDictionaryWithLongestMatchSearchService.searchLongestMatchingTerms(" +
-						m.length + "morphs["
-						+ (m.length > 0 ? "word:" + m[0].getWord()
-								+ ",lemma:" + m[0].getLemma() + ",pos:" + m[0].getPartOfSpeech()
-								: "")
-						+ "])");
-				try{
-					if(s.bdict != null){
-						dictResult = s.bdict.searchLongestMatchingTerms(sl, dl, m);
-						dictResult = dropInvalidEntries(dictResult, m);
-					}
-				} catch(ServiceNotActiveException e){
-					if(!e.getServiceId().equals("AbstractService")){
-						warning("service is not active: " + e.getServiceId());
-					}
-				} catch(Exception e){
-					warning("exception occurred at bdict search.", e);
+			try{
+				if(s.bdict != null){
+					Morpheme[] m = firstSmc.getMorphemes();
+					dictResult = s.bdict.searchLongestMatchingTerms(sl, dl, m);
+					dictResult = CompositeTranslationUtil.dropInvalidEntries(dictResult, m);
 				}
-				info("invoke BilingualDictionaryWithLongestMatchSearchService.searchLongestMatchingTerms done(" +
-						dictResult.length + "translations)");
+			} catch(ServiceNotActiveException e){
+				if(!e.getServiceId().equals("AbstractService")){
+					warning("service is not active: " + e.getServiceId());
+				}
+			} catch(Exception e){
+				warning("exception occurred at bdict search.", e);
 			}
 
-			TranslationWithPosition[] dictResultAlt = null;
-			SourceAndMorphemesAndCodes secondSmc = null;
-			{
-				info("prepare for ConstructSourceAndMorphemesAndCodes.doConstructSMC()");
-				dictResultAlt = dictResult;
-				info("invoke ConstructSourceAndMorphemesAndCodes.doConstructSMC("
-						+ firstSmc.getMorphemes().length + "morphs," + dictResult.length + "translations)"
-						);
-				secondSmc = csmc.doConstructSMC(sl, firstSmc.getMorphemes(), dictResultAlt);
-				info("invoke ConstructSourceAndMorphemesAndCodes.doConstructSMC done(" +
-						+ secondSmc.getMorphemes().length + "morphs," +
-						+ secondSmc.getCodes().length + "codes,"
-						+ secondSmc.getTargetWords().length + "targetWords)"
-						);
-			}
+			SourceAndMorphemesAndCodes secondSmc = 
+					csmc.doConstructSMC(sl, firstSmc.getMorphemes(), dictResult);
 
-			info("joining mrophemes and codes");
-			SourceAndMorphemesAndCodes joinedSmc = new SourceAndMorphemesAndCodes(
-					secondSmc.getSource()
-					, secondSmc.getMorphemes()
-					, ArrayUtil.append(firstSmc.getCodes(), secondSmc.getCodes())
-					, ArrayUtil.append(firstSmc.getHeadWords(), secondSmc.getHeadWords())
-					, ArrayUtil.append(firstSmc.getTargetWords(), secondSmc.getTargetWords())
-			);
-			info("joining mrophemes and codes done(" +
-					+ joinedSmc.getMorphemes().length + "morphs," +
-					+ joinedSmc.getCodes().length + "codes,"
-					+ joinedSmc.getTargetWords().length + "targetWords)");
+			SourceAndMorphemesAndCodes joinedSmc = CompositeTranslationUtil.mergeSmc(
+					firstSmc, secondSmc);
 
-			info("invoke TranslationService.translate(" + joinedSmc.getSource().length() + "chars)");
-			String fwTranslationResult = null;
-			if(s.trans == null){
-				if(!sl.equals(tl)){
-					throw new ProcessFailedException("TranslationPL not binded.");
-				}
-			} else{
-				try{
-					fwTranslationResult = s.trans.translate(sl, tl, joinedSmc.getSource());
-				} catch(ServiceNotActiveException e){
-					if(!e.getServiceId().equals("AbstractService") || !sl.equals(tl)){
-						throw e;
-					}
-				}
-			}
-			if(fwTranslationResult == null){
-				fwTranslationResult = joinedSmc.getSource();
-			}
-			log("invoke TranslationService.translate done");
-			log("replacing codes(" + joinedSmc.getCodes().length + "codes" +
-					"," + joinedSmc.getTargetWords().length + "words)");
-			String fwFinalResult = rt.doReplace(tl, fwTranslationResult
+			String fwTranslationResult = CompositeTranslationUtil.translateUntilNocodeAppears(
+					sl, tl, joinedSmc, s.trans);
+
+			String result = rt.doReplace(tl, fwTranslationResult
 					, joinedSmc.getCodes(), joinedSmc.getTargetWords());
-			info("replacing codes done");
-
-			return fwFinalResult;
+			return result;
 		} catch(InvalidParameterException e){
 			throw e;
 		} catch(ProcessFailedException e){
@@ -267,20 +181,6 @@ implements TranslationWithTemporalDictionaryService{
 			throw new ProcessFailedException(t);
 		}
 	}
-
-	private TranslationWithPosition[] dropInvalidEntries(
-			TranslationWithPosition[] entries, Morpheme[] morphs) {
-		if(entries == null) return null;
-		List<TranslationWithPosition> r = new ArrayList<>();
-		for(TranslationWithPosition twp : entries) {
-			Morpheme m = morphs[twp.getStartIndex()];
-			if(!m.getPartOfSpeech().startsWith("noun") &&
-					!m.getPartOfSpeech().equals("unknown")) continue;
-			r.add(twp);
-		}
-		return r.toArray(new TranslationWithPosition[] {});
-	}
-
 
 	protected ConstructSourceAndMorphemesAndCodes getConstructSourceAndMorphemesAndCodes(){
 		return new ConstructSourceAndMorphemesAndCodes();

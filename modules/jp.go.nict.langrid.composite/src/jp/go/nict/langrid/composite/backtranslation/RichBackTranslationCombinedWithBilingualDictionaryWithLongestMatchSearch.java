@@ -24,6 +24,7 @@ import java.util.List;
 
 import jp.go.nict.langrid.commons.lang.ExceptionUtil;
 import jp.go.nict.langrid.commons.util.ArrayUtil;
+import jp.go.nict.langrid.composite.util.CompositeTranslationUtil;
 import jp.go.nict.langrid.language.Language;
 import jp.go.nict.langrid.language.LanguagePair;
 import jp.go.nict.langrid.service_1_2.AccessLimitExceededException;
@@ -121,85 +122,51 @@ implements BackTranslationWithTemporalDictionaryService{
 			ReplacementTerm rt = new ReplacementTerm();
 
 			Morpheme[] analyzeResult = null;
-			{
-				log("invoke MorphologicalAnalysis.analyze");
-				if(s.morph != null){
-					try{
-						analyzeResult = s.morph.analyze(sl, src);
-					} catch(ServiceNotActiveException e){
-						log("service is not active: " + e.getServiceId());
-					} catch(Exception e){
-						log("exception occurred: " + ExceptionUtil.getMessageWithStackTrace(e));
-					}
-				}
-				if(analyzeResult == null){
-					log("analyze result is null. calling DefaultMorphologicalAnalysis.");
-					analyzeResult = new DefaultMorphologicalAnalysis().analyze(sl, src);
-				}
-				log("invoke MorphologicalAnalysis.analyze done(" + analyzeResult.length + "morphs)");
-			}
-
-			Collection<TranslationWithPosition> tempDictResult = new ArrayList<TranslationWithPosition>();
-			{
-				log("invoke TemporalBilingualDictionaryWithLongestMatchSearch.doSearchAllLongestMatchingTerms("
-						+ analyzeResult.length + "morphes)");
+			if(s.morph != null){
 				try{
-					tempDictResult = tempDictMatch.doSearchAllLongestMatchingTerms(
-						pair.getSource(), analyzeResult, tempDict);
+					analyzeResult = s.morph.analyze(sl, src);
+				} catch(ServiceNotActiveException e){
+					log("service is not active: " + e.getServiceId());
 				} catch(Exception e){
 					log("exception occurred: " + ExceptionUtil.getMessageWithStackTrace(e));
 				}
-				log("invoke TemporalBilingualDictionaryWithLongestMatchSearch.doSearchAllLongestMatchingTerms done("
-						+ tempDictResult.size() + "translations)");
 			}
+			if(analyzeResult == null){
+				log("analyze result is null. calling DefaultMorphologicalAnalysis.");
+				analyzeResult = new DefaultMorphologicalAnalysis().analyze(sl, src);
+			}
+
+			Collection<TranslationWithPosition> tempDictResult = new ArrayList<TranslationWithPosition>();
+			try{
+				tempDictResult = tempDictMatch.doSearchAllLongestMatchingTerms(
+					pair.getSource(), analyzeResult, tempDict);
+			} catch(Exception e){
+				log("exception occurred: " + ExceptionUtil.getMessageWithStackTrace(e));
+			}
+
 			SourceAndMorphemesAndCodes firstSmc = null;
 			{
-				log("prepare for ConstructSourceAndMorphemesAndCodes.doConstructSMC()");
 				TranslationWithPosition[] bdictResult = tempDictResult.toArray(emptyTranslation);
-				log("invoke ConstructSourceAndMorphemesAndCodes.doConstructSMC("
-						+ analyzeResult.length + "morphs,"
-						+ ((tempDict != null) ? tempDict.length : "null ") + "translations)");
 				firstSmc = csmc.doConstructSMC(sl, analyzeResult, bdictResult);
 				resultDic.addAll(Arrays.asList(bdictResult));
-				log("invoke ConstructSourceAndMorphemesAndCodes.doConstructSMC done(" +
-						+ firstSmc.getMorphemes().length + "morphs," +
-						+ firstSmc.getCodes().length + "codes,"
-						+ firstSmc.getTargetWords().length + "targetWords)");
 			}
 			TranslationWithPosition[] dictResult = new TranslationWithPosition[]{};
-			{
-				log("invoke BilingualDictionaryWithLongestMatchSearchService.searchLongestMatchingTerms(" +
-						firstSmc.getMorphemes().length + "morphs)");
-				if(s.bdict != null){
-					try{
-						dictResult = s.bdict.searchLongestMatchingTerms(
-										sl, dl, firstSmc.getMorphemes()
-										);
-						resultDic.addAll(Arrays.asList(dictResult));
-					} catch(ServiceNotActiveException e){
-						log("service is not active: " + e.getServiceId());
-					} catch(Exception e){
-						log("exception occurred: " + ExceptionUtil.getMessageWithStackTrace(e));
-					}
+			if(s.bdict != null){
+				try{
+					dictResult = s.bdict.searchLongestMatchingTerms(
+									sl, dl, firstSmc.getMorphemes()
+									);
+					dictResult = CompositeTranslationUtil.dropInvalidEntries(dictResult, firstSmc.getMorphemes());
+					resultDic.addAll(Arrays.asList(dictResult));
+				} catch(ServiceNotActiveException e){
+					log("service is not active: " + e.getServiceId());
+				} catch(Exception e){
+					log("exception occurred: " + ExceptionUtil.getMessageWithStackTrace(e));
 				}
-				log("invoke BilingualDictionaryWithLongestMatchSearchService.searchLongestMatchingTerms done(" +
-						dictResult.length + "translations)");
 			}
 
-			SourceAndMorphemesAndCodes secondSmc = null;
-			{
-				log("invoke ConstructSourceAndMorphemesAndCodes.doConstructSMC("
-						+ firstSmc.getMorphemes().length + "morphs," + dictResult.length + "translations)"
-						);
-				secondSmc = csmc.doConstructSMC(sl, firstSmc.getMorphemes(), dictResult);
-				log("invoke ConstructSourceAndMorphemesAndCodes.doConstructSMC done(" +
-						+ secondSmc.getMorphemes().length + "morphs," +
-						+ secondSmc.getCodes().length + "codes,"
-						+ secondSmc.getTargetWords().length + "targetWords)"
-						);
-			}
+			SourceAndMorphemesAndCodes secondSmc = csmc.doConstructSMC(sl, firstSmc.getMorphemes(), dictResult);
 
-			log("joining mrophemes and codes");
 			SourceAndMorphemesAndCodes joinedSmc = new SourceAndMorphemesAndCodes(
 					secondSmc.getSource()
 					, secondSmc.getMorphemes()
@@ -207,34 +174,18 @@ implements BackTranslationWithTemporalDictionaryService{
 					, ArrayUtil.append(firstSmc.getHeadWords(), secondSmc.getHeadWords())
 					, ArrayUtil.append(firstSmc.getTargetWords(), secondSmc.getTargetWords())
 			);
-			log("joining mrophemes and codes done(" +
-					+ joinedSmc.getMorphemes().length + "morphs," +
-					+ joinedSmc.getCodes().length + "codes,"
-					+ joinedSmc.getTargetWords().length + "targetWords)");
 
-			log("invoke TranslationService.translate(" + joinedSmc.getSource().length() + "chars)");
-			String fwTranslationResult = s.ft.translate(
-							sl, tl, joinedSmc.getSource()
-							);
-			log("invoke TranslationService.translate done");
-			log("replacing codes(" + joinedSmc.getCodes().length + "codes" +
-					"," + joinedSmc.getTargetWords().length + "words)");
+			String fwTranslationResult = CompositeTranslationUtil.translateUntilNocodeAppears(
+					sl, tl, joinedSmc, s.ft);
 			String[] riches = richFormat(resultDic, joinedSmc.getTargetWords(), true);
-//			String fwFinalResult = rt.doReplace(tl, fwTranslationResult
-//					, joinedSmc.getCodes(), joinedSmc.getTargetWords());
 			String fwFinalResultRich = rt.doReplace(tl, fwTranslationResult
 					, joinedSmc.getCodes(), riches);
-			log("replacing codes done");
 
-			log("invoke TranslationService.translate(" + fwTranslationResult.length() + "chars)");
-			String bwTranslationResult = s.bt.translate(
-							tl, sl, fwTranslationResult
-							);
-			log("invoke TranslationService.translate done");
+			String bwTranslationResult = CompositeTranslationUtil.translateUntilNocodeAppears(
+					tl, sl, CompositeTranslationUtil.createBackwardSmc(joinedSmc, fwTranslationResult), s.bt);
 
 			String bwFinalResult = null;
 			{
-				log("prepare for replacing codes()");
 				List<String> headWordList = new ArrayList<String>();
 				for(TranslationWithPosition t : tempDictResult){
 					headWordList.add(t.getTranslation().getHeadWord());
@@ -242,13 +193,9 @@ implements BackTranslationWithTemporalDictionaryService{
 				for(TranslationWithPosition t : dictResult){
 					headWordList.add(t.getTranslation().getHeadWord());
 				}
-				String[] headWords = headWordList.toArray(emptyStringArray);
-				headWords = richFormat(resultDic, headWords, false);
-				log("replacing codes(" + joinedSmc.getCodes().length + "codes" +
-						"," + headWords.length + "words)");
+				String[] headWords = richFormat(resultDic, headWordList.toArray(emptyStringArray), false);
 				bwFinalResult = rt.doReplace(sl, bwTranslationResult
 						, joinedSmc.getCodes(), headWords);
-				log("replacing codes done");
 			}
 
 			return new BackTranslationResult(fwFinalResultRich, bwFinalResult);

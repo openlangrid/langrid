@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 
 import jp.go.nict.langrid.commons.util.ArrayUtil;
+import jp.go.nict.langrid.composite.util.CompositeTranslationUtil;
 import jp.go.nict.langrid.language.Language;
 import jp.go.nict.langrid.language.LanguagePair;
 import jp.go.nict.langrid.service_1_2.AccessLimitExceededException;
@@ -166,6 +167,7 @@ implements BackTranslationWithTemporalDictionaryService{
 					dictResult = s.bdict.searchLongestMatchingTerms(
 									sl, dl, firstSmc.getMorphemes()
 									);
+					dictResult = CompositeTranslationUtil.dropInvalidEntries(dictResult, firstSmc.getMorphemes());
 				} catch(ServiceNotActiveException e){
 					warning("service is not active: " + e.getServiceId());
 				} catch(Exception e){
@@ -214,9 +216,8 @@ implements BackTranslationWithTemporalDictionaryService{
 				throw new ProcessFailedException("ForwardTranslationPL not binded.");
 			}
 			log("invoke TranslationService.translate(" + joinedSmc.getSource().length() + "chars)");
-			String fwTranslationResult = s.ft.translate(
-					sl, tl, joinedSmc.getSource()
-					);
+			String fwTranslationResult = CompositeTranslationUtil.translateUntilNocodeAppears(
+					sl, tl, joinedSmc, s.ft);
 			log("invoke TranslationService.translate done");
 			log("replacing codes(" + joinedSmc.getCodes().length + "codes" +
 					"," + joinedSmc.getTargetWords().length + "words)");
@@ -228,9 +229,8 @@ implements BackTranslationWithTemporalDictionaryService{
 				throw new ProcessFailedException("BackwardTranslationPL not binded.");
 			}
 			log("invoke TranslationService.translate(" + fwTranslationResult.length() + "chars)");
-			String bwTranslationResult = s.bt.translate(
-					tl, sl, fwTranslationResult
-					);
+			String bwTranslationResult = CompositeTranslationUtil.translateUntilNocodeAppears(
+					tl, sl, CompositeTranslationUtil.createBackwardSmc(joinedSmc, fwTranslationResult), s.bt);
 			log("invoke TranslationService.translate done");
 
 			log("prepare for replacing codes()");

@@ -3,6 +3,7 @@ package jp.go.nict.langrid.composite.translation;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Calendar;
 
 import org.junit.Test;
 
@@ -15,6 +16,7 @@ import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.composite.bilingualdictionary.BilingualDictionaryWithLongestMatchSearchCrossSearch;
 import jp.go.nict.langrid.composite.commons.test.ComponentServiceFactoryImpl;
 import jp.go.nict.langrid.composite.commons.test.TestContext;
+import jp.go.nict.langrid.service_1_2.LanguagePair;
 import jp.go.nict.langrid.service_1_2.bilingualdictionary.BilingualDictionaryWithLongestMatchSearchService;
 import jp.go.nict.langrid.service_1_2.bilingualdictionary.Translation;
 import jp.go.nict.langrid.service_1_2.bilingualdictionary.TranslationWithPosition;
@@ -23,9 +25,77 @@ import jp.go.nict.langrid.service_1_2.morphologicalanalysis.MorphologicalAnalysi
 import jp.go.nict.langrid.service_1_2.translation.TranslationService;
 import jp.go.nict.langrid.service_1_2.translation.TranslationWithTemporalDictionaryService;
 import jp.go.nict.langrid.servicecontainer.service.ComponentServiceFactory;
+import jp.go.nict.langrid.servicecontainer.service.component.JavaDeclLoggingComponentServiceFactory;
 import jp.go.nict.langrid.servicecontainer.service.component.LoggingComponentServiceFactory;
 
 public class TranslationCombinedWithBilingualDictionaryWithLongestMatchSearchTest {
+	@Test
+	public void testJavaDecl() throws Throwable{
+		System.out.println(JavaDeclLoggingComponentServiceFactory.toJavaDecl(new Morpheme[] {
+				new Morpheme("お", "お", "other"), new Morpheme("茶会", "茶会", "noun.common"),
+		}));
+	}
+
+	@Test
+	public void testInternalCodesNotAppearLocal() throws Throwable{
+		String src = "次のお茶会ではお点前を拝見させていただきます．";
+		Morpheme[] morphResultMecab = new Morpheme[]{new Morpheme("次の", "次の", "other"), new Morpheme("お", "お", "other"), new Morpheme("茶会", "茶会", "noun.common"), new Morpheme("で", "で", "other"), new Morpheme("は", "は", "other"), new Morpheme("お点前", "お点前", "noun.common"), new Morpheme("を", "を", "other"), new Morpheme("拝見", "拝見", "noun.other"), new Morpheme("さ", "する", "verb"), new Morpheme("せて", "せる", "other"), new Morpheme("いただき", "いただく", "verb"), new Morpheme("ます", "ます", "other"), new Morpheme("．", "．", "other")};
+		TranslationWithPosition[] bdictResultKyotoSpecialDictionary = new TranslationWithPosition[]{new TranslationWithPosition(new Translation("お茶会", new String[]{"tea ceremony"}), 1, 2), new TranslationWithPosition(new Translation("お点前", new String[]{"tea ceremony etiquette"}), 5, 1)};
+		String transResultGoogleNMT = "I will see xxxrwkymrjxxx at the next tea ceremony.";
+		TranslationWithTemporalDictionaryService s =  new TranslationCombinedWithBilingualDictionaryWithLongestMatchSearch(){
+			public ComponentServiceFactory getComponentServiceFactory() {
+				return new LoggingComponentServiceFactory(new ComponentServiceFactoryImpl(){{
+							add("BilingualDictionaryWithLongestMatchSearchPL", new BilingualDictionaryWithLongestMatchSearchService() {
+								public Translation[] search(String headLang, String targetLang, String headWord, String matchingMethod){
+									return null;
+								}
+								public String[] getSupportedMatchingMethods(){ return null;}
+								public LanguagePair[] getSupportedLanguagePairs(){ return null;}
+								public Calendar getLastUpdate(){ return null;}
+								public TranslationWithPosition[] searchLongestMatchingTerms(String headLang, String targetLang, Morpheme[] morphemes){
+									return bdictResultKyotoSpecialDictionary;
+								}
+							});
+							add("MorphologicalAnalysisPL", (MorphologicalAnalysisService)((language, text) -> morphResultMecab));
+							add("TranslationPL", newSoapContext().createClient(
+									"GoogleTranslateNMT", TranslationService.class));
+						}});
+			};
+		};
+		String result = s.translate("ja", "en", src, new Translation[] {}, "en");
+		System.out.println(result);
+/*		
+		翻訳結果：Im nächsten Teezeremonie (お茶会) werde ich Etiquette bei der Teezeremonie (お点前) sehen.
+		利用したサービス：GoogleTranslateNMT，Kyoto Speciality Dictionary
+*/
+	}
+	
+	@Test
+	public void testInternalCodesNotAppear() throws Throwable{
+		String src = "次のお茶会ではお点前を拝見させていただきます．";
+//		Morpheme[] morphs = {new Morpheme("次の", "次の", "other"),
+//				new Morpheme("お", "お", "other"), new Morpheme("茶会", "茶会", "noun.common"),
+//				new Morpheme("で", "で", "other"),], jp.go.nict.langrid.service_1_2.morphologicalanalysis.Morpheme@59a6e353[word=は,lemma=は,partOfSpeech=other], jp.go.nict.langrid.service_1_2.morphologicalanalysis.Morpheme@7a0ac6e3[word=お点前,lemma=お点前,partOfSpeech=noun.common], jp.go.nict.langrid.service_1_2.morphologicalanalysis.Morpheme@71be98f5[word=を,lemma=を,partOfSpeech=other], jp.go.nict.langrid.service_1_2.morphologicalanalysis.Morpheme@6fadae5d[word=拝見,lemma=拝見,partOfSpeech=noun.other], jp.go.nict.langrid.service_1_2.morphologicalanalysis.Morpheme@17f6480[word=さ,lemma=する,partOfSpeech=verb], jp.go.nict.langrid.service_1_2.morphologicalanalysis.Morpheme@2d6e8792[word=せて,lemma=せる,partOfSpeech=other], jp.go.nict.langrid.service_1_2.morphologicalanalysis.Morpheme@2812cbfa[word=いただき,lemma=いただく,partOfSpeech=verb], jp.go.nict.langrid.service_1_2.morphologicalanalysis.Morpheme@2acf57e3[word=ます,lemma=ます,partOfSpeech=other], jp.go.nict.langrid.service_1_2.morphologicalanalysis.Morpheme@506e6d5e[word=．,lemma=．,partOfSpeech=other]
+//		}
+		TranslationWithTemporalDictionaryService s =  new TranslationCombinedWithBilingualDictionaryWithLongestMatchSearch(){
+			public ComponentServiceFactory getComponentServiceFactory() {
+				return new JavaDeclLoggingComponentServiceFactory(new ComponentServiceFactoryImpl() {{
+					add("MorphologicalAnalysisPL", newSoapContext().createClient(
+							"Mecab", MorphologicalAnalysisService.class));
+					add("BilingualDictionaryWithLongestMatchSearchPL", newSoapContext().createClient(
+							"KyotoSpecialtyDictionary", BilingualDictionaryWithLongestMatchSearchService.class));
+					add("TranslationPL", newSoapContext().createClient(
+							"GoogleTranslateNMT", TranslationService.class));
+				}});
+			};
+		};
+		String result = s.translate("ja", "en", src, new Translation[] {}, "en");
+		System.out.println(result);
+/*		
+		翻訳結果：Im nächsten Teezeremonie (お茶会) werde ich Etiquette bei der Teezeremonie (お点前) sehen.
+		利用したサービス：GoogleTranslateNMT，Kyoto Speciality Dictionary
+*/
+	}
 	@Test
 	public void testEnJaHello() throws Throwable{
 		TranslationWithTemporalDictionaryService s =  new TranslationCombinedWithBilingualDictionaryWithLongestMatchSearch(){

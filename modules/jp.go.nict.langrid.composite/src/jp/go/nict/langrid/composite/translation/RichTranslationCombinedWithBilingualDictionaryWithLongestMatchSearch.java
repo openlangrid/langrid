@@ -23,6 +23,7 @@ import java.util.Collection;
 
 import jp.go.nict.langrid.commons.lang.ExceptionUtil;
 import jp.go.nict.langrid.commons.util.ArrayUtil;
+import jp.go.nict.langrid.composite.util.CompositeTranslationUtil;
 import jp.go.nict.langrid.language.Language;
 import jp.go.nict.langrid.language.LanguagePair;
 import jp.go.nict.langrid.service_1_2.AccessLimitExceededException;
@@ -186,6 +187,7 @@ implements TranslationWithTemporalDictionaryService{
 				if(s.bdict != null){
 					try{
 						dictResult = s.bdict.searchLongestMatchingTerms(sl, dl, m);
+						dictResult = CompositeTranslationUtil.dropInvalidEntries(dictResult, m);
 					} catch(ServiceNotActiveException e){
 						log("service is not active: " + e.getServiceId());
 					} catch(Exception e){
@@ -226,7 +228,8 @@ implements TranslationWithTemporalDictionaryService{
 					+ joinedSmc.getTargetWords().length + "targetWords)");
 
 			log("invoke TranslationService.translate(" + joinedSmc.getSource().length() + "chars)");
-			String fwTranslationResult = s.trans.translate(sl, tl, joinedSmc.getSource());
+			String fwTranslationResult = CompositeTranslationUtil.translateUntilNocodeAppears(
+					sl, tl, joinedSmc, s.trans);
 			log("invoke TranslationService.translate done");
 			log("replacing codes(" + joinedSmc.getCodes().length + "codes" +
 					"," + joinedSmc.getTargetWords().length + "words)");

@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import jp.go.nict.langrid.commons.util.ArrayUtil;
+import jp.go.nict.langrid.composite.util.CompositeTranslationUtil;
 import jp.go.nict.langrid.language.Language;
 import jp.go.nict.langrid.service_1_2.AccessLimitExceededException;
 import jp.go.nict.langrid.service_1_2.InvalidParameterException;
@@ -291,6 +292,7 @@ implements MultihopTranslationWithTemporalDictionaryService{
 		try{
 			if(service != null){
 				ret = service.searchLongestMatchingTerms(sourceLang, targetLang, morphs);
+				ret = CompositeTranslationUtil.dropInvalidEntries(ret, morphs);
 			}
 		} catch(Exception e){
 		}
