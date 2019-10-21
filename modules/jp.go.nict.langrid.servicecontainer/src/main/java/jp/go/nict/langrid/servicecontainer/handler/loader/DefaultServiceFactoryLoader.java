@@ -21,7 +21,7 @@ public class DefaultServiceFactoryLoader implements ServiceFactoryLoader{
 			return newInstance();
 		}
 		@Override
-		public Object getService() {
+		public synchronized Object getService() {
 			Object s = super.getService();
 			if(s == null){
 				setService(newInstance());

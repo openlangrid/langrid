@@ -70,7 +70,7 @@
 
   <filter>
     <filter-name>LangridEmailAuthenticator</filter-name>
-    <filter-class>jp.go.nict.langrid.servlet.filter.auth.langrid.LangridEmailAuthenticator</filter-class>
+    <filter-class>jp.go.nict.langrid.servlet.filter.auth.langrid.LangridApplicationEmailAuthenticator</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>LangridEmailAuthenticator</filter-name>

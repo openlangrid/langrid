@@ -17,12 +17,12 @@
  */
 package jp.go.nict.langrid.commons.naming;
 
+import java.util.Arrays;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-
-import jp.go.nict.langrid.commons.util.ArrayUtil;
 
 /**
  * 
@@ -53,7 +53,7 @@ public class JNDIUtil {
 		Context current = context;
 		String[] subContextNames = name.split("\\/");
 		if(subContextNames.length == 1) return;
-		subContextNames = ArrayUtil.subArray(
+		subContextNames = Arrays.copyOfRange(
 				subContextNames, 0, subContextNames.length - 1
 				);
 		for(String n : subContextNames){

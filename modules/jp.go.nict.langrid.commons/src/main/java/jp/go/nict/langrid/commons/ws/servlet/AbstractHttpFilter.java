@@ -76,6 +76,10 @@ public abstract class AbstractHttpFilter implements Filter{
 		initException = e;
 	}
 
+	protected String getContextPath(HttpServletRequest request) {
+		return request.getRequestURI().split("/")[1];
+	}
+
 	protected boolean hasInitializationException(){
 		return initException != null;
 	}
