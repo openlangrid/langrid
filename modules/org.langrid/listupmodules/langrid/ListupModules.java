@@ -1,3 +1,4 @@
+package langrid;
 import java.io.File;
 
 import javax.xml.parsers.DocumentBuilderFactory;
