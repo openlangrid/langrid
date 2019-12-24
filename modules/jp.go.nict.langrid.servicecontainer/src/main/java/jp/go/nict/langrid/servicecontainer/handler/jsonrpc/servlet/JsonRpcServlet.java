@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.GenericDeclaration;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
@@ -123,9 +124,9 @@ public class JsonRpcServlet extends HttpServlet {
 			try {
 				handlers.put(
 						name
-						, (JsonRpcHandler)Class.forName(clazz).newInstance()
+						, (JsonRpcHandler)Class.forName(clazz).getConstructor().newInstance()
 						);
-			} catch(InstantiationException e){
+			} catch(InstantiationException | InvocationTargetException | NoSuchMethodException e){
 				logger.log(Level.WARNING, failMsg, e);
 			} catch(IllegalAccessException e){
 				logger.log(Level.WARNING, failMsg, e);
