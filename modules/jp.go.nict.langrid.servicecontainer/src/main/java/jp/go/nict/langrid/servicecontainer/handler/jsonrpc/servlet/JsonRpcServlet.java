@@ -603,13 +603,17 @@ public class JsonRpcServlet extends HttpServlet {
 		JsonRpcHandler h = handlers.get(serviceName);
 		// Execution of service
 		if(h == null){
-			h = new JsonRpcDynamicHandler();
+			h = createDefaultHandler();
 		}
 		ServiceContext sc = new ServletServiceContext(getServletConfig(), request, Arrays.asList(req.getHeaders()));
 		ServiceLoader loader = new ServiceLoader(sc, getDefaultServiceFactoryLoaders());
 		OutputStream os = resp.getOutputStream();
 		h.handle(sc, loader, serviceName, req, resp, os);
 		os.flush();
+	}
+
+	protected JsonRpcHandler createDefaultHandler() {
+		return new JsonRpcDynamicHandler();
 	}
 
 	private static JsonRpcRequest decodeFromPC(ParameterContext param)

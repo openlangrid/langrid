@@ -99,6 +99,7 @@ public class JsonRpcDynamicHandler extends AbstractJsonRpcHandler implements Jso
 						return;
 					}
 					service = f.createService(cl, sc, clazz);
+					initialize(serviceName, service);
 					// Currently only array("[]") is supported, while JsonRpc accepts Object("{}")
 					result = invokeMethod(service, method, req.getParams(), converter);
 				} finally{
@@ -152,6 +153,8 @@ public class JsonRpcDynamicHandler extends AbstractJsonRpcHandler implements Jso
 			logger.log(Level.WARNING, "IOException occurred.", e);
 		}
 	}
+
+	protected void initialize(String serviceName, Object service) {}
 
 	static Object invokeMethod(Object instance, Method method, Object[] params, Converter converter)
 	throws IllegalAccessException, IllegalArgumentException, InvocationTargetException{
