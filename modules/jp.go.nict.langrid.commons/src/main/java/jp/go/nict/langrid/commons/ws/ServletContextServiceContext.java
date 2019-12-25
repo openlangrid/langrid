@@ -20,6 +20,8 @@ package jp.go.nict.langrid.commons.ws;
 import java.io.File;
 import java.net.URL;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.xml.soap.MimeHeaders;
@@ -79,6 +81,17 @@ public class ServletContextServiceContext extends ServiceContext{
 		return servletContext.getInitParameter(param);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getSessionProperty(String name) {
+		return (T)sessionProps.get(name);
+	}
+
+	@Override
+	public void setSessionProperty(String name, Object value) {
+		sessionProps.put(name, value);
+	}
+
 	@Override
 	public String getPersistentProperty(String name) {
 		prepareProperties();
@@ -108,5 +121,6 @@ public class ServletContextServiceContext extends ServiceContext{
 	}
 
 	private ServletContext servletContext;
+	private Map<String, Object> sessionProps = new HashMap<>();
 	private FilePersistentProperties props;
 }

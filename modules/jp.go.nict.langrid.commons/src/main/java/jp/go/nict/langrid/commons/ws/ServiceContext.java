@@ -125,6 +125,9 @@ public abstract class ServiceContext{
 	 */
 	public abstract String getInitParameter(String parameter);
 
+	public abstract <T> T getSessionProperty(String name);
+	public abstract void setSessionProperty(String name, Object value);
+
 	/**
 	 * 
 	 * 

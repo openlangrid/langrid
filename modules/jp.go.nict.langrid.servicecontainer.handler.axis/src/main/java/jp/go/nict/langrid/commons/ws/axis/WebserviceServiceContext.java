@@ -89,6 +89,16 @@ public class WebserviceServiceContext extends ServiceContext{
 	}
 
 	@Override
+	public <T> T getSessionProperty(String name) {
+		return context.getSessionProperty(name);
+	}
+
+	@Override
+	public void setSessionProperty(String name, Object value) {
+		context.setSessionProperty(name, value);
+	}
+
+	@Override
 	public String getPersistentProperty(String name) {
 		return context.getPersistentProperty(name);
 	}

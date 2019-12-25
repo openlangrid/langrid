@@ -129,6 +129,17 @@ public class ServletServiceContext extends ServiceContext{
 		return c.getInitParameter(param);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getSessionProperty(String name) {
+		return (T)request.getSession().getAttribute(name);
+	}
+
+	@Override
+	public void setSessionProperty(String name, Object value) {
+		request.getSession().setAttribute(name, value);
+	}
+
 	@Override
 	public String getPersistentProperty(String name) {
 		prepareProperties();

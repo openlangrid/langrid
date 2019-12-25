@@ -78,6 +78,16 @@ public class ServiceContextWrapper extends ServiceContext{
 	}
 
 	@Override
+	public <T> T getSessionProperty(String name) {
+		return wrapped.getSessionProperty(name);
+	}
+
+	@Override
+	public void setSessionProperty(String name, Object value) {
+		wrapped.setSessionProperty(name, value);
+	}
+
+	@Override
 	public String getPersistentProperty(String name){
 		return wrapped.getPersistentProperty(name);
 	}

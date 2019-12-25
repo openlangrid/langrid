@@ -79,6 +79,15 @@ public class NullServiceContext extends ServiceContext{
 	}
 
 	@Override
+	public <T> T getSessionProperty(String name) {
+		return null;
+	}
+
+	@Override
+	public void setSessionProperty(String name, Object value) {
+	}
+
+	@Override
 	public String getPersistentProperty(String name) {
 		return null;
 	}

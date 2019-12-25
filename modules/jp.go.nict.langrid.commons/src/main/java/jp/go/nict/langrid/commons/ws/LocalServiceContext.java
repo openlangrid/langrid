@@ -23,7 +23,9 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.soap.MimeHeaders;
 
@@ -148,6 +150,17 @@ public class LocalServiceContext extends ServiceContext{
 		return System.getProperty(param);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getSessionProperty(String name) {
+		return (T)sessionProps.get(name);
+	}
+
+	@Override
+	public void setSessionProperty(String name, Object value) {
+		sessionProps.put(name, value);
+	}
+
 	@Override
 	public String getPersistentProperty(String name) {
 		return props.getProperty(name);
@@ -179,6 +192,7 @@ public class LocalServiceContext extends ServiceContext{
 	private String remoteAddress ="127.0.0.1";
 	private String requestRootUrl = "http://localhost/";
 	private String realPathBase = ".";
+	private Map<String, Object> sessionProps = new HashMap<>();
 	private FilePersistentProperties props = new FilePersistentProperties(
 			new File("local.properties"));
 }

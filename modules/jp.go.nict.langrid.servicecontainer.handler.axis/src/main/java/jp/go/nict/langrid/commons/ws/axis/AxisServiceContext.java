@@ -155,6 +155,17 @@ public class AxisServiceContext extends ServiceContext{
 		return o.toString();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getSessionProperty(String name) {
+		return (T)getRequest().getSession().getAttribute(name);
+	}
+
+	@Override
+	public void setSessionProperty(String name, Object value) {
+		getRequest().getSession().setAttribute(name, value);
+	}
+
 	@Override
 	public String getPersistentProperty(String name) {
 		prepareProperties();
