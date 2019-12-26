@@ -102,7 +102,7 @@ public class ServletConfigServiceContext extends ServiceContext{
 	}
 
 	@Override
-	public void removeSessionProeprty(String name) {
+	public void removeSessionProperty(String name) {
 		sessionProps.remove(name);
 	}
 

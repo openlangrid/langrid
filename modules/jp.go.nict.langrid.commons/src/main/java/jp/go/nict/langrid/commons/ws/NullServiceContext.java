@@ -88,7 +88,7 @@ public class NullServiceContext extends ServiceContext{
 	}
 
 	@Override
-	public void removeSessionProeprty(String name) {
+	public void removeSessionProperty(String name) {
 	}
 
 	@Override

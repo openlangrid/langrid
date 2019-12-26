@@ -88,8 +88,8 @@ public class ServiceContextWrapper extends ServiceContext{
 	}
 
 	@Override
-	public void removeSessionProeprty(String name) {
-		wrapped.removeSessionProeprty(name);
+	public void removeSessionProperty(String name) {
+		wrapped.removeSessionProperty(name);
 	}
 
 	@Override

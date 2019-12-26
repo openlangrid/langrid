@@ -141,7 +141,7 @@ public class ServletServiceContext extends ServiceContext{
 	}
 	
 	@Override
-	public void removeSessionProeprty(String name) {
+	public void removeSessionProperty(String name) {
 		request.getSession().removeAttribute(name);
 	}
 

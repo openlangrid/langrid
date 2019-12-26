@@ -127,7 +127,7 @@ public abstract class ServiceContext{
 
 	public abstract <T> T getSessionProperty(String name);
 	public abstract void setSessionProperty(String name, Object value);
-	public abstract void removeSessionProeprty(String name);
+	public abstract void removeSessionProperty(String name);
 
 	/**
 	 * 
