@@ -102,6 +102,11 @@ public class ServletConfigServiceContext extends ServiceContext{
 	}
 
 	@Override
+	public void removeSessionProeprty(String name) {
+		sessionProps.remove(name);
+	}
+
+	@Override
 	public String getPersistentProperty(String name) {
 		prepareProperties();
 		return props.getProperty(name);

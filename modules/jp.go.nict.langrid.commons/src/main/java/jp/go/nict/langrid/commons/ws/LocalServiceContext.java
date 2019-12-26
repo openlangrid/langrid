@@ -162,6 +162,11 @@ public class LocalServiceContext extends ServiceContext{
 	}
 
 	@Override
+	public void removeSessionProeprty(String name) {
+		sessionProps.remove(name);
+	}
+
+	@Override
 	public String getPersistentProperty(String name) {
 		return props.getProperty(name);
 	}

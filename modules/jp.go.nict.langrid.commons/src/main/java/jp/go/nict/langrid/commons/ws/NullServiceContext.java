@@ -88,6 +88,10 @@ public class NullServiceContext extends ServiceContext{
 	}
 
 	@Override
+	public void removeSessionProeprty(String name) {
+	}
+
+	@Override
 	public String getPersistentProperty(String name) {
 		return null;
 	}

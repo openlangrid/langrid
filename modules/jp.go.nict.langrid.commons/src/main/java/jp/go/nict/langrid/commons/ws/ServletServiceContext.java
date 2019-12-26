@@ -139,6 +139,11 @@ public class ServletServiceContext extends ServiceContext{
 	public void setSessionProperty(String name, Object value) {
 		request.getSession().setAttribute(name, value);
 	}
+	
+	@Override
+	public void removeSessionProeprty(String name) {
+		request.getSession().removeAttribute(name);
+	}
 
 	@Override
 	public String getPersistentProperty(String name) {

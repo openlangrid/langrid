@@ -99,6 +99,11 @@ public class WebserviceServiceContext extends ServiceContext{
 	}
 
 	@Override
+	public void removeSessionProeprty(String name) {
+		context.removeSessionProeprty(name);
+	}
+
+	@Override
 	public String getPersistentProperty(String name) {
 		return context.getPersistentProperty(name);
 	}

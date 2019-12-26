@@ -88,6 +88,11 @@ public class ServiceContextWrapper extends ServiceContext{
 	}
 
 	@Override
+	public void removeSessionProeprty(String name) {
+		wrapped.removeSessionProeprty(name);
+	}
+
+	@Override
 	public String getPersistentProperty(String name){
 		return wrapped.getPersistentProperty(name);
 	}

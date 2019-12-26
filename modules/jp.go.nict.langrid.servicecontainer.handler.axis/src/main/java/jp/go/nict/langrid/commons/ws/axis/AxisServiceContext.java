@@ -167,6 +167,11 @@ public class AxisServiceContext extends ServiceContext{
 	}
 
 	@Override
+	public void removeSessionProeprty(String name) {
+		getRequest().getSession().removeAttribute(name);
+	}
+
+	@Override
 	public String getPersistentProperty(String name) {
 		prepareProperties();
 		return props.getProperty(name);
