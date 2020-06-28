@@ -26,7 +26,7 @@
             </goals>
             <configuration>
               <sources>
-                <source>src/stubs/java</source>
+                <source>src/stubs</source>
               </sources>
             </configuration>
           </execution>
