@@ -21,9 +21,8 @@ package jp.go.nict.langrid.commons.ws.axis;
 
 import java.net.URL;
 
-import javax.xml.soap.MimeHeaders;
-
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
+import jp.go.nict.langrid.commons.ws.MimeHeaders;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 
 /**
