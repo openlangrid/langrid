@@ -23,13 +23,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import jp.go.nict.langrid.commons.cs.calltree.CallNode;
 import jp.go.nict.langrid.commons.cs.calltree.CallTreeUtil;
 import jp.go.nict.langrid.commons.rpc.RpcFault;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.ws.LangridConstants;
+import jp.go.nict.langrid.commons.ws.MimeHeaders;
 
 /**
  * 
@@ -45,8 +45,8 @@ public class RpcResponseAttributes implements ResponseAttributes{
 		Map<String, List<String>> mheaders = con.getHeaderFields();
 		for(Map.Entry<String, List<String>> entry : mheaders.entrySet()){
 			String name = entry.getKey();
-			if(name != null){
-				mimeHeaders.put(entry.getKey(), join(entry.getValue()));
+			for(String value : entry.getValue()) {
+				mimeHeaders.addHeader(name, value);
 			}
 		}
 		serviceName = join(mheaders.get(LangridConstants.HTTPHEADER_SERVICENAME));
@@ -97,7 +97,7 @@ public class RpcResponseAttributes implements ResponseAttributes{
 	}
 
 	@Override
-	public Map<String, Object> getResponseMimeHeaders() {
+	public MimeHeaders getResponseMimeHeaders() {
 		return mimeHeaders;
 	}
 	
@@ -115,7 +115,7 @@ public class RpcResponseAttributes implements ResponseAttributes{
 		this.rpcFault = rpcFault;
 	}
 
-	private Map<String, Object> mimeHeaders = new TreeMap<String, Object>();
+	private MimeHeaders mimeHeaders = new MimeHeaders();
 	private List<RpcHeader> rpcHeaders = new ArrayList<RpcHeader>();
 	private RpcFault rpcFault;
 	private String serviceName;

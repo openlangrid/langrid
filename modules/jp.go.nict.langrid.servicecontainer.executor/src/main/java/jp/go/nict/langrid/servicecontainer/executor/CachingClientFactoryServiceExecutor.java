@@ -25,8 +25,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.soap.MimeHeaders;
-
 import com.google.common.cache.Cache;
 
 import jp.go.nict.langrid.client.ClientFactory;
@@ -34,10 +32,9 @@ import jp.go.nict.langrid.client.RequestAttributes;
 import jp.go.nict.langrid.client.ResponseAttributes;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.util.Pair;
-import jp.go.nict.langrid.commons.ws.util.MimeHeadersUtil;
+import jp.go.nict.langrid.commons.ws.MimeHeaders;
 import jp.go.nict.langrid.cosee.Endpoint;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
-import jp.go.nict.langrid.servicecontainer.executor.AbstractServiceExecutor;
 
 /**
  * 
@@ -92,7 +89,7 @@ implements InvocationHandler{
 			} finally{
 				ResponseAttributes resAttrs = (ResponseAttributes)client;
 				postprocess(iid, System.currentTimeMillis() - s
-						, MimeHeadersUtil.fromStringObjectMap(resAttrs.getResponseMimeHeaders())
+						, resAttrs.getResponseMimeHeaders()
 						, resAttrs.getResponseRpcHeaders()
 						, resAttrs.getResponseRpcFault()
 						);

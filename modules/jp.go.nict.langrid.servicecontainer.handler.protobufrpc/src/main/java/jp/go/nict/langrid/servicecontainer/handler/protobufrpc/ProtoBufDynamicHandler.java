@@ -30,13 +30,16 @@ import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.soap.MimeHeaders;
+
+import com.google.protobuf.CodedInputStream;
+import com.google.protobuf.CodedOutputStream;
 
 import jp.go.nict.langrid.commons.lang.ClassUtil;
 import jp.go.nict.langrid.commons.protobufrpc.io.ProtobufParser;
 import jp.go.nict.langrid.commons.protobufrpc.io.ProtobufWriter;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.util.Pair;
+import jp.go.nict.langrid.commons.ws.MimeHeaders;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.commons.ws.ServletServiceContext;
 import jp.go.nict.langrid.commons.ws.util.MimeHeadersUtil;
@@ -46,9 +49,6 @@ import jp.go.nict.langrid.servicecontainer.handler.RIProcessor;
 import jp.go.nict.langrid.servicecontainer.handler.ServiceFactory;
 import jp.go.nict.langrid.servicecontainer.handler.ServiceLoader;
 import jp.go.nict.langrid.servicecontainer.handler.loader.ServiceFactoryLoader;
-
-import com.google.protobuf.CodedInputStream;
-import com.google.protobuf.CodedOutputStream;
 
 /**
  * 

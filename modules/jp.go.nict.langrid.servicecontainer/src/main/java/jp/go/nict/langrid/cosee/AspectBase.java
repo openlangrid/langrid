@@ -30,8 +30,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.soap.MimeHeaders;
-
 import jp.go.nict.langrid.commons.cs.calltree.CallNode;
 import jp.go.nict.langrid.commons.cs.calltree.CallTreeUtil;
 import jp.go.nict.langrid.commons.lang.StringUtil;
@@ -40,6 +38,7 @@ import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.rpc.TransportHeader;
 import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.commons.ws.LangridConstants;
+import jp.go.nict.langrid.commons.ws.MimeHeaders;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.commons.ws.util.MimeHeadersUtil;
 
@@ -236,7 +235,7 @@ public class AspectBase{
 		Collection<Pair<String, String>> gridTracks = (Collection<Pair<String, String>>)properties.get("gridTracks");
 		gridTracks.add(Pair.create(
 				invocationName,
-				MimeHeadersUtil.getJoinedValue(mimeHeaders, LangridConstants.HTTPHEADER_GRIDTRACK))
+				mimeHeaders.getJoinedHeader(LangridConstants.HTTPHEADER_GRIDTRACK))
 				);
 	}
 
@@ -297,7 +296,7 @@ public class AspectBase{
 	{
 		String[] values = headers.getHeader(key);
 		if(values != null && values.length > 0){
-			String v = MimeHeadersUtil.getJoinedValue(headers, key);
+			String v = headers.getJoinedHeader(key);
 			if(v != null){
 				properties.put(key, v);
 			}

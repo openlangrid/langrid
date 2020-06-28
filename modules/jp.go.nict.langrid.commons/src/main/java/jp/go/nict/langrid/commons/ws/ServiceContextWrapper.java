@@ -19,8 +19,6 @@ package jp.go.nict.langrid.commons.ws;
 
 import java.net.URL;
 
-import javax.xml.soap.MimeHeaders;
-
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 
 /**

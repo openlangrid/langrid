@@ -21,11 +21,10 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.xml.soap.MimeHeaders;
-
 import jp.go.nict.langrid.commons.rpc.RpcFault;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.util.Pair;
+import jp.go.nict.langrid.commons.ws.MimeHeaders;
 import jp.go.nict.langrid.cosee.DynamicBindingRewriter;
 import jp.go.nict.langrid.cosee.Endpoint;
 import jp.go.nict.langrid.cosee.EndpointRewriter;

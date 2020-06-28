@@ -23,21 +23,21 @@ import java.net.URL;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.soap.MimeHeaders;
 import javax.xml.soap.SOAPException;
+
+import org.apache.axis.EngineConfiguration;
+import org.apache.axis.MessageContext;
+import org.apache.axis.handlers.soap.SOAPService;
+import org.apache.axis.transport.http.HTTPConstants;
 
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.commons.ws.BasicAuthUtil;
 import jp.go.nict.langrid.commons.ws.FilePersistentProperties;
 import jp.go.nict.langrid.commons.ws.HttpServletRequestUtil;
+import jp.go.nict.langrid.commons.ws.MimeHeaders;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.commons.ws.soap.SoapHeaderRpcHeadersAdapter;
-
-import org.apache.axis.EngineConfiguration;
-import org.apache.axis.MessageContext;
-import org.apache.axis.handlers.soap.SOAPService;
-import org.apache.axis.transport.http.HTTPConstants;
 
 /**
  * 
@@ -59,7 +59,7 @@ public class AxisServiceContext extends ServiceContext{
 	public MimeHeaders getRequestMimeHeaders() {
 		MessageContext mc = getMessageContext();
 		if(mc == null) return null;
-		return mc.getMessage().getMimeHeaders();
+		return AxisUtil.toSoapMimeHeaders(mc.getMessage().getMimeHeaders());
 	}
 
 	@Override

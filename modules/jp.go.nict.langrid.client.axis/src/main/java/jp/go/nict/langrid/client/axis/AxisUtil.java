@@ -17,15 +17,11 @@
  * You should have received a copy of the GNU Lesser General Public License 
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package jp.go.nict.langrid.commons.ws.axis;
+package jp.go.nict.langrid.client.axis;
 
 import java.util.Iterator;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.soap.MimeHeader;
-
-import org.apache.axis.MessageContext;
-import org.apache.axis.transport.http.HTTPConstants;
 
 import jp.go.nict.langrid.commons.ws.MimeHeaders;
 
@@ -36,17 +32,6 @@ import jp.go.nict.langrid.commons.ws.MimeHeaders;
  * @version $Revision: 196 $
  */
 public class AxisUtil {
-	/**
-	 * 
-	 * 
-	 */
-	public static HttpServletRequest getRequest(
-			MessageContext context){
-		return (HttpServletRequest) context.getProperty(
-			HTTPConstants.MC_HTTP_SERVLETREQUEST
-			);
-	}
-
 	public static MimeHeaders toSoapMimeHeaders(javax.xml.soap.MimeHeaders mimeHeaders) {
 		MimeHeaders ret = new MimeHeaders();
 		@SuppressWarnings("unchecked")

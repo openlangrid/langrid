@@ -30,10 +30,7 @@ import jp.go.nict.langrid.client.RequestAttributes;
 import jp.go.nict.langrid.client.ResponseAttributes;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.util.Pair;
-import jp.go.nict.langrid.commons.ws.util.MimeHeadersUtil;
 import jp.go.nict.langrid.cosee.Endpoint;
-import jp.go.nict.langrid.servicecontainer.executor.StreamingNotifier;
-import jp.go.nict.langrid.servicecontainer.executor.StreamingReceiver;
 
 /**
  * 
@@ -83,7 +80,7 @@ implements InvocationHandler{
 		} finally{
 			ResponseAttributes resAttrs = (ResponseAttributes)client;
 			postprocess(iid, System.currentTimeMillis() - s
-					, MimeHeadersUtil.fromStringObjectMap(resAttrs.getResponseMimeHeaders())
+					, resAttrs.getResponseMimeHeaders()
 					, resAttrs.getResponseRpcHeaders()
 					, resAttrs.getResponseRpcFault()
 					);

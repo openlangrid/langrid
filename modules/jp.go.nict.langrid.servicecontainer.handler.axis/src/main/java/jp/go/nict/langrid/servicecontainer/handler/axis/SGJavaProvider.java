@@ -50,6 +50,7 @@ import jp.go.nict.langrid.commons.rpc.intf.Service;
 import jp.go.nict.langrid.commons.ws.HttpServletRequestUtil;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.commons.ws.axis.AxisServiceContext;
+import jp.go.nict.langrid.commons.ws.axis.AxisUtil;
 import jp.go.nict.langrid.commons.ws.soap.SoapHeaderRpcHeadersAdapter;
 import jp.go.nict.langrid.cosee.axis.AxisSoapHeaderElementFactory;
 import jp.go.nict.langrid.servicecontainer.handler.RIProcessor;
@@ -166,7 +167,9 @@ public class SGJavaProvider extends RPCProvider{
 			((HttpServletResponse)msgContext.getProperty(HTTPConstants.MC_HTTP_SERVLETRESPONSE)).setStatus(500);
 		} finally{
 			Message msg = sc.getMessageContext().getResponseMessage();
-			RIProcessor.finish(msg.getMimeHeaders(), new SoapHeaderRpcHeadersAdapter(msg.getSOAPHeader()));
+			RIProcessor.finish(
+					AxisUtil.toSoapMimeHeaders(msg.getMimeHeaders()),
+					new SoapHeaderRpcHeadersAdapter(msg.getSOAPHeader()));
 		}
 	}
 

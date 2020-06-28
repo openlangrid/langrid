@@ -25,7 +25,6 @@ import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
-import javax.xml.soap.MimeHeaders;
 
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 

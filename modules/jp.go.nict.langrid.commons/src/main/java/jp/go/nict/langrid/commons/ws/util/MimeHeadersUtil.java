@@ -25,10 +25,10 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.soap.MimeHeader;
-import javax.xml.soap.MimeHeaders;
 
 import jp.go.nict.langrid.commons.lang.StringUtil;
+import jp.go.nict.langrid.commons.util.Pair;
+import jp.go.nict.langrid.commons.ws.MimeHeaders;
 
 /**
  * 
@@ -103,10 +103,16 @@ public class MimeHeadersUtil {
 	 * 
 	 */
 	public static void setToHttpServletResponse(MimeHeaders headers, HttpServletResponse response){
-		Iterator<?> i = headers.getAllHeaders();
+		Iterator<Pair<String, String>> i = headers.getAllHeaders();
 		while(i.hasNext()){
-			MimeHeader h = (MimeHeader)i.next();
-			response.addHeader(h.getName(), h.getValue());
+			Pair<String, String> h = i.next();
+			response.addHeader(h.getFirst(), h.getSecond());
+		}
+	}
+
+	public static void setToHttpServletResponse(Map<String, String> headers, HttpServletResponse response){
+		for(Map.Entry<String, String> e : headers.entrySet()) {
+			response.addHeader(e.getKey(), e.getValue());
 		}
 	}
 

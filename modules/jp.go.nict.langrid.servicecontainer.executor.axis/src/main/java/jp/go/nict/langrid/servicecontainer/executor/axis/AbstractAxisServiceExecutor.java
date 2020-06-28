@@ -30,6 +30,7 @@ import org.apache.axis.Message;
 import org.apache.axis.client.Stub;
 import org.apache.axis.transport.http.HTTPConstants;
 
+import jp.go.nict.langrid.client.axis.AxisUtil;
 import jp.go.nict.langrid.commons.lang.ClassUtil;
 import jp.go.nict.langrid.commons.rpc.RpcFault;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
@@ -90,11 +91,11 @@ public abstract class AbstractAxisServiceExecutor extends AbstractServiceExecuto
 		Message res = stub._getCall().getResponseMessage();
 		SOAPFault f = res.getSOAPBody().getFault();
 		postprocess(iid, deltaTime
-				, res.getMimeHeaders()
-                , new SoapHeaderRpcHeadersAdapter(res.getSOAPHeader())
-                , new RpcFault(f.getFaultCode(), f.getFaultString(), f.getDetail().getNodeValue())
-                );
-    }
+				, AxisUtil.toSoapMimeHeaders(res.getMimeHeaders())
+				, new SoapHeaderRpcHeadersAdapter(res.getSOAPHeader())
+				, new RpcFault(f.getFaultCode(), f.getFaultString(), f.getDetail().getNodeValue())
+				);
+	}
 
 	protected <T> T convert(Object value, Class<T> targetClass){
 		return converter.convert(value, targetClass);

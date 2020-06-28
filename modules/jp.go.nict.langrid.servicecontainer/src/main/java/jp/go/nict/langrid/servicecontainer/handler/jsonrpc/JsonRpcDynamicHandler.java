@@ -31,7 +31,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.soap.MimeHeaders;
 
 import jp.go.nict.langrid.commons.beanutils.Converter;
 import jp.go.nict.langrid.commons.beanutils.ConverterForJsonRpc;
@@ -41,6 +40,7 @@ import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.rpc.intf.RpcAnnotationUtil;
 import jp.go.nict.langrid.commons.rpc.json.JsonRpcRequest;
 import jp.go.nict.langrid.commons.rpc.json.JsonRpcResponse;
+import jp.go.nict.langrid.commons.ws.MimeHeaders;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.commons.ws.util.MimeHeadersUtil;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;

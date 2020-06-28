@@ -19,18 +19,16 @@ package jp.go.nict.langrid.client.axis;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import javax.xml.soap.MimeHeader;
-import javax.xml.soap.MimeHeaders;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPFault;
 import javax.xml.soap.SOAPHeader;
+
+import org.apache.axis.Message;
+import org.apache.axis.client.Stub;
+import org.w3c.dom.Element;
 
 import jp.go.nict.langrid.client.ResponseAttributes;
 import jp.go.nict.langrid.commons.cs.calltree.CallNode;
@@ -38,12 +36,9 @@ import jp.go.nict.langrid.commons.cs.calltree.CallTreeUtil;
 import jp.go.nict.langrid.commons.rpc.RpcFault;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.ws.LangridConstants;
+import jp.go.nict.langrid.commons.ws.MimeHeaders;
 import jp.go.nict.langrid.commons.ws.soap.SoapHeaderRpcHeadersAdapter;
 import jp.go.nict.langrid.commons.ws.util.MimeHeadersUtil;
-
-import org.apache.axis.Message;
-import org.apache.axis.client.Stub;
-import org.w3c.dom.Element;
 
 public class AxisStubResponseAttributes implements ResponseAttributes{
 	public AxisStubResponseAttributes(Stub stub) {
@@ -60,7 +55,7 @@ public class AxisStubResponseAttributes implements ResponseAttributes{
 		Message message = stub._getCall().getMessageContext().getResponseMessage();
 		if(message == null) return;
 
-		mimeHeaders = message.getMimeHeaders();
+		mimeHeaders = AxisUtil.toSoapMimeHeaders(message.getMimeHeaders());
 		serviceName = MimeHeadersUtil.getJoinedAndDecodedValue(
 				mimeHeaders, LangridConstants.HTTPHEADER_SERVICENAME, ", "
 					);
@@ -100,15 +95,8 @@ public class AxisStubResponseAttributes implements ResponseAttributes{
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public Map<String, Object> getResponseMimeHeaders(){
-		Iterator<MimeHeader> it = mimeHeaders.getAllHeaders();
-		Map<String, Object> ret = new HashMap<String, Object>();
-		while(it.hasNext()){
-			MimeHeader h = it.next();
-			ret.put(h.getName(), Arrays.asList(mimeHeaders.getHeader(h.getName())));
-		}
-		return ret;
+	public MimeHeaders getResponseMimeHeaders(){
+		return mimeHeaders;
 	}
 
 	@Override

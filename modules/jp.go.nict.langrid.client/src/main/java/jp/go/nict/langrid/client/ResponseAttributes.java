@@ -18,18 +18,18 @@
 package jp.go.nict.langrid.client;
 
 import java.util.Collection;
-import java.util.Map;
 
 import jp.go.nict.langrid.commons.cs.calltree.CallNode;
 import jp.go.nict.langrid.commons.rpc.RpcFault;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
+import jp.go.nict.langrid.commons.ws.MimeHeaders;
 
 public interface ResponseAttributes {
 	String getServiceName();
 	String getCopyright();
 	String getLicenseInfo();
 	Collection<CallNode> getCallTree();
-	Map<String, Object> getResponseMimeHeaders();
+	MimeHeaders getResponseMimeHeaders();
 	Iterable<RpcHeader> getResponseRpcHeaders();
 	RpcFault getResponseRpcFault();
 }

@@ -39,8 +39,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.soap.MimeHeaders;
-
 import jp.go.nict.langrid.commons.lang.ClassUtil;
 import jp.go.nict.langrid.commons.parameter.ParameterContext;
 import jp.go.nict.langrid.commons.transformer.PassthroughTransformer;
@@ -51,6 +49,7 @@ import jp.go.nict.langrid.commons.transformer.TransformationException;
 import jp.go.nict.langrid.commons.transformer.Transformer;
 import jp.go.nict.langrid.commons.util.ArrayUtil;
 import jp.go.nict.langrid.commons.ws.LocalServiceContext;
+import jp.go.nict.langrid.commons.ws.MimeHeaders;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.commons.ws.param.ServiceContextParameterContext;
 import jp.go.nict.langrid.language.Language;

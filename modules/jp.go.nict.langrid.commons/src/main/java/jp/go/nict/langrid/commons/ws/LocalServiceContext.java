@@ -27,8 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.soap.MimeHeaders;
-
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 
 /**

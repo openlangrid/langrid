@@ -8,10 +8,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.soap.MimeHeaders;
-
 import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.commons.ws.LangridConstants;
+import jp.go.nict.langrid.commons.ws.MimeHeaders;
 import jp.go.nict.langrid.commons.ws.Protocols;
 import jp.go.nict.langrid.commons.ws.ServiceContext;
 import jp.go.nict.langrid.cosee.AppAuthEndpointRewriter;

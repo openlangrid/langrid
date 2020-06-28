@@ -24,12 +24,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.xml.soap.MimeHeaders;
-
 import jp.go.nict.langrid.commons.codec.URLCodec;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.ws.LangridConstants;
-import jp.go.nict.langrid.commons.ws.util.MimeHeadersUtil;
+import jp.go.nict.langrid.commons.ws.MimeHeaders;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSONException;
 
@@ -96,15 +94,12 @@ public class CallTreeUtil {
 	public static CallNode createNode(MimeHeaders mimeHeaders, Iterable<RpcHeader> rpcHeaders)
 	throws ParseException{
 		CallNode node = new CallNode();
-		node.setServiceName(MimeHeadersUtil.getJoinedValue(
-				mimeHeaders, LangridConstants.HTTPHEADER_SERVICENAME
-				));
-		node.setServiceCopyright(MimeHeadersUtil.getJoinedAndDecodedValue(
-				mimeHeaders, LangridConstants.HTTPHEADER_SERVICECOPYRIGHT
-				));
-		node.setServiceLicense(MimeHeadersUtil.getJoinedAndDecodedValue(
-				mimeHeaders, LangridConstants.HTTPHEADER_SERVICELICENSE
-				));
+		node.setServiceName(
+				mimeHeaders.getJoinedHeader(LangridConstants.HTTPHEADER_SERVICENAME));
+		node.setServiceCopyright(
+				mimeHeaders.getJoinedHeader(LangridConstants.HTTPHEADER_SERVICECOPYRIGHT));
+		node.setServiceLicense(
+				mimeHeaders.getJoinedHeader(LangridConstants.HTTPHEADER_SERVICELICENSE));
 		if(rpcHeaders != null) for(RpcHeader h : rpcHeaders){
 			if(h.getNamespace().equals(LangridConstants.ACTOR_SERVICE_CALLTREE)){
 				Collection<CallNode> cn = CallTreeUtil.decodeTree(h.getValue());
