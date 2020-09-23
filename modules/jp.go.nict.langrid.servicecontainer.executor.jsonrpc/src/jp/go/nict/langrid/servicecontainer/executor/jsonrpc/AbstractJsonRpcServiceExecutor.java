@@ -24,11 +24,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.soap.MimeHeaders;
-
 import jp.go.nict.langrid.commons.rpc.RpcFault;
 import jp.go.nict.langrid.commons.rpc.RpcHeader;
 import jp.go.nict.langrid.commons.util.Pair;
+import jp.go.nict.langrid.commons.ws.MimeHeaders;
 import jp.go.nict.langrid.cosee.Endpoint;
 import jp.go.nict.langrid.servicecontainer.executor.AbstractServiceExecutor;
 

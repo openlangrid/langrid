@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.soap.MimeHeaders;
+import com.google.common.cache.Cache;
 
 import jp.go.nict.langrid.commons.beanutils.Converter;
 import jp.go.nict.langrid.commons.lang.ExceptionUtil;
@@ -44,13 +44,12 @@ import jp.go.nict.langrid.commons.rpc.json.JsonRpcResponse;
 import jp.go.nict.langrid.commons.rpc.json.JsonRpcUtil;
 import jp.go.nict.langrid.commons.util.Pair;
 import jp.go.nict.langrid.commons.ws.LangridConstants;
+import jp.go.nict.langrid.commons.ws.MimeHeaders;
 import jp.go.nict.langrid.commons.ws.Protocols;
 import jp.go.nict.langrid.cosee.Endpoint;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSONException;
 import jp.go.nict.langrid.servicecontainer.executor.StreamingNotifier;
-
-import com.google.common.cache.Cache;
 
 /**
  * 
