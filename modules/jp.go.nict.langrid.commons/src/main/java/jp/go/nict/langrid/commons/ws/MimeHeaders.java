@@ -11,7 +11,12 @@ import jp.go.nict.langrid.commons.util.Pair;
 
 public class MimeHeaders {
 	public String[] getHeader(String name) {
-		return headers.get(name.toLowerCase()).getSecond().toArray(new String[] {});
+		Pair<String, List<String>> h = headers.get(name.toLowerCase());
+		if(h != null) {
+			return h.getSecond().toArray(new String[] {});
+		} else {
+			return null;
+		}
 	}
 
 	public String getJoinedHeader(String name, String separator) {
@@ -33,6 +38,7 @@ public class MimeHeaders {
 	}
 
 	public void addHeader(String name, String value){
+		if(name == null) return;
 		headers.computeIfAbsent(
 				name.toLowerCase(), n -> Pair.create(name, new ArrayList<>()))
 			.getSecond().add(value);
