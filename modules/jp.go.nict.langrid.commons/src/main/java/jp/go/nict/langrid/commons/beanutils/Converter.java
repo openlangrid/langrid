@@ -353,7 +353,11 @@ public class Converter{
 					try{
 						return (T)new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS Z").parse((String)value);
 					} catch(ParseException e){
-						throw new ConversionException(e);
+						try{
+							return (T)new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse((String)value);
+						} catch(ParseException e2){
+							throw new ConversionException(e2);
+						}
 					}
 				} else{
 					throw new ConversionException(value + " can't be converted to Date");
