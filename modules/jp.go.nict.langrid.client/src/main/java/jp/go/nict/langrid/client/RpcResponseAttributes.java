@@ -45,6 +45,7 @@ public class RpcResponseAttributes implements ResponseAttributes{
 		Map<String, List<String>> mheaders = con.getHeaderFields();
 		for(Map.Entry<String, List<String>> entry : mheaders.entrySet()){
 			String name = entry.getKey();
+			if(name == null) continue;
 			for(String value : entry.getValue()) {
 				mimeHeaders.addHeader(name, value);
 			}
