@@ -22,6 +22,7 @@ package jp.go.nict.langrid.commons.ws.servlet;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 
 /**
@@ -42,17 +43,23 @@ public class InputStreamServletInputStream extends ServletInputStream {
 
 	@Override
 	public int read() throws IOException {
-		return stream.read();
+		int ret = stream.read();
+		this.finished = ret == -1;
+		return ret;
 	}
 
 	@Override
 	public int read(byte[] b) throws IOException {
-		return stream.read(b);
+		int ret = stream.read(b);
+		this.finished = ret == -1;
+		return ret;
 	}
 
 	@Override
 	public int read(byte[] b, int off, int len) throws IOException {
-		return stream.read(b, off, len);
+		int ret = stream.read(b, off, len);
+		this.finished = ret == -1;
+		return ret;
 	}
 
 	@Override
@@ -60,5 +67,27 @@ public class InputStreamServletInputStream extends ServletInputStream {
 		stream.close();
 	}
 
+	@Override
+	public boolean isFinished() {
+		return finished;
+	}
+
+	@Override
+	public boolean isReady() {
+		return true;
+	}
+
+	@Override
+	public void setReadListener(ReadListener readListener) {
+		this.readListener = readListener;
+		try {
+			this.readListener.onDataAvailable();
+		} catch(IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private ReadListener readListener;
+	private boolean finished;
 	private InputStream stream;
 }

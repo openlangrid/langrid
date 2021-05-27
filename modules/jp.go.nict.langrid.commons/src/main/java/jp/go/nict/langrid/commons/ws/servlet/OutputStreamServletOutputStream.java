@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 
 public class OutputStreamServletOutputStream extends ServletOutputStream{
 	public OutputStreamServletOutputStream(OutputStream os){
@@ -36,4 +37,21 @@ public class OutputStreamServletOutputStream extends ServletOutputStream{
 	}
 
 	private OutputStream os;
+
+	@Override
+	public boolean isReady() {
+		return true;
+	}
+
+	@Override
+	public void setWriteListener(WriteListener writeListener) {
+		this.writeListener = writeListener;
+		try {
+			writeListener.onWritePossible();
+		} catch(IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	private WriteListener writeListener;
 }
