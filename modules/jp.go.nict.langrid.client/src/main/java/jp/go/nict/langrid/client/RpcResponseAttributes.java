@@ -42,6 +42,8 @@ public class RpcResponseAttributes implements ResponseAttributes{
 
 	public void loadAttributes(HttpURLConnection con, Collection<RpcHeader> headers)
 	throws ParseException{
+		mimeHeaders.removeAllHeaders();
+
 		Map<String, List<String>> mheaders = con.getHeaderFields();
 		for(Map.Entry<String, List<String>> entry : mheaders.entrySet()){
 			String name = entry.getKey();
@@ -58,6 +60,7 @@ public class RpcResponseAttributes implements ResponseAttributes{
 
 	public void loadAttributes(Collection<RpcHeader> headers)
 	throws ParseException{
+		rpcHeaders.clear();
 		rpcHeaders.addAll(headers);
 		callTree = CallTreeUtil.extractNodes(headers);
 	}
