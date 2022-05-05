@@ -155,17 +155,17 @@ implements SOAPHeaderElement{
 	}
 
 	@Override
-	public Iterator<SOAPElement> getChildElements() {
+	public Iterator<javax.xml.soap.Node> getChildElements() {
 		return null;
 	}
 
 	@Override
-	public Iterator<SOAPElement> getChildElements(Name name) {
+	public Iterator<javax.xml.soap.Node> getChildElements(Name name) {
 		return null;
 	}
 
 	//@Override
-	public Iterator<SOAPElement> getChildElements(QName qname) {
+	public Iterator<javax.xml.soap.Node> getChildElements(QName qname) {
 		// TODO Auto-generated method stub
 		return null;
 	}

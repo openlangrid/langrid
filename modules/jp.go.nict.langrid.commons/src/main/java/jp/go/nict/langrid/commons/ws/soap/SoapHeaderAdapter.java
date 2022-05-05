@@ -113,7 +113,7 @@ public class SoapHeaderAdapter implements SOAPHeader{
 	}
 
 	@Override
-	public Iterator<?> getAllAttributes() {
+	public Iterator<Name> getAllAttributes() {
 		return null;
 	}
 
@@ -123,12 +123,12 @@ public class SoapHeaderAdapter implements SOAPHeader{
 	}
 
 	@Override
-	public Iterator<?> getChildElements() {
+	public Iterator<javax.xml.soap.Node> getChildElements() {
 		return null;
 	}
 
 	@Override
-	public Iterator<?> getChildElements(Name arg0) {
+	public Iterator<javax.xml.soap.Node> getChildElements(Name arg0) {
 		return null;
 	}
 
@@ -143,7 +143,7 @@ public class SoapHeaderAdapter implements SOAPHeader{
 	}
 
 	@Override
-	public Iterator<?> getNamespacePrefixes() {
+	public Iterator<String> getNamespacePrefixes() {
 		return null;
 	}
 
@@ -153,7 +153,7 @@ public class SoapHeaderAdapter implements SOAPHeader{
 	}
 
 	@Override
-	public Iterator<?> getVisibleNamespacePrefixes() {
+	public Iterator<String> getVisibleNamespacePrefixes() {
 		return null;
 	}
 
@@ -511,7 +511,7 @@ public class SoapHeaderAdapter implements SOAPHeader{
 		return null;
 	}
 
-	public Iterator<?> getChildElements(QName arg){
+	public Iterator<javax.xml.soap.Node> getChildElements(QName arg){
 		return null;
 	}
 
@@ -531,7 +531,7 @@ public class SoapHeaderAdapter implements SOAPHeader{
 		return null;
 	}
 
-	public Iterator<?> getAllAttributesAsQNames(){
+	public Iterator<QName> getAllAttributesAsQNames(){
 		return null;
 	}
 
