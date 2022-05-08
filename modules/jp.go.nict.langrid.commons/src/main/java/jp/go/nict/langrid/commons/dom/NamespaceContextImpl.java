@@ -69,12 +69,13 @@ public class NamespaceContextImpl implements NamespaceContext{
 		}
 	}
 
-	public Iterator<?> getPrefixes(String namespaceURI) {
+	@SuppressWarnings("unchecked")
+	public Iterator<String> getPrefixes(String namespaceURI) {
 		List<String> ret = nsToPrefixes.get(namespaceURI);
 		if(ret != null){
 			return Collections.unmodifiableCollection(ret).iterator();
 		} else{
-			return parent.getPrefixes(namespaceURI);
+			return (Iterator<String>)parent.getPrefixes(namespaceURI);
 		}
 	}
 
@@ -106,7 +107,7 @@ public class NamespaceContextImpl implements NamespaceContext{
 		public String getPrefix(String namespaceURI) {
 			return null;
 		}
-		public Iterator<?> getPrefixes(String namespaceURI) {
+		public Iterator<String> getPrefixes(String namespaceURI) {
 			return null;
 		}
 	};
