@@ -1,0 +1,9 @@
+services:
+  tomcat:
+    image: tomcat:9-jre21
+    volumes:
+      - ./target/webapps.chatgpt.war:/usr/local/tomcat/webapps/chatgpt.war
+      - ./tomcat-users.xml:/usr/local/tomcat/conf/tomcat-users.xml
+    ports:
+      - "8080:8080"
+

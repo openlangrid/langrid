@@ -1,0 +1,69 @@
+{
+  "id": "resp_689ffe8e44388193bf7f9de0344ed9550aab0dd5ae163eab",
+  "object": "response",
+  "created_at": 1755315854,
+  "status": "completed",
+  "background": false,
+  "error": null,
+  "incomplete_details": null,
+  "instructions": null,
+  "max_output_tokens": null,
+  "max_tool_calls": null,
+  "model": "gpt-5-nano-2025-08-07",
+  "output": [
+    {
+      "id": "rs_689ffe8f22a8819398fa6f618c7d82480aab0dd5ae163eab",
+      "type": "reasoning",
+      "summary": []
+    },
+    {
+      "id": "msg_689ffe9be598819397b62fc7107d2d750aab0dd5ae163eab",
+      "type": "message",
+      "status": "completed",
+      "content": [
+        {
+          "type": "output_text",
+          "annotations": [],
+          "logprobs": [],
+          "text": "Mira the Night-Unicorn\n\nOnce, in a valley where the moon brushed the grass with silver, there lived a small unicorn named Mira. Her horn glowed softly, and her mane shimmered like dew on a spider\u2019s web. Every night she wandered the edge of the sleeping world, listening for gentle sounds and quiet sighs.\n\nOne evening, a little girl named Ava whispered through her window that sleep felt far away. The room seemed large and full of shadows. Mira stepped through the window on a thread of starlight and smiled. \u201cClose your eyes,\u201d she whispered, \u201cand I will walk with you.\u201d\n\nTogether they glided into the night. They rose above the village and crossed a meadow lit by moonflowers. A brook below sang a twinkling tune, and fireflies stitched tiny stars into the air. The wind hummed a lullaby, soft as a feather brushing your ear.\n\n\u201cMira,\u201d Ava said, her voice small, \u201cthe night feels big and a little scary.\u201d\n\nMira lowered her head so her horn brushed Ava\u2019s forehead. \u201cShadows are just the night\u2019s cloak,\u201d she said. \u201cWe name them, then let them melt away in the light we carry.\u201d Her horn woke a pale glow that drifted like a lantern, and Ava felt fear loosen its grip.\n\nThey wandered further and found a hill where the grass smelled like peppermint and the stones were warm. A shy deer peeked out from behind a fern, and a fox curled up on a patch of moss as if it had slept there forever. The world seemed kind when Mira held the glow close, guiding Ava with a soft, steady light.\n\nMira spoke again, gentle as a lullaby. \u201cDreams aren\u2019t far. They live inside your heart, waiting for you to listen.\u201d She drew a path of starlight back toward Ava\u2019s window, a silver thread woven with care. \u201cWhen you wake, you\u2019ll carry a piece of this night with you,\u201d she said.\n\nThe thread rested on Ava\u2019s brow and then faded to a warm glow that lingered a moment longer. Ava\u2019s eyes grew heavy with sleep, her breaths slow and even. Mira gave a final bow with her sweet, glimmering horn and vanished into the hush of the night, leaving behind a soft, comforting glow that watched over the room.\n\nMorning came shyly, painting the room with pale light. Ava woke with a contented sigh and a bright, sleepy smile. She pressed her hand to her heart and whispered, \u201cThank you, Mira.\u201d The memory of the dream nestled there like a little lantern, ready to glow again whenever she closed her eyes.\n\nAnd so the valley slept, sure that the night would always hold a gentle unicorn to guide every child to a peaceful, comforting dream. Good night."
+        }
+      ],
+      "role": "assistant"
+    }
+  ],
+  "parallel_tool_calls": true,
+  "previous_response_id": null,
+  "prompt_cache_key": null,
+  "reasoning": {
+    "effort": "medium",
+    "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "store": true,
+  "temperature": 1.0,
+  "text": {
+    "format": {
+      "type": "text"
+    },
+    "verbosity": "medium"
+  },
+  "tool_choice": "auto",
+  "tools": [],
+  "top_logprobs": 0,
+  "top_p": 1.0,
+  "truncation": "disabled",
+  "usage": {
+    "input_tokens": 15,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens": 3711,
+    "output_tokens_details": {
+      "reasoning_tokens": 3136
+    },
+    "total_tokens": 3726
+  },
+  "user": null,
+  "metadata": {}
+}

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="target" class="jp.go.nict.langrid.servicecontainer.handler.TargetServiceFactory" >
+		<property name="decorators">
+			<list>
+				<bean class="jp.go.nict.langrid.servicecontainer.decorator.ThreadDecorator">
+					<property name="maxThreads" value="10" />
+				</bean>
+			</list>
+		</property>
+
+		<property name="service">
+			<bean class="org.langrid.wrapper.chatgpt.ChatGPTTranslation">
+				<property name="apikey" value="APIKEY" />
+			</bean>
+		</property>
+	</bean>
+</beans>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>jp.go.nict.langrid.webapps.blank</display-name>
+  <servlet>
+    <servlet-name>AxisServlet</servlet-name>
+    <servlet-class>jp.go.nict.langrid.servicecontainer.handler.axis.SGAxisServlet</servlet-class>
+    <init-param>
+      <param-name>wsddBeanNamespaceMappings</param-name>
+      <param-value>
+				jp.go.nict.langrid.service_1_2,http://langrid.nict.go.jp/ws_1_2/
+			</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AxisServlet</servlet-name>
+    <url-pattern>/services/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>ProtobufRpcServlet</servlet-name>
+    <servlet-class>jp.go.nict.langrid.servicecontainer.handler.protobufrpc.servlet.ProtoBufRpcServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProtobufRpcServlet</servlet-name>
+    <url-pattern>/pbServices/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>JsonRpcServlet</servlet-name>
+    <servlet-class>jp.go.nict.langrid.servicecontainer.handler.jsonrpc.servlet.JsonRpcServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>JsonRpcServlet</servlet-name>
+    <url-pattern>/jsServices/*</url-pattern>
+  </servlet-mapping>
+  <mime-mapping>
+    <extension>wsdl</extension>
+    <mime-type>text/xml</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>xsd</extension>
+    <mime-type>text/xml</mime-type>
+  </mime-mapping>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>User Basic Auth</web-resource-name>
+      <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>langridserviceuser</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <login-config>
+    <auth-method>BASIC</auth-method>
+    <realm-name>User Basic Auth</realm-name>
+  </login-config>
+  <security-role>
+    <role-name>langridserviceuser</role-name>
+  </security-role>
+</web-app>
