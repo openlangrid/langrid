@@ -11,6 +11,7 @@ import java.util.List;
 
 import jp.go.nict.langrid.repackaged.net.arnx.jsonic.JSON;
 import jp.go.nict.langrid.service_1_2.ProcessFailedException;
+import jp.go.nict.langrid.servicecontainer.handler.RIProcessor;
 
 public class ChatGPTService {
 	public ChatGPTService() {
@@ -22,6 +23,10 @@ public class ChatGPTService {
 		this.url = url;
 	}
 
+	public String getApikey() {
+		return apikey;
+	}
+
 	public void setApikey(String apikey) {
 		this.apikey = apikey;
 	}
@@ -31,6 +36,19 @@ public class ChatGPTService {
 	}
 
 	public String execute(String prompt) throws ProcessFailedException{
+		return execute(apikey, prompt);
+	}
+
+	public String resolveApikey() {
+		var key = apikey;
+		var apikeys = RIProcessor.getCurrentServiceContext().getRequestMimeHeaders().getHeader("apikey");
+		if(apikeys != null && apikeys.length > 0) {
+			key = apikeys[0];
+		}
+		return key;
+	}
+
+	public String execute(String apikey, String prompt) throws ProcessFailedException{
 		try {
 			var con = (HttpURLConnection)  new URL(url).openConnection();
 			con.setRequestMethod("POST");
